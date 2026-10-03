@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
+import { EngineProvider } from "./engine/context";
 import { EditorShell } from "./shell/EditorShell";
+import { EditorProvider } from "./state/store";
 
 // The Link view carries Ember Bridge's whole UI + its (dark) stylesheet; load it on demand.
 const LinkApp = lazy(() => import("./link/LinkApp"));
@@ -23,25 +25,29 @@ export default function App() {
   };
 
   return (
-    <div className="app">
-      <nav className="app-nav" aria-label="Views">
-        <span className="app-logo">Lilo</span>
-        <button className={view === "editor" ? "active" : ""} onClick={() => go("editor")}>
-          Editor
-        </button>
-        <button className={view === "link" ? "active" : ""} onClick={() => go("link")}>
-          Lilo Link
-        </button>
-      </nav>
-      <div className="app-view">
-        {view === "editor" ? (
-          <EditorShell />
-        ) : (
-          <Suspense fallback={<div className="app-loading">Loading Lilo Link…</div>}>
-            <LinkApp />
-          </Suspense>
-        )}
-      </div>
-    </div>
+    <EngineProvider>
+      <EditorProvider>
+        <div className="app">
+          <nav className="app-nav" aria-label="Views">
+            <span className="app-logo">Lilo</span>
+            <button className={view === "editor" ? "active" : ""} onClick={() => go("editor")}>
+              Editor
+            </button>
+            <button className={view === "link" ? "active" : ""} onClick={() => go("link")}>
+              Lilo Link
+            </button>
+          </nav>
+          <div className="app-view">
+            {view === "editor" ? (
+              <EditorShell />
+            ) : (
+              <Suspense fallback={<div className="app-loading">Loading Lilo Link…</div>}>
+                <LinkApp />
+              </Suspense>
+            )}
+          </div>
+        </div>
+      </EditorProvider>
+    </EngineProvider>
   );
 }

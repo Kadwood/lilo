@@ -1,38 +1,33 @@
 import { useState } from "react";
-import { getPlatform } from "../platform";
-import { loadDemoPes } from "./demo";
+import { useEditor } from "../state/store";
+import { ExportDialog } from "./ExportDialog";
 import { SendDialog } from "./SendDialog";
 
-export function TopBar({ projectName, onRename }: { projectName: string; onRename: (n: string) => void }) {
+export function TopBar() {
+  const { state, actions } = useEditor();
+  const [exportOpen, setExportOpen] = useState(false);
   const [sendOpen, setSendOpen] = useState(false);
   const [note, setNote] = useState<string | null>(null);
-
-  // M1: Export and Send both use the built-in demo design until real editing lands.
-  const exportDemo = async () => {
-    setNote(null);
-    try {
-      const saved = await getPlatform().saveFile("demo.pes", await loadDemoPes());
-      if (saved) setNote(`Saved ${saved}`);
-    } catch (e) {
-      setNote(`Export failed: ${e instanceof Error ? e.message : String(e)}`);
-    }
-  };
+  const hasDesign = state.design !== null && (state.planResult?.stats.stitchCount ?? 0) > 0;
 
   return (
     <header className="topbar">
       <input
         className="project-name"
         aria-label="Project name"
-        value={projectName}
-        onChange={(e) => onRename(e.target.value)}
+        value={state.projectName}
+        onChange={(e) => actions.setName(e.target.value)}
       />
       <span className="topbar-note" role="status">
         {note}
       </span>
-      <button onClick={exportDemo}>Export</button>
-      <button className="primary" onClick={() => setSendOpen(true)}>
+      <button onClick={() => setExportOpen(true)} disabled={!hasDesign} title={hasDesign ? undefined : "Digitize an image first"}>
+        Export
+      </button>
+      <button className="primary" onClick={() => setSendOpen(true)} disabled={!hasDesign} title={hasDesign ? undefined : "Digitize an image first"}>
         Send
       </button>
+      {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} onSaved={setNote} />}
       {sendOpen && <SendDialog onClose={() => setSendOpen(false)} />}
     </header>
   );

@@ -1,30 +1,40 @@
-import { useState } from "react";
+import { CanvasView } from "../canvas/CanvasView";
+import { IMPORT_EXTENSIONS } from "../io/decode";
+import { DigitizePanel } from "../panels/DigitizePanel";
+import { Sequencer } from "../panels/Sequencer";
+import { StitchPlayer } from "../panels/StitchPlayer";
+import { getPlatform } from "../platform";
+import { useEditor } from "../state/store";
 import { TopBar } from "./TopBar";
 
-/** The empty editor frame. Real panels/canvas arrive in later milestones. */
+/** The editor frame: top bar, Auto-digitize panel, canvas + stitch player, sequencer. */
 export function EditorShell() {
-  const [projectName, setProjectName] = useState("Untitled design");
+  const { actions } = useEditor();
+
+  const open = async () => {
+    try {
+      const f = await getPlatform().openFile({ extensions: IMPORT_EXTENSIONS });
+      if (f) await actions.importFile({ name: f.name, bytes: f.bytes });
+    } catch (e) {
+      console.error("Open failed", e);
+    }
+  };
 
   return (
     <div className="editor">
-      <TopBar projectName={projectName} onRename={setProjectName} />
+      <TopBar />
       <div className="editor-body">
-        <aside className="panel panel-left" aria-label="Settings">
-          <h2>Settings</h2>
-          <p className="muted">Stitch settings will appear here.</p>
-        </aside>
+        <DigitizePanel onOpen={open} />
 
         <main className="canvas" aria-label="Canvas">
-          <div className="canvas-placeholder">Canvas</div>
+          <CanvasView onOpen={open} />
+          <StitchPlayer />
           <div className="toolbar" role="toolbar" aria-label="Tools">
             <span className="muted">Tools</span>
           </div>
         </main>
 
-        <aside className="panel panel-right" aria-label="Sequencer">
-          <h2>Sequencer</h2>
-          <p className="muted">Colour blocks and stitch order will appear here.</p>
-        </aside>
+        <Sequencer />
       </div>
     </div>
   );
