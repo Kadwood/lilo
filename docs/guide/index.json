@@ -1593,7 +1593,7 @@
   {
    "id": "text-on-curve",
    "title": "Text on a curve",
-   "summary": "How curved lettering works today, what the warnings mean and a way to curve a word by hand.",
+   "summary": "Bend lettering round the top or bottom of a circle, for hat patches, badges and crests.",
    "section": "lettering",
    "order": 4,
    "keywords": [
@@ -1605,39 +1605,35 @@
     "patch",
     "curved text",
     "text on path",
-    "ring"
+    "ring",
+    "radius",
+    "bend"
    ],
    "appContext": [
-    "panel.text",
-    "panel.map"
+    "panel.text"
    ],
    "status": "ready",
-   "words": 271,
+   "words": 373,
    "headings": [
     {
      "level": 2,
-     "text": "What the lettering engine can do",
-     "slug": "what-the-lettering-engine-can-do"
+     "text": "Bend the text",
+     "slug": "bend-the-text"
     },
     {
      "level": 2,
-     "text": "What the Text panel offers today",
-     "slug": "what-the-text-panel-offers-today"
-    },
-    {
-     "level": 3,
-     "text": "Way 1: place letters one at a time",
-     "slug": "way-1-place-letters-one-at-a-time"
-    },
-    {
-     "level": 3,
-     "text": "Way 2: use a straight word and a patch design",
-     "slug": "way-2-use-a-straight-word-and-a-patch-design"
+     "text": "Pick a radius",
+     "slug": "pick-a-radius"
     },
     {
      "level": 2,
-     "text": "Check the fit",
-     "slug": "check-the-fit"
+     "text": "Change it later",
+     "slug": "change-it-later"
+    },
+    {
+     "level": 2,
+     "text": "Top and bottom text on one patch",
+     "slug": "top-and-bottom-text-on-one-patch"
     },
     {
      "level": 2,
@@ -1645,7 +1641,7 @@
      "slug": "related"
     }
    ],
-   "body": "# Text on a curve\n\nCurved text is what you want around the edge of a round hat patch or the rim of a crest.\n\n## What the lettering engine can do\n\nThe lettering engine can place letters along a line or an arc. It spaces each letter and turns it to follow the curve. When the text is longer than the path, it warns you: \"The text is N mm long but the path is only N mm; the end runs off the path.\"\n\n## What the Text panel offers today\n\nThe Text panel does not have a curve control yet. Until it does, use one of these ways.\n\n### Way 1: place letters one at a time\n\n1. Draw the curve you want with an **Open shape**.\n2. Add each letter as its own text with the **Text** tool.\n3. Select a letter and drag the round **rotate handle** above its selection box to turn it. Hold **Ctrl** to snap to 15 degrees.\n4. Move it onto the curve. Use the **Measure** tool to keep spacing even.\n\nThis is slow but gives you full control for short words, like a name on a badge.\n\n### Way 2: use a straight word and a patch design\n\nFor a round hat patch of about 50 mm, a short word along the bottom with a straight baseline often looks fine. Put a satin border round the edge with a **Circle** and the **Satin** run type.\n\n## Check the fit\n\nWhichever way you choose, check the **Measure** tool against the hoop. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Related\n\n[Lettering: built-in fonts](lettering-fonts.md), [Map to path](editing-shapes.md)\n"
+   "body": "# Text on a curve\n\nCurved text is what you want round the edge of a hat patch or the rim of a crest. A name along the top of a 50 mm hat patch is a good example.\n\n## Bend the text\n\n1. Choose the **Text** tool (press **T**) and type your words.\n2. Find **Curve** in the Text panel. It has three buttons:\n   - **Straight** keeps the baseline flat. This is the default.\n   - **Arc up** bends the words over the top of a circle. The letters stand on the outside.\n   - **Arc down** bends them along the bottom of a circle. The letters stand on the inside, and still read left to right.\n3. For a curve, a **Curve radius** slider appears. The radius is the size of the circle in millimetres. A smaller radius bends harder.\n4. Press **Add text**.\n\nA curve centres the words on the arc, so **Alignment** is ignored while a curve is on.\n\n## Pick a radius\n\n- The text should be shorter than the arc. A 30 mm radius gives an arc of about 150 mm. That is room for a name at 10 mm tall.\n- For a round patch, make the radius a little smaller than the patch radius. A 50 mm patch is 25 mm from the centre, so try 20 mm and make the letters about 6 mm tall.\n- If the text is too long for the circle, Lilo says so: \"The text is N mm long but the path is only N mm\". Make the radius bigger or the letters smaller.\n\n## Change it later\n\nSelect the word. The panel becomes **Edit text** and the curve settings load into it. Change the buttons or the slider and press **Update text**. The word stays where you put it, and keeps any rotation you gave it. **⌘Z** undoes the change.\n\n## Top and bottom text on one patch\n\nAdd the top words with **Arc up**. Then start new text with **New text**, and add the bottom words with **Arc down**. Move the second word until the two sit on the same circle. Use the **Measure** tool to check the gap.\n\n## Related\n\n[Lettering: built-in fonts](lettering-fonts.md), [Small letters](small-letters.md), [Sizing and hoops](sizing-and-hoops.md)\n"
   },
   {
    "id": "thread-brands-matching",

@@ -101,6 +101,9 @@ describe("journey d: click to stitch and My Threads", () => {
       await page.keyboard.press("Escape"); // nothing selected: the Auto digitize panel is back
       await page.getByLabel("Use my threads").check();
       await page.getByRole("button", { name: "Digitize", exact: true }).click();
+      // wait for the NEW result: the button reads "Digitizing…" while it runs, and the old palette is still on screen until then
+      await page.getByRole("button", { name: "Digitizing…" }).waitFor({ timeout: 5_000 }).catch(() => undefined);
+      await page.getByRole("button", { name: "Digitize", exact: true }).waitFor({ timeout: 60_000 });
       await expect.poll(() => page.getByLabel("Palette").getByRole("listitem").count(), { timeout: 60_000 }).toBeGreaterThan(1);
       await settled(page);
       const used = await page.getByLabel("Palette").getByRole("listitem").locator("strong").allInnerTexts();

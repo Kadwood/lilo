@@ -4,6 +4,8 @@ import { letterHeightWarning, minLetterHeightFor } from "@lilo/engine/light";
 import { useSewing } from "../sewing/useSewing";
 import { DimensionsSection } from "../panels/DimensionsSection";
 import { Hint } from "../guide/Hint";
+import { Segmented } from "../panels/controls";
+import { CURVE_RADIUS_RANGE, curveGuide, curveOf, DEFAULT_CURVE_RADIUS_MM, type CurveMode } from "./curve";
 import { ThreadPicker } from "../panels/ThreadPicker";
 import { nextTextGroup, textThread, useTextTarget } from "./adapter";
 import { defaultServices, type CustomFontInfo, type FontRef, type LetteringServices } from "./fonts";
@@ -41,6 +43,8 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
   const [spacing, setSpacing] = useState(0);
   const [lineSpacing, setLineSpacing] = useState(1);
   const [align, setAlign] = useState<TextAlign>("center");
+  const [curveMode, setCurveMode] = useState<CurveMode>("straight");
+  const [curveRadius, setCurveRadius] = useState(DEFAULT_CURVE_RADIUS_MM);
   const [fitOnly, setFitOnly] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ kind: "error" | "info"; text: string } | null>(null);
@@ -70,6 +74,9 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
     setSpacing(editing.letterSpacingMm);
     setLineSpacing(editing.lineSpacing);
     setAlign(editing.align);
+    const c = curveOf(editing.path);
+    setCurveMode(c.mode);
+    setCurveRadius(c.radiusMm);
     setFont(editing.fontId.startsWith("custom:") ? { kind: "custom", key: editing.fontId.slice(7) } : { kind: "builtin", id: editing.fontId });
     setMessage(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,12 +118,13 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
       const thread = textThread(design, threadId);
       const group = editing ? editing.id : nextTextGroup(design);
       const fontId = font.kind === "builtin" ? font.id : `custom:${font.key}`;
-      const r = await services.layout({ text, font, heightMm: height, letterSpacingMm: spacing, lineSpacing, align, threadId: thread.id, idPrefix: group, sewing: { quality: sewing.quality, threadWeight: sewing.threadWeight } });
+      const onPath = curveGuide({ mode: curveMode, radiusMm: curveRadius });
+      const r = await services.layout({ text, font, heightMm: height, letterSpacingMm: spacing, lineSpacing, align: onPath ? "center" : align, onPath, threadId: thread.id, idPrefix: group, sewing: { quality: sewing.quality, threadWeight: sewing.threadWeight } });
       if (r.objects.length === 0) {
         setMessage({ kind: "error", text: r.warnings[0]?.message ?? "Nothing to stitch." });
         return;
       }
-      const block = { id: group, text, fontId, heightMm: height, letterSpacingMm: spacing, lineSpacing, align };
+      const block = { id: group, text, fontId, heightMm: height, letterSpacingMm: spacing, lineSpacing, align, ...(onPath ? { path: onPath } : {}) };
       if (editing) replace(group, r, block);
       else insert(r, block, thread);
       const notes = r.warnings.filter((w) => w.code === "missing-glyph" || w.code === "text-longer-than-path").map((w) => w.message);
@@ -208,6 +216,30 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="field" data-curve>
+        <span className="field-row">
+          Curve <Hint id="text.curve" />
+        </span>
+        <Segmented<CurveMode>
+          label="Curve"
+          value={curveMode}
+          options={[
+            { id: "straight", label: "Straight" },
+            { id: "up", label: "Arc up" },
+            { id: "down", label: "Arc down" },
+          ]}
+          onChange={setCurveMode}
+        />
+        {curveMode !== "straight" && (
+          <label className="field">
+            <span className="field-row">
+              Curve radius <output>{curveRadius} mm</output> <Hint id="text.curve-radius" />
+            </span>
+            <input type="range" min={CURVE_RADIUS_RANGE.min} max={CURVE_RADIUS_RANGE.max} step={1} value={curveRadius} aria-label="Curve radius" onChange={(e) => setCurveRadius(Number(e.target.value))} />
+          </label>
+        )}
       </div>
 
       <div className="field">

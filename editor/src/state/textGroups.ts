@@ -71,10 +71,10 @@ export function transformTextBlocks(d: Design, moved: ReadonlySet<string>, m: Af
 /**
  * The transform that puts a freshly laid-out block (centred on `layoutCentre`) where the block it
  * replaces is: same centre, same rotation/scale/flip. Null for a block with no record of either
- * (older files) or one that follows a path: those keep the old behaviour of centring on the letters.
+ * (older files): those keep the old behaviour of centring on the letters. Curved text is kept the same way.
  */
-export function relayoutAffine(d: Design, old: TextBlock | undefined, next: { path?: unknown }, layoutCentre: Pt): Affine | null {
-  if (!old || next.path || old.path) return null;
+export function relayoutAffine(d: Design, old: TextBlock | undefined, _next: { path?: unknown }, layoutCentre: Pt): Affine | null {
+  if (!old) return null;
   const c = blockCentre(d, old);
   if (!c) return null;
   const l = old.linear ?? IDENTITY_LINEAR;
