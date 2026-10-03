@@ -1,5 +1,5 @@
 import { Coordinate } from "jsts/org/locationtech/jts/geom";
-import { bufferGeom, factory, polygonFromRings, polygonsOf, ringsOf } from "./geom";
+import { bufferGeom, differenceGeom, factory, polygonFromRings, polygonsOf, ringsOf } from "./geom";
 import type { DesignObject, FillObject, Pt, RunObject, SatinObject } from "./model";
 import { nodesFromPolyline } from "./model";
 
@@ -37,7 +37,7 @@ export function knifeFill(o: FillObject, a: Pt, b: Pt, newId: () => string): Fil
   const a2: Pt = [a[0] - (dx / l) * ext, a[1] - (dy / l) * ext];
   const b2: Pt = [b[0] + (dx / l) * ext, b[1] + (dy / l) * ext];
   const cutter = bufferGeom(lineOf(a2, b2), KNIFE_KERF_MM);
-  const rest = poly.difference(cutter);
+  const rest = differenceGeom(poly, cutter);
   const pieces = fillPieces(o, rest, newId, "part");
   return pieces.length >= 2 ? pieces : [o];
 }
@@ -47,7 +47,7 @@ export function cutHole(o: FillObject, hole: Pt[], newId: () => string): FillObj
   if (hole.length < 3) return [o];
   const poly = polygonFromRings(o.geometry.shell, o.geometry.holes);
   const cutter = polygonFromRings(hole);
-  const rest = poly.difference(cutter);
+  const rest = differenceGeom(poly, cutter);
   const pieces = fillPieces(o, rest, newId, "part");
   if (pieces.length === 0) return [o];
   return pieces;

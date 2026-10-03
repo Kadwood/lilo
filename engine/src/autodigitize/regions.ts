@@ -1,5 +1,5 @@
 import { Coordinate } from "jsts/org/locationtech/jts/geom";
-import { bufferGeom, factory, polygonsOf, unionAll, type Geom, type Poly } from "../geom";
+import { bufferGeom, differenceGeom, factory, polygonsOf, unionAll, unionGeom, type Geom, type Poly } from "../geom";
 import { parseColor, parsePathData, type Ring, type SvgDocument } from "./svg";
 
 /** A same-colour area in some source unit (pixels for traced images, user units for SVG). */
@@ -129,9 +129,9 @@ export function svgToRegions(doc: SvgDocument): Region[] {
   let covered: Geom | null = null;
   for (let i = layers.length - 1; i >= 0; i--) {
     const l = layers[i];
-    const vis: Geom = covered ? l.geom.difference(covered) : l.geom;
+    const vis: Geom = covered ? differenceGeom(l.geom, covered) : l.geom;
     if (!vis.isEmpty()) visible.push({ hex: l.hex, geom: vis });
-    covered = covered ? covered.union(l.geom) : l.geom;
+    covered = covered ? unionGeom(covered, l.geom) : l.geom;
   }
   return mergeSameColour(visible.reverse());
 }

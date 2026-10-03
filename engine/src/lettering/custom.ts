@@ -1,7 +1,7 @@
 /// <reference path="./opentype.d.ts" />
 import { init as initStitch } from "@stitchables/stitchjs";
 import * as opentype from "opentype.js";
-import { branchToStrip, edgesOf, skeletonBranches, stripPolygon, type Branch } from "../autodigitize/spine";
+import { LETTERING_STROKES, median, strokePlan } from "../autodigitize/strokes";
 import { polygonFromRings, polygonsOf, ringsOf, unionAll, type Poly } from "../geom";
 import { DEFAULT_FILL_PARAMS, DEFAULT_SATIN_PARAMS, type Pt } from "../model";
 import { stripWidths } from "./satin";
@@ -24,12 +24,7 @@ import type { LetteringWarning, PlacedElement, PlacedGlyph, ShapeContext, Typefa
 export const CUSTOM_MIN_HEIGHT_MM = 6;
 export const RUN_MAX_WIDTH_MM = 1;
 export const SATIN_MAX_WIDTH_MM = 7;
-/** Widest point (mm) a skeleton-driven shape may reach before it is filled instead. */
-const PEAK_MAX_MM = 9;
-const MIN_ELONGATION = 1.8;
-const MIN_COVERAGE = 0.75;
 const MIN_AREA_MM2 = 0.15;
-const MIN_RUN_MM = 1.2;
 const FLATTEN_MM = 0.05;
 
 /** Needed once before laying out custom fonts: loads the straight-skeleton WASM. */
@@ -235,12 +230,6 @@ function outlinePolygons(rings: Pt[][]): Poly[] {
 // Polygon -> stitch elements
 // ---------------------------------------------------------------------------------------------
 
-const pathLen = (pts: readonly Pt[]): number => pts.reduce((n, p, i) => (i ? n + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
-const median = (a: number[]): number => {
-  const s = [...a].sort((x, y) => x - y);
-  return s.length ? s[Math.floor(s.length / 2)] : 0;
-};
-
 function fillOf(part: Poly): PlacedElement {
   const { shell, holes } = ringsOf(part);
   return {
@@ -276,64 +265,11 @@ function runFrom(path: Pt[], closed: boolean): PlacedElement {
 
 /** Elements for one polygon part (solid area without touching others). */
 export function partElements(part: Poly): PlacedElement[] {
-  const area = part.getArea();
-  if (area < MIN_AREA_MM2) return [];
-  const perimeter = part.getLength();
-  const meanWidth = (2 * area) / Math.max(perimeter, 1e-6);
-  const branches = skeletonBranches(part);
-  if (!branches) return [fillOf(part)];
-
-  let peak = 0;
-  let spine = 0;
-  for (const b of branches) {
-    peak = Math.max(peak, 2 * Math.max(...b.half));
-    spine += pathLen(b.pts.map((p) => [p[0], p[1]] as Pt));
-  }
-  // Wide, blobby (dots, bowls of bold letters) or very short shapes are filled.
-  if (peak > PEAK_MAX_MM || spine / Math.max(meanWidth, 1e-6) < MIN_ELONGATION) return [fillOf(part)];
-
-  const edges = edgesOf(part);
-  const strips: Pt[][] = [];
-  const runs: { path: Pt[]; closed: boolean; b: Branch }[] = [];
-  for (const b of branches) {
-    const w = 2 * median(b.half);
-    if (w < RUN_MAX_WIDTH_MM) {
-      const path = b.pts.map((p) => [p[0], p[1]] as Pt);
-      if (pathLen(path) >= MIN_RUN_MM || branches.length === 1) runs.push({ path, closed: b.closed, b });
-    } else {
-      const s = branchToStrip(b, edges);
-      if (!s) continue;
-      // Rays can hit the outline sooner than the skeleton's radius suggests (serifs, junction mouths).
-      if (median(stripWidths(s)) < RUN_MAX_WIDTH_MM * 0.9) {
-        const path = b.pts.map((p) => [p[0], p[1]] as Pt);
-        if (pathLen(path) >= MIN_RUN_MM) runs.push({ path, closed: b.closed, b });
-      } else strips.push(s);
-    }
-  }
-  if (strips.length === 0 && runs.length === 0) return [fillOf(part)];
-
-  // Coverage check: columns plus a 0.3 mm halo around runs must account for most of the area.
-  const pieces: Poly[] = [];
-  for (const s of strips) {
-    const sp = stripPolygon(s);
-    if (sp && !sp.isEmpty()) pieces.push(sp);
-  }
-  for (const r of runs) {
-    try {
-      pieces.push(polygonFromRings([...r.path, ...r.path.slice(0, -1).reverse()]).buffer(0.35));
-    } catch {
-      /* degenerate run: ignore for coverage */
-    }
-  }
-  let covered = 0;
-  try {
-    covered = pieces.length ? unionAll(pieces).intersection(part).getArea() : 0;
-  } catch {
-    covered = 0; // invalid geometry: be safe and fill
-  }
-  if (covered / area < MIN_COVERAGE) return [fillOf(part)];
-
-  return [...strips.map(satinFrom), ...runs.map((r) => runFrom(r.path, r.closed))];
+  if (part.getArea() < MIN_AREA_MM2) return [];
+  // Per-stroke classification lives in autodigitize/strokes.ts (shared with auto-digitizing).
+  const plan = strokePlan(part, LETTERING_STROKES);
+  if (!plan) return [fillOf(part)];
+  return [...plan.satins.map((s) => satinFrom(s.strip)), ...plan.runs.map((r) => runFrom(r.path, r.closed))];
 }
 
 /** Elements for a whole glyph outline (rings in mm, y down). */

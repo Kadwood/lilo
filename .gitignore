@@ -8,3 +8,11 @@ target/
 data/fonts/*
 !data/fonts/README.md
 .claude/
+# signing secrets — never commit
+*.p8
+*.p12
+*.pem
+*.key
+
+# local-only test designs and brand assets (never published)
+private/

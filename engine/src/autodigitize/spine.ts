@@ -1,5 +1,5 @@
 import { Geometry } from "@stitchables/stitchjs";
-import { polygonFromRings, ringsOf, type Poly } from "../geom";
+import { intersectionArea, polygonFromRings, polygonal, ringsOf, unionAll, type Poly } from "../geom";
 import type { Pt } from "../model";
 
 /**
@@ -185,7 +185,7 @@ const norm = (x: number, y: number): V2 => {
 };
 
 /** Re-sample a polyline so no segment exceeds `maxSeg` (linear in position and half-width). */
-function subdivide(pts: V2[], half: number[], maxSeg: number): { pts: V2[]; half: number[] } {
+export function subdivide(pts: V2[], half: number[], maxSeg: number): { pts: V2[]; half: number[] } {
   const op: V2[] = [pts[0]];
   const oh: number[] = [half[0]];
   for (let i = 1; i < pts.length; i++) {
@@ -318,8 +318,10 @@ export function stripPolygon(strip: readonly Pt[]): Poly | null {
   const ring = [...left, ...right.reverse()];
   if (ring.length < 3) return null;
   try {
-    const p = polygonFromRings(ring);
-    return p.isValid() ? p : p.buffer(0);
+    // A strip can self-intersect on tight bends; repair it. The repaired shape may be a MultiPolygon
+    // (or empty), which is fine: every consumer unions strips through geom.ts helpers.
+    const p = polygonal(polygonFromRings(ring));
+    return p.isEmpty() ? null : p;
   } catch {
     return null;
   }
@@ -354,15 +356,17 @@ export function satinColumns(poly: Poly): SatinColumns | null {
     for (let i = 1; i < b.pts.length; i++) spineLength += Math.hypot(b.pts[i][0] - b.pts[i - 1][0], b.pts[i][1] - b.pts[i - 1][1]);
   }
   if (strips.length === 0) return null;
-  let union: Poly | null = null;
+  // One cascaded union over all strips. Pairwise `union` would feed a possible GeometryCollection
+  // result back into the next overlay (see `polygonal` in geom.ts); unionAll repairs and flattens.
+  const pieces: Poly[] = [];
   for (const s of strips) {
     const sp = stripPolygon(s);
-    if (!sp || sp.isEmpty()) continue;
-    union = union ? union.union(sp) : sp;
+    if (sp && !sp.isEmpty()) pieces.push(sp);
   }
-  if (!union) return null;
-  const covered = union.intersection(poly).getArea();
-  return { strips, coverage: Math.min(1, covered / poly.getArea()), spineLengthMm: spineLength, maxWidthMm: 2 * maxHalf };
+  if (pieces.length === 0) return null;
+  const covered = intersectionArea(unionAll(pieces), poly);
+  const area = poly.getArea();
+  return { strips, coverage: area > 0 ? Math.min(1, covered / area) : 0, spineLengthMm: spineLength, maxWidthMm: 2 * maxHalf };
 }
 
 /** Centre-line paths (one per branch) for hairline shapes. */
