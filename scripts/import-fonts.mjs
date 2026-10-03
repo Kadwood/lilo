@@ -158,7 +158,8 @@ async function fetchFonts() {
     throw new Error(`Checksum mismatch for ${FONTS_REPO}@${FONTS_COMMIT.slice(0, 7)}: expected ${FONTS_TARBALL_SHA256}, got ${digest}. Refusing to use it.`);
   }
   writeFileSync(tgz, body);
-  execFileSync("tar", ["xzf", tgz, "--strip-components=1", "-C", dir]);
+  // Relative paths with cwd: GNU tar on Windows reads "D:\\..." as a remote host "D".
+  execFileSync("tar", ["xzf", "fonts.tgz", "--strip-components=1"], { cwd: dir });
   rmSync(tgz);
   return join(dir, "src");
 }
