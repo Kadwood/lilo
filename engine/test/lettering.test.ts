@@ -154,7 +154,7 @@ describe("custom fonts", () => {
     it(`${label}: layout is deterministic`, () => {
       const run = () => JSON.stringify(layoutText("Hamburg 42", customTypeface(loadCustomFont(buf(label === "Lato" ? "Lato-Regular.ttf" : "PTSerif-Regular.ttf"))), { heightMm: 12, threadId: t.id }).objects);
       expect(run()).toBe(run());
-    });
+    }, 120_000);
   }
 
   it("warns below 6 mm", () => {

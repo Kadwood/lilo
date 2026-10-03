@@ -1,3 +1,4 @@
+/// <reference path="./opentype.d.ts" />
 import { init as initStitch } from "@stitchables/stitchjs";
 import * as opentype from "opentype.js";
 import { branchToStrip, edgesOf, skeletonBranches, stripPolygon, type Branch } from "../autodigitize/spine";
