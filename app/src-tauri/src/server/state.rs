@@ -7,7 +7,7 @@ use crate::server::jobs::JobQueue;
 use crate::server::pairing::Pairing;
 use serde::Serialize;
 use std::sync::atomic::AtomicBool;
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 use std::time::Instant;
 use tokio::sync::RwLock;
 

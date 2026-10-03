@@ -11,6 +11,7 @@
   --err: var(--danger);
   font-family: var(--font-sans);
   font-size: 14px;
+  height: 100%;
 }
 
 .link-root, .link-root * {
