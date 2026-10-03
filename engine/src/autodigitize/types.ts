@@ -32,6 +32,14 @@ export interface AutoDigitizeOptions {
   /** Longest side the image is downscaled to before processing. Default 1200. */
   maxImageSide: number;
   hoop?: Hoop;
+  /**
+   * Narrowest satin column (mm). Strokes thinner than this (serif and Didone hairlines) are sewn as a
+   * running stitch along their centre; thicker stems of the same letter stay satin. Default 1; a
+   * machine that sews clean 0.8 mm columns can go lower.
+   */
+  minSatinWidthMm?: number;
+  /** Centre-line (running stitch) pieces shorter than this (mm) are dropped. Default 1.5. */
+  minRunMm?: number;
   /** Overrides for the fill stitch settings of generated fills. */
   fill?: Partial<FillParams>;
 }
