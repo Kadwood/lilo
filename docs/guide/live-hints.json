@@ -1,0 +1,83 @@
+[
+  {
+    "id": "outside-hoop",
+    "signal": "plan:outside-hoop",
+    "severity": "care",
+    "message": "Your design is bigger than the hoop, so the machine cannot sew all of it. Pick a bigger hoop or shrink the design.",
+    "fix": { "label": "Pick the smallest hoop that fits", "action": "smallest-hoop" },
+    "guideId": "warnings-explained#outside-the-hoop"
+  },
+  {
+    "id": "density",
+    "signal": "plan:density",
+    "severity": "care",
+    "message": "Some spots have too many stitches close together. Thread may break or the cloth may pucker. Loosen the spacing.",
+    "fix": { "label": "Loosen spacing by 15 percent", "action": "loosen-spacing" },
+    "guideId": "warnings-explained#too-dense"
+  },
+  {
+    "id": "stitch-too-long",
+    "signal": "plan:stitch-too-long",
+    "severity": "info",
+    "message": "Some stitches were longer than 12 mm, so Lilo split them. The file is safe, but a tighter fill pattern looks neater.",
+    "guideId": "warnings-explained#a-stitch-was-too-long"
+  },
+  {
+    "id": "object-failed",
+    "signal": "plan:object-failed",
+    "severity": "care",
+    "message": "A shape made no stitches. Check that it has a thread and a real size.",
+    "guideId": "warnings-explained#a-shape-made-no-stitches"
+  },
+  {
+    "id": "colour-changes",
+    "signal": "colour-changes",
+    "severity": "info",
+    "threshold": 8,
+    "message": "This design has many colour changes. Each one is a stop to swap thread. Group or merge close colours.",
+    "fix": { "label": "Group by colour", "action": "group-by-colour" },
+    "guideId": "fewer-colour-changes"
+  },
+  {
+    "id": "stitch-count",
+    "signal": "stitch-count",
+    "severity": "info",
+    "threshold": 30000,
+    "message": "This is a big design, over 30,000 stitches. Expect a long sew and a large file.",
+    "guideId": "warnings-explained#a-high-stitch-count-or-long-sewing-time"
+  },
+  {
+    "id": "sewing-time",
+    "signal": "sewing-time",
+    "severity": "info",
+    "threshold": 60,
+    "message": "This will take over an hour to sew at a normal machine speed. Plan for it, or make the design smaller.",
+    "guideId": "warnings-explained#a-high-stitch-count-or-long-sewing-time"
+  },
+  {
+    "id": "tiny-region",
+    "signal": "tiny-region",
+    "severity": "care",
+    "threshold": 1,
+    "message": "Some filled shapes are under 1 mm wide. That is too small to sew clean. Remove them or make them bigger.",
+    "fix": { "label": "Remove tiny shapes", "action": "delete-tiny" },
+    "guideId": "warnings-explained#tiny-regions"
+  },
+  {
+    "id": "satin-too-wide",
+    "signal": "satin-too-wide",
+    "severity": "care",
+    "threshold": 8,
+    "message": "A satin column is wider than 8 mm. Long stitches can snag. Turn on splitting so it sews in two halves.",
+    "fix": { "label": "Split above 8 mm", "action": "enable-split" },
+    "guideId": "satin-tips#split-above"
+  },
+  {
+    "id": "letters-small",
+    "signal": "letters-small",
+    "severity": "care",
+    "message": "Your letters are too small to sew clean with this thread. Make them taller, or switch to finer 60 wt thread.",
+    "fix": { "label": "Use 60 wt thread", "action": "set-60wt" },
+    "guideId": "small-letters"
+  }
+]

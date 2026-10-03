@@ -4,6 +4,7 @@ import { useHoop } from "../hoops/autoPick";
 import { fmtSize } from "../hoops/format";
 import { formatDuration } from "../state/player";
 import { useEditor } from "../state/store";
+import { Hint } from "../guide/Hint";
 import { useResolvedSewing } from "./useSewing";
 
 /** The threads in the order they are sewn: one entry per colour block (a thread that comes back is listed again). */
@@ -112,6 +113,7 @@ export function BeforeYouSew() {
     <section className="before-sew" aria-labelledby={`${uid}-title`}>
       <div className="before-sew-head">
         <h3 id={`${uid}-title`}>Before you sew</h3>
+        <Hint id="sewing.checklist" />
         <span className="muted small" aria-live="polite">
           {done} of {all.length} ticked
         </span>

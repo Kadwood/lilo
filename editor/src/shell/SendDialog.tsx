@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePreparedPes, WarningList } from "./ExportDialog";
 import { BeforeYouSew } from "../sewing/BeforeYouSew";
+import { Hint } from "../guide/Hint";
+import { markExported } from "../guide/guideStore";
 import { useEditor } from "../state/store";
 import { getPlatform, type PlatformMachine, type SendProgress } from "../platform";
 import type { Origin } from "@lilo/engine/light";
@@ -62,6 +64,7 @@ export function SendDialog({ onClose }: { onClose: () => void }) {
       const result = await getPlatform().sendToMachine(selected, `${label}.pes`, prepared.pes, {
         onProgress: (progress) => setPhase({ kind: "sending", progress }),
       });
+      if (result.state === "done") markExported();
       setPhase(
         result.state === "done"
           ? { kind: "done", storedAs: result.storedAs }
@@ -89,7 +92,9 @@ export function SendDialog({ onClose }: { onClose: () => void }) {
         )}
         {machines && machines.length > 0 && (
           <label className="field">
-            Machine
+            <span className="field-row">
+              Machine <Hint id="send.machine" />
+            </span>
             <select value={selected} onChange={(e) => setSelected(e.target.value)} disabled={busy}>
               {machines.map((m) => (
                 <option key={m.ip} value={m.ip}>
@@ -111,11 +116,13 @@ export function SendDialog({ onClose }: { onClose: () => void }) {
         {phase.kind === "error" && <p className="error">{phase.message}</p>}
 
         <div className="dialog-actions">
+          <Hint id="send.search-network" />
           <button onClick={scan} disabled={busy || scanning}>
             {scanning ? "Searching…" : "Search network"}
           </button>
           <span className="spacer" />
           <button onClick={onClose}>Close</button>
+          <Hint id="send.send" />
           <button className="primary" onClick={send} disabled={busy || !selected || !prepared}>
             Send
           </button>

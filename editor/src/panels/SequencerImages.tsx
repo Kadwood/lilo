@@ -1,5 +1,6 @@
 import { IMPORT_EXTENSIONS } from "../io/decode";
 import { getPlatform } from "../platform";
+import { Hint } from "../guide/Hint";
 import { useEditor } from "../state/store";
 
 /** Sequencer > Images: pictures behind the shapes to trace over. Add, reorder, fade, lock. */
@@ -18,7 +19,12 @@ export function SequencerImages() {
 
   return (
     <div className="seq-images">
-      <button onClick={() => void add()}>Add image…</button>
+      <div className="with-hint">
+        <button onClick={() => void add()}>Add image…</button>
+        <Hint id="seq.add-image" />
+        <Hint id="seq.image-opacity" />
+        <Hint id="seq.image-width" />
+      </div>
       <p className="muted small">Reference images sit behind your shapes. Drag one on the canvas to move it, unless it is locked.</p>
       {refImages.length === 0 && <p className="muted small">No images yet.</p>}
       <ul className="image-list">

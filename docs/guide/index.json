@@ -1,0 +1,3310 @@
+{
+ "version": 1,
+ "sections": [
+  {
+   "id": "getting-started",
+   "title": "Getting started",
+   "order": 1,
+   "blurb": "Install Lilo, make a first design and learn your way round."
+  },
+  {
+   "id": "digitizing",
+   "title": "Digitizing",
+   "order": 2,
+   "blurb": "Turn pictures into stitches, or draw your own."
+  },
+  {
+   "id": "stitches",
+   "title": "Stitches",
+   "order": 3,
+   "blurb": "Run types, fills, underlay and your sewing setup."
+  },
+  {
+   "id": "lettering",
+   "title": "Lettering",
+   "order": 4,
+   "blurb": "Monograms, names and your own fonts."
+  },
+  {
+   "id": "threads",
+   "title": "Threads",
+   "order": 5,
+   "blurb": "Brands, matching and the spools you own."
+  },
+  {
+   "id": "preview",
+   "title": "Preview",
+   "order": 6,
+   "blurb": "Watch the design sew before the machine does."
+  },
+  {
+   "id": "sending",
+   "title": "Sending",
+   "order": 7,
+   "blurb": "Wi-Fi, USB sticks, formats and troubleshooting."
+  },
+  {
+   "id": "tools",
+   "title": "Other tools",
+   "order": 8,
+   "blurb": "Pixel art, the converter and opening files."
+  },
+  {
+   "id": "projects",
+   "title": "Projects",
+   "order": 9,
+   "blurb": "Saving, autosave and version history."
+  },
+  {
+   "id": "reference",
+   "title": "Reference",
+   "order": 10,
+   "blurb": "Shortcuts, glossary and file formats."
+  },
+  {
+   "id": "help",
+   "title": "Help",
+   "order": 11,
+   "blurb": "Fix sew-out problems, FAQ and how to report a bug."
+  }
+ ],
+ "pages": [
+  {
+   "id": "welcome",
+   "title": "Welcome to Lilo",
+   "summary": "What Lilo does, who it is for, and how to use this guide.",
+   "section": "getting-started",
+   "order": 1,
+   "keywords": [
+    "start",
+    "welcome",
+    "about",
+    "what is lilo",
+    "overview",
+    "guide",
+    "help"
+   ],
+   "appContext": [
+    "view.home",
+    "panel.help"
+   ],
+   "status": "ready",
+   "words": 330,
+   "headings": [
+    {
+     "level": 2,
+     "text": "What you can make",
+     "slug": "what-you-can-make"
+    },
+    {
+     "level": 2,
+     "text": "How this guide works",
+     "slug": "how-this-guide-works"
+    },
+    {
+     "level": 2,
+     "text": "Four helpers inside the app",
+     "slug": "four-helpers-inside-the-app"
+    },
+    {
+     "level": 2,
+     "text": "Words you do not know",
+     "slug": "words-you-do-not-know"
+    }
+   ],
+   "body": "# Welcome to Lilo\n\nLilo turns a picture, a word or your own drawing into **stitches**, the tiny thread moves an embroidery machine sews. Then it sends the design to your machine.\n\nSay you want your logo on the inside of a suit jacket. You open Lilo, drop in the logo, press one button and watch it sew itself on screen. Then you send it to the machine over Wi-Fi.\n\nYou do not need an account. Lilo does not upload your designs anywhere.\n\n## What you can make\n\n- A **picture** stitched from a logo or sketch. Read [Turn a picture into stitches](auto-digitize.md).\n- A **monogram**, like \"JK\" on a suit lining. Read [Lettering](lettering-fonts.md).\n- A **crest** or patch drawn from scratch. Read [Drawing tools](drawing-tools.md).\n- **Pixel art** in a cross-stitch style. Read [Pixel art](pixel-art.md).\n- A **converted file**. Read [The converter](converter.md).\n\n## How this guide works\n\n- **New here?** Start with [Your first design in five minutes](first-design.md).\n- **Stuck on a button?** Look for the small round **?** next to it. It tells you what the control does, when to change it and a typical value. It also links to the full page.\n- **Looking for something?** Open Help with the **Help** button at the top, or press **⌘?** (**Ctrl+?** on Windows and Linux). Type a word and the pages filter as you type.\n- **Something sewed badly?** Go to [Fixing sew-out problems](sewout-troubleshooting.md).\n\n## Four helpers inside the app\n\n- The **workflow strip** at the top of the editor shows five steps and ticks them off for you. Read [Helpers inside Lilo](learning-aids.md).\n- The **tour** walks you through your first design. You can replay it from Help.\n- **Hints** are the **?** buttons.\n- The **warnings tray** tells you, calmly, when something might sew badly, and offers a fix.\n\n## Words you do not know\n\nEmbroidery has its own words. Each one is explained the first time it appears. You can also look any word up in the [Glossary](glossary.md).\n"
+  },
+  {
+   "id": "install",
+   "title": "Install Lilo on Mac, Windows or Linux",
+   "summary": "Download Lilo, open it the first time, and get past the Windows SmartScreen and Linux AppImage prompts.",
+   "section": "getting-started",
+   "order": 2,
+   "keywords": [
+    "install",
+    "download",
+    "mac",
+    "macos",
+    "windows",
+    "smartscreen",
+    "linux",
+    "appimage",
+    "deb",
+    "update",
+    "dmg"
+   ],
+   "appContext": [
+    "view.home"
+   ],
+   "status": "ready",
+   "words": 301,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Mac",
+     "slug": "mac"
+    },
+    {
+     "level": 2,
+     "text": "Windows",
+     "slug": "windows"
+    },
+    {
+     "level": 2,
+     "text": "Linux",
+     "slug": "linux"
+    },
+    {
+     "level": 2,
+     "text": "Updates",
+     "slug": "updates"
+    },
+    {
+     "level": 2,
+     "text": "Next step",
+     "slug": "next-step"
+    }
+   ],
+   "body": "# Install Lilo on Mac, Windows or Linux\n\nGet the newest version from the **Releases page** on the Lilo GitHub project (github.com/Kadwood/lilo/releases/latest). Every release has a `SHA256SUMS` file. It lets you check that your download was not changed on the way.\n\n## Mac\n\nYou need macOS 13 or newer. Apple Silicon and Intel Macs both work.\n\n1. Download `Lilo_<version>_universal.dmg`.\n2. Open it and drag **Lilo** onto **Applications**.\n3. Open Lilo. Lilo is signed and notarized by Apple. The first time, macOS says it was downloaded from the internet. Click **Open**.\n4. The first time you look for machines on your network, macOS asks to allow **Local Network** access. Say yes. Without it Lilo cannot find your sewing machine.\n\n## Windows\n\nYou need 64-bit Windows.\n\n1. Download `Lilo_<version>_x64-setup.exe` and run it.\n2. Windows may show a blue box that says **Windows protected your PC**. That is SmartScreen. It appears because the Lilo installer is not code-signed yet. It does not mean the file is bad.\n3. Click **More info**, then **Run anyway**.\n\nThe installer works for your user only. You do not need admin rights.\n\n## Linux\n\nYou need 64-bit Linux. Pick one file.\n\n- **AppImage:** download `Lilo_<version>_amd64.AppImage`. Make it runnable with `chmod +x Lilo_*.AppImage`, then double-click it or run it from a terminal. On newer Ubuntu you also need FUSE 2. Install it with `sudo apt install libfuse2`.\n- **Deb package:** download `Lilo_<version>_amd64.deb` and run `sudo apt install ./Lilo_*.deb`.\n\n## Updates\n\nLilo checks the Releases page once a day when it starts. If there is a new version, a banner offers **Install and restart**. Lilo only talks to that page. You can turn the check off, or run it by hand, under **Lilo Link**, then **Settings**, then **Updates**.\n\n## Next step\n\nOpen Lilo and follow [Your first design in five minutes](first-design.md).\n"
+  },
+  {
+   "id": "first-design",
+   "title": "Your first design in five minutes",
+   "summary": "Turn a logo into stitches, check it, and export a file. No embroidery knowledge needed.",
+   "section": "getting-started",
+   "order": 3,
+   "keywords": [
+    "first",
+    "tutorial",
+    "quick start",
+    "logo",
+    "picture",
+    "five minutes",
+    "begin",
+    "stepper",
+    "tour"
+   ],
+   "appContext": [
+    "view.home",
+    "panel.stepper",
+    "panel.digitize"
+   ],
+   "status": "ready",
+   "words": 350,
+   "headings": [
+    {
+     "level": 2,
+     "text": "1. Get a design",
+     "slug": "1-get-a-design"
+    },
+    {
+     "level": 2,
+     "text": "2. Size it and pick a hoop",
+     "slug": "2-size-it-and-pick-a-hoop"
+    },
+    {
+     "level": 2,
+     "text": "3. Tell Lilo what you are sewing on",
+     "slug": "3-tell-lilo-what-you-are-sewing-on"
+    },
+    {
+     "level": 2,
+     "text": "4. Preview",
+     "slug": "4-preview"
+    },
+    {
+     "level": 2,
+     "text": "5. Send or export",
+     "slug": "5-send-or-export"
+    },
+    {
+     "level": 2,
+     "text": "Watch the workflow strip",
+     "slug": "watch-the-workflow-strip"
+    },
+    {
+     "level": 2,
+     "text": "Before you sew for real",
+     "slug": "before-you-sew-for-real"
+    }
+   ],
+   "body": "# Your first design in five minutes\n\nYou will turn a logo into stitches. Use any simple picture with flat colours, like the Kadwood hibiscus.\n\n![The Home screen with the six starting cards](screenshots/home-start.png)\n\n## 1. Get a design\n\n1. On **Home**, click **Digitize a picture…**.\n2. Choose a PNG, JPG, WEBP or SVG file.\n3. Watch Lilo trace the picture and lay stitches on screen. This takes a few seconds.\n\n**Digitize** means \"turn a picture into stitches\". Lilo does it for you.\n\n## 2. Size it and pick a hoop\n\nThe **hoop** is the frame that holds the cloth tight. Your design must fit inside it.\n\n1. In the left panel, set **Width** in millimetres. A logo on a suit lining often works at 40 to 80 mm.\n2. Check the **hoop** chip. If your design sticks out of the frame, press **Smallest hoop that fits**, or choose your machine's hoop. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## 3. Tell Lilo what you are sewing on\n\nOpen the **Sewing setup** card on the right. Pick the **fabric**, the **thread weight** and the **quality**. Lilo adjusts spacing and underlay for you. Read [Sewing setup](sewing-setup.md).\n\n## 4. Preview\n\nPress **Play** in the stitch player under the canvas. The needle sews the design stitch by stitch. It stops at each colour change and tells you which thread to swap in.\n\n## 5. Send or export\n\n- Press **Send** to send it to a Brother or Baby Lock machine over Wi-Fi. Read [Send a design](send-a-design.md).\n- Press **Export** to save a file for a USB stick or another machine. Read [Choosing a format](export-formats.md).\n\n## Watch the workflow strip\n\nThe strip at the top of the editor has five steps: **Get a design**, **Size and hoop**, **Stitches**, **Preview** and **Send**. Each ticks itself off when you finish it. Click a step to open the right panel and see a tip.\n\n## Before you sew for real\n\nAlways sew a test on a scrap of the same cloth. Lilo's numbers are good starting points, not promises. If the test puckers or leaves gaps, go to [Fixing sew-out problems](sewout-troubleshooting.md).\n"
+  },
+  {
+   "id": "screen-tour",
+   "title": "The screen at a glance",
+   "summary": "A map of the editor: top bar, workflow strip, left panel, canvas, toolbar, player and the right-hand column.",
+   "section": "getting-started",
+   "order": 4,
+   "keywords": [
+    "screen",
+    "layout",
+    "interface",
+    "panel",
+    "canvas",
+    "toolbar",
+    "sequencer",
+    "top bar",
+    "map"
+   ],
+   "appContext": [
+    "view.editor",
+    "panel.toolbar"
+   ],
+   "status": "ready",
+   "words": 318,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Top of the window",
+     "slug": "top-of-the-window"
+    },
+    {
+     "level": 2,
+     "text": "Left panel",
+     "slug": "left-panel"
+    },
+    {
+     "level": 2,
+     "text": "The canvas",
+     "slug": "the-canvas"
+    },
+    {
+     "level": 2,
+     "text": "The toolbar",
+     "slug": "the-toolbar"
+    },
+    {
+     "level": 2,
+     "text": "The stitch player",
+     "slug": "the-stitch-player"
+    },
+    {
+     "level": 2,
+     "text": "Right column",
+     "slug": "right-column"
+    },
+    {
+     "level": 2,
+     "text": "The warnings tray",
+     "slug": "the-warnings-tray"
+    }
+   ],
+   "body": "# The screen at a glance\n\n![The editor with each area numbered](screenshots/editor-overview.png)\n\nThe editor has the same layout every time. Here is where things live.\n\n## Top of the window\n\n- **Views** (Home, Editor, Pixel art, Converter, Lilo Link) switch between the parts of the app. **Help** opens this guide.\n- The **top bar** holds the project menu, the project name, the **hoop** chooser, a search box (**⌘K**), **Export** and **Send**.\n- The **workflow strip** shows your five steps. Read [Helpers inside Lilo](learning-aids.md).\n\n## Left panel\n\nThis panel changes with what you have selected.\n\n- **Nothing selected:** **Auto-digitize** settings and the hoop.\n- **A shape selected:** its size, colour, stitch type and fill settings.\n- **Text tool or a word selected:** the lettering panel.\n- **Click to stitch tool:** the regions panel.\n\n## The canvas\n\nThe big middle area. It shows your hoop, a grid and your design. Zoom with scroll or pinch. Pan by holding **Space** and dragging. The small checkboxes in the corner switch the **Realistic**, **Grid**, **Reference** and **Jumps** views.\n\nWhen you select a shape, a small **shape bar** floats above it with actions like **Reshape**, **Cut hole**, **Knife** and **Duplicate**.\n\n## The toolbar\n\nThe floating bar at the bottom holds the drawing tools, **Undo**, **Redo** and your **drawing colour**. Read [Drawing tools](drawing-tools.md).\n\n## The stitch player\n\nUnder the canvas. **Play**, scrub and change the speed. It also shows the totals: stitches, size, colour changes and sewing time. Read [The stitch player](stitch-player.md).\n\n## Right column\n\n- **Sewing setup:** fabric, thread weight and quality. Read [Sewing setup](sewing-setup.md).\n- **Sequencer:** the order your shapes are sewn in. It has tabs for objects, colours, images and your threads. Read [The sequencer](sequencer.md).\n\n## The warnings tray\n\nWhen Lilo spots something that may sew badly, a small tray appears in the right-hand column, under the Sewing setup card. It is calm and never blocks you. Read [What the warnings mean](warnings-explained.md).\n"
+  },
+  {
+   "id": "basics-materials",
+   "title": "Embroidery basics: stabiliser, hoop, thread and bobbin",
+   "summary": "The four physical things every sew-out needs, explained from scratch.",
+   "section": "getting-started",
+   "order": 5,
+   "keywords": [
+    "stabiliser",
+    "stabilizer",
+    "backing",
+    "hoop",
+    "thread",
+    "bobbin",
+    "needle",
+    "basics",
+    "cut-away",
+    "tear-away",
+    "beginner"
+   ],
+   "appContext": [
+    "panel.sewing-setup",
+    "dialog.before-you-sew"
+   ],
+   "status": "ready",
+   "words": 453,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Stabiliser",
+     "slug": "stabiliser"
+    },
+    {
+     "level": 2,
+     "text": "Hoop",
+     "slug": "hoop"
+    },
+    {
+     "level": 2,
+     "text": "Thread",
+     "slug": "thread"
+    },
+    {
+     "level": 2,
+     "text": "Bobbin",
+     "slug": "bobbin"
+    },
+    {
+     "level": 2,
+     "text": "Needle",
+     "slug": "needle"
+    },
+    {
+     "level": 2,
+     "text": "Next step",
+     "slug": "next-step"
+    }
+   ],
+   "body": "# Embroidery basics: stabiliser, hoop, thread and bobbin\n\nAn embroidery machine does not move the cloth like a normal sewing machine. It holds the cloth still in a frame and moves the frame under the needle. These four things make that work.\n\n## Stabiliser\n\n**Stabiliser** is a sheet of backing you put under the cloth. Think of it as the paper you draw on when you do not want a thin page to crumple. Thousands of stitches pull on cloth. Without a backing, the cloth bunches up around the design.\n\n- **Cut-away** stays in the garment. You trim around the design. It is the safe choice for stretchy cloth and anything you wash a lot.\n- **Tear-away** rips off after sewing. It suits stable, tightly woven cloth.\n- **No-show mesh** is a soft cut-away for thin cloth like a shirt or a suit lining. It does not scratch and does not show through.\n- **Water-soluble topping** sits on top of fluffy cloth like towel, so stitches do not sink into the pile.\n\nThe **Sewing setup** card tells you which type fits your fabric. Read [Sewing setup presets](sewing-presets.md).\n\n## Hoop\n\nThe **hoop** is the frame that holds cloth and stabiliser flat and tight. It has two rings. You press the cloth between them and tighten a screw.\n\nThe machine can only sew inside the hoop. Every hoop has a **sewing area**, a little smaller than the frame itself. Lilo draws that area on the canvas and warns you if your design sticks out. Read [Sizing and hoops](sizing-and-hoops.md).\n\nA good hoop job feels like a drum. The cloth is tight but not stretched. Stretched cloth springs back after sewing and puckers the design.\n\n## Thread\n\nThe **top thread** is what you see. Most embroidery uses **40 wt** thread. The \"wt\" number says how thin it is. A bigger number means thinner thread. **60 wt** is finer. It lets you sew smaller, crisper details, like tiny letters.\n\nThread comes in **brands** and each brand has its own colour codes. Lilo knows many. Read [Thread brands and matching](thread-brands-matching.md).\n\n## Bobbin\n\nThe **bobbin** is a small spool of thread under the needle plate. It makes the back of the stitch. Embroidery bobbin thread is usually thinner and often white or black.\n\nA good sew-out shows only a little bobbin thread on the front. If you see a lot of bobbin thread, the top thread is too tight. Read [Fixing sew-out problems](sewout-troubleshooting.md).\n\n## Needle\n\nUse a fresh needle. A dull needle shreds thread and punches holes. Lilo's Sewing setup suggests a size for your fabric and thread, like **75/11** for most cloth or **70/10** for a thin lining.\n\n## Next step\n\nRead [Stitch terms: density, pull compensation and underlay](basics-stitch-terms.md).\n"
+  },
+  {
+   "id": "basics-stitch-terms",
+   "title": "Stitch terms: density, pull compensation and underlay",
+   "summary": "Three ideas that decide whether a design looks crisp or messy, with a picture of each.",
+   "section": "getting-started",
+   "order": 6,
+   "keywords": [
+    "density",
+    "pull compensation",
+    "underlay",
+    "spacing",
+    "stitch",
+    "satin",
+    "fill",
+    "terms",
+    "basics"
+   ],
+   "appContext": [
+    "panel.satin",
+    "panel.underlay",
+    "panel.stitching"
+   ],
+   "status": "ready",
+   "words": 304,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Density",
+     "slug": "density"
+    },
+    {
+     "level": 2,
+     "text": "Pull compensation",
+     "slug": "pull-compensation"
+    },
+    {
+     "level": 2,
+     "text": "Underlay",
+     "slug": "underlay"
+    },
+    {
+     "level": 2,
+     "text": "Satin and fill",
+     "slug": "satin-and-fill"
+    }
+   ],
+   "body": "# Stitch terms: density, pull compensation and underlay\n\nThree ideas explain most of the settings in Lilo.\n\n## Density\n\n**Density** is how close the stitches sit to each other. Closer stitches cover the cloth better. Too close, and the needle punches so many holes that the cloth tears or the thread snaps.\n\nLilo measures density as a gap in millimetres. **Smaller gap means denser.** For satin columns with 40 wt thread, 0.40 mm is the usual starting point. Read [Satin tips](satin-tips.md).\n\n## Pull compensation\n\nThread pulls cloth inward as it tightens. A stitched circle ends up a little smaller and narrower than you drew it. **Pull compensation** makes each shape a little bigger on purpose, so it ends up the right size after the pull.\n\n![A satin column drawn at 4 mm, pulled in by the thread, then widened by pull compensation](diagrams/pull-compensation.svg)\n\nStretchy cloth pulls more, so it needs more compensation. Lilo's **Sewing setup** adds extra for knits. Read [Underlay and pull compensation](underlay-and-pull.md).\n\n## Underlay\n\n**Underlay** is a layer of light stitches sewn first, under the pretty stitches. It does two jobs. It holds the cloth to the stabiliser. And it gives the top stitches something to sit on, so they look raised and even.\n\n![Cross-section showing cloth, stabiliser, underlay and top stitches](diagrams/underlay-layers.svg)\n\nYou will not see underlay in a good sew-out. You will notice when it is missing: the design looks flat and thin and the cloth shows through.\n\n## Satin and fill\n\nLilo uses two main stitch types for areas.\n\n- **Satin** is a column of side-to-side stitches. It looks shiny and smooth. It suits letters and borders from about 1.5 to 8 mm wide.\n- **Fill** is rows of stitches that cover a large area. It suits big shapes.\n\n![Satin column next to a fill area](diagrams/satin-vs-fill.svg)\n\nRead [Run stitches versus fills](run-vs-fill.md).\n"
+  },
+  {
+   "id": "learning-aids",
+   "title": "Helpers inside Lilo: tour, strip, hints and warnings",
+   "summary": "How the first-launch tour, the five-step workflow strip, the ? hints and the warnings tray work, and how to turn them off.",
+   "section": "getting-started",
+   "order": 7,
+   "keywords": [
+    "tour",
+    "stepper",
+    "workflow",
+    "hints",
+    "warnings",
+    "tray",
+    "replay",
+    "help",
+    "coach",
+    "tip"
+   ],
+   "appContext": [
+    "panel.stepper",
+    "panel.warnings",
+    "panel.help"
+   ],
+   "status": "ready",
+   "words": 379,
+   "headings": [
+    {
+     "level": 2,
+     "text": "The first-launch tour",
+     "slug": "the-first-launch-tour"
+    },
+    {
+     "level": 2,
+     "text": "The workflow strip",
+     "slug": "the-workflow-strip"
+    },
+    {
+     "level": 2,
+     "text": "Hints",
+     "slug": "hints"
+    },
+    {
+     "level": 2,
+     "text": "The warnings tray",
+     "slug": "the-warnings-tray"
+    },
+    {
+     "level": 2,
+     "text": "Opening Help from anywhere",
+     "slug": "opening-help-from-anywhere"
+    }
+   ],
+   "body": "# Helpers inside Lilo: tour, strip, hints and warnings\n\nLilo has four helpers. All of them are quiet. None of them stops you from working.\n\n## The first-launch tour\n\nThe first time you open Lilo, a friendly host asks what you want to make:\n\n- a **picture**,\n- a drawing **from scratch**,\n- a **monogram**, or\n- an **existing file**.\n\nEach choice shows a few short tips that point at the real buttons. A tip moves on when you do the thing it asks, so you learn by doing. You can **Skip** at any time. Lilo remembers that you finished or skipped, and does not show it again.\n\nTo see it again, open **Help** and press **Replay the tour**.\n\n## The workflow strip\n\nFive steps sit across the top of the editor.\n\n1. **Get a design** ticks when the canvas has something on it.\n2. **Size and hoop** ticks when the design fits the hoop.\n3. **Stitches** ticks when Lilo sees no stitch quality problems.\n4. **Preview** ticks when you have played the stitches or looked at the realistic view.\n5. **Send** ticks when you have exported or sent the design.\n\nClick any step. The panel for that step opens and a small tip card explains what to do.\n\n## Hints\n\nA small round **?** sits next to almost every control. Click it, or tab to it and press Enter. A card shows:\n\n- **What it does** in a few words,\n- **When to change it**,\n- a **typical value**, and\n- a **Read more** link to the full guide page.\n\nPress **Esc** to close it.\n\n## The warnings tray\n\nWhen Lilo spots something that may sew badly, a note appears in a small tray in the right-hand column, under the Sewing setup card. For example: your design is bigger than the hoop, or your letters are too small for the thread. Each note has a button that fixes it in one click, or a link to read more. You can dismiss a note. It stays dismissed until the problem changes.\n\nRead [What the warnings mean](warnings-explained.md).\n\n## Opening Help from anywhere\n\n- Click **Help** at the top of the window.\n- Press **⌘?** on Mac or **Ctrl+?** on Windows and Linux.\n- Click any **?** and then **Read more**.\n"
+  },
+  {
+   "id": "auto-digitize",
+   "title": "Turn a picture into stitches",
+   "summary": "Open a logo or sketch and let Lilo trace it, pick thread colours and lay stitches.",
+   "section": "digitizing",
+   "order": 1,
+   "keywords": [
+    "auto digitize",
+    "picture",
+    "logo",
+    "image",
+    "png",
+    "jpg",
+    "svg",
+    "trace",
+    "colours",
+    "background",
+    "region",
+    "digitize"
+   ],
+   "appContext": [
+    "panel.digitize"
+   ],
+   "status": "ready",
+   "words": 431,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Open a picture",
+     "slug": "open-a-picture"
+    },
+    {
+     "level": 2,
+     "text": "The settings, top to bottom",
+     "slug": "the-settings-top-to-bottom"
+    },
+    {
+     "level": 2,
+     "text": "What Lilo does",
+     "slug": "what-lilo-does"
+    },
+    {
+     "level": 2,
+     "text": "If the result looks wrong",
+     "slug": "if-the-result-looks-wrong"
+    }
+   ],
+   "body": "# Turn a picture into stitches\n\n**Digitizing** means turning a picture into stitch instructions. Lilo can do the whole thing in one go. This is called **Auto digitize**.\n\n## Open a picture\n\nUse **Digitize a picture…** on Home, or **Open image…** in the left panel. You can also drop a PNG, JPG, WEBP or SVG file onto the canvas.\n\nFlat, high-contrast pictures work best: a logo, a crest, a simple drawing. Photos with soft shading make messy embroidery, because thread cannot blend like pixels do.\n\n## The settings, top to bottom\n\n- **Colours** is how many thread colours to use, from 2 to 12. Fewer colours mean fewer thread changes and a faster sew. Start with the number of colours you see.\n- **Size (mm)** is the width and height of the finished design. Leave one box on **auto** and Lilo keeps the shape. Small details drop out below about 80 mm for fine serif logos, so size up if the hairlines vanish.\n- **Smallest region** drops tiny specks. A region smaller than this many square millimetres is merged away. Raise it if you see dust-like dots.\n- **Background** is **Remove** or **Keep**. **Remove** treats the picture's background colour as empty cloth. Choose **Keep** if the background is part of the design.\n- **Thread brand** picks the thread range to match against. Read [Thread brands and matching](thread-brands-matching.md).\n- **Quality**, **Thread weight** and **Fabric** make up the Sewing setup. Read [Standard or Premium](standard-vs-premium.md).\n- **Use my threads** matches colours to the spools you own first. Read [My Threads](my-threads.md).\n\nPress **Digitize** to run it again after you change a setting.\n\n## What Lilo does\n\n1. It shrinks the picture and removes the background.\n2. It reduces the picture to your chosen number of colours.\n3. It snaps each colour to the nearest real thread.\n4. It traces the shapes.\n5. It decides how to stitch each shape. Thin lines become a running stitch. Medium shapes become satin columns. Wide shapes become fills with underlay.\n6. It orders the shapes so the machine jumps as little as possible.\n\nEverything it makes is editable. Select any shape and change it.\n\n## If the result looks wrong\n\n- **Too many colours:** lower **Colours**.\n- **Missing thin lines:** make the design larger, or choose **Premium**, which sews fine strokes as narrow satin.\n- **Messy specks:** raise **Smallest region**.\n- **Wrong colours:** change the thread in the left panel after selecting a shape, or use the **Colours** tab in the sequencer to merge or swap.\n\nWhen you want control over which parts get stitched, use [Click to stitch](click-to-stitch.md).\n"
+  },
+  {
+   "id": "click-to-stitch",
+   "title": "Click to stitch",
+   "summary": "Choose, region by region, which parts of a traced picture get stitched and how.",
+   "section": "digitizing",
+   "order": 2,
+   "keywords": [
+    "click to stitch",
+    "regions",
+    "trace",
+    "manual",
+    "choose",
+    "fill",
+    "outline",
+    "shift-click",
+    "k"
+   ],
+   "appContext": [
+    "tool.clickstitch",
+    "panel.click-to-stitch"
+   ],
+   "status": "ready",
+   "words": 208,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Steps",
+     "slug": "steps"
+    },
+    {
+     "level": 2,
+     "text": "Starting from a bare trace",
+     "slug": "starting-from-a-bare-trace"
+    },
+    {
+     "level": 2,
+     "text": "Tips",
+     "slug": "tips"
+    }
+   ],
+   "body": "# Click to stitch\n\n**Auto digitize** decides everything for you. **Click to stitch** hands you the controls. Lilo traces the picture into **regions**, the coloured areas. You click the ones you want.\n\nUse it when you want the crest's border as satin, the fabric background left alone, and only the centre filled.\n\n## Steps\n\n1. Open an image. Lilo traces it.\n2. Choose the **Click to stitch** tool (press **K**), or press **Click to stitch…** in the left panel.\n3. Pick **fill** or **outline** settings in the panel.\n4. Click a region to stitch it.\n5. To stitch several regions together, **Shift**-click each one, then press **Enter**.\n6. Press **Esc** to leave the tool.\n\nEach click is one undo step. Press **⌘Z** if you do not like it.\n\n## Starting from a bare trace\n\nIf you already used **Digitize**, use the panel's clear button to remove all stitches. You then start from the bare trace and stitch only what you pick.\n\n## Tips\n\n- Stitch the biggest regions first, then the details on top.\n- Choose **outline** for regions thinner than a few millimetres, where a fill would look heavy.\n- You can change a stitched region afterwards. Select it and use the left panel. Read [Editing shapes](editing-shapes.md).\n"
+  },
+  {
+   "id": "drawing-tools",
+   "title": "Drawing tools",
+   "summary": "Every tool in the bottom toolbar, with its key, what it does and when to use it.",
+   "section": "digitizing",
+   "order": 3,
+   "keywords": [
+    "tools",
+    "draw",
+    "pen",
+    "circle",
+    "rectangle",
+    "open shape",
+    "closed shape",
+    "satin blocks",
+    "manual stitch",
+    "measure",
+    "pan",
+    "select",
+    "toolbar",
+    "crest",
+    "patch"
+   ],
+   "appContext": [
+    "panel.toolbar",
+    "tool.select",
+    "tool.pan",
+    "tool.measure",
+    "tool.open",
+    "tool.closed",
+    "tool.circle",
+    "tool.rect",
+    "tool.pen",
+    "tool.satin",
+    "tool.text",
+    "tool.manual"
+   ],
+   "status": "ready",
+   "words": 393,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Moving around",
+     "slug": "moving-around"
+    },
+    {
+     "level": 2,
+     "text": "Drawing shapes",
+     "slug": "drawing-shapes"
+    },
+    {
+     "level": 2,
+     "text": "Words and pictures",
+     "slug": "words-and-pictures"
+    },
+    {
+     "level": 2,
+     "text": "The drawing colour",
+     "slug": "the-drawing-colour"
+    },
+    {
+     "level": 2,
+     "text": "Undo and redo",
+     "slug": "undo-and-redo"
+    },
+    {
+     "level": 2,
+     "text": "A tip for a round patch",
+     "slug": "a-tip-for-a-round-patch"
+    }
+   ],
+   "body": "# Drawing tools\n\nThe floating toolbar at the bottom of the canvas holds the tools. Press the key to switch tools. Press **⌘K** to search for any tool by name.\n\n![The toolbar with each tool labelled](screenshots/toolbar.png)\n\n## Moving around\n\n- **Select (S).** Click to select a shape. Drag to move it. Drag on empty space to box-select. **Shift** adds to the selection.\n- **Pan (Space).** Drag to move the view. Hold **Space** to pan with any tool.\n- **Measure (M).** Drag between two points to read the distance in millimetres. Use it to check a crest against a hoop.\n\n## Drawing shapes\n\n- **Open shape (1).** Click to add points. Right-click or double-click for a curve point. **Enter** finishes. **Esc** cancels. Good for a stem or a border line.\n- **Closed shape (2).** Like Open shape, but the outline closes into a fill. Click the first point or press **Enter** to close. Good for a leaf or a badge outline.\n- **Circle (3).** Drag a box for an ellipse. Hold **Ctrl** for a perfect circle. Good for a round hat patch.\n- **Rectangle (4).** Drag a box. Hold **Ctrl** for a square.\n- **Pen (5).** Draw freehand. Lilo smooths the line when you let go. Finish near the start to close it.\n- **Satin blocks (6).** Click the left edge, then the right edge, and repeat along the column. **Enter** finishes. You control the exact slant of each stitch block. Good for a curved border or a leaf.\n- **Manual stitch (7).** Click to place each stitch exactly where you want the needle. **Enter** finishes. Use it for small touch-ups.\n\n## Words and pictures\n\n- **Text (T).** Click where the text goes, then type in the panel. Read [Lettering](lettering-fonts.md).\n- **Click to stitch (K).** Read [Click to stitch](click-to-stitch.md).\n\n## The drawing colour\n\nThe coloured dot in the toolbar is the thread your **next** shape will use. Select a shape to change its own colour.\n\n## Undo and redo\n\n**⌘Z** undoes the last step. **⇧⌘Z** redoes it. Sliders merge into one undo step, so one **⌘Z** undoes a whole drag.\n\n## A tip for a round patch\n\nFor a 50 mm hat patch, draw a **Circle** and set **Style** to **Outlined**. Choose the **Satin** run type with a width of 3 mm for the border. Then add a filled circle inside. Read [Run types](run-types.md).\n"
+  },
+  {
+   "id": "editing-shapes",
+   "title": "Editing shapes",
+   "summary": "Reshape, cut holes, slice, set start points, duplicate, lock and map shapes along a path.",
+   "section": "digitizing",
+   "order": 4,
+   "keywords": [
+    "edit",
+    "reshape",
+    "hole",
+    "knife",
+    "start",
+    "end",
+    "angle",
+    "map to path",
+    "outline",
+    "redwork",
+    "lock",
+    "duplicate",
+    "delete",
+    "shape bar",
+    "points"
+   ],
+   "appContext": [
+    "panel.shape-bar",
+    "panel.map",
+    "panel.settings",
+    "dialog.map-to-path"
+   ],
+   "status": "ready",
+   "words": 426,
+   "headings": [
+    {
+     "level": 2,
+     "text": "The shape bar",
+     "slug": "the-shape-bar"
+    },
+    {
+     "level": 2,
+     "text": "The left panel for a shape",
+     "slug": "the-left-panel-for-a-shape"
+    },
+    {
+     "level": 2,
+     "text": "Several shapes at once",
+     "slug": "several-shapes-at-once"
+    },
+    {
+     "level": 2,
+     "text": "Map to path",
+     "slug": "map-to-path"
+    },
+    {
+     "level": 2,
+     "text": "Reorder and hide",
+     "slug": "reorder-and-hide"
+    }
+   ],
+   "body": "# Editing shapes\n\nClick a shape and a small **shape bar** floats above it. It has one button per action. Disabled buttons are greyed out because they do not apply to what you selected.\n\n## The shape bar\n\n- **Reshape.** Move, add and delete points. Double-click a point to switch it between a corner and a curve. You can also double-click a shape to start.\n- **Cut hole.** Draw a closed shape inside a fill to cut it out. Use it for the hole in the letter \"O\" or a ring.\n- **Knife.** Drag a line across a shape to slice it in two.\n- **Start** and **End.** Click on the canvas to choose where sewing starts and ends. A green marker shows the start and a red one the end. A start near other shapes means fewer jumps.\n- **Angle.** Turn the stitch direction with a dial on the canvas. Only for fills.\n- **Map to path** (**P**). Repeat the selection along an open line. Read below.\n- **Outline** or **Fill.** Converts between an outlined shape and a filled one.\n- **Redwork.** Adds a running outline along every edge of the selection, routed to keep jumps short.\n- **Lock** or **Unlock.** Locks the selection so you cannot move or edit it by accident.\n- **Duplicate** (**⌘D**) and **Delete** (**Backspace**).\n\n## The left panel for a shape\n\nWith a shape selected, the left panel shows its settings: **Dimensions**, **Colour**, **Style**, then the stitch settings for its type. Read [Run types](run-types.md), [Underlay and pull compensation](underlay-and-pull.md) and [Satin tips](satin-tips.md).\n\nEvery change shows on the canvas straight away. Sliders merge into one undo step.\n\n## Several shapes at once\n\nSelect more than one shape and the panel edits all of them. The panel shows the settings of the first shape. Change one control and it applies to everyone selected.\n\n## Map to path\n\n**Map to path** places copies of a shape along an open line. Use it for a row of stars along a garment-bag strap crest, or small leaves along a vine.\n\n1. Select the shape and the open line together, then press **P**. Or select the shape, press **P** and choose a path afterwards.\n2. Set the **count** and **spacing** in the dialog.\n3. Apply it.\n\nThe copies stay linked. Use **Edit…** in the **Map to path** section of the left panel to change the count, or **Detach** to turn them into ordinary shapes.\n\n## Reorder and hide\n\nOpen the sequencer on the right to change sewing order, hide shapes or group by colour. Read [The sequencer](sequencer.md).\n"
+  },
+  {
+   "id": "sizing-and-hoops",
+   "title": "Sizing and hoops",
+   "summary": "Set a design's size, choose a hoop that fits, add your own hoop and see the design at real size.",
+   "section": "digitizing",
+   "order": 5,
+   "keywords": [
+    "size",
+    "hoop",
+    "fit",
+    "dimensions",
+    "width",
+    "height",
+    "mm",
+    "inches",
+    "aspect",
+    "custom hoop",
+    "calibrate",
+    "actual size",
+    "safe margin",
+    "placement",
+    "rotate"
+   ],
+   "appContext": [
+    "panel.dimensions",
+    "panel.hoop",
+    "dialog.hoop-picker",
+    "dialog.calibrate"
+   ],
+   "status": "ready",
+   "words": 405,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Set the size",
+     "slug": "set-the-size"
+    },
+    {
+     "level": 2,
+     "text": "Choose a hoop",
+     "slug": "choose-a-hoop"
+    },
+    {
+     "level": 2,
+     "text": "What the frame shows",
+     "slug": "what-the-frame-shows"
+    },
+    {
+     "level": 2,
+     "text": "See it at real size",
+     "slug": "see-it-at-real-size"
+    },
+    {
+     "level": 2,
+     "text": "Fitting a design that is too big",
+     "slug": "fitting-a-design-that-is-too-big"
+    }
+   ],
+   "body": "# Sizing and hoops\n\nA design has to fit inside the **sewing area** of the hoop. This page shows how to set the size and pick the hoop.\n\n![The standard hoop sizes drawn to scale](diagrams/hoop-sizes.svg)\n\n## Set the size\n\nSelect a shape (or **⌘A** for everything) and open **Dimensions** in the left panel.\n\n- Type a **Width** or **Height** in millimetres. Switch to inches with the **Units** buttons.\n- **Keep aspect ratio** (the padlock) changes width and height together so the shape does not squash. Turn it off to stretch one side.\n- Use **Flip left-right**, **Flip top-bottom** and **Rotate 90°** under the size boxes.\n\nThe top-left corner stays put when you resize.\n\nNothing selected? **Auto-digitize** has its own width and height boxes. They set the size of the next result.\n\n## Choose a hoop\n\nThe **hoop chip** in the top bar and in the **Hoop** section shows the current hoop. Click it to open the picker.\n\n- Search by **brand**, **machine** or hoop name.\n- Recently used hoops come first.\n- **Smallest hoop that fits** picks the smallest hoop that holds your design.\n- **Swap width and height** rotates the hoop between landscape and portrait.\n- **Add my own…** saves a custom hoop with your own width and height.\n\nLilo ships a library of real hoops. Where a size could not be confirmed it says so. Check the numbers against your own hoop.\n\n## What the frame shows\n\n- The **hoop frame** and its clamp are drawn around the sewing area.\n- The **safe margin** is a dashed line 5 mm inside the sewing area. Stitches close to the edge can hit the hoop.\n- **Rulers** run along the top and left. Drag from a ruler to pull out a guide line.\n- **Placement guides** show where a design usually goes: a left chest, a pocket, the centre of a hat. Pick one from the list.\n\n## See it at real size\n\n**Actual size** (**⌘0**) shows the design at its true size on your screen. Use **Calibrate screen…** once. You hold a ruler to the screen and Lilo learns how big a millimetre is on your display.\n\n## Fitting a design that is too big\n\nIf the design sticks out, Lilo shows a warning in the tray. Pick a larger hoop or scale the design down. Do not squeeze a dense design into a small size without checking density. Read [What the warnings mean](warnings-explained.md).\n"
+  },
+  {
+   "id": "run-vs-fill",
+   "title": "Run stitches versus fills",
+   "summary": "The two families of stitches in Lilo, when to pick each, and how Style switches between them.",
+   "section": "stitches",
+   "order": 1,
+   "keywords": [
+    "run",
+    "fill",
+    "outline",
+    "style",
+    "satin",
+    "stitch types",
+    "line",
+    "area",
+    "tatami",
+    "convert"
+   ],
+   "appContext": [
+    "panel.style",
+    "panel.run-type",
+    "panel.stitching"
+   ],
+   "status": "ready",
+   "words": 276,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Which one should I use?",
+     "slug": "which-one-should-i-use"
+    },
+    {
+     "level": 2,
+     "text": "Switching a shape",
+     "slug": "switching-a-shape"
+    },
+    {
+     "level": 2,
+     "text": "What is the difference in sewing?",
+     "slug": "what-is-the-difference-in-sewing"
+    },
+    {
+     "level": 2,
+     "text": "Which settings go with which?",
+     "slug": "which-settings-go-with-which"
+    }
+   ],
+   "body": "# Run stitches versus fills\n\nEvery shape you draw is sewn one of two ways.\n\n- A **run** follows a line. Think of drawing with a pen. It can be a thin single line, a thick satin ribbon or a twisted rope.\n- A **fill** covers an area. Think of colouring in with a marker.\n\n![A satin column next to a fill area, with stitch directions marked](diagrams/satin-vs-fill.svg)\n\n## Which one should I use?\n\n| You want | Use |\n| --- | --- |\n| A thin outline or a stem | Run, **Single** or **Triple** |\n| A bold border or a letter stroke | Run, **Satin** |\n| A big area like a leaf or a badge face | Fill |\n| A textured area like a brick wall | Fill with a motif pattern |\n\n## Switching a shape\n\nA closed shape can be either. In the left panel, **Style** has two buttons: **Filled** sews the whole area, **Outlined** sews only the edge using any run type. The shape bar's **Outline** and **Fill** button does the same.\n\n## What is the difference in sewing?\n\nA run is quick and light. A fill is slower and uses many more stitches. A fill of a 40 by 30 mm area can take thousands of stitches. A satin column of the same length uses far fewer.\n\n## Which settings go with which?\n\n- Runs have a **run type**. Read [Run types](run-types.md).\n- Satin runs and satin blocks have **density**, **pull compensation** and **underlay**. Read [Satin tips](satin-tips.md).\n- Fills have a **pattern**, **row spacing** and their own underlay. Read [All fill patterns](fill-patterns.md) and [Underlay and pull compensation](underlay-and-pull.md).\n"
+  },
+  {
+   "id": "run-types",
+   "title": "Run types",
+   "summary": "The seven ways Lilo can sew along a line: single, triple, satin, E-stitch, double rope, triple rope and manual.",
+   "section": "stitches",
+   "order": 2,
+   "keywords": [
+    "run type",
+    "single",
+    "triple",
+    "bean",
+    "satin",
+    "e-stitch",
+    "estitch",
+    "rope",
+    "manual",
+    "stitch length",
+    "tolerance",
+    "width",
+    "flipped",
+    "applique"
+   ],
+   "appContext": [
+    "panel.run-type"
+   ],
+   "status": "ready",
+   "words": 318,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Single",
+     "slug": "single"
+    },
+    {
+     "level": 2,
+     "text": "Triple",
+     "slug": "triple"
+    },
+    {
+     "level": 2,
+     "text": "Satin",
+     "slug": "satin"
+    },
+    {
+     "level": 2,
+     "text": "E-stitch",
+     "slug": "e-stitch"
+    },
+    {
+     "level": 2,
+     "text": "Double rope",
+     "slug": "double-rope"
+    },
+    {
+     "level": 2,
+     "text": "Triple rope",
+     "slug": "triple-rope"
+    },
+    {
+     "level": 2,
+     "text": "Manual",
+     "slug": "manual"
+    },
+    {
+     "level": 2,
+     "text": "Changing the type",
+     "slug": "changing-the-type"
+    }
+   ],
+   "body": "# Run types\n\nA **run** follows a line you drew. Lilo has seven ways to sew it. Choose one in **Run type** in the left panel.\n\n## Single\n\nOne line of stitches. The everyday **running stitch**. Use it for fine outlines, stems and quilting lines.\n\n- **Stitch length** is the distance between needle drops. 2.5 to 3 mm is typical.\n- **Tolerance** is how far a stitch may stray from the curve you drew. Lower follows curves more closely. The minimum is 0.1 mm.\n\n## Triple\n\nEach stitch is sewn forward, back and forward again. The line is heavier and bolder. Also called a **bean stitch**. Use it for outlines that need to stand out, or for thin details that a single line would lose.\n\n## Satin\n\nA column of fixed width along the line, like a pen stroke with thread across it. Set the **Width** in the panel, usually 2 to 6 mm. It also has a **Satin** section for density, pull compensation and underlay. Read [Satin tips](satin-tips.md).\n\n## E-stitch\n\nComb-shaped stitches that reach out from the line. Use it for appliqué edges and decorative borders. **Width** sets how far the teeth reach. **Flipped** puts the teeth on the other side of the line.\n\n## Double rope\n\nA twisted cord sewn in two passes. Use it for a thin braid border, like piping around a patch. **Width** is how wide the twist is. The default is 0.4 mm.\n\n## Triple rope\n\nA thicker twisted cord from three passes. Use it for a bolder braid.\n\n## Manual\n\nSews exactly the stitch points you placed with the **Manual stitch** tool, in order. Lilo does not move them. Reshape the shape to move points.\n\n## Changing the type\n\nSelect the shape. Click a type. Lilo keeps your length and swaps the other settings to sensible defaults for the new type. Press **⌘Z** to undo.\n\n![Seven run types side by side](screenshots/run-types.png)\n"
+  },
+  {
+   "id": "underlay-and-pull",
+   "title": "Underlay and pull compensation",
+   "summary": "How the hidden first layer works, which underlay to pick, and how to stop shapes shrinking.",
+   "section": "stitches",
+   "order": 3,
+   "keywords": [
+    "underlay",
+    "pull compensation",
+    "pull comp",
+    "zig-zag",
+    "contour",
+    "center run",
+    "edge",
+    "inset",
+    "fill",
+    "satin",
+    "shrink",
+    "push"
+   ],
+   "appContext": [
+    "panel.underlay",
+    "panel.satin",
+    "panel.stitching"
+   ],
+   "status": "ready",
+   "words": 437,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Underlay",
+     "slug": "underlay"
+    },
+    {
+     "level": 3,
+     "text": "Satin underlay choices",
+     "slug": "satin-underlay-choices"
+    },
+    {
+     "level": 3,
+     "text": "Fill underlay",
+     "slug": "fill-underlay"
+    },
+    {
+     "level": 2,
+     "text": "Pull compensation",
+     "slug": "pull-compensation"
+    },
+    {
+     "level": 3,
+     "text": "How to tell if you need more",
+     "slug": "how-to-tell-if-you-need-more"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Underlay and pull compensation\n\n## Underlay\n\n**Underlay** is the layer of light stitches sewn before the visible ones. Read the idea first in [Stitch terms](basics-stitch-terms.md).\n\n![Cross-section: cloth, stabiliser, underlay, top stitches](diagrams/underlay-layers.svg)\n\n### Satin underlay choices\n\nPick one from the **Underlay** list in the **Satin** section.\n\n| Choice | What it is | Use for |\n| --- | --- | --- |\n| None | No underlay | Very thin columns, or when you add your own |\n| Center run | One line down the middle | Columns under about 2.5 mm |\n| Contour | A line right inside each edge | Medium columns |\n| Zig-zag | Back-and-forth across the column | Wider columns |\n| Contour + zig-zag | Edge walk plus zig-zag | Wide columns on soft cloth |\n| Center + contour | Middle line plus edge walk | Columns of about 2.5 to 4 mm |\n| Double zig-zag | Two zig-zag passes | Columns wider than about 6 mm |\n\nWhen Lilo digitizes for you it picks one by width: centre run under 2.5 mm, centre plus edge up to 4 mm, edge plus zig-zag up to 6 mm, and double zig-zag beyond that. You can change it.\n\n### Fill underlay\n\nIn the **Underlay** section of a fill:\n\n- The **Underlay** switch adds one light pass at right angles to the fill.\n- **Customise underlays…** lets you add several passes. Each has an **Angle**, **Spacing**, **Length** and **Inset**. **Inset** is how far inside the edge the underlay stops, so it stays hidden.\n- Open patterns (motifs, crosshatch) skip the automatic underlay, because it would show through the gaps.\n\nHeavy fills on soft cloth benefit from two passes at different angles.\n\n## Pull compensation\n\nThread pulls cloth inward, so stitched shapes come out smaller than you drew. **Pull compensation** makes the shape a little bigger on purpose.\n\n![A column before and after pull compensation](diagrams/pull-compensation.svg)\n\n- **Satin columns:** widens each side. 0.15 mm per side is the Standard starting value. Premium uses 0.20 mm. The slider goes up to 0.8 mm.\n- **Fills:** grows the shape. The slider goes up to 1 mm.\n\nStretchy cloth pulls more. Lilo's Sewing setup raises compensation for knits to about 1.8 times the woven value.\n\n### How to tell if you need more\n\nSew a test. If a 4 mm column measures 3.7 mm, or if the outline of a fill sits inside its border, raise pull compensation. If it looks fatter than your drawing or it overlaps its neighbours, lower it.\n\n## Related\n\n- [Satin tips](satin-tips.md)\n- [Sewing setup](sewing-setup.md)\n- [Fixing sew-out problems](sewout-troubleshooting.md)\n"
+  },
+  {
+   "id": "satin-tips",
+   "title": "Satin tips",
+   "summary": "Choose a width, density and split for clean satin columns, and avoid the usual traps.",
+   "section": "stitches",
+   "order": 4,
+   "keywords": [
+    "satin",
+    "column",
+    "density",
+    "width",
+    "split",
+    "stagger",
+    "short stitches",
+    "curves",
+    "snag",
+    "border",
+    "letters"
+   ],
+   "appContext": [
+    "panel.satin",
+    "tool.satin"
+   ],
+   "status": "ready",
+   "words": 344,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Pick a width",
+     "slug": "pick-a-width"
+    },
+    {
+     "level": 2,
+     "text": "Density",
+     "slug": "density"
+    },
+    {
+     "level": 2,
+     "text": "Split above",
+     "slug": "split-above"
+    },
+    {
+     "level": 2,
+     "text": "Short stitches on curves",
+     "slug": "short-stitches-on-curves"
+    },
+    {
+     "level": 2,
+     "text": "Underlay and pull compensation",
+     "slug": "underlay-and-pull-compensation"
+    },
+    {
+     "level": 2,
+     "text": "Pick the stitch order",
+     "slug": "pick-the-stitch-order"
+    },
+    {
+     "level": 2,
+     "text": "Test first",
+     "slug": "test-first"
+    }
+   ],
+   "body": "# Satin tips\n\nA **satin column** is stitches that cross from one edge to the other. It looks smooth and shiny. It is the stitch behind most borders and letters.\n\n![Satin column, with density and width marked](diagrams/satin-vs-fill.svg)\n\n## Pick a width\n\n- **Under 1.5 mm:** too thin. The stitches get tiny and can pile up. Use a **Triple** run instead.\n- **2 to 6 mm:** the sweet spot.\n- **Over 8 mm:** stitches get long and can snag. Lilo splits the column in two stitched halves, or you can use a fill.\n\n## Density\n\n**Density (spacing)** is the gap in millimetres between needle drops on the same side of the column. Smaller is denser.\n\n- **0.40 mm** is the standard starting point for 40 wt thread.\n- **0.35 mm** is about the tightest for 40 wt. Below that you risk thread breaks and holes.\n- 60 wt thread needs a tighter gap, about 0.35 mm, because the thread is thinner.\n\nThe hint under the slider shows stitches per centimetre.\n\n## Split above\n\n**Split above** divides columns wider than this many millimetres into two halves, so no stitch is too long. Zero turns it off. Two controls appear when it is on:\n\n- **Stagger cycles** repeats the pattern of the split line.\n- **Stagger amount** shifts the split line sideways, so the join does not form a visible seam.\n\n## Short stitches on curves\n\nOn the inside of a tight curve stitches bunch up. **Short stitches on curves** shortens some of them so the column stays even. Turn it on for curved borders and round letters.\n\n## Underlay and pull compensation\n\nAlways use some underlay under a satin column wider than 1.5 mm. Read [Underlay and pull compensation](underlay-and-pull.md).\n\n## Pick the stitch order\n\nSew a long satin column in one go, not as several short columns joined end to end. Lots of joins create thread jumps.\n\n## Test first\n\nSew a 20 mm test strip at your chosen width and density on scrap cloth. Look for gaps (loosen less) and ridges or puckers (loosen more).\n"
+  },
+  {
+   "id": "standard-vs-premium",
+   "title": "Standard or Premium quality",
+   "summary": "What changes when you pick Premium, how many more stitches it makes and when it is worth it.",
+   "section": "stitches",
+   "order": 5,
+   "keywords": [
+    "standard",
+    "premium",
+    "quality",
+    "density",
+    "underlay",
+    "hairline",
+    "stitch count",
+    "auto digitize"
+   ],
+   "appContext": [
+    "panel.digitize",
+    "panel.sewing-setup"
+   ],
+   "status": "ready",
+   "words": 231,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Standard",
+     "slug": "standard"
+    },
+    {
+     "level": 2,
+     "text": "Premium",
+     "slug": "premium"
+    },
+    {
+     "level": 2,
+     "text": "The cost",
+     "slug": "the-cost"
+    },
+    {
+     "level": 2,
+     "text": "When to choose which",
+     "slug": "when-to-choose-which"
+    },
+    {
+     "level": 2,
+     "text": "Changing quality later",
+     "slug": "changing-quality-later"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Standard or Premium quality\n\n**Quality** is one of three choices in the Sewing setup. It changes how carefully Lilo digitizes.\n\n## Standard\n\n- A fixed satin density of 0.40 mm.\n- Underlay chosen by column width.\n- Thin strokes become a single running line.\n- Quick and predictable.\n\n## Premium\n\n- Spacing and pull compensation follow each column's width.\n- Fine strokes sew as narrow satin, not as a faint line.\n- Fills get edge walk and cross underlay.\n- Columns that meet overlap slightly, so no gap shows.\n- Tiny stitches are merged a little more aggressively (0.6 mm minimum instead of 0.5 mm).\n\n## The cost\n\nPremium usually makes about 1.2 to 1.6 times as many stitches as Standard. That means a longer sew. It varies by design.\n\n## When to choose which\n\n| Design | Pick |\n| --- | --- |\n| A logo with hairline serifs, like the Kadwood wordmark | Premium |\n| A quick test, or a bold simple shape | Standard |\n| Tiny text | Premium with 60 wt thread |\n| A big fill with no fine detail | Standard |\n\n## Changing quality later\n\nOpen the **Sewing setup** card and pick the other quality. Lilo updates shapes it made itself. It keeps anything you edited by hand. One undo step goes back.\n\n## Related\n\n[Sewing setup](sewing-setup.md), [Sewing setup presets](sewing-presets.md)\n"
+  },
+  {
+   "id": "sewing-setup",
+   "title": "Sewing setup",
+   "summary": "Tell Lilo your fabric, thread weight and quality so spacing, underlay and compensation suit what you are sewing.",
+   "section": "stitches",
+   "order": 6,
+   "keywords": [
+    "sewing setup",
+    "fabric",
+    "thread weight",
+    "quality",
+    "before you sew",
+    "checklist",
+    "needle",
+    "stabiliser",
+    "preset"
+   ],
+   "appContext": [
+    "panel.sewing-setup",
+    "dialog.before-you-sew"
+   ],
+   "status": "ready",
+   "words": 255,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Three choices",
+     "slug": "three-choices"
+    },
+    {
+     "level": 2,
+     "text": "What the card also shows",
+     "slug": "what-the-card-also-shows"
+    },
+    {
+     "level": 2,
+     "text": "Why it matters",
+     "slug": "why-it-matters"
+    },
+    {
+     "level": 2,
+     "text": "Every setup in detail",
+     "slug": "every-setup-in-detail"
+    },
+    {
+     "level": 2,
+     "text": "It is a starting point",
+     "slug": "it-is-a-starting-point"
+    }
+   ],
+   "body": "# Sewing setup\n\nThe **Sewing setup** card sits at the top of the right column. Its chip shows your current choice, like \"Suiting, 40 wt, Standard\". Click the chip to open it.\n\n## Three choices\n\n- **Fabric:** what you are sewing on. Suiting, shirting or lining, twill or caps, knit, denim, towel or leather.\n- **Thread weight:** **40 wt** is standard. **60 wt** is fine, for small crisp detail.\n- **Quality:** **Standard** or **Premium**. Read [Standard or Premium](standard-vs-premium.md).\n\nChanging any of them updates the stitches Lilo made. Anything you edited by hand stays as you left it. One undo step reverses it.\n\n## What the card also shows\n\nThe card lists what the setup calls for: needle, stabiliser, topping and hooping tips. The same list appears as **Before you sew** in the Export and Send windows, so you see it before you hit the machine.\n\n![The Sewing setup card, open](screenshots/sewing-card.png)\n\n## Why it matters\n\nA design for a thin suit lining sewn on a towel will sink and look thin. A design tuned for towel sewn on lining will pucker. The setup keeps the numbers matched to the cloth.\n\nFor a suit-lining monogram, choose **Shirting / lining**, **60 wt** if the letters are under 6 mm, and **Premium**.\n\n## Every setup in detail\n\nRead [Sewing setup presets](sewing-presets.md) for the full list of needles, stabilisers and tips for each fabric.\n\n## It is a starting point\n\nAll numbers come from digitizing practice, not from a machine maker's rulebook. Always sew a test on scrap cloth first.\n"
+  },
+  {
+   "id": "fill-patterns",
+   "title": "All fill patterns",
+   "summary": "Every one of the 36 fill patterns: what it looks like, what its sliders do, and when to pick it.",
+   "section": "stitches",
+   "order": 40,
+   "keywords": [
+    "fill",
+    "pattern",
+    "tatami",
+    "texture",
+    "motif",
+    "gradient",
+    "contour",
+    "spiral"
+   ],
+   "appContext": [
+    "panel.fill-pattern"
+   ],
+   "status": "generated",
+   "words": 2190,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Rows patterns (12)",
+     "slug": "rows-patterns-12"
+    },
+    {
+     "level": 3,
+     "text": "Tatami",
+     "slug": "tatami"
+    },
+    {
+     "level": 3,
+     "text": "Original",
+     "slug": "original"
+    },
+    {
+     "level": 3,
+     "text": "Triangle",
+     "slug": "triangle"
+    },
+    {
+     "level": 3,
+     "text": "Waves",
+     "slug": "waves"
+    },
+    {
+     "level": 3,
+     "text": "Columns",
+     "slug": "columns"
+    },
+    {
+     "level": 3,
+     "text": "Offset columns",
+     "slug": "offset-columns"
+    },
+    {
+     "level": 3,
+     "text": "Zig-zag",
+     "slug": "zig-zag"
+    },
+    {
+     "level": 3,
+     "text": "Heartbeat",
+     "slug": "heartbeat"
+    },
+    {
+     "level": 3,
+     "text": "Staircase",
+     "slug": "staircase"
+    },
+    {
+     "level": 3,
+     "text": "Rainfall",
+     "slug": "rainfall"
+    },
+    {
+     "level": 3,
+     "text": "Crosshatch",
+     "slug": "crosshatch"
+    },
+    {
+     "level": 3,
+     "text": "Plaid",
+     "slug": "plaid"
+    },
+    {
+     "level": 2,
+     "text": "Motif patterns (17)",
+     "slug": "motif-patterns-17"
+    },
+    {
+     "level": 3,
+     "text": "Hearts S",
+     "slug": "hearts-s"
+    },
+    {
+     "level": 3,
+     "text": "Hearts M",
+     "slug": "hearts-m"
+    },
+    {
+     "level": 3,
+     "text": "Hearts L",
+     "slug": "hearts-l"
+    },
+    {
+     "level": 3,
+     "text": "Diamonds S",
+     "slug": "diamonds-s"
+    },
+    {
+     "level": 3,
+     "text": "Diamonds M",
+     "slug": "diamonds-m"
+    },
+    {
+     "level": 3,
+     "text": "Diamonds L",
+     "slug": "diamonds-l"
+    },
+    {
+     "level": 3,
+     "text": "Circles S",
+     "slug": "circles-s"
+    },
+    {
+     "level": 3,
+     "text": "Circles M",
+     "slug": "circles-m"
+    },
+    {
+     "level": 3,
+     "text": "Circles L",
+     "slug": "circles-l"
+    },
+    {
+     "level": 3,
+     "text": "Hexweave",
+     "slug": "hexweave"
+    },
+    {
+     "level": 3,
+     "text": "Brick",
+     "slug": "brick"
+    },
+    {
+     "level": 3,
+     "text": "Herringbone",
+     "slug": "herringbone"
+    },
+    {
+     "level": 3,
+     "text": "Basketweave",
+     "slug": "basketweave"
+    },
+    {
+     "level": 3,
+     "text": "Scales",
+     "slug": "scales"
+    },
+    {
+     "level": 3,
+     "text": "Stars",
+     "slug": "stars"
+    },
+    {
+     "level": 3,
+     "text": "Chevrons",
+     "slug": "chevrons"
+    },
+    {
+     "level": 3,
+     "text": "Honeycomb",
+     "slug": "honeycomb"
+    },
+    {
+     "level": 2,
+     "text": "Path patterns (7)",
+     "slug": "path-patterns-7"
+    },
+    {
+     "level": 3,
+     "text": "Spiral",
+     "slug": "spiral"
+    },
+    {
+     "level": 3,
+     "text": "Tornado",
+     "slug": "tornado"
+    },
+    {
+     "level": 3,
+     "text": "Streamlines",
+     "slug": "streamlines"
+    },
+    {
+     "level": 3,
+     "text": "Circular",
+     "slug": "circular"
+    },
+    {
+     "level": 3,
+     "text": "Sunburst",
+     "slug": "sunburst"
+    },
+    {
+     "level": 3,
+     "text": "Contour",
+     "slug": "contour"
+    },
+    {
+     "level": 3,
+     "text": "Stipple",
+     "slug": "stipple"
+    }
+   ],
+   "body": "# All fill patterns\n\nThis page is built from the app's own pattern list, so it always matches what you see in the picker. It has 36 patterns in three families.\n\n- **Rows** are parallel lines of stitches. You can bend them, break them and fade them with a gradient.\n- **Motif** patterns repeat a small shape across the area, like a brick or a weave.\n- **Path** patterns follow the shape: rings, spirals, rays or flow lines.\n\nSet the pattern in the **Fill pattern** section of the left panel. Each preview there shows the pattern on a 40 by 30 mm shape. Pull compensation, underlay and row spacing work the same for every pattern. Read about them in [Underlay and pull compensation](underlay-and-pull.md).\n\n## Rows patterns (12)\n\n### Tatami\n\nThe classic fill: parallel rows with each row's stitches offset from its neighbours.\n\nSupports a gradient. Gets the automatic underlay.\n\n### Original\n\nParallel rows with a four-step stagger, giving a softer, less regular texture than tatami.\n\nSupports a gradient. Gets the automatic underlay.\n\n### Triangle\n\nRows that zig-zag in a triangle wave, so stitches form rows of small triangles.\n\nSupports a gradient. Gets the automatic underlay.\n\n### Waves\n\nSmooth wavy rows.\n\nSupports a gradient. Gets the automatic underlay.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Steps | 2 to 12 | 4 | Needle points per half wave. More steps make smoother curves. |\n| Amplitude | 0.2 to 6 | 1 | How far each wave swings sideways, in millimetres. |\n\n### Columns\n\nRows whose needle points line up, so stitches stack into straight columns.\n\nSupports a gradient. Gets the automatic underlay.\n\n### Offset columns\n\nLike Columns, but every other row is shifted by half a stitch.\n\nSupports a gradient. Gets the automatic underlay.\n\n### Zig-zag\n\nRows of zig-zag stitches that swing across a band, like a wide satin.\n\nSupports a gradient. Gets the automatic underlay.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Band width | 0.8 to 8 | 2.5 | How wide each zig-zag band is. |\n\n### Heartbeat\n\nRows that run flat and then spike like a heart monitor.\n\nSupports a gradient. Gets the automatic underlay.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Intensity | 1 to 5 | 2.5 | How tall the spikes are. |\n\n### Staircase\n\nRows that climb in steps.\n\nSupports a gradient. Gets the automatic underlay.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Step height | 0.2 to 4 | 1 | How far each step climbs, in millimetres. |\n| Steps | 1 to 8 | 2 | Stitches along each tread before the next riser. |\n\n### Rainfall\n\nRandomly staggered, randomly sized stitches, like rain streaks.\n\nSupports a gradient. Gets the automatic underlay.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Chaos | 0 to 1 | 0.5 | How much stitch lengths and starts vary. |\n| Density | 0.4 to 2 | 1 | Higher packs the rows closer together. |\n\n### Crosshatch\n\nTwo sets of thin lines crossing at right angles.\n\nSupports a gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Line pitch | 0.6 to 6 | 1.4 | Distance between the lines in each direction. |\n\n### Plaid\n\nBands of three tight lines, crossing at right angles with open gaps.\n\nSupports a gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Band pitch | 2 to 12 | 4 | Distance from one band to the next. |\n\n## Motif patterns (17)\n\n### Hearts S\n\nA lattice of small hearts.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 3.5 | Width of each repeated shape in millimetres. |\n\n### Hearts M\n\nA lattice of medium hearts, each with an inner heart.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5.5 | Width of each repeated shape in millimetres. |\n\n### Hearts L\n\nA lattice of large hearts with two inner hearts.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 8 | Width of each repeated shape in millimetres. |\n\n### Diamonds S\n\nA lattice of small diamonds.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 3.5 | Width of each repeated shape in millimetres. |\n\n### Diamonds M\n\nA lattice of medium diamonds, each with an inner diamond.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5.5 | Width of each repeated shape in millimetres. |\n\n### Diamonds L\n\nA lattice of large diamonds with two inner diamonds.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 8 | Width of each repeated shape in millimetres. |\n\n### Circles S\n\nA lattice of small circles.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 3.5 | Width of each repeated shape in millimetres. |\n\n### Circles M\n\nA lattice of medium circles with an inner ring.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5.5 | Width of each repeated shape in millimetres. |\n\n### Circles L\n\nA lattice of large circles with two inner rings.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 8 | Width of each repeated shape in millimetres. |\n\n### Hexweave\n\nA lattice of hexagons, each with three spokes so it reads as woven cubes.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Cell size | 2 to 20 | 6 | Width of each repeated shape in millimetres. |\n\n### Brick\n\nBrick wall outlines: rectangles with every other row offset.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5 | Width of each repeated shape in millimetres. |\n\n### Herringbone\n\nDiagonal strokes that alternate direction column by column.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 4 | Width of each repeated shape in millimetres. |\n\n### Basketweave\n\nSquare blocks of three parallel lines, alternating across and down.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 6 | Width of each repeated shape in millimetres. |\n\n### Scales\n\nOverlapping fish scale arcs.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5 | Width of each repeated shape in millimetres. |\n\n### Stars\n\nA lattice of five-point stars.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5 | Width of each repeated shape in millimetres. |\n\n### Chevrons\n\nStacked V shapes that join into zig-zag lines.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 4 | Width of each repeated shape in millimetres. |\n\n### Honeycomb\n\nHexagon outlines sharing their edges.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Size | 2 to 20 | 5 | Width of each repeated shape in millimetres. |\n\n## Path patterns (7)\n\n### Spiral\n\nOne or more arms spiralling out from the centre.\n\nNo gradient. Gets the automatic underlay. Has a movable centre: drag the cross on the canvas.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Tightness | 0.5 to 4 | 1 | Higher packs the lines closer together. |\n| Arms | 1 to 6 | 1 | How many spiral arms wind out from the centre. |\n\n### Tornado\n\nCurved lines swirling out from the centre.\n\nNo gradient. Gets the automatic underlay. Has a movable centre: drag the cross on the canvas.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Tightness | 0.5 to 4 | 1 | Higher packs the lines closer together. |\n| Rotations | 0.25 to 4 | 1 | How many full turns each line makes on its way out. |\n\n### Streamlines\n\nFlow lines that follow the stitch angle, and bend toward any guide curves you draw.\n\nNo gradient. Gets the automatic underlay. Follows guide curves you draw.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Separation | 0.25 to 3 | 0.5 | Distance between neighbouring flow lines, in millimetres. |\n\n### Circular\n\nConcentric rings around a centre you can move.\n\nNo gradient. Gets the automatic underlay. Has a movable centre: drag the cross on the canvas.\n\n### Sunburst\n\nStraight rays fanning out from the centre.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps. Has a movable centre: drag the cross on the canvas.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Ray pitch | 0.4 to 5 | 1.2 | Distance between neighbouring rays at the outer edge. |\n\n### Contour\n\nEchoes of the shape's outline, stepping inward to the middle.\n\nNo gradient. Gets the automatic underlay.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Ring pitch | 0.3 to 4 | 0.6 | Distance between each ring and the next. |\n\n### Stipple\n\nA random scribble of short stitches joined into a mesh.\n\nNo gradient. Open pattern: no automatic underlay, because it would show through the gaps.\n\n| Setting | Range | Default | What it does |\n| --- | --- | --- | --- |\n| Dot spacing | 0.8 to 5 | 1.8 | Average distance between dots. |\n\n"
+  },
+  {
+   "id": "sewing-presets",
+   "title": "Sewing setup presets",
+   "summary": "What each fabric, thread weight and quality choice means: needle, stabiliser, hooping and how the stitches change.",
+   "section": "stitches",
+   "order": 60,
+   "keywords": [
+    "fabric",
+    "needle",
+    "stabiliser",
+    "stabilizer",
+    "thread weight",
+    "40 wt",
+    "60 wt",
+    "quality",
+    "preset",
+    "suiting",
+    "knit",
+    "towel",
+    "leather"
+   ],
+   "appContext": [
+    "panel.sewing-setup",
+    "dialog.before-you-sew"
+   ],
+   "status": "generated",
+   "words": 1024,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Fabrics",
+     "slug": "fabrics"
+    },
+    {
+     "level": 3,
+     "text": "Suiting (woven wool / blends)",
+     "slug": "suiting-woven-wool-blends"
+    },
+    {
+     "level": 3,
+     "text": "Shirting / lining (light woven)",
+     "slug": "shirting-lining-light-woven"
+    },
+    {
+     "level": 3,
+     "text": "Twill / caps",
+     "slug": "twill-caps"
+    },
+    {
+     "level": 3,
+     "text": "Knit / polo / jersey",
+     "slug": "knit-polo-jersey"
+    },
+    {
+     "level": 3,
+     "text": "Denim",
+     "slug": "denim"
+    },
+    {
+     "level": 3,
+     "text": "Towel / terry / fleece",
+     "slug": "towel-terry-fleece"
+    },
+    {
+     "level": 3,
+     "text": "Leather / faux leather / vinyl",
+     "slug": "leather-faux-leather-vinyl"
+    },
+    {
+     "level": 2,
+     "text": "Thread weight",
+     "slug": "thread-weight"
+    },
+    {
+     "level": 3,
+     "text": "40 wt (standard)",
+     "slug": "40-wt-standard"
+    },
+    {
+     "level": 3,
+     "text": "60 wt (fine)",
+     "slug": "60-wt-fine"
+    },
+    {
+     "level": 2,
+     "text": "Quality",
+     "slug": "quality"
+    },
+    {
+     "level": 3,
+     "text": "Standard",
+     "slug": "standard"
+    },
+    {
+     "level": 3,
+     "text": "Premium",
+     "slug": "premium"
+    }
+   ],
+   "body": "# Sewing setup presets\n\nThis page is built from the same tables the app uses for the **Sewing setup** card and the **Before you sew** checklist. Every number is a starting point. Sew a small test first, on a scrap of the same cloth.\n\nYou choose three things: the **fabric**, the **thread weight** and the **quality**. Lilo then picks stitch spacing, edge compensation and underlay for you. Read how they work in [Sewing setup](sewing-setup.md).\n\n## Fabrics\n\n### Suiting (woven wool / blends)\n\nJacket cloth and other firm wovens. It holds its shape, so it is the easy case.\n\n- **Needle:** 75/11 sharp. A fresh sharp needle pierces the tight weave without pushing threads aside.\n- **Stabiliser:** cut-away, medium, about 1.5-2 oz (50-60 g/m2). Cut-away keeps fine serifs from distorting as the garment is worn; trim close to the stitching.\n- **Topping:** none needed.\n- **Hooping:** Hoop the fabric together with the stabiliser, drum-tight but not stretched.\n- **Hooping:** Do not clamp on a finished jacket front: float it on sticky stabiliser instead to avoid hoop marks.\n- **What Lilo changes:** nothing. This is the baseline the other fabrics are measured against.\n\n### Shirting / lining (light woven)\n\nThin cotton, silk or lining fabric. Puckers and shows needle holes easily, so lighter and looser.\n\n- **Needle:** 70/10 sharp. Fine point so the holes stay small; 65/9 for the very thinnest silk.\n- **Stabiliser:** no-show mesh, light, about 1 oz (30 g/m2). Soft mesh cut-away that will not show through or scratch; tear-away leaves holes along the stitching.\n- **Topping:** none needed.\n- **Hooping:** Hoop lightly: the fabric should lie flat, not be pulled.\n- **Hooping:** Keep lining smooth, no ripples in the hoop.\n- **What Lilo changes:** nothing. This is the baseline the other fabrics are measured against.\n\n### Twill / caps\n\nCotton twill, chinos and structured caps. Stable, but heavier cloth swallows thin lines, so it wants more underlay.\n\n- **Needle:** 75/11 sharp. 80/12 on thick caps or when the thread keeps shredding.\n- **Stabiliser:** cut-away, medium, 2 oz (60 g/m2). For caps use a firm tear-away or cap backing and a cap frame.\n- **Topping:** none needed.\n- **Hooping:** Hoop twill drum-tight.\n- **Hooping:** Caps: use the cap frame and make sure the seam is centred.\n- **What Lilo changes:** line spacing is looser (x1.06).\n\n### Knit / polo / jersey\n\nStretchy cloth. It moves under the needle, so it needs a firm backing, more edge compensation and solid underlay.\n\n- **Needle:** 75/11 ballpoint. A ballpoint slides between the loops instead of cutting them.\n- **Stabiliser:** cut-away, medium-heavy, 2.5 oz (75 g/m2). Always cut-away on knits; tear-away lets the design stretch out of shape in the wash.\n- **Topping:** none needed.\n- **Hooping:** Taut but never stretched: stretched knit springs back and puckers around the design.\n- **Hooping:** A magnetic hoop holds knits without pulling them.\n- **What Lilo changes:** edge compensation is 180 % of the woven value; line spacing is looser (x1.19); the narrowest satin column is 1.5 mm.\n\n### Denim\n\nThick, tight cotton. Strong enough to take dense stitching, tough on small needles.\n\n- **Needle:** 90/14 sharp. A jeans/denim needle (80/12 for lighter denim); a thin needle will deflect or snap.\n- **Stabiliser:** cut-away, medium, 2 oz (60 g/m2). Tear-away is acceptable for heavy denim that does not stretch.\n- **Topping:** none needed.\n- **Hooping:** Hoop drum-tight; thick seams should not sit under the design.\n- **What Lilo changes:** nothing. This is the baseline the other fabrics are measured against.\n\n### Towel / terry / fleece\n\nPile fabric. Stitches sink into the loops, so fine lines vanish; use bolder shapes and a see-through topping.\n\n- **Needle:** 75/11 sharp. 80/12 if the pile is deep.\n- **Stabiliser:** tear-away, medium. Plus a layer of wash-away topping on top so the thread sits above the pile.\n- **Topping:** a water-soluble topping on top, so the stitches do not sink into the pile.\n- **Hooping:** Hoop the stabiliser and fabric together without crushing the pile.\n- **Hooping:** Lay the water-soluble topping over the area before sewing and tear it away after.\n- **What Lilo changes:** edge compensation is 150 % of the woven value; line spacing is looser (x1.6); the narrowest satin column is 2 mm.\n\n### Leather / faux leather / vinyl\n\nEvery needle hole is permanent. Looser stitching and light underlay so it does not turn into a perforated line.\n\n- **Needle:** 75/11 leather/wedge. A sharp or leather needle; not heavy-duty, to avoid big holes.\n- **Stabiliser:** tear-away, medium. Tear-away only: cut-away backing makes the piece stiff and the cut edge can show.\n- **Topping:** none needed.\n- **Hooping:** Do not hoop leather, the hoop leaves a permanent ring: float it on sticky stabiliser and hold with clips or tape.\n- **Hooping:** Test on an offcut: you cannot unpick without leaving holes.\n- **What Lilo changes:** edge compensation is 80 % of the woven value; line spacing is looser (x1.3); the narrowest satin column is 1.5 mm; no zig-zag underlay.\n\n## Thread weight\n\n### 40 wt (standard)\n\nThe normal embroidery thread. Good cover on columns and fills; letters from about 6 mm tall; 60 wt from about 4 mm.\n\n- **Needle:** 75/11 for most cloth (70/10 on lining).\n- **Smallest letters:** 6 mm tall.\n\n### 60 wt (fine)\n\nThinner thread for small, crisp detail. Satin density 0.35 mm instead of 0.40 (about 12 % closer) and finer columns are allowed. Do not swap it into a 40 wt file without redigitizing: coverage drops.\n\n- **Needle:** 65/9 or 70/10 (75/11 on tougher cloth).\n- **Smallest letters:** 4 mm tall.\n\n## Quality\n\n### Standard\n\nThe basic auto-digitize settings: a fixed 0.40 mm density and underlay by column width, thin strokes sewn as a single running line. Quick and predictable.\n\nTypical stitch count: the baseline.\n\n### Premium\n\nSettings a professional digitizer would use: spacing and pull compensation follow each column's width, underlay is chosen by width, fine strokes become narrow satin instead of a faint line, fills get edge-walk and cross underlay, and columns that meet are trimmed so they overlap a hair instead of stacking.\n\nTypical stitch count: about 1.3 times the Standard count.\n\n"
+  },
+  {
+   "id": "lettering-fonts",
+   "title": "Lettering: built-in fonts",
+   "summary": "Type a word or monogram, pick an embroidery font that suits the height, and add it to your design.",
+   "section": "lettering",
+   "order": 1,
+   "keywords": [
+    "lettering",
+    "text",
+    "font",
+    "monogram",
+    "name",
+    "letters",
+    "height",
+    "fit",
+    "built-in",
+    "spacing",
+    "align",
+    "suit lining",
+    "initials"
+   ],
+   "appContext": [
+    "tool.text",
+    "panel.text",
+    "panel.fonts"
+   ],
+   "status": "ready",
+   "words": 362,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Add text",
+     "slug": "add-text"
+    },
+    {
+     "level": 2,
+     "text": "The controls",
+     "slug": "the-controls"
+    },
+    {
+     "level": 2,
+     "text": "Fit this height",
+     "slug": "fit-this-height"
+    },
+    {
+     "level": 2,
+     "text": "A monogram for a suit lining",
+     "slug": "a-monogram-for-a-suit-lining"
+    },
+    {
+     "level": 2,
+     "text": "Small letters",
+     "slug": "small-letters"
+    },
+    {
+     "level": 2,
+     "text": "Your own fonts",
+     "slug": "your-own-fonts"
+    },
+    {
+     "level": 2,
+     "text": "Licences",
+     "slug": "licences"
+    }
+   ],
+   "body": "# Lettering: built-in fonts\n\nLilo comes with about a hundred **embroidery fonts**. These are not ordinary computer fonts. Each one was drawn to be sewn: the stitches follow the letter shape, and each font has a height range where it sews well.\n\n## Add text\n\n1. Choose the **Text** tool (press **T**) or **Type a monogram** on Home.\n2. Click on the canvas where the text should go.\n3. Type in the **Text** box in the left panel.\n4. Choose a **Height (mm)**. Quick buttons give 6, 10, 15 and 25 mm. Or type your own.\n5. Pick a font from the **Fonts** list.\n6. Press **Add text**.\n\nTo change text later, select a word on the canvas. The panel becomes **Edit text**. Press **Update text** to apply your changes. **New text** starts another.\n\n## The controls\n\n- **Letter spacing** moves letters apart or closer together.\n- **Line spacing** sets the gap between lines.\n- **Align** is left, centre or right, for text with more than one line.\n- The thread colour is the one in the panel's **Colour** control.\n\n## Fit this height\n\nEvery font has a height range where it sews cleanly. The **Only fonts for N mm** checkbox hides fonts that do not suit your height. Leave it on while you choose.\n\nA warning appears under the height box if the font is wrong for the size. For example, a font drawn for 15 to 30 mm letters piles up thread at 8 mm. Pick a font with a smaller range.\n\n## A monogram for a suit lining\n\nA 10 mm \"JK\" inside a suit jacket works well as follows.\n\n1. Set the Sewing setup to **Shirting / lining**.\n2. Choose a font that suits 10 mm with the checkbox on.\n3. Use **Align: center** and add a little **Letter spacing**, about 0.5 mm.\n4. Use a thread that is a shade off the lining, not a stark contrast.\n\n## Small letters\n\nLetters under about 6 mm with 40 wt thread fill in. Read [Small letters](small-letters.md).\n\n## Your own fonts\n\nRead [Using your own fonts](own-fonts.md).\n\n## Licences\n\nEvery built-in font ships with its own licence. See [Licence and credits](licence-and-credits.md).\n"
+  },
+  {
+   "id": "own-fonts",
+   "title": "Using your own fonts",
+   "summary": "Upload a TTF, OTF or TTC font and turn it into satin lettering.",
+   "section": "lettering",
+   "order": 2,
+   "keywords": [
+    "custom font",
+    "upload",
+    "ttf",
+    "otf",
+    "ttc",
+    "own font",
+    "brand font",
+    "column",
+    "satin",
+    "licence",
+    "remove"
+   ],
+   "appContext": [
+    "panel.fonts",
+    "panel.text"
+   ],
+   "status": "ready",
+   "words": 235,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Upload",
+     "slug": "upload"
+    },
+    {
+     "level": 2,
+     "text": "How it sews",
+     "slug": "how-it-sews"
+    },
+    {
+     "level": 2,
+     "text": "Choose a font that suits stitching",
+     "slug": "choose-a-font-that-suits-stitching"
+    },
+    {
+     "level": 2,
+     "text": "The small warning",
+     "slug": "the-small-warning"
+    },
+    {
+     "level": 2,
+     "text": "Licence",
+     "slug": "licence"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Using your own fonts\n\nYou can add a font from your computer. This is how you stitch the exact typeface from a brand's logo.\n\n## Upload\n\nIn the **Text** panel, scroll to **Your fonts** and press **Upload font (TTF, OTF, TTC)...**. Choose the file. Lilo adds it to the list. Press it to use it.\n\nPress **Remove** next to a font to take it out.\n\n## How it sews\n\nAn ordinary font has outlines, not stitches. Lilo converts each letter into **satin columns** that follow the shape of the strokes.\n\n- Thick strokes become columns.\n- Strokes that are too thin for a clean column are widened up to a minimum width.\n- **Standard** quality sews columns no narrower than 1.5 mm. **Premium** allows 1.0 mm.\n\n## Choose a font that suits stitching\n\n- **Good:** sturdy sans-serif fonts and slab serifs, with strokes of even weight.\n- **Tricky:** fonts with hairline strokes and heavy strokes together, like a high-contrast serif. The hairlines drop out.\n- **Avoid:** very thin script fonts and fonts with tiny details.\n\n## The small warning\n\nIf your font is too small to sew cleanly, a note says \"Custom fonts sew best above N mm\". Make the text taller or pick a built-in font.\n\n## Licence\n\nYou are responsible for the licence of any font you upload. Lilo keeps the font on your computer.\n\n## Related\n\n[Small letters](small-letters.md), [Lettering: built-in fonts](lettering-fonts.md)\n"
+  },
+  {
+   "id": "small-letters",
+   "title": "Small letters",
+   "summary": "The smallest letters you can sew: 6 mm with 40 wt thread, 4 mm with 60 wt, and how to make small text sew clean.",
+   "section": "lettering",
+   "order": 3,
+   "keywords": [
+    "small letters",
+    "tiny text",
+    "minimum height",
+    "6 mm",
+    "4 mm",
+    "40 wt",
+    "60 wt",
+    "legible",
+    "fill in",
+    "warning"
+   ],
+   "appContext": [
+    "panel.text",
+    "panel.warnings"
+   ],
+   "status": "ready",
+   "words": 264,
+   "headings": [
+    {
+     "level": 2,
+     "text": "The limits",
+     "slug": "the-limits"
+    },
+    {
+     "level": 2,
+     "text": "How to sew small text clean",
+     "slug": "how-to-sew-small-text-clean"
+    },
+    {
+     "level": 2,
+     "text": "Do not swap the thread without redigitizing",
+     "slug": "do-not-swap-the-thread-without-redigitizing"
+    },
+    {
+     "level": 2,
+     "text": "Letters on the inside of a jacket",
+     "slug": "letters-on-the-inside-of-a-jacket"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Small letters\n\nThread has thickness. Make letters small enough, and the thread fills the gaps inside the letters (\"e\" and \"a\" turn into blobs).\n\n## The limits\n\n| Thread | Smallest letter height |\n| --- | --- |\n| **40 wt** (standard) | **6 mm** |\n| **60 wt** (fine) | **4 mm** |\n\n**Height** here means the height of a capital letter.\n\nLilo checks this for every font. If your letters are shorter than the limit, a warning shows under the height box and in the warnings tray. It offers to switch to 60 wt thread.\n\n## How to sew small text clean\n\n1. Use **60 wt** thread. Change **Thread weight** in the Sewing setup. Then use a 65/9 or 70/10 needle.\n2. Choose **Premium** quality. It spaces narrow columns a bit wider (0.45 mm) so they do not clog.\n3. Pick a plain, sturdy font. Skip fonts with hairlines.\n4. Use **cut-away** stabiliser. It gives the cleanest detail. Read [Embroidery basics](basics-materials.md).\n5. Sew a test on scrap cloth first.\n\n## Do not swap the thread without redigitizing\n\nIf you design for 40 wt and then put 60 wt thread on the machine, you lose coverage. Change **Thread weight** in the Sewing setup instead, so Lilo tightens the spacing.\n\n## Letters on the inside of a jacket\n\nA 5 mm \"JK\" on a shirt-weight lining: **Shirting / lining**, **60 wt**, **Premium**, a font that suits 5 mm. Expect the letters to shrink slightly in the wash and the pull of the thread.\n\n## Related\n\n[Lettering: built-in fonts](lettering-fonts.md), [What the warnings mean](warnings-explained.md)\n"
+  },
+  {
+   "id": "text-on-curve",
+   "title": "Text on a curve",
+   "summary": "Bend lettering round the top or bottom of a circle, for hat patches, badges and crests.",
+   "section": "lettering",
+   "order": 4,
+   "keywords": [
+    "curve",
+    "arc",
+    "path",
+    "circle",
+    "badge",
+    "patch",
+    "curved text",
+    "text on path",
+    "ring",
+    "radius",
+    "bend"
+   ],
+   "appContext": [
+    "panel.text"
+   ],
+   "status": "ready",
+   "words": 373,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Bend the text",
+     "slug": "bend-the-text"
+    },
+    {
+     "level": 2,
+     "text": "Pick a radius",
+     "slug": "pick-a-radius"
+    },
+    {
+     "level": 2,
+     "text": "Change it later",
+     "slug": "change-it-later"
+    },
+    {
+     "level": 2,
+     "text": "Top and bottom text on one patch",
+     "slug": "top-and-bottom-text-on-one-patch"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Text on a curve\n\nCurved text is what you want round the edge of a hat patch or the rim of a crest. A name along the top of a 50 mm hat patch is a good example.\n\n## Bend the text\n\n1. Choose the **Text** tool (press **T**) and type your words.\n2. Find **Curve** in the Text panel. It has three buttons:\n   - **Straight** keeps the baseline flat. This is the default.\n   - **Arc up** bends the words over the top of a circle. The letters stand on the outside.\n   - **Arc down** bends them along the bottom of a circle. The letters stand on the inside, and still read left to right.\n3. For a curve, a **Curve radius** slider appears. The radius is the size of the circle in millimetres. A smaller radius bends harder.\n4. Press **Add text**.\n\nA curve centres the words on the arc, so **Alignment** is ignored while a curve is on.\n\n## Pick a radius\n\n- The text should be shorter than the arc. A 30 mm radius gives an arc of about 150 mm. That is room for a name at 10 mm tall.\n- For a round patch, make the radius a little smaller than the patch radius. A 50 mm patch is 25 mm from the centre, so try 20 mm and make the letters about 6 mm tall.\n- If the text is too long for the circle, Lilo says so: \"The text is N mm long but the path is only N mm\". Make the radius bigger or the letters smaller.\n\n## Change it later\n\nSelect the word. The panel becomes **Edit text** and the curve settings load into it. Change the buttons or the slider and press **Update text**. The word stays where you put it, and keeps any rotation you gave it. **⌘Z** undoes the change.\n\n## Top and bottom text on one patch\n\nAdd the top words with **Arc up**. Then start new text with **New text**, and add the bottom words with **Arc down**. Move the second word until the two sit on the same circle. Use the **Measure** tool to check the gap.\n\n## Related\n\n[Lettering: built-in fonts](lettering-fonts.md), [Small letters](small-letters.md), [Sizing and hoops](sizing-and-hoops.md)\n"
+  },
+  {
+   "id": "thread-brands-matching",
+   "title": "Thread brands and matching",
+   "summary": "How Lilo picks real thread colours, how to change brands, and how colours reach your machine.",
+   "section": "threads",
+   "order": 1,
+   "keywords": [
+    "thread",
+    "brand",
+    "catalogue",
+    "match",
+    "colour",
+    "color",
+    "brother",
+    "madeira",
+    "isacord",
+    "code",
+    "swap",
+    "merge",
+    "picker"
+   ],
+   "appContext": [
+    "panel.threads",
+    "panel.colour",
+    "panel.sequencer-colours"
+   ],
+   "status": "ready",
+   "words": 316,
+   "headings": [
+    {
+     "level": 2,
+     "text": "How matching works",
+     "slug": "how-matching-works"
+    },
+    {
+     "level": 2,
+     "text": "Choose a brand",
+     "slug": "choose-a-brand"
+    },
+    {
+     "level": 2,
+     "text": "Change a colour afterwards",
+     "slug": "change-a-colour-afterwards"
+    },
+    {
+     "level": 2,
+     "text": "Swap or merge colours",
+     "slug": "swap-or-merge-colours"
+    },
+    {
+     "level": 2,
+     "text": "Your own spools",
+     "slug": "your-own-spools"
+    },
+    {
+     "level": 2,
+     "text": "Colours in the machine file",
+     "slug": "colours-in-the-machine-file"
+    },
+    {
+     "level": 2,
+     "text": "Colours on screen are close, not exact",
+     "slug": "colours-on-screen-are-close-not-exact"
+    }
+   ],
+   "body": "# Thread brands and matching\n\nEmbroidery thread comes in **brands** and **lines**. Each has its own colour names and codes. Lilo has a catalogue of tens of thousands of real thread colours across many brands.\n\n## How matching works\n\nPictures have millions of colours. Thread has a few hundred per brand. When Lilo digitizes a picture, it finds the **nearest real thread** for each colour in the picture. It compares them the way the eye does, using a colour difference measure called CIEDE2000.\n\n## Choose a brand\n\nBefore you digitize, use **Thread brand** in the **Auto digitize** panel. Pick the range you own or can buy. The number in brackets is how many colours it holds.\n\n## Change a colour afterwards\n\n1. Select a shape.\n2. In the left panel, open **Colour**.\n3. Search or browse the picker, then click a thread.\n\nThe picker lists the Brother, Country and Brothread ranges first. Every change is one undo step.\n\n## Swap or merge colours\n\nOpen the **Colours** tab in the sequencer on the right.\n\n- **Swap** replaces a thread with another everywhere it is used.\n- **Merge into** folds one colour into another. Use it to cut down colour changes.\n- **Select** selects every object in that colour.\n- **Group by colour** reorders objects so each colour is sewn in one go.\n\nRead [Fewer colour changes](fewer-colour-changes.md).\n\n## Your own spools\n\n**My Threads** keeps the spools you own. Tick **Use my threads** in Auto digitize to match to them first. Read [My Threads](my-threads.md).\n\n## Colours in the machine file\n\nSome file formats keep thread colours (PES, JEF, VP3, XXX). Others do not (DST, EXP, U01). Without colours, your machine shows \"colour 1, colour 2\". Read [File formats](formats-reference.md).\n\n## Colours on screen are close, not exact\n\nScreens cannot show thread exactly. A thread chart or the real spool is the final judge. Many brands have printed or online charts.\n"
+  },
+  {
+   "id": "my-threads",
+   "title": "My Threads",
+   "summary": "Keep a shelf of the spools you own, and make Lilo match pictures to them first.",
+   "section": "threads",
+   "order": 2,
+   "keywords": [
+    "my threads",
+    "shelf",
+    "spools",
+    "inventory",
+    "own",
+    "quantity",
+    "notes",
+    "import",
+    "export",
+    "json",
+    "backup"
+   ],
+   "appContext": [
+    "panel.my-threads",
+    "panel.sequencer"
+   ],
+   "status": "ready",
+   "words": 226,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Open it",
+     "slug": "open-it"
+    },
+    {
+     "level": 2,
+     "text": "Add spools",
+     "slug": "add-spools"
+    },
+    {
+     "level": 2,
+     "text": "Look after the shelf",
+     "slug": "look-after-the-shelf"
+    },
+    {
+     "level": 2,
+     "text": "Back up and move",
+     "slug": "back-up-and-move"
+    },
+    {
+     "level": 2,
+     "text": "Use it when digitizing",
+     "slug": "use-it-when-digitizing"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# My Threads\n\n**My Threads** is your shelf of real spools. Lilo uses it so its colours match what is in your drawer.\n\n## Open it\n\nIn the sequencer on the right, open the **My Threads** tab.\n\n## Add spools\n\nThree ways:\n\n1. **From the catalogue.** Type a brand, code or name into the search box and press **Add** next to the result. Adding the same spool again raises its quantity.\n2. **By photo.** Read [Add a spool by photo](add-by-photo.md).\n3. **By hand.** Fill in **Brand**, **Line**, **Code** and **Name** for a spool Lilo does not know.\n\n## Look after the shelf\n\n- Change the **Quantity** of each spool.\n- Add **Notes**, like \"half used\" or \"bought at the fair\".\n- **Remove** a spool when it is empty.\n\n## Back up and move\n\n- **Export JSON…** saves your shelf to a file.\n- **Import JSON…** loads one back, on this or another computer.\n\nIf the shelf is empty on first open, you can restore a backup or **Start with an empty shelf**.\n\n## Use it when digitizing\n\nIn **Auto digitize**, turn on **Use my threads**. Lilo matches the picture's colours to the spools on your shelf first. The panel says how many spools it is matching to. If the shelf is empty, it falls back to the brand you chose.\n\n## Related\n\n[Thread brands and matching](thread-brands-matching.md)\n"
+  },
+  {
+   "id": "add-by-photo",
+   "title": "Add a spool by photo",
+   "summary": "Photograph a thread label and let Lilo read it and suggest the thread.",
+   "section": "threads",
+   "order": 3,
+   "keywords": [
+    "photo",
+    "ocr",
+    "label",
+    "camera",
+    "scan",
+    "spool",
+    "add",
+    "read text"
+   ],
+   "appContext": [
+    "panel.my-threads"
+   ],
+   "status": "ready",
+   "words": 180,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Steps",
+     "slug": "steps"
+    },
+    {
+     "level": 2,
+     "text": "If Lilo reads it wrong",
+     "slug": "if-lilo-reads-it-wrong"
+    },
+    {
+     "level": 2,
+     "text": "Tips for a good photo",
+     "slug": "tips-for-a-good-photo"
+    },
+    {
+     "level": 2,
+     "text": "Privacy",
+     "slug": "privacy"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Add a spool by photo\n\nYou can add a spool without typing its code. Lilo reads the label from a photo.\n\n## Steps\n\n1. Open the **My Threads** tab in the sequencer.\n2. Open **Add a spool by photo**.\n3. Choose a photo of the label. Take it in good light, close enough to read the code, with no glare.\n4. Lilo reads the text and suggests which thread it is.\n5. **Check the suggestion.** Then confirm.\n\nYou always confirm. Lilo never adds a spool on its own.\n\n## If Lilo reads it wrong\n\nReading text from a picture is not perfect. If the suggestion is wrong, search the catalogue by code, or fill in the spool by hand.\n\n## Tips for a good photo\n\n- Lay the spool on a plain surface.\n- Hold the camera square to the label.\n- Make sure the number and the brand name are both visible.\n- Avoid shiny reflections on the plastic.\n\n## Privacy\n\nThe photo is read on your computer. Lilo does not send it anywhere.\n\n## Related\n\n[My Threads](my-threads.md)\n"
+  },
+  {
+   "id": "stitch-player",
+   "title": "The stitch player",
+   "summary": "Watch your design sew stitch by stitch, pause at colour changes, scrub to any point and read the totals.",
+   "section": "preview",
+   "order": 1,
+   "keywords": [
+    "player",
+    "play",
+    "pause",
+    "scrub",
+    "speed",
+    "auto-continue",
+    "colour change",
+    "swap thread",
+    "time",
+    "stitch count",
+    "preview",
+    "simulate"
+   ],
+   "appContext": [
+    "panel.player"
+   ],
+   "status": "ready",
+   "words": 276,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Controls",
+     "slug": "controls"
+    },
+    {
+     "level": 2,
+     "text": "Colour changes",
+     "slug": "colour-changes"
+    },
+    {
+     "level": 2,
+     "text": "The totals",
+     "slug": "the-totals"
+    },
+    {
+     "level": 2,
+     "text": "Why use it",
+     "slug": "why-use-it"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# The stitch player\n\nThe **stitch player** is the bar under the canvas. It plays your design back the way the machine will sew it.\n\n![The stitch player with a colour change card](screenshots/player.png)\n\n## Controls\n\n- **Play** and **Pause** start and stop the playback.\n- **Scrub stitches** is the long slider. Drag it to jump to any point. Scrub to the start and press Play to watch from the beginning.\n- **Speed** runs from 1 times to 50 times. At 1 times the on-screen needle moves as fast as a real machine, about 850 stitches a minute.\n- **Auto-continue** waits a moment at each colour change and then carries on. Turn it off to stop at every one.\n\n## Colour changes\n\nWhen playback reaches a colour change it stops and shows a card: \"Swap to Brother 123 and the thread name\". It shows a swatch of the colour. Press **Continue** when you are ready. That is also how you will work at the machine: change the thread, then restart.\n\n## The totals\n\nThe line under the bar tells you:\n\n- **Stitches** so far out of the total.\n- The number of **colour changes**.\n- The design **size** in millimetres.\n- An **estimated sewing time**, worked out at 850 stitches a minute.\n\n## Why use it\n\n- Spot a long jump that would leave a thread across the design.\n- See whether the sewing order makes sense. Outlines sewn before fills can be covered up.\n- Check the time. Add a few minutes per colour change for the thread swap.\n\nPlaying the design ticks the **Preview** step in the workflow strip.\n\n## Related\n\n[Realistic view](realistic-view.md), [The sequencer](sequencer.md)\n"
+  },
+  {
+   "id": "realistic-view",
+   "title": "Realistic view and view options",
+   "summary": "Switch the canvas between a flat plan and a thread-like preview, and turn the grid, reference picture and jumps on or off.",
+   "section": "preview",
+   "order": 2,
+   "keywords": [
+    "realistic",
+    "view",
+    "grid",
+    "reference",
+    "jumps",
+    "thread",
+    "shading",
+    "preview",
+    "zoom",
+    "pan",
+    "frame"
+   ],
+   "appContext": [
+    "panel.view-options"
+   ],
+   "status": "ready",
+   "words": 278,
+   "headings": [
+    {
+     "level": 2,
+     "text": "The four view options",
+     "slug": "the-four-view-options"
+    },
+    {
+     "level": 2,
+     "text": "The hoop frame",
+     "slug": "the-hoop-frame"
+    },
+    {
+     "level": 2,
+     "text": "Zoom and pan",
+     "slug": "zoom-and-pan"
+    },
+    {
+     "level": 2,
+     "text": "When to use which",
+     "slug": "when-to-use-which"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Realistic view and view options\n\nThe small checkboxes in the corner of the canvas change what you see. They never change the stitches.\n\n## The four view options\n\n- **Realistic** draws each stitch as a shaded thread, with heavier thread for triple, rope and satin. It shows how the design will really look.\n- **Grid** shows a square grid on the canvas. Use it to line things up.\n- **Reference** shows your original picture behind the stitches, so you can compare them.\n- **Jumps** shows the thread that travels between shapes without sewing. These jumps are trimmed on the machine, but too many mean extra work.\n\nTurn **Realistic** off to see a clean plan. It is easier to read when you are checking spacing.\n\n## The hoop frame\n\nYou can also show the **hoop frame** with its clamp. Choose it in the **Hoop** section. It makes the preview look like the real hoop. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Zoom and pan\n\n- Scroll or pinch to zoom.\n- Press **⌘K** and choose **Fit to window** to see the whole design.\n- Hold **Space** and drag to pan.\n- **Actual size** (⌘0) shows the true millimetre size on your screen.\n\n## When to use which\n\n| You want to | Use |\n| --- | --- |\n| Judge how it will look on a jacket | **Realistic**, zoomed in |\n| Find holes between shapes | **Realistic** off |\n| Compare against the original logo | **Reference** on |\n| Cut thread trims | **Jumps** on |\n\nSwitching **Realistic** counts as a look at the preview, so it ticks the **Preview** step.\n\n## Related\n\n[The stitch player](stitch-player.md)\n"
+  },
+  {
+   "id": "sequencer",
+   "title": "The sequencer",
+   "summary": "Change the order shapes are sewn in, hide shapes, group by colour, and manage reference images.",
+   "section": "preview",
+   "order": 3,
+   "keywords": [
+    "sequencer",
+    "order",
+    "sewing order",
+    "reorder",
+    "hide",
+    "show",
+    "colour blocks",
+    "objects",
+    "images",
+    "group by colour",
+    "details",
+    "rename"
+   ],
+   "appContext": [
+    "panel.sequencer",
+    "panel.sequencer-colours",
+    "panel.sequencer-images"
+   ],
+   "status": "ready",
+   "words": 274,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Objects",
+     "slug": "objects"
+    },
+    {
+     "level": 3,
+     "text": "Order matters",
+     "slug": "order-matters"
+    },
+    {
+     "level": 2,
+     "text": "Colours",
+     "slug": "colours"
+    },
+    {
+     "level": 2,
+     "text": "Images",
+     "slug": "images"
+    },
+    {
+     "level": 2,
+     "text": "My Threads",
+     "slug": "my-threads"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# The sequencer\n\nThe **sequencer** is the panel on the right. It lists your shapes in the order the machine will sew them. It has four tabs.\n\n## Objects\n\nEach row is a shape. Rows are grouped into **colour blocks**. A colour block is a run of shapes that use the same thread, so the machine does not change thread inside it.\n\n- **Move up** and **Move down** change the sewing order.\n- **Hide** takes a shape off the canvas and out of the file. Use it to check one layer at a time.\n- Double-click a name to **rename** it.\n- **Details** shows stitch and point counts.\n- Each colour block can move up or down as a whole.\n\n### Order matters\n\nSew big fills first, then borders, then details on top. If a fill is sewn after its outline, the fill covers it.\n\n## Colours\n\nThe **Colours** tab lists each thread and how many objects and stitches use it.\n\n- **Group by colour** reorders objects so each colour is sewn once. It cuts thread changes.\n- **Merge into** folds a colour into another.\n- **Swap** replaces a thread with a different one.\n- **Select** selects every object of that colour.\n\nRead [Fewer colour changes](fewer-colour-changes.md).\n\n## Images\n\nThe **Images** tab holds reference pictures. They are not stitched.\n\n- **Add image…** puts a picture behind the design to trace over or compare to.\n- Set the **opacity** and **width**.\n- **Lock** so you cannot drag it by accident. **Hide** and **Remove** work as you expect.\n\n## My Threads\n\nThe fourth tab is your shelf of spools. Read [My Threads](my-threads.md).\n\n## Related\n\n[The stitch player](stitch-player.md)\n"
+  },
+  {
+   "id": "fewer-colour-changes",
+   "title": "Fewer colour changes",
+   "summary": "Why each thread swap costs time, and four ways to cut them.",
+   "section": "preview",
+   "order": 4,
+   "keywords": [
+    "colour changes",
+    "color changes",
+    "thread changes",
+    "merge",
+    "group",
+    "reduce colours",
+    "time",
+    "swap",
+    "stops",
+    "needle"
+   ],
+   "appContext": [
+    "panel.sequencer-colours",
+    "panel.warnings"
+   ],
+   "status": "ready",
+   "words": 244,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Four ways to cut them",
+     "slug": "four-ways-to-cut-them"
+    },
+    {
+     "level": 3,
+     "text": "1. Use fewer colours when you digitize",
+     "slug": "1-use-fewer-colours-when-you-digitize"
+    },
+    {
+     "level": 3,
+     "text": "2. Merge similar colours",
+     "slug": "2-merge-similar-colours"
+    },
+    {
+     "level": 3,
+     "text": "3. Group by colour",
+     "slug": "3-group-by-colour"
+    },
+    {
+     "level": 3,
+     "text": "4. Reuse a thread",
+     "slug": "4-reuse-a-thread"
+    },
+    {
+     "level": 2,
+     "text": "What counts as many",
+     "slug": "what-counts-as-many"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Fewer colour changes\n\nA single-needle home machine stops at every colour change. You swap the thread by hand, thread the needle and restart. A design with 12 colour changes can take longer to swap than to sew.\n\nThe stitch player counts them, and the warnings tray tells you when there are many.\n\n## Four ways to cut them\n\n### 1. Use fewer colours when you digitize\n\nIn **Auto digitize**, lower **Colours**. A logo that looks fine with 4 colours does not need 8.\n\n### 2. Merge similar colours\n\nOpen the **Colours** tab in the sequencer. Pick **Merge into** on a colour that is close to another. Every shape in the first colour joins the second.\n\n### 3. Group by colour\n\nIf the same thread is used in several places, the machine may swap away and back. Press **Group by colour** in the **Colours** tab. Lilo reorders the objects so each colour is sewn in one block.\n\nCheck the new order in the stitch player. Sewing order affects what covers what.\n\n### 4. Reuse a thread\n\nUse one thread for two roles. For a garment-bag crest, sew the outline and the lettering in the same gold. That is one swap saved.\n\n## What counts as many\n\nLilo's tray suggests a look at your colours when a design has more than 8 colour changes. That is a guide, not a rule. A rich crest may need more.\n\n## Related\n\n[Thread brands and matching](thread-brands-matching.md), [The sequencer](sequencer.md)\n"
+  },
+  {
+   "id": "lilo-link-wifi",
+   "title": "Set up Wi-Fi sending with Lilo Link",
+   "summary": "Connect a Brother or Baby Lock machine to your Wi-Fi so Lilo can find it and send designs.",
+   "section": "sending",
+   "order": 1,
+   "keywords": [
+    "lilo link",
+    "wifi",
+    "wi-fi",
+    "brother",
+    "baby lock",
+    "machine",
+    "2.4 ghz",
+    "network",
+    "scan",
+    "discover",
+    "pair",
+    "ip address",
+    "saved machines",
+    "local network"
+   ],
+   "appContext": [
+    "view.link",
+    "link.machines",
+    "link.settings"
+   ],
+   "status": "ready",
+   "words": 361,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Before you start",
+     "slug": "before-you-start"
+    },
+    {
+     "level": 2,
+     "text": "Connect the machine",
+     "slug": "connect-the-machine"
+    },
+    {
+     "level": 2,
+     "text": "Find it in Lilo",
+     "slug": "find-it-in-lilo"
+    },
+    {
+     "level": 2,
+     "text": "Mac: allow Local Network",
+     "slug": "mac-allow-local-network"
+    },
+    {
+     "level": 2,
+     "text": "Windows and Linux: check the firewall",
+     "slug": "windows-and-linux-check-the-firewall"
+    },
+    {
+     "level": 2,
+     "text": "Next step",
+     "slug": "next-step"
+    }
+   ],
+   "body": "# Set up Wi-Fi sending with Lilo Link\n\n**Lilo Link** is the part of Lilo that talks to your sewing machine over Wi-Fi. It works with **Brother** and **Baby Lock** machines that have Wi-Fi built in. Other machines use a [USB stick](usb-stick.md).\n\n## Before you start\n\n- **Your machine must have Wi-Fi.** Look for a Wi-Fi symbol on the screen or the box.\n- **Use a 2.4 GHz network.** Most embroidery machines cannot join a 5 GHz network. If your router has one name for both, connect the machine to the 2.4 GHz band. If you have two separate names, pick the one that ends in \"2.4\" or has no \"5G\".\n- **Put your computer and your machine on the same network.** Not a guest network. Not a separate office Wi-Fi. If they are on different networks, Lilo cannot see the machine.\n\n## Connect the machine\n\n1. On the machine, open its **Wi-Fi settings** and join your 2.4 GHz network. Follow the machine's own manual for this part.\n2. Check that the machine shows it is connected.\n\n## Find it in Lilo\n\n1. Open **Lilo Link** from the top of the window. Go to **Machines**.\n2. Press **Scan network**. Lilo looks across your local network and lists what it finds under **Discovered on the network**.\n3. Press **Save** next to your machine. It moves to **Saved machines**.\n4. Press **Test** to check the connection.\n\nLilo detects the machine on its own. You do not need to type an address. If the scan finds nothing, you can type the machine's IP address under **Add machine manually**. The machine shows its IP address in its Wi-Fi or network screen.\n\n## Mac: allow Local Network\n\nThe first time you scan, macOS asks to allow **Local Network** access. Choose **Allow**. If you said no by mistake, go to **System Settings, Privacy and Security, Local Network** and switch Lilo on.\n\n## Windows and Linux: check the firewall\n\nIf scanning finds nothing and everything else is right, a firewall or security program may be blocking Lilo. Allow Lilo on your home (private) network.\n\n## Next step\n\nRead [Send a design](send-a-design.md). If something goes wrong, read [Wi-Fi troubleshooting](send-troubleshooting.md).\n"
+  },
+  {
+   "id": "send-a-design",
+   "title": "Send a design to your machine",
+   "summary": "Press Send, choose a machine and watch the progress. What Lilo checks first.",
+   "section": "sending",
+   "order": 2,
+   "keywords": [
+    "send",
+    "machine",
+    "wifi",
+    "progress",
+    "pes",
+    "transfer",
+    "before you sew",
+    "checklist",
+    "replace"
+   ],
+   "appContext": [
+    "dialog.send",
+    "link.send"
+   ],
+   "status": "ready",
+   "words": 297,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Steps",
+     "slug": "steps"
+    },
+    {
+     "level": 2,
+     "text": "What the warnings at the top mean",
+     "slug": "what-the-warnings-at-the-top-mean"
+    },
+    {
+     "level": 2,
+     "text": "On the machine",
+     "slug": "on-the-machine"
+    },
+    {
+     "level": 2,
+     "text": "If a file with the same name exists",
+     "slug": "if-a-file-with-the-same-name-exists"
+    },
+    {
+     "level": 2,
+     "text": "If it fails",
+     "slug": "if-it-fails"
+    },
+    {
+     "level": 2,
+     "text": "Sending from Lilo Link",
+     "slug": "sending-from-lilo-link"
+    },
+    {
+     "level": 2,
+     "text": "Sending to another make of machine",
+     "slug": "sending-to-another-make-of-machine"
+    }
+   ],
+   "body": "# Send a design to your machine\n\nBefore you send, set up your machine in [Lilo Link](lilo-link-wifi.md).\n\n## Steps\n\n1. Press **Send** at the top right of the editor. It is greyed out until the design has stitches.\n2. The **Send to machine** window opens. It says how many stitches and colour changes the file has.\n3. Read **Before you sew**. It lists the needle, stabiliser and hooping tips for your fabric.\n4. Check the **Machine** list. Pick your machine. Press **Search network** if it is missing.\n5. Press **Send**.\n6. A progress line shows how many bytes have gone across. When it finishes it says **Sent** and the name the machine stored it under.\n\nLilo sends a **PES** file, the format Brother and Baby Lock use. The file keeps your thread colours.\n\n## What the warnings at the top mean\n\nThe window can list warnings about the design, like stitches that were too long and were split. Read them before you send. Read [What the warnings mean](warnings-explained.md).\n\n## On the machine\n\nThe design appears in the machine's memory or its Wi-Fi inbox. The exact place depends on the model, so follow the machine's own manual to open it.\n\n## If a file with the same name exists\n\nLilo asks you to confirm before it replaces it. Rename the project in the top bar if you want to keep both.\n\n## If it fails\n\nLilo shows a plain message. Look it up in [Wi-Fi troubleshooting](send-troubleshooting.md).\n\n## Sending from Lilo Link\n\nYou can also send from **Lilo Link**, **Machines**, with the **Send** button next to a saved machine. That page also sends an existing file.\n\n## Sending to another make of machine\n\nUse **Export** and save a file for the machine. Read [Choosing a format](export-formats.md) and [USB stick](usb-stick.md).\n"
+  },
+  {
+   "id": "usb-stick",
+   "title": "Use a USB stick instead",
+   "summary": "Save a file, copy it to the root of a USB stick and load it on any machine. Keep it to 12 designs or fewer.",
+   "section": "sending",
+   "order": 3,
+   "keywords": [
+    "usb",
+    "stick",
+    "thumb drive",
+    "save",
+    "export",
+    "folder",
+    "root",
+    "12 designs",
+    "fallback",
+    "offline"
+   ],
+   "appContext": [
+    "dialog.export",
+    "dialog.send"
+   ],
+   "status": "ready",
+   "words": 242,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Steps",
+     "slug": "steps"
+    },
+    {
+     "level": 2,
+     "text": "Rules for the stick",
+     "slug": "rules-for-the-stick"
+    },
+    {
+     "level": 2,
+     "text": "If the machine does not show the file",
+     "slug": "if-the-machine-does-not-show-the-file"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Use a USB stick instead\n\nA USB stick always works. Use it when:\n\n- your machine has no Wi-Fi,\n- the Wi-Fi is not stable, or\n- you are sewing at a place with no network.\n\n## Steps\n\n1. Press **Export**.\n2. Choose the **file format** your machine reads. For Brother and Baby Lock, choose **PES**. Read [Choosing a format](export-formats.md).\n3. Press **Save**. Pick the USB stick as the place to save.\n4. Eject the stick safely. On Mac, drag it to the bin. On Windows, use **Safely Remove Hardware**.\n5. Put the stick in the machine and open it from the machine's screen.\n\n## Rules for the stick\n\n- **Put the files at the root.** That means the first screen of the stick, not inside a folder. Many machines do not look in folders.\n- **Keep to 12 designs or fewer.** Many home machines show only the first 12 files. If you have more, make a second stick.\n- **Use a small stick** formatted FAT32. A very large stick can fail to read.\n- **Use plain file names:** letters and numbers, no accents or symbols.\n\n## If the machine does not show the file\n\n- Check the format. The machine only lists formats it can read.\n- Check that the file is not in a folder.\n- Count the files. Is it more than 12?\n- Try another stick.\n\n## Related\n\n[Set up Wi-Fi sending with Lilo Link](lilo-link-wifi.md), [File formats](formats-reference.md)\n"
+  },
+  {
+   "id": "send-troubleshooting",
+   "title": "Wi-Fi troubleshooting",
+   "summary": "Every message Lilo Link can show when a send fails, what it means and what to do.",
+   "section": "sending",
+   "order": 4,
+   "keywords": [
+    "error",
+    "failed",
+    "troubleshoot",
+    "wifi",
+    "send",
+    "unreachable",
+    "timeout",
+    "busy",
+    "storage",
+    "format",
+    "pairing",
+    "file exists",
+    "ip",
+    "not found",
+    "unauthorized",
+    "code"
+   ],
+   "appContext": [
+    "dialog.send",
+    "link.machines",
+    "link.send",
+    "link.logs"
+   ],
+   "status": "ready",
+   "words": 985,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Codes",
+     "slug": "codes"
+    },
+    {
+     "level": 3,
+     "text": "`machine_unreachable`",
+     "slug": "machineunreachable"
+    },
+    {
+     "level": 3,
+     "text": "`machine_timeout`",
+     "slug": "machinetimeout"
+    },
+    {
+     "level": 3,
+     "text": "`device_busy`",
+     "slug": "devicebusy"
+    },
+    {
+     "level": 3,
+     "text": "`delivery_unknown`",
+     "slug": "deliveryunknown"
+    },
+    {
+     "level": 3,
+     "text": "`identity_changed`",
+     "slug": "identitychanged"
+    },
+    {
+     "level": 3,
+     "text": "`unsupported_operation`",
+     "slug": "unsupportedoperation"
+    },
+    {
+     "level": 3,
+     "text": "`file_exists`",
+     "slug": "fileexists"
+    },
+    {
+     "level": 3,
+     "text": "`protocol_error`",
+     "slug": "protocolerror"
+    },
+    {
+     "level": 3,
+     "text": "`machine_rejected`",
+     "slug": "machinerejected"
+    },
+    {
+     "level": 3,
+     "text": "`file_too_large`",
+     "slug": "filetoolarge"
+    },
+    {
+     "level": 3,
+     "text": "`insufficient_storage`",
+     "slug": "insufficientstorage"
+    },
+    {
+     "level": 3,
+     "text": "`unsupported_format`",
+     "slug": "unsupportedformat"
+    },
+    {
+     "level": 3,
+     "text": "`upload_failed`",
+     "slug": "uploadfailed"
+    },
+    {
+     "level": 3,
+     "text": "`pairing_required`",
+     "slug": "pairingrequired"
+    },
+    {
+     "level": 3,
+     "text": "`invalid_ip`",
+     "slug": "invalidip"
+    },
+    {
+     "level": 3,
+     "text": "`missing_ip`",
+     "slug": "missingip"
+    },
+    {
+     "level": 3,
+     "text": "`missing_filename`",
+     "slug": "missingfilename"
+    },
+    {
+     "level": 3,
+     "text": "`cancelled`",
+     "slug": "cancelled"
+    },
+    {
+     "level": 3,
+     "text": "`updating`",
+     "slug": "updating"
+    },
+    {
+     "level": 3,
+     "text": "`unauthorized`",
+     "slug": "unauthorized"
+    },
+    {
+     "level": 3,
+     "text": "`not_found`",
+     "slug": "notfound"
+    },
+    {
+     "level": 3,
+     "text": "`internal_error`",
+     "slug": "internalerror"
+    },
+    {
+     "level": 2,
+     "text": "Less common codes",
+     "slug": "less-common-codes"
+    },
+    {
+     "level": 3,
+     "text": "`ip_not_local`",
+     "slug": "ipnotlocal"
+    },
+    {
+     "level": 3,
+     "text": "`discovery_running`",
+     "slug": "discoveryrunning"
+    },
+    {
+     "level": 3,
+     "text": "`queue_full`",
+     "slug": "queuefull"
+    },
+    {
+     "level": 3,
+     "text": "`previous_delivery_unknown`",
+     "slug": "previousdeliveryunknown"
+    },
+    {
+     "level": 3,
+     "text": "`not_cancellable`",
+     "slug": "notcancellable"
+    },
+    {
+     "level": 3,
+     "text": "`not_uncertain`",
+     "slug": "notuncertain"
+    },
+    {
+     "level": 3,
+     "text": "`empty_body`",
+     "slug": "emptybody"
+    },
+    {
+     "level": 3,
+     "text": "`invalid_filename`",
+     "slug": "invalidfilename"
+    },
+    {
+     "level": 3,
+     "text": "`confirmation_required`",
+     "slug": "confirmationrequired"
+    },
+    {
+     "level": 3,
+     "text": "`identity_required`",
+     "slug": "identityrequired"
+    },
+    {
+     "level": 3,
+     "text": "`pairing_in_progress`",
+     "slug": "pairinginprogress"
+    },
+    {
+     "level": 3,
+     "text": "`pairing_origin_mismatch`",
+     "slug": "pairingoriginmismatch"
+    },
+    {
+     "level": 3,
+     "text": "`origin_required`",
+     "slug": "originrequired"
+    },
+    {
+     "level": 3,
+     "text": "`origin_not_allowed`",
+     "slug": "originnotallowed"
+    },
+    {
+     "level": 3,
+     "text": "`invalid_origin`",
+     "slug": "invalidorigin"
+    },
+    {
+     "level": 2,
+     "text": "Still stuck?",
+     "slug": "still-stuck"
+    }
+   ],
+   "body": "# Wi-Fi troubleshooting\n\nWhen a send fails, Lilo shows a short message. Under the message is a **code**, a short word with an underscore. Find your code below.\n\nFirst check the basics:\n\n1. The machine is **on** and awake.\n2. It is on a **2.4 GHz** network, the **same network** as your computer. Read [Set up Wi-Fi sending](lilo-link-wifi.md).\n3. Nothing else is sending to it.\n\n## Codes\n\n### `machine_unreachable`\n\"Machine unreachable.\" Lilo cannot connect at all. The machine is off, asleep, on a different network or has a new address. **Do this:** turn the machine on, check its Wi-Fi, press **Scan network** again.\n\n### `machine_timeout`\n\"Request to machine timed out.\" The machine did not answer in time. **Do this:** wake the machine, move closer to the router and try again.\n\n### `device_busy`\n\"The machine is busy with another transfer.\" Another send is in progress. **Do this:** wait a minute, or restart the machine.\n\n### `delivery_unknown`\n\"Delivery could not be confirmed. Check the file on the device before sending again.\" The file may have arrived, but the machine did not confirm. **Do this:** look in the machine's file list before you send again. Sending twice could make a copy.\n\n### `identity_changed`\n\"The device identity changed. Scan again and select the intended machine.\" The address now belongs to a different device. **Do this:** scan again and save the right machine.\n\n### `unsupported_operation`\n\"This device does not support that operation.\" The machine cannot do what Lilo asked, like listing storage. **Do this:** use another way, such as a [USB stick](usb-stick.md).\n\n### `file_exists`\n\"A file with this name exists. Confirm replacement before sending.\" **Do this:** rename the project, or confirm the replacement.\n\n### `protocol_error`\n\"Protocol error.\" The machine answered in a way Lilo did not expect. **Do this:** update Lilo and the machine's software, then try again. If it keeps happening, [report a bug](bug-reports.md).\n\n### `machine_rejected`\n\"Machine rejected the request (machine error code N).\" The machine understood and said no. **Do this:** read the number on the machine's screen. Check its manual. Often the file is too complex or the machine is in a mode that does not accept designs.\n\n### `file_too_large`\n\"Design is N bytes but the machine accepts at most N bytes.\" **Do this:** make the design smaller or use fewer stitches. Choose **Standard** quality. Read [Standard or Premium](standard-vs-premium.md).\n\n### `insufficient_storage`\n\"Not enough free memory on the machine.\" **Do this:** delete old designs from the machine's memory.\n\n### `unsupported_format`\n\"Unsupported design format; this machine accepts ...\" **Do this:** export a format the machine accepts. Read [File formats](formats-reference.md).\n\n### `upload_failed`\n\"Upload rejected with HTTP status N.\" The upload was refused part-way. **Do this:** try again. If it repeats, restart the machine and Lilo.\n\n### `pairing_required`\n\"Machine requires pairing.\" The machine wants to approve this computer first. A hint says what to press on the machine. **Do this:** follow the hint on the machine's screen, then send again.\n\n### `invalid_ip`\n\"Is not an IP address.\" The address you typed is wrong. **Do this:** type four numbers separated by dots, like 192.168.1.50.\n\n### `missing_ip`\nAn address is needed to test or send. **Do this:** choose a machine first.\n\n### `missing_filename`\nA file name is required. **Do this:** give your project a name in the top bar.\n\n### `cancelled`\n\"Transfer cancelled.\" You (or something else) stopped the send. Send again if you want it.\n\n### `updating`\n\"Bridge is updating.\" Lilo is installing an update. **Do this:** wait until it restarts.\n\n### `unauthorized`\n\"Missing or invalid API token.\" The window and Lilo's built-in connection service lost touch. **Do this:** restart Lilo.\n\n### `not_found`\nThe thing Lilo asked about (a saved machine or a transfer) does not exist any more. **Do this:** refresh the Machines list.\n\n### `internal_error`\nSomething went wrong inside Lilo. **Do this:** open **Lilo Link**, then **Logs**, and [report a bug](bug-reports.md) with the log text.\n\n## Less common codes\n\nThese come from Lilo's built-in connection service. You will rarely see them. Most need only a retry or a restart.\n\n### `ip_not_local`\nLilo refuses to contact an address that is not on your home or office network. **Do this:** use the address shown on the machine's own network screen. It usually starts with 192.168 or 10.\n\n### `discovery_running`\nA network scan is already running. **Do this:** wait for it to finish.\n\n### `queue_full`\nThe send queue is full. **Do this:** wait for the current sends to finish, then try again.\n\n### `previous_delivery_unknown`\nAn earlier send to this machine was never confirmed. **Do this:** check the machine's file list, resolve that send first, then send again.\n\n### `not_cancellable`\nOnly a send that is queued or waiting can be cancelled. **Do this:** wait for it to end.\n\n### `not_uncertain`\nThis send does not need a confirmation. **Do this:** nothing. Refresh the Logs page.\n\n### `empty_body`\nThe file to send was empty. **Do this:** export the design again and check it has stitches.\n\n### `invalid_filename`\nThe file name has a folder or odd characters in it. **Do this:** rename the project with letters and numbers only.\n\n### `confirmation_required`\nDeleting a file from a machine needs your confirmation. **Do this:** confirm in Lilo Link.\n\n### `identity_required`\nLilo must read the machine's status before it deletes a file. **Do this:** press **Test** on the machine first.\n\n### `pairing_in_progress`\nAnother pairing request is waiting for a decision. **Do this:** wait a moment and try again.\n\n### `pairing_origin_mismatch`\nA pairing request belongs to a different source. **Do this:** start the pairing again from Lilo.\n\n### `origin_required`\nPairing only works from a web page. **Do this:** read the token in Lilo Link, **Settings**.\n\n### `origin_not_allowed`\nThe web page asking to connect is not on the allowed list. **Do this:** only allow sites you trust.\n\n### `invalid_origin`\nA web address was not in the right shape. **Do this:** use a full address, like https://example.com.\n\n## Still stuck?\n\n[Use a USB stick](usb-stick.md) while you sort it out. Your design is safe.\n"
+  },
+  {
+   "id": "export-formats",
+   "title": "Choosing a format and exporting",
+   "summary": "Pick the right file format for your machine, set a name and origin, and save.",
+   "section": "sending",
+   "order": 5,
+   "keywords": [
+    "export",
+    "format",
+    "pes",
+    "dst",
+    "save",
+    "origin",
+    "png",
+    "file name",
+    "machine",
+    "stats",
+    "before you sew"
+   ],
+   "appContext": [
+    "dialog.export",
+    "dialog.before-you-sew"
+   ],
+   "status": "ready",
+   "words": 275,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Choose the format",
+     "slug": "choose-the-format"
+    },
+    {
+     "level": 2,
+     "text": "The details",
+     "slug": "the-details"
+    },
+    {
+     "level": 2,
+     "text": "Before you sew",
+     "slug": "before-you-sew"
+    },
+    {
+     "level": 2,
+     "text": "Warnings",
+     "slug": "warnings"
+    },
+    {
+     "level": 2,
+     "text": "Press Save",
+     "slug": "press-save"
+    }
+   ],
+   "body": "# Choosing a format and exporting\n\nPress **Export** at the top right. It is greyed out until the design has stitches.\n\n## Choose the format\n\nUnder **File format**, press the one your machine reads. If you do not know:\n\n- **Brother or Baby Lock:** PES.\n- **Janome:** JEF.\n- **Pfaff or Husqvarna Viking:** VP3.\n- **Singer:** XXX.\n- **Commercial multi-needle machines:** DST.\n- **Melco:** EXP. **Barudan:** U01. **Tajima with colours:** TBF.\n- **Older Husqvarna Viking:** HUS. **Pfaff and Viking with exact colours:** VIP.\n- **CNC, plotter and DIY tools:** G-code, a stitch path that Lilo writes but cannot read back.\n\nThere is also a **PNG** picture of the design. Use it for emails and mock-ups.\n\nRead [File formats](formats-reference.md) for the full list. Formats such as DST, EXP and U01 do not keep thread colours.\n\n## The details\n\nThe window shows **Export stats**: stitches, colour changes, size and time. Check them.\n\n- **File name:** set the name. Lilo adds the right ending.\n- **Origin point:** where the design's zero sits in the hoop. The centre is right for most machines. Some commercial machines start from a corner.\n\n## Before you sew\n\nThe **Before you sew** list sits in the same window. It lists the needle, stabiliser and hooping tips for your fabric. Read it, then press **Save**.\n\n## Warnings\n\nWarnings list anything that may sew badly, like stitches longer than 12 mm that Lilo had to split. Read [What the warnings mean](warnings-explained.md).\n\n## Press Save\n\nPress **Save**. Your computer asks where to put the file. Choose a USB stick for a machine without Wi-Fi. Read [USB stick](usb-stick.md).\n\nSaving ticks the **Send** step in the workflow strip.\n"
+  },
+  {
+   "id": "pixel-art",
+   "title": "Pixel art",
+   "summary": "Paint a grid of squares and stitch each one as a block, a cross or a satin bar. Good for small badges and patterns.",
+   "section": "tools",
+   "order": 1,
+   "keywords": [
+    "pixel art",
+    "grid",
+    "cross stitch",
+    "tatami",
+    "satin",
+    "cell",
+    "palette",
+    "pencil",
+    "fill",
+    "eraser",
+    "eyedropper",
+    "import picture",
+    "32x32"
+   ],
+   "appContext": [
+    "view.pixel"
+   ],
+   "status": "ready",
+   "words": 304,
+   "headings": [
+    {
+     "level": 2,
+     "text": "The tools",
+     "slug": "the-tools"
+    },
+    {
+     "level": 2,
+     "text": "Colours",
+     "slug": "colours"
+    },
+    {
+     "level": 2,
+     "text": "The grid",
+     "slug": "the-grid"
+    },
+    {
+     "level": 2,
+     "text": "Stitch style",
+     "slug": "stitch-style"
+    },
+    {
+     "level": 2,
+     "text": "From a picture",
+     "slug": "from-a-picture"
+    },
+    {
+     "level": 2,
+     "text": "Preview and send",
+     "slug": "preview-and-send"
+    },
+    {
+     "level": 2,
+     "text": "Tips",
+     "slug": "tips"
+    }
+   ],
+   "body": "# Pixel art\n\n**Pixel art** is a picture made of square cells, like a tiny mosaic or a cross-stitch chart. Open it from **Home** or the **Pixel art** view.\n\n## The tools\n\n- **Pencil (B)** paints cells. Drag to paint many.\n- **Fill (G)** fills a connected area of one colour.\n- **Erase (E)** clears cells. A cleared cell has no stitches.\n- **Eyedropper (I)** picks the colour of a cell.\n- **Line (L)** drags a straight line.\n- **Rectangle (R)** drags a rectangle. **Filled rectangles** switches between outline and solid.\n\n**Undo**, **Redo** and **Clear** sit under the tools.\n\n## Colours\n\nPick a **Palette brand** and **Palette line**. Click a swatch to paint with that thread. **Colours in the picture** lists what you have used.\n\n## The grid\n\nSet the **Grid width** and **Grid height** in cells, then press **Resize**. Set the **Cell size in millimetres**. A 32 by 32 grid with 2 mm cells makes a 64 mm design.\n\n## Stitch style\n\n- **Tatami:** each cell is a block of fill rows. Solid and flat.\n- **Cross:** an X in each cell. Looks like cross-stitch.\n- **Satin:** a satin bar across each cell. Shiny.\n\n## From a picture\n\nPress **Import a picture…** to turn a picture into pixels. Set **Most colours** and decide whether to **Keep the background**. Then tidy it with the pencil.\n\n## Preview and send\n\nThe **Stitch preview** on the right plays your pixel art. Press **Send to editor** to add the stitches to the editor's design, where you can resize, combine and send it. Or press **Export…** to save a file.\n\n## Tips\n\n- Use big cells (2 to 3 mm) for a clean sew.\n- Use few colours. Each one is a thread change. Read [Fewer colour changes](fewer-colour-changes.md).\n- Test sew first. Tiny cells can pile up thread.\n"
+  },
+  {
+   "id": "converter",
+   "title": "The converter",
+   "summary": "Change an embroidery file to another format, or turn pictures into stitches or a traced SVG, many files at once.",
+   "section": "tools",
+   "order": 2,
+   "keywords": [
+    "converter",
+    "convert",
+    "format",
+    "batch",
+    "pes",
+    "dst",
+    "jef",
+    "svg",
+    "trace",
+    "warnings",
+    "save all",
+    "open in editor"
+   ],
+   "appContext": [
+    "view.converter"
+   ],
+   "status": "ready",
+   "words": 246,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Steps",
+     "slug": "steps"
+    },
+    {
+     "level": 2,
+     "text": "Open in the editor",
+     "slug": "open-in-the-editor"
+    },
+    {
+     "level": 2,
+     "text": "Warnings",
+     "slug": "warnings"
+    },
+    {
+     "level": 2,
+     "text": "Pictures",
+     "slug": "pictures"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# The converter\n\nThe **converter** changes files from one format to another. Use it when a client sends a DST and your machine needs a PES.\n\n## Steps\n\n1. Open **Converter** from the top of the window.\n2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF) or pictures (PNG, JPG, WEBP, SVG).\n3. Tick the formats you want. You can tick several.\n4. Press **Convert**.\n5. Under **Results**, press **Save…** next to a result, or **Save all**.\n\nYou can remove a file from the list with its **Remove** button, or clear the whole list.\n\n## Open in the editor\n\nPress **Open in editor** on an embroidery file to add its stitches to the editor as **Manual stitch** shapes. You can then move and resize them. You cannot change their stitch type, because the original instructions are fixed stitch points.\n\n## Warnings\n\nConversions can lose something. The results list shows a warning when:\n\n- the source file had no thread colours,\n- the target format cannot keep colours,\n- stops were converted,\n- stitches were longer than the target allows.\n\nRead the warnings before you save. Formats such as DST, EXP and U01 do not keep thread colours. Read [File formats](formats-reference.md).\n\n## Pictures\n\nA picture can become **stitches** (with the same auto-digitize as the editor) or a **traced SVG** you can edit in a drawing app.\n\n## Related\n\n[Opening files](opening-files.md)\n"
+  },
+  {
+   "id": "opening-files",
+   "title": "Opening files",
+   "summary": "Which files Lilo can open, how to open them and what happens to an embroidery file you open.",
+   "section": "tools",
+   "order": 3,
+   "keywords": [
+    "open",
+    "import",
+    "drop",
+    "png",
+    "jpg",
+    "webp",
+    "svg",
+    "pes",
+    "dst",
+    "lilo",
+    "file",
+    "drag",
+    "existing design"
+   ],
+   "appContext": [
+    "view.home",
+    "panel.digitize"
+   ],
+   "status": "ready",
+   "words": 249,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Pictures: PNG, JPG, WEBP, SVG",
+     "slug": "pictures-png-jpg-webp-svg"
+    },
+    {
+     "level": 2,
+     "text": "Lilo projects: .lilo",
+     "slug": "lilo-projects-lilo"
+    },
+    {
+     "level": 2,
+     "text": "Embroidery files",
+     "slug": "embroidery-files"
+    },
+    {
+     "level": 2,
+     "text": "When a file will not open",
+     "slug": "when-a-file-will-not-open"
+    },
+    {
+     "level": 2,
+     "text": "Where projects live",
+     "slug": "where-projects-live"
+    }
+   ],
+   "body": "# Opening files\n\nLilo opens three kinds of files.\n\n## Pictures: PNG, JPG, WEBP, SVG\n\nOpen a picture to digitize it. Use **Digitize a picture…** on Home, **Open image…** in the left panel, or drop the file on the canvas. Read [Turn a picture into stitches](auto-digitize.md).\n\nSVG files are drawings. They trace more cleanly than photos.\n\n## Lilo projects: .lilo\n\nA **.lilo** file is a full project: shapes, settings, reference images and version history. Open with **Open…** on Home or **⌘O**. Double-clicking a .lilo file opens it in Lilo. Read [Projects and autosave](projects-and-autosave.md).\n\n## Embroidery files\n\nLilo reads PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF, and writes those plus G-code (a stitch path for CNC and plotter tools, write only). Use the [converter](converter.md) to change a file's format, or press **Open in editor** there to bring the stitches into the editor.\n\nA file that has already been stitched has fixed needle points. Lilo shows them as **Manual stitch** shapes. You can move, resize and re-colour them, but you cannot change a fill's pattern, because the pattern is gone.\n\n## When a file will not open\n\n- Check the ending. Lilo does not read every format. See [File formats](formats-reference.md).\n- Very large files may be slow. Close other windows.\n- If a file is damaged, try the original from where you got it.\n\n## Where projects live\n\nNew projects save to **Documents, then Lilo**. Home shows the most recent ones as cards with a thumbnail.\n"
+  },
+  {
+   "id": "projects-and-autosave",
+   "title": "Projects and autosave",
+   "summary": "How .lilo project files work, where they are saved and how autosave protects your work.",
+   "section": "projects",
+   "order": 1,
+   "keywords": [
+    "project",
+    ".lilo",
+    "save",
+    "autosave",
+    "documents",
+    "recent",
+    "open",
+    "revert",
+    "save as",
+    "file menu",
+    "thumbnail"
+   ],
+   "appContext": [
+    "dialog.file-menu",
+    "view.home"
+   ],
+   "status": "ready",
+   "words": 240,
+   "headings": [
+    {
+     "level": 2,
+     "text": "The File menu",
+     "slug": "the-file-menu"
+    },
+    {
+     "level": 2,
+     "text": "Where files go",
+     "slug": "where-files-go"
+    },
+    {
+     "level": 2,
+     "text": "Autosave",
+     "slug": "autosave"
+    },
+    {
+     "level": 2,
+     "text": "Opening a project",
+     "slug": "opening-a-project"
+    },
+    {
+     "level": 2,
+     "text": "Name your project",
+     "slug": "name-your-project"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Projects and autosave\n\nA **project** is your whole design in one file with the ending **.lilo**. It holds your shapes, settings, reference pictures and a small preview image.\n\n## The File menu\n\nThe **File** menu in the top-left of the editor has:\n\n- **New design** (**⌘N**)\n- **Open project…** (**⌘O**)\n- **Save** (**⌘S**)\n- **Save As…** (**⇧⌘S**)\n- **Revert to saved**, which throws away changes since your last save\n- **Version history**\n- Open image, Export and Send\n\n## Where files go\n\nThe first time you save, Lilo suggests **Documents, then Lilo**. You can save anywhere. Home lists recent projects, newest first, with a thumbnail.\n\nA small dot next to the project name means you have unsaved changes.\n\n## Autosave\n\nLilo saves a copy of your work every **30 seconds** and when you click away from the window. These copies go into the project's own **version history**, not over your last real save. So autosave never destroys a save you chose to keep.\n\nIf Lilo closes by accident, open the project again and look in **Version history**.\n\n## Opening a project\n\nUse **Open…** on Home, **⌘O**, or double-click a .lilo file. Lilo asks before it throws away unsaved changes in the current design.\n\n## Name your project\n\nClick the name in the top bar and type. A good name is the job: \"JK lining monogram\". It also becomes the default file name when you export.\n\n## Related\n\n[Version history](version-history.md)\n"
+  },
+  {
+   "id": "version-history",
+   "title": "Version history",
+   "summary": "Browse the last 50 saved versions of a project, preview one and bring it back.",
+   "section": "projects",
+   "order": 2,
+   "keywords": [
+    "version",
+    "history",
+    "restore",
+    "undo",
+    "autosave",
+    "previous",
+    "recover",
+    "50",
+    "backup"
+   ],
+   "appContext": [
+    "dialog.history"
+   ],
+   "status": "ready",
+   "words": 139,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Open it",
+     "slug": "open-it"
+    },
+    {
+     "level": 2,
+     "text": "What you see",
+     "slug": "what-you-see"
+    },
+    {
+     "level": 2,
+     "text": "Bring one back",
+     "slug": "bring-one-back"
+    },
+    {
+     "level": 2,
+     "text": "Undo is different",
+     "slug": "undo-is-different"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# Version history\n\nEvery project keeps its **last 50 versions**. Each save and each autosave adds one. When there are more than 50, the oldest drops off.\n\n## Open it\n\nOpen the **File** menu and choose **Version history**.\n\n## What you see\n\n- A list of saved versions, newest first, each with its time.\n- A **Preview** of the selected version.\n\n## Bring one back\n\n1. Click a version to see its preview.\n2. Press **Restore this version**, or double-click the version.\n\nRestoring replaces your current work with that version. If you are not sure, save a copy first with **Save As…**.\n\n## Undo is different\n\n**Undo** (⌘Z) steps back through your edits in the current session, up to 200 steps. **Version history** is for bigger jumps, or for when you closed the app.\n\n## Related\n\n[Projects and autosave](projects-and-autosave.md)\n"
+  },
+  {
+   "id": "keyboard-shortcuts",
+   "title": "Keyboard shortcuts",
+   "summary": "Every keyboard shortcut, built from the app's own tool list and command list.",
+   "section": "reference",
+   "order": 10,
+   "keywords": [
+    "keyboard",
+    "shortcut",
+    "hotkey",
+    "key",
+    "command",
+    "palette"
+   ],
+   "appContext": [
+    "dialog.command-palette"
+   ],
+   "status": "generated",
+   "words": 316,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Tools",
+     "slug": "tools"
+    },
+    {
+     "level": 2,
+     "text": "Edit",
+     "slug": "edit"
+    },
+    {
+     "level": 2,
+     "text": "Shape",
+     "slug": "shape"
+    },
+    {
+     "level": 2,
+     "text": "File",
+     "slug": "file"
+    },
+    {
+     "level": 2,
+     "text": "Help",
+     "slug": "help"
+    },
+    {
+     "level": 2,
+     "text": "Mouse and trackpad",
+     "slug": "mouse-and-trackpad"
+    }
+   ],
+   "body": "# Keyboard shortcuts\n\nThis list is built from the app's tool registry and command list. On Windows and Linux, use **Ctrl** where you see **⌘**. **⇧** is Shift. **⌫** is Backspace.\n\nYou do not have to remember these. Press **⌘K** and type what you want. The search box finds every tool and action.\n\n## Tools\n\n| Action | Keys |\n| --- | --- |\n| Select tool | S |\n| Pan tool | Space |\n| Measure tool | M |\n| Open shape tool | 1 |\n| Closed shape tool | 2 |\n| Circle tool | 3 |\n| Rectangle tool | 4 |\n| Pen tool | 5 |\n| Satin blocks tool | 6 |\n| Text tool | T |\n| Click to stitch tool | K |\n| Manual stitch tool | 7 |\n\n## Edit\n\n| Action | Keys |\n| --- | --- |\n| Undo | ⌘Z |\n| Redo | ⇧⌘Z |\n| Select all | ⌘A |\n| Deselect | Esc |\n| Duplicate | ⌘D |\n| Delete | ⌫ |\n\n## Shape\n\n| Action | Keys |\n| --- | --- |\n| Map to path | P |\n\n## File\n\n| Action | Keys |\n| --- | --- |\n| New design | ⌘N |\n| Open project… | ⌘O |\n| Save | ⌘S |\n| Save As… | ⇧⌘S |\n\n## Help\n\n| Action | Keys |\n| --- | --- |\n| Open the Help panel | ⌘? |\n| Search every tool and action | ⌘K |\n\n## Mouse and trackpad\n\n- **Scroll** or pinch to zoom the canvas.\n- Hold **Space** and drag to pan with any tool.\n- **Shift**-click adds to a selection.\n- Drag from a ruler to pull out a guide line.\n- **Double-click** a shape to reshape its points.\n"
+  },
+  {
+   "id": "formats-reference",
+   "title": "File formats",
+   "summary": "The 12 embroidery file formats Lilo writes (all but G-code it also reads), and which machines use each one.",
+   "section": "reference",
+   "order": 20,
+   "keywords": [
+    "format",
+    "pes",
+    "dst",
+    "exp",
+    "jef",
+    "vp3",
+    "xxx",
+    "u01",
+    "pec",
+    "brand",
+    "machine",
+    "compatibility"
+   ],
+   "appContext": [
+    "dialog.export",
+    "view.converter"
+   ],
+   "status": "generated",
+   "words": 372,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Machine compatibility",
+     "slug": "machine-compatibility"
+    }
+   ],
+   "body": "# File formats\n\nLilo writes 12 embroidery formats and reads 11 of them. The list is built from the app's own format table.\n\nA format is the file type your machine understands. Brother and Baby Lock machines use **PES**. Most commercial machines use **DST**. If you are not sure, check your machine manual or the type of file it already sews.\n\n| Extension | Name | Lilo | Keeps thread colours? | Used by |\n| --- | --- | --- | --- | --- |\n| .pes | Brother PES | Read and write | Yes | Brother, Baby Lock, Bernina (reads) |\n| .pec | Brother PEC | Read and write | Yes | Brother, Baby Lock |\n| .dst | Tajima DST | Read and write | No | Tajima, Barudan, Ricoma, Melco, SWF, Happy, ZSK, Toyota, Janome MB-7, Brother, Baby Lock |\n| .exp | Melco EXP | Read and write | No | Melco, Bernina |\n| .jef | Janome JEF | Read and write | Yes | Janome, Elna (some) |\n| .vp3 | Pfaff/Viking VP3 | Read and write | Yes | Pfaff, Husqvarna Viking |\n| .xxx | Singer XXX | Read and write | Yes | Singer, Compucon |\n| .u01 | Barudan U01 | Read and write | No | Barudan |\n| .hus | Husqvarna Viking HUS | Read and write | Yes | Husqvarna Viking |\n| .vip | Pfaff/Viking VIP | Read and write | Yes | Husqvarna Viking, Pfaff |\n| .tbf | Tajima TBF | Read and write | Yes | Tajima |\n| .gcode | G-code (stitch path) | Write only | No | CNC and plotter tools |\n\n**Keeps thread colours** matters when you send a file. Formats without colours still sew in the right order. They just show you \"colour 1, colour 2\" instead of real thread names. See [Choosing a format](export-formats.md).\n\n## Machine compatibility\n\nThe research behind Lilo covers 17 brands, 66 machines and 44 thread brands. No machine has been tested on real hardware beyond one pending Brother run, so treat every machine as \"should work\" until you have sewn one design. The full tables are in compatibility.md in the docs folder.\n"
+  },
+  {
+   "id": "glossary",
+   "title": "Glossary",
+   "summary": "Plain-word meanings for every embroidery and Lilo term, from appliqué to zig-zag.",
+   "section": "reference",
+   "order": 30,
+   "keywords": [
+    "glossary",
+    "terms",
+    "dictionary",
+    "meaning",
+    "definition",
+    "words",
+    "jargon"
+   ],
+   "appContext": [
+    "panel.help"
+   ],
+   "status": "ready",
+   "words": 734,
+   "headings": [
+    {
+     "level": 2,
+     "text": "A to C",
+     "slug": "a-to-c"
+    },
+    {
+     "level": 2,
+     "text": "D to H",
+     "slug": "d-to-h"
+    },
+    {
+     "level": 2,
+     "text": "I to O",
+     "slug": "i-to-o"
+    },
+    {
+     "level": 2,
+     "text": "P to S",
+     "slug": "p-to-s"
+    },
+    {
+     "level": 2,
+     "text": "T to Z",
+     "slug": "t-to-z"
+    }
+   ],
+   "body": "# Glossary\n\nWords are in alphabetical order. A word in **bold** inside a meaning has its own entry.\n\n## A to C\n\n- **Appliqué.** A patch of cloth stitched onto a garment. An **E-stitch** edge is often used to hold it.\n- **Aspect ratio.** The relationship between width and height. Locking it keeps a shape from squashing.\n- **Auto digitize.** Lilo turns a picture into stitches in one step. Read [Turn a picture into stitches](auto-digitize.md).\n- **Backing.** Another word for **stabiliser**.\n- **Bean stitch.** Another name for a **triple** run.\n- **Birdnesting.** A tangle of thread under the cloth that jams the machine.\n- **Bobbin.** The small spool under the needle plate that makes the back of the stitch.\n- **Colour block.** A run of shapes sewn in one thread, with no thread change inside.\n- **Colour change.** A stop to swap the top thread for the next colour.\n- **Column.** A **satin** stripe. Its width is the distance across it.\n- **Cut-away.** A **stabiliser** you trim around the design. It stays in the garment.\n\n## D to H\n\n- **Density.** How close stitches sit together. A smaller gap means higher density.\n- **Digitizing.** Turning a picture or drawing into stitch instructions.\n- **DST.** A file format used by many commercial machines. It does not keep thread colours.\n- **E-stitch.** A comb-shaped run stitch.\n- **Edge outline.** A running line sewn round the edge of a **fill**.\n- **Fill.** Rows of stitches covering an area.\n- **Font (embroidery).** Letters drawn to be sewn, with a height range where they sew well.\n- **Format.** The kind of file a machine reads, like PES or DST.\n- **Gradient.** A fade in a **fill**, made by changing row spacing across the shape.\n- **Hoop.** The frame that holds cloth tight while it is sewn.\n\n## I to O\n\n- **Inset.** How far inside the edge an **underlay** stops, so it stays hidden.\n- **Jump.** Thread that travels from one point to another without sewing.\n- **Knit.** Stretchy cloth. It needs more **pull compensation** and a firm **stabiliser**.\n- **Lilo Link.** The part of Lilo that sends designs to a machine over Wi-Fi.\n- **Lock stitches.** Tiny stitches at the start and end of a run that stop it unravelling. Also called tie-in and tie-off.\n- **Manual stitch.** A stitch placed exactly where you click.\n- **Monogram.** Initials sewn as a mark, like \"JK\" inside a jacket.\n- **Motif.** A small shape repeated across a **fill**.\n- **Needle drop.** One point where the needle goes through the cloth. Also called a stitch.\n- **Needle size.** The thickness of the needle, like 75/11.\n- **Origin.** The point in the design that sits at the centre of the hoop.\n\n## P to S\n\n- **PES.** The file format of Brother and Baby Lock machines. It keeps thread colours.\n- **Pile.** The fluffy surface of cloth like towel or velvet.\n- **Pull compensation.** Making a shape slightly bigger to allow for the thread pulling cloth inward.\n- **Pucker.** Ripples in the cloth around a design.\n- **Realistic view.** A preview that draws each stitch as shaded thread.\n- **Registration.** How well one shape lines up with its neighbour.\n- **Row spacing.** The gap between rows of stitches in a **fill**.\n- **Run.** A stitch that follows a line.\n- **Satin.** Side-to-side stitches in a column. Smooth and shiny.\n- **Sew-out.** The real stitched result.\n- **Sewing area.** The part of the hoop the machine can sew.\n- **Stabiliser.** A sheet under the cloth that stops it moving and bunching.\n- **Stitch length.** The distance between two needle drops.\n- **Split satin.** A wide **satin** column divided so no stitch is too long.\n\n## T to Z\n\n- **Tatami.** The common name for a standard **fill** with offset rows.\n- **Tear-away.** A **stabiliser** that rips off after sewing.\n- **Thread weight.** How thin thread is. 40 wt is standard. 60 wt is finer.\n- **Tie-in and tie-off.** See **lock stitches**.\n- **Tolerance.** How far a stitch may stray from the line you drew.\n- **Topping.** A thin water-soluble sheet on top of fluffy cloth.\n- **Trim.** A cut of the thread between shapes, done by the machine.\n- **Underlay.** Light stitches sewn first, under the top stitches.\n- **Underpath.** Travelling through a **fill** under the stitches instead of jumping.\n- **Zig-zag underlay.** An **underlay** that goes back and forth across a column.\n"
+  },
+  {
+   "id": "sewout-troubleshooting",
+   "title": "Fixing sew-out problems",
+   "summary": "Puckering, gaps, thread breaks and birdnesting: what causes each and which Lilo setting to change.",
+   "section": "help",
+   "order": 1,
+   "keywords": [
+    "puckering",
+    "pucker",
+    "gaps",
+    "thread break",
+    "birdnest",
+    "bird nest",
+    "bobbin",
+    "loose",
+    "shrink",
+    "outline",
+    "registration",
+    "problem",
+    "sew-out",
+    "fix",
+    "troubleshoot",
+    "tension",
+    "needle"
+   ],
+   "appContext": [
+    "panel.warnings",
+    "dialog.before-you-sew"
+   ],
+   "status": "ready",
+   "words": 480,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Puckering",
+     "slug": "puckering"
+    },
+    {
+     "level": 2,
+     "text": "Gaps",
+     "slug": "gaps"
+    },
+    {
+     "level": 2,
+     "text": "Thread breaks",
+     "slug": "thread-breaks"
+    },
+    {
+     "level": 2,
+     "text": "Birdnesting",
+     "slug": "birdnesting"
+    },
+    {
+     "level": 2,
+     "text": "Bobbin thread shows on top",
+     "slug": "bobbin-thread-shows-on-top"
+    },
+    {
+     "level": 2,
+     "text": "Outline does not line up with the fill",
+     "slug": "outline-does-not-line-up-with-the-fill"
+    },
+    {
+     "level": 2,
+     "text": "Letters look filled in",
+     "slug": "letters-look-filled-in"
+    },
+    {
+     "level": 2,
+     "text": "Always sew a test",
+     "slug": "always-sew-a-test"
+    }
+   ],
+   "body": "# Fixing sew-out problems\n\nA **sew-out** is the real stitched result. When it looks wrong, find your symptom below. Each one lists the cause and the Lilo setting that helps. Change one thing at a time and sew a small test again.\n\n## Puckering\n\nThe cloth bunches up or ripples around the design.\n\n**Causes and fixes:**\n\n1. **Too dense.** Too many stitches in a small area. Raise **Row spacing** (fill) or **Density** (satin). Check for a density warning.\n2. **Not enough underlay.** Turn on **Underlay**. Read [Underlay and pull compensation](underlay-and-pull.md).\n3. **Wrong stabiliser.** Use cut-away for knits and thin cloth. See [Sewing setup presets](sewing-presets.md).\n4. **Hooped too tight or stretched.** The cloth springs back. Hoop firm, not stretched.\n5. **Wrong fabric in the Sewing setup.** Pick the one that matches.\n\n## Gaps\n\nWhite cloth shows between a fill and its outline, or between two shapes.\n\n**Causes and fixes:**\n\n1. **Pull compensation too low.** The thread pulled the shapes in. Raise **Pull compensation**.\n2. **Cloth moved.** Use firmer stabiliser and hoop tighter.\n3. **Shapes did not overlap.** Slightly enlarge one of them, or let Lilo overlap columns with **Premium** quality.\n4. **Fill underlay missing.** The fill sank into the cloth. Turn on underlay.\n\n![A fill with a gap to its outline, and the fixed version](screenshots/gap-fix.png)\n\n## Thread breaks\n\nThe top thread snaps again and again.\n\n**Causes and fixes:**\n\n1. **Stitches too dense.** Needle holes cut the thread. Raise spacing. A density warning is a clue.\n2. **Tiny stitches piled up.** Use **Standard** quality, or raise stitch length. Tiny stitches are merged automatically.\n3. **Old or wrong needle.** Replace it. Use the size in **Before you sew**.\n4. **Thread too thick for the detail.** Use **60 wt** for tiny letters.\n5. **Poor or dry thread.** Try a fresh spool.\n\n## Birdnesting\n\nA tangled lump of thread forms under the cloth, and the machine jams.\n\n**Causes and fixes:**\n\n1. **The top thread slipped out of tension.** Rethread the top thread with the presser foot **up**.\n2. **Fluff in the bobbin area.** Clean the bobbin case.\n3. **Hoop not seated.** Cloth lifting off the plate. Re-hoop.\n4. **Long jump at the start.** In Lilo, move the start point close to where sewing begins. Use **Start** in the shape bar.\n\nLilo cannot see your machine. The first two causes are in the machine.\n\n## Bobbin thread shows on top\n\nThe top thread is too tight. Loosen the top tension a little. Read your machine's manual.\n\n## Outline does not line up with the fill\n\nCalled **registration**. Cloth shifted. Use firm stabiliser, tighter hoop and **Pull compensation** on the fill.\n\n## Letters look filled in\n\nLetters are too small for the thread. Read [Small letters](small-letters.md).\n\n## Always sew a test\n\nBefore the real garment, sew the design on a scrap of the same cloth with the same stabiliser. It takes minutes and saves a ruined jacket.\n"
+  },
+  {
+   "id": "warnings-explained",
+   "title": "What the warnings mean",
+   "summary": "Every warning Lilo can show in the tray and in Export or Send, what it means and how to fix it.",
+   "section": "help",
+   "order": 2,
+   "keywords": [
+    "warning",
+    "outside hoop",
+    "density",
+    "stitch too long",
+    "colour changes",
+    "stitch count",
+    "small region",
+    "satin too wide",
+    "letters too small",
+    "tray",
+    "fix",
+    "empty",
+    "object failed"
+   ],
+   "appContext": [
+    "panel.warnings",
+    "dialog.export",
+    "dialog.send"
+   ],
+   "status": "ready",
+   "words": 478,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Outside the hoop",
+     "slug": "outside-the-hoop"
+    },
+    {
+     "level": 2,
+     "text": "Too dense",
+     "slug": "too-dense"
+    },
+    {
+     "level": 2,
+     "text": "A stitch was too long",
+     "slug": "a-stitch-was-too-long"
+    },
+    {
+     "level": 2,
+     "text": "A shape made no stitches",
+     "slug": "a-shape-made-no-stitches"
+    },
+    {
+     "level": 2,
+     "text": "The design is empty",
+     "slug": "the-design-is-empty"
+    },
+    {
+     "level": 2,
+     "text": "Many colour changes",
+     "slug": "many-colour-changes"
+    },
+    {
+     "level": 2,
+     "text": "A high stitch count or long sewing time",
+     "slug": "a-high-stitch-count-or-long-sewing-time"
+    },
+    {
+     "level": 2,
+     "text": "Tiny regions",
+     "slug": "tiny-regions"
+    },
+    {
+     "level": 2,
+     "text": "Satin too wide",
+     "slug": "satin-too-wide"
+    },
+    {
+     "level": 2,
+     "text": "Letters too small",
+     "slug": "letters-too-small"
+    },
+    {
+     "level": 2,
+     "text": "Fonts and text",
+     "slug": "fonts-and-text"
+    },
+    {
+     "level": 2,
+     "text": "About dismissing",
+     "slug": "about-dismissing"
+    }
+   ],
+   "body": "# What the warnings mean\n\nLilo watches your design while you work. When something might sew badly, a short note appears in the **warnings tray**, in the right-hand column, under the Sewing setup card. It never blocks you. Each note offers a **fix** button or a **Read more** link. You can dismiss any note.\n\n## Outside the hoop\n\nThe design is bigger than the hoop's sewing area. The machine cannot sew what is outside.\n\n**Fix:** pick a larger hoop (**Smallest hoop that fits**), or scale the design down. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Too dense\n\nToo many stitches land in the same 1 square millimetre. The thread may break or the cloth may pucker.\n\n**Fix:** open the shape's settings and raise **Row spacing** (fills) or **Density** (satin). Read [Fixing sew-out problems](sewout-troubleshooting.md).\n\n## A stitch was too long\n\nStitches over 12 mm can snag, so Lilo split them. The design is fine, but long stitches often mean a big, open fill.\n\n**Fix:** shorten **Stitch length** in a fill, or use a pattern with shorter stitches.\n\n## A shape made no stitches\n\nA shape could not be stitched, for example if its thread is missing. **Fix:** select the shape and give it a thread.\n\n## The design is empty\n\nNothing to sew yet. Draw, type or open a picture.\n\n## Many colour changes\n\nMore than 8 colour changes. Each is a stop to swap thread on a home machine.\n\n**Fix:** merge similar colours. Read [Fewer colour changes](fewer-colour-changes.md).\n\n## A high stitch count or long sewing time\n\nA design with more than about 30,000 stitches, or over an hour of sewing at 850 stitches a minute, is a long sew and a bigger file.\n\n**Fix:** make it smaller, use **Standard** quality, or use fewer fills.\n\n## Tiny regions\n\nA shape under about 1 mm wide is too small to sew as a fill. It will blur or snap thread.\n\n**Fix:** delete it, make it bigger, or turn it into a **Triple** run.\n\n## Satin too wide\n\nA satin column over 8 mm with no split has long, loose stitches.\n\n**Fix:** turn on **Split above** in the **Satin** section, or change the shape to a fill. Read [Satin tips](satin-tips.md).\n\n## Letters too small\n\nThe letters are shorter than 6 mm with 40 wt thread, or 4 mm with 60 wt. They will fill in.\n\n**Fix:** make them taller or switch to **60 wt**. Read [Small letters](small-letters.md).\n\n## Fonts and text\n\n- **Below or above the font's range:** the font suits another height. Pick a different font.\n- **Custom font small:** custom fonts sew best above a minimum height.\n- **Missing glyph:** the font has no letter for a character you typed.\n- **Text longer than the path:** the end would run off the curve.\n\n## About dismissing\n\nA dismissed note stays hidden until the problem changes. Reopening the project shows it again.\n"
+  },
+  {
+   "id": "faq",
+   "title": "Frequently asked questions",
+   "summary": "Quick answers: cost, accounts, privacy, machines, formats, photos and more.",
+   "section": "help",
+   "order": 3,
+   "keywords": [
+    "faq",
+    "questions",
+    "free",
+    "account",
+    "privacy",
+    "photo",
+    "machine",
+    "wifi",
+    "linux",
+    "update",
+    "offline",
+    "licence"
+   ],
+   "appContext": [
+    "panel.help"
+   ],
+   "status": "ready",
+   "words": 366,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Does Lilo cost anything?",
+     "slug": "does-lilo-cost-anything"
+    },
+    {
+     "level": 2,
+     "text": "Do I need an account?",
+     "slug": "do-i-need-an-account"
+    },
+    {
+     "level": 2,
+     "text": "Where do my designs go?",
+     "slug": "where-do-my-designs-go"
+    },
+    {
+     "level": 2,
+     "text": "Which machines can I send to over Wi-Fi?",
+     "slug": "which-machines-can-i-send-to-over-wi-fi"
+    },
+    {
+     "level": 2,
+     "text": "My machine is on a 5 GHz network. Will it work?",
+     "slug": "my-machine-is-on-a-5-ghz-network-will-it-work"
+    },
+    {
+     "level": 2,
+     "text": "Can I stitch a photo?",
+     "slug": "can-i-stitch-a-photo"
+    },
+    {
+     "level": 2,
+     "text": "What is the biggest design I can make?",
+     "slug": "what-is-the-biggest-design-i-can-make"
+    },
+    {
+     "level": 2,
+     "text": "Why does my design look smaller when sewn?",
+     "slug": "why-does-my-design-look-smaller-when-sewn"
+    },
+    {
+     "level": 2,
+     "text": "Why are my letters filled in?",
+     "slug": "why-are-my-letters-filled-in"
+    },
+    {
+     "level": 2,
+     "text": "Can I use my own fonts?",
+     "slug": "can-i-use-my-own-fonts"
+    },
+    {
+     "level": 2,
+     "text": "Can I turn off the tour and the tips?",
+     "slug": "can-i-turn-off-the-tour-and-the-tips"
+    },
+    {
+     "level": 2,
+     "text": "How do I replay the tour?",
+     "slug": "how-do-i-replay-the-tour"
+    },
+    {
+     "level": 2,
+     "text": "What if Lilo closes without saving?",
+     "slug": "what-if-lilo-closes-without-saving"
+    },
+    {
+     "level": 2,
+     "text": "Windows says \"Windows protected your PC\".",
+     "slug": "windows-says-windows-protected-your-pc"
+    },
+    {
+     "level": 2,
+     "text": "Where do I report a problem?",
+     "slug": "where-do-i-report-a-problem"
+    }
+   ],
+   "body": "# Frequently asked questions\n\n## Does Lilo cost anything?\n\nNo. Lilo is free and open source under the GPL-3.0 licence.\n\n## Do I need an account?\n\nNo. There is no sign-in.\n\n## Where do my designs go?\n\nThey stay on your computer. Lilo only contacts one place: the GitHub Releases page, to check for updates once a day. You can switch that off.\n\n## Which machines can I send to over Wi-Fi?\n\nBrother and Baby Lock machines with built-in Wi-Fi. Every other machine works through a file on a USB stick. Read [Set up Wi-Fi sending](lilo-link-wifi.md) and [USB stick](usb-stick.md).\n\n## My machine is on a 5 GHz network. Will it work?\n\nMost embroidery machines only use 2.4 GHz. Connect the machine to 2.4 GHz. Your computer can be on either band if both bands share one network.\n\n## Can I stitch a photo?\n\nYou can, but photos turn out muddy. Thread has no soft shading. Use a simple logo or drawing, or reduce the photo to a few flat colours first.\n\n## What is the biggest design I can make?\n\nIt depends on your hoop. The sewing area of the hoop is the limit. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Why does my design look smaller when sewn?\n\nThread pulls the cloth in. Raise **Pull compensation**. Read [Underlay and pull compensation](underlay-and-pull.md).\n\n## Why are my letters filled in?\n\nThey are too small for the thread. Read [Small letters](small-letters.md).\n\n## Can I use my own fonts?\n\nYes. TTF, OTF and TTC files. Read [Using your own fonts](own-fonts.md).\n\n## Can I turn off the tour and the tips?\n\nYou can skip the tour at any step. Hints only show when you ask for them. Dismiss a warning note with its close button.\n\n## How do I replay the tour?\n\nOpen **Help** and press **Replay the tour**.\n\n## What if Lilo closes without saving?\n\nLilo autosaves every 30 seconds. Reopen the project and look in **Version history**. Read [Version history](version-history.md).\n\n## Windows says \"Windows protected your PC\".\n\nThat is SmartScreen, because the installer is not signed yet. Click **More info**, then **Run anyway**. Read [Install Lilo](install.md).\n\n## Where do I report a problem?\n\nRead [Report a bug or a machine](bug-reports.md).\n"
+  },
+  {
+   "id": "bug-reports",
+   "title": "Report a bug or a machine",
+   "summary": "How to report a problem, and how to tell us your machine worked, so others can find out.",
+   "section": "help",
+   "order": 4,
+   "keywords": [
+    "bug",
+    "report",
+    "issue",
+    "github",
+    "machine report",
+    "logs",
+    "compatibility",
+    "feedback",
+    "support"
+   ],
+   "appContext": [
+    "link.logs",
+    "panel.help"
+   ],
+   "status": "ready",
+   "words": 203,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Report a bug",
+     "slug": "report-a-bug"
+    },
+    {
+     "level": 2,
+     "text": "Report a machine",
+     "slug": "report-a-machine"
+    },
+    {
+     "level": 2,
+     "text": "Before you report",
+     "slug": "before-you-report"
+    }
+   ],
+   "body": "# Report a bug or a machine\n\nLilo is open source. Problems and machine reports go to the Lilo project on GitHub (github.com/Kadwood/lilo, **Issues**). There are two forms.\n\n## Report a bug\n\nChoose **Bug report** and fill in:\n\n1. **What happened.** Say what you did, what you expected and what you got.\n2. **Your system.** Mac, Windows or Linux, and the Lilo version. The version is in **Lilo Link**, **Settings**.\n3. **A project file.** If you can, attach the .lilo file. It lets us see the design.\n4. **Logs.** For a send problem, copy the text from **Lilo Link**, **Logs**.\n\nA screenshot helps a lot.\n\n## Report a machine\n\nChoose **Machine report** to tell us how Lilo worked with your machine. We list machines as **tested** only after a real sew-out. Your report moves a machine from \"should work\" to \"works\". Fill in:\n\n- The **brand and model**.\n- Whether the **Wi-Fi scan** found it.\n- Whether **Send** worked.\n- Whether the design **sewed**.\n- Any error **code** you saw. Read [Wi-Fi troubleshooting](send-troubleshooting.md).\n\n## Before you report\n\n- Check [Wi-Fi troubleshooting](send-troubleshooting.md) or [Fixing sew-out problems](sewout-troubleshooting.md).\n- Update to the newest Lilo.\n- Do not include private information. Lilo does not send anything automatically.\n"
+  },
+  {
+   "id": "licence-and-credits",
+   "title": "Licence and credits",
+   "summary": "Lilo is free software under GPL-3.0. Here is what it is built on and where the full notices are.",
+   "section": "help",
+   "order": 5,
+   "keywords": [
+    "licence",
+    "license",
+    "gpl",
+    "credits",
+    "open source",
+    "notice",
+    "fonts",
+    "trademark",
+    "stitchjs",
+    "vtracer",
+    "thread palettes"
+   ],
+   "appContext": [
+    "panel.help"
+   ],
+   "status": "ready",
+   "words": 247,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Licence",
+     "slug": "licence"
+    },
+    {
+     "level": 2,
+     "text": "Trademarks",
+     "slug": "trademarks"
+    },
+    {
+     "level": 2,
+     "text": "What Lilo is built on",
+     "slug": "what-lilo-is-built-on"
+    },
+    {
+     "level": 2,
+     "text": "Brand names",
+     "slug": "brand-names"
+    },
+    {
+     "level": 2,
+     "text": "No tracking",
+     "slug": "no-tracking"
+    },
+    {
+     "level": 2,
+     "text": "Credits for this guide",
+     "slug": "credits-for-this-guide"
+    }
+   ],
+   "body": "# Licence and credits\n\n## Licence\n\nLilo is free software under the **GNU General Public Licence version 3 (GPL-3.0)**. You can use it, study it, change it and share it. If you share a changed version, you must share its source under the same licence. The full text is in the **LICENSE** file.\n\n## Trademarks\n\nThe Kadwood name and logo, and the Lilo name and hibiscus logo, are trademarks of Kadwood. The GPL does not cover them. You may not use them to identify a modified version without permission.\n\n## What Lilo is built on\n\nLilo stands on other people's open-source work. Thanks to everyone behind it.\n\n- **The Wi-Fi bridge** behind Lilo Link. MIT licence.\n- **stitchjs**, which writes the stitch patterns. MIT licence.\n- **vtracer**, which traces pictures into shapes. MIT licence.\n- **Ink/Stitch**, for thread palettes and the built-in embroidery fonts. GPL-3.0. Each font comes with its own licence file.\n- **jsts**, for shape geometry. EDL-1.0 or EPL-1.0.\n- Several smaller MIT-licensed libraries.\n\nThe complete list, with copyright lines and licence texts, is in the **NOTICE.md** file in the project folder.\n\n## Brand names\n\nMachine, thread and font names belong to their owners. Lilo is not affiliated with any of them. A name in Lilo only says that a file or product works with it, or matches it.\n\n## No tracking\n\nLilo does not collect data about you or your designs.\n\n## Credits for this guide\n\nThis guide is original text written for Lilo.\n"
+  }
+ ]
+}

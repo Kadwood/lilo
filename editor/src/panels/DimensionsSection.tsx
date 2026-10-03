@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useEditor } from "../state/store";
 import { selectionBox } from "../state/editorStore";
 import { fromMm, roundFor, toMm } from "../state/units";
+import { Hint } from "../guide/Hint";
 import { Section, Toggle } from "./controls";
 
 /** A number input you can type into freely; the value is applied on Enter or when it loses focus. */
@@ -77,6 +78,29 @@ export function DimensionsSection() {
             </button>
           ))}
         </div>
+      </div>
+      <div className="hint-strip" aria-label="Dimensions help">
+        <span>
+          Width <Hint id="dimensions.width" />
+        </span>
+        <span>
+          Height <Hint id="dimensions.height" />
+        </span>
+        <span>
+          Lock <Hint id="dimensions.aspect-lock" />
+        </span>
+        <span>
+          Units <Hint id="dimensions.units" />
+        </span>
+        <span>
+          Flip H <Hint id="dimensions.flip-horizontal" />
+        </span>
+        <span>
+          Flip V <Hint id="dimensions.flip-vertical" />
+        </span>
+        <span>
+          Rotate <Hint id="dimensions.rotate" />
+        </span>
       </div>
       <div className="button-row">
         <button onClick={() => actions.flipSelection("h")} title="Flip left-right">

@@ -3,6 +3,7 @@ import { HoopSelect } from "../panels/DesignSection";
 import { FileMenu } from "../project/FileMenu";
 import { HistoryPanel } from "../project/HistoryPanel";
 import { useProject, useProjectState } from "../project/ProjectProvider";
+import { Hint } from "../guide/Hint";
 import { useEditor } from "../state/store";
 import { ExportDialog } from "./ExportDialog";
 import { SendDialog } from "./SendDialog";
@@ -31,6 +32,7 @@ export function TopBar() {
         value={state.projectName}
         onChange={(e) => actions.setName(e.target.value)}
       />
+      <Hint id="topbar.project-name" />
       {dirty && (
         <span className="unsaved-dot" role="img" aria-label="Unsaved changes" title="Unsaved changes">
           ●
@@ -43,12 +45,15 @@ export function TopBar() {
       <button className="palette-hint" onClick={() => actions.setPaletteOpen(true)} title="Search every tool and action">
         Search… <kbd>⌘K</kbd>
       </button>
+      <Hint id="topbar.search" />
       <button onClick={() => actions.setDialog("export")} disabled={!hasDesign} title={hasDesign ? undefined : "Draw or digitize something first"}>
         Export
       </button>
-      <button className="primary" onClick={() => actions.setDialog("send")} disabled={!hasDesign} title={hasDesign ? undefined : "Draw or digitize something first"}>
+      <Hint id="topbar.export" />
+      <button className="primary" data-tour="topbar-send" onClick={() => actions.setDialog("send")} disabled={!hasDesign} title={hasDesign ? undefined : "Draw or digitize something first"}>
         Send
       </button>
+      <Hint id="topbar.send" />
     </header>
       {state.dialog === "export" && <ExportDialog onClose={() => actions.setDialog(null)} onSaved={setNote} />}
       {state.dialog === "send" && <SendDialog onClose={() => actions.setDialog(null)} />}

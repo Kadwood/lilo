@@ -8,6 +8,9 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
+- A guide inside Lilo: a searchable Help panel (Help in the top bar, or ⌘? / Ctrl+?), 49 plain-words pages, a "?" hint next to almost every control (what it does, when to change it, a typical value), a five-step workflow strip that ticks itself (Get a design, Size and hoop, Stitches, Preview, Send), a first-launch tour with four paths that you can replay from Help, and a calm warnings tray with one-click fixes. All the wording lives in `docs/guide/` (`pnpm guide:check` validates it in CI).
+- Fixed: the stitch player could crash when a frame's time stamp came before the last one.
+
 ## [1.0.0] - 2026-10-04
 
 The first release of Lilo: free, open-source embroidery for Mac, Windows and Linux.

@@ -5,6 +5,8 @@ import { BeforeYouSew } from "../sewing/BeforeYouSew";
 import { useModalFocus } from "./useModalFocus";
 import { getPlatform } from "../platform";
 import { formatDuration } from "../state/player";
+import { Hint } from "../guide/Hint";
+import { markExported } from "../guide/guideStore";
 import { useEditor } from "../state/store";
 
 const H: Origin["h"][] = ["left", "center", "right"];
@@ -147,6 +149,7 @@ export function ExportPanel({
     try {
       const saved = await getPlatform().saveFile(`${label}.${format}`, prepared.bytes);
       if (saved) {
+        markExported();
         onSaved(`Saved ${saved}`);
         onClose();
       }
@@ -186,9 +189,19 @@ export function ExportPanel({
           !error && <p className="muted" role="status">Preparing…</p>
         )}
         {error && <p className="error">{error}</p>}
+        <div className="hint-strip" aria-label="Export help">
+          <span>
+            File format <Hint id="export.format" />
+          </span>
+          <span>
+            Stats <Hint id="export.stats" />
+          </span>
+        </div>
 
         <label className="field">
-          File name
+          <span className="field-row">
+            File name <Hint id="export.file-name" />
+          </span>
           <span className="name-row">
             <input value={name} onChange={(e) => setName(e.target.value)} aria-label="File name" />
             <span className="muted">.{format}</span>
@@ -197,7 +210,9 @@ export function ExportPanel({
 
         {format !== "png" && (
           <div className="field" role="radiogroup" aria-label="Origin point">
-            <span>Origin (the point the machine sews around)</span>
+            <span>
+              Origin (the point the machine sews around) <Hint id="export.origin" />
+            </span>
             <div className="origin-grid">
               {V.map((v) =>
                 H.map((h) => {
@@ -227,6 +242,7 @@ export function ExportPanel({
         <div className="dialog-actions">
           <span className="spacer" />
           <button onClick={onClose}>Close</button>
+          <Hint id="export.save" />
           <button className="primary" onClick={save} disabled={!prepared || saving}>
             Save {format === "png" ? "PNG" : format.toUpperCase()}
           </button>

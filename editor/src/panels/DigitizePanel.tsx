@@ -4,6 +4,7 @@ import { CATALOGUES, FABRICS, FABRIC_IDS, QUALITIES, QUALITY_IDS, THREAD_WEIGHTS
 import { loadShelf, useShelf } from "../state/shelfStore";
 import { useEditor } from "../state/store";
 import { useSewing } from "../sewing/useSewing";
+import { Hint, HintScope } from "../guide/Hint";
 import { Toggle } from "./controls";
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
@@ -39,19 +40,21 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
   };
 
   return (
-    <aside className="panel panel-left" aria-label="Settings">
+    <aside className="panel panel-left" aria-label="Settings" data-tour="settings-panel">
+      <HintScope scope="digitize">
       <h2>Auto digitize</h2>
 
       <div className="field">
         <button onClick={onOpen} disabled={working}>
           {source ? "Open another image…" : "Open image…"}
         </button>
+        <Hint id="digitize.open-image" />
         <span className="muted small">{source ? source.name : "or drop PNG / JPG / WEBP / SVG on the canvas"}</span>
       </div>
 
-      <label className="field">
+      <label className="field" data-tour="digitize-colours">
         <span className="field-row">
-          Colours <output>{options.colors}</output>
+          Colours <output>{options.colors}</output> <Hint id="digitize.colours" />
         </span>
         <input
           type="range"
@@ -64,8 +67,10 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
         />
       </label>
 
-      <div className="field">
-        <span className="field-row">Size (mm)</span>
+      <div className="field" data-tour="digitize-size">
+        <span className="field-row">
+          Size (mm) <Hint id="digitize.size" /> <Hint id="digitize.lock-aspect" />
+        </span>
         <div className="size-row">
           <input
             type="number"
@@ -96,7 +101,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
 
       <label className="field">
         <span className="field-row">
-          Smallest region <output>{options.minRegionMm2} mm²</output>
+          Smallest region <output>{options.minRegionMm2} mm²</output> <Hint id="digitize.smallest-region" />
         </span>
         <input
           type="range"
@@ -110,7 +115,9 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
       </label>
 
       <div className="field" role="group" aria-label="Background">
-        <span className="field-row">Background</span>
+        <span className="field-row">
+          Background <Hint id="digitize.background" />
+        </span>
         <div className="segmented">
           <button className={options.removeBackground ? "active" : ""} aria-pressed={options.removeBackground} onClick={() => actions.setOptions({ removeBackground: true })}>
             Remove
@@ -122,7 +129,9 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
       </div>
 
       <label className="field">
-        Thread brand
+        <span className="field-row">
+          Thread brand <Hint id="digitize.thread-brand" />
+        </span>
         <select value={options.catalogueId} aria-label="Thread brand" onChange={(e) => actions.setOptions({ catalogueId: e.target.value })}>
           {CATALOGUES.map((c) => (
             <option key={c.id} value={c.id}>
@@ -133,7 +142,9 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
       </label>
 
       <label className="field">
-        Quality
+        <span className="field-row">
+          Quality <Hint id="digitize.quality" />
+        </span>
         <select value={sewing.quality} aria-label="Quality" onChange={(e) => actions.setSewing({ quality: e.target.value as Quality })}>
           {QUALITY_IDS.map((q) => (
             <option key={q} value={q}>
@@ -143,7 +154,9 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
         </select>
       </label>
       <label className="field">
-        Thread weight
+        <span className="field-row">
+          Thread weight <Hint id="digitize.thread-weight" />
+        </span>
         <select value={sewing.threadWeight} aria-label="Thread weight" onChange={(e) => actions.setSewing({ threadWeight: Number(e.target.value) as ThreadWeight })}>
           {THREAD_WEIGHT_IDS.map((w) => (
             <option key={w} value={w}>
@@ -153,7 +166,9 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
         </select>
       </label>
       <label className="field">
-        Fabric
+        <span className="field-row">
+          Fabric <Hint id="digitize.fabric" />
+        </span>
         <select value={sewing.fabric} aria-label="Fabric" onChange={(e) => actions.setSewing({ fabric: e.target.value as FabricId })}>
           {FABRIC_IDS.map((f) => (
             <option key={f} value={f}>
@@ -178,14 +193,23 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
         )}
       </div>
 
-      <button className="primary wide" onClick={() => void actions.digitize()} disabled={!source || working}>
-        {working ? "Digitizing…" : "Digitize"}
-      </button>
+      <div className="with-hint">
+        <button className="primary wide" onClick={() => void actions.digitize()} disabled={!source || working}>
+          {working ? "Digitizing…" : "Digitize"}
+        </button>
+        <Hint id="digitize.digitize" />
+      </div>
+      <div className="with-hint">
       <button className="wide" onClick={() => actions.setTool("clickstitch")} disabled={!state.trace || working} title={state.trace ? "Pick the regions of the trace to stitch yourself" : "Open an image first"}>
         Click to stitch…
       </button>
+        <Hint id="digitize.click-to-stitch" />
+      </div>
 
-      <h2 className="spaced">Threads used</h2>
+      <div className="with-hint">
+        <h2 className="spaced">Threads used</h2>
+        <Hint id="digitize.threads-used" />
+      </div>
       {palette.length === 0 ? (
         <p className="muted small">Colours will appear here.</p>
       ) : (
@@ -204,6 +228,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
           ))}
         </ul>
       )}
+      </HintScope>
       {children}
     </aside>
   );

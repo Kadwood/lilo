@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 220" role="img" aria-labelledby="t d">
+  <title id="t">Common hoop sizes drawn to the same scale</title>
+  <desc id="d">Three rounded rectangles, all at the same scale: 100 by 100 millimetres, 130 by 180 millimetres and 160 by 260 millimetres. A dashed line inside each marks the safe margin.</desc>
+  <rect width="480" height="220" fill="#faf7f2"/>
+  <g fill="#e9f1f4" stroke="#1f6f8b" stroke-width="2">
+    <rect x="40" y="110" width="70" height="70" rx="8"/>
+    <rect x="170" y="54" width="91" height="126" rx="8"/>
+    <rect x="320" y="0" width="112" height="180" rx="8"/>
+  </g>
+  <g fill="none" stroke="#b5483a" stroke-width="1.5" stroke-dasharray="4 3">
+    <rect x="44" y="114" width="62" height="62" rx="5"/>
+    <rect x="174" y="58" width="83" height="118" rx="5"/>
+    <rect x="324" y="4" width="104" height="172" rx="5"/>
+  </g>
+  <g font-family="sans-serif" font-size="12" fill="#333" text-anchor="middle">
+    <text x="75" y="200">100 x 100 mm</text>
+    <text x="215" y="200">130 x 180 mm</text>
+    <text x="376" y="200">160 x 260 mm</text>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+[
+  { "id": "getting-started", "title": "Getting started", "order": 1, "blurb": "Install Lilo, make a first design and learn your way round." },
+  { "id": "digitizing", "title": "Digitizing", "order": 2, "blurb": "Turn pictures into stitches, or draw your own." },
+  { "id": "stitches", "title": "Stitches", "order": 3, "blurb": "Run types, fills, underlay and your sewing setup." },
+  { "id": "lettering", "title": "Lettering", "order": 4, "blurb": "Monograms, names and your own fonts." },
+  { "id": "threads", "title": "Threads", "order": 5, "blurb": "Brands, matching and the spools you own." },
+  { "id": "preview", "title": "Preview", "order": 6, "blurb": "Watch the design sew before the machine does." },
+  { "id": "sending", "title": "Sending", "order": 7, "blurb": "Wi-Fi, USB sticks, formats and troubleshooting." },
+  { "id": "tools", "title": "Other tools", "order": 8, "blurb": "Pixel art, the converter and opening files." },
+  { "id": "projects", "title": "Projects", "order": 9, "blurb": "Saving, autosave and version history." },
+  { "id": "reference", "title": "Reference", "order": 10, "blurb": "Shortcuts, glossary and file formats." },
+  { "id": "help", "title": "Help", "order": 11, "blurb": "Fix sew-out problems, FAQ and how to report a bug." }
+]

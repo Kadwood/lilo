@@ -14,7 +14,8 @@ import {
   type SatinUnderlay,
 } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
-import { Field, HelpTip, rowsHint, satinHint, Section, Segmented, Toggle } from "./controls";
+import { Hint, HintList } from "../guide/Hint";
+import { Field, rowsHint, satinHint, Section, Segmented, Toggle } from "./controls";
 import { DimensionsSection } from "./DimensionsSection";
 import { PatternPicker } from "./PatternPicker";
 import { ThreadPicker } from "./ThreadPicker";
@@ -95,7 +96,7 @@ export function SettingsPanel() {
   };
 
   return (
-    <aside className="panel panel-left" aria-label="Settings">
+    <aside className="panel panel-left" aria-label="Settings" data-tour="settings-panel">
       <h2>{objs.length > 1 ? `${objs.length} shapes` : first.name}</h2>
       {locked && <p className="muted small">Locked. Unlock it from the toolbar to edit.</p>}
 
@@ -155,6 +156,10 @@ export function SettingsPanel() {
                 {t.label}
               </button>
             ))}
+          </div>
+          <div className="hint-row">
+            <HintList ids={["runtype.single", "runtype.triple", "runtype.satin", "runtype.estitch", "runtype.doublerope", "runtype.triplerope", "runtype.manual"]} label="Help: about each run type" guideId="run-types" name="runtype.types" />
+            <span className="muted small">About each type</span>
           </div>
           <RunSettings runs={runs} editRuns={editRuns} done={done} />
         </Section>
@@ -246,7 +251,7 @@ function SatinSettings({ objs, editSatinParams, done }: { objs: DesignObject[]; 
       <Toggle label="Short stitches on curves" checked={!!p.shortStitches} onChange={(v) => editSatinParams("Short stitches", "short", (q) => void (q.shortStitches = v || undefined))} help="On the inside of tight curves the stitches bunch up. This shortens some of them to keep the column even." />
       <label className="field-line">
         <span className="field-label">
-          Underlay <HelpTip text="Stitches sewn first under the column to stabilise the fabric and lift the satin." />
+          Underlay <Hint id="satin.underlay" />
         </span>
         <select aria-label="Satin underlay" value={p.underlay} onChange={(e) => editSatinParams("Underlay", "underlay", (q) => void (q.underlay = e.target.value as SatinUnderlay))}>
           {UNDERLAYS.map((u) => (
@@ -292,6 +297,7 @@ function FillSettings({ fills, editFills, done }: { fills: FillObject[]; editFil
             max={s.max}
             step={s.step}
             help={s.help}
+            hid="pattern.setting"
             onChange={(v) => editFills(s.label, `pp:${s.key}`, (q) => void (q.patternParams = { ...q.patternParams, [s.key]: v }))}
             onDone={done}
           />

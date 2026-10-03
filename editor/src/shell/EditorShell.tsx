@@ -15,6 +15,8 @@ import { getPlatform } from "../platform";
 import { useEditor } from "../state/store";
 import { singleTextGroup } from "../state/textGroups";
 import { CommandPalette } from "./CommandPalette";
+import { LiveWarnings } from "../guide/LiveWarnings";
+import { WorkflowStepper } from "../guide/WorkflowStepper";
 import { TopBar } from "./TopBar";
 
 /** Ask the canvas to fit the view (the palette has no handle on the canvas). */
@@ -44,6 +46,7 @@ export function EditorShell() {
   return (
     <div className="editor">
       <TopBar />
+      <WorkflowStepper />
       <div className="editor-body">
         {state.tool === "clickstitch" ? (
           <ClickStitchPanel onOpen={open} />
@@ -57,7 +60,7 @@ export function EditorShell() {
           </DigitizePanel>
         )}
 
-        <main className="canvas" aria-label="Canvas">
+        <main className="canvas" aria-label="Canvas" data-tour="canvas">
           <div className="canvas-area">
             <CanvasView onOpen={open} />
             <HoopAssist />
@@ -68,6 +71,7 @@ export function EditorShell() {
 
         <div className="right-col">
           <SewingCard />
+          <LiveWarnings />
           <Sequencer />
         </div>
       </div>

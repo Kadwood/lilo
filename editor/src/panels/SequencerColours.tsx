@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Thread } from "@lilo/engine/light";
+import { Hint } from "../guide/Hint";
 import { useEditor } from "../state/store";
 import { ThreadPicker } from "./ThreadPicker";
 
@@ -30,6 +31,20 @@ export function SequencerColours() {
       <p className="muted small">
         {rows.length} colour{rows.length === 1 ? "" : "s"} · {blocks} colour block{blocks === 1 ? "" : "s"} when stitched.
       </p>
+      <div className="hint-strip" aria-label="Colours help">
+        <span>
+          Group by colour <Hint id="seq.group-by-colour" />
+        </span>
+        <span>
+          Merge <Hint id="seq.merge" />
+        </span>
+        <span>
+          Swap <Hint id="seq.swap" />
+        </span>
+        <span>
+          Select <Hint id="seq.select-colour" />
+        </span>
+      </div>
       <button onClick={actions.groupByColour} disabled={blocks <= rows.length} title="Reorder objects so each colour is sewn in one go, cutting thread changes.">
         Group by colour
       </button>

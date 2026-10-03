@@ -1,0 +1,29 @@
+{
+  "steps": [
+    {
+      "id": "design",
+      "label": "Get a design",
+      "tip": { "title": "Start with something to sew", "body": "Open a picture, draw a shape or type a monogram. This step ticks when your canvas has something on it.", "action": { "kind": "open-digitize", "label": "Show the start panel" }, "guideId": "first-design" }
+    },
+    {
+      "id": "size",
+      "label": "Size and hoop",
+      "tip": { "title": "Make it fit the hoop", "body": "Set the width, then check the hoop. This step ticks when the design fits inside the sewing area.", "action": { "kind": "open-hoop", "label": "Choose a hoop" }, "guideId": "sizing-and-hoops" }
+    },
+    {
+      "id": "stitches",
+      "label": "Stitches",
+      "tip": { "title": "Tune the stitches", "body": "Tell Lilo your fabric and thread. This step ticks when Lilo sees no quality problems, like stitches packed too close.", "action": { "kind": "open-sewing", "label": "Open Sewing setup" }, "guideId": "sewing-setup" }
+    },
+    {
+      "id": "preview",
+      "label": "Preview",
+      "tip": { "title": "Watch it sew first", "body": "Press Play, or look at the realistic view. This step ticks when you have done either.", "action": { "kind": "focus-player", "label": "Go to the player" }, "guideId": "stitch-player" }
+    },
+    {
+      "id": "send",
+      "label": "Send",
+      "tip": { "title": "Send it to the machine", "body": "Send it over Wi-Fi, or save a file for a USB stick. This step ticks once you have done either.", "action": { "kind": "open-send", "label": "Open Send" }, "guideId": "send-a-design" }
+    }
+  ]
+}

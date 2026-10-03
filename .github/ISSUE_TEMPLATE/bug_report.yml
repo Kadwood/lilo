@@ -1,0 +1,31 @@
+name: Bug report
+description: Something in Lilo did not work as expected.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: Your computer
+      options: [Mac, Windows, Linux]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Lilo version
+      description: Shown under Lilo Link, then Settings.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or error code
+      description: For a send problem, paste the text from Lilo Link, then Logs. Remove anything private.
+  - type: markdown
+    attributes:
+      value: A screenshot, or the .lilo project file, helps a lot. Drag it into this box after you submit.

@@ -1,0 +1,70 @@
+{
+  "welcome": {
+    "title": "Hi, I am your Lilo guide",
+    "body": "I will show you around. What do you want to make first? You can skip me at any time, and bring me back from Help.",
+    "choices": [
+      { "path": "picture", "label": "Stitch a picture", "hint": "Turn a logo or sketch into stitches, like the Kadwood hibiscus." },
+      { "path": "draw", "label": "Draw from scratch", "hint": "Draw a shape, like a crest or a hat patch." },
+      { "path": "monogram", "label": "Type a monogram", "hint": "Sew initials, like JK inside a suit lining." },
+      { "path": "open", "label": "Open a file", "hint": "Carry on with a project you already saved." }
+    ],
+    "skip": "Skip the tour"
+  },
+  "paths": [
+    {
+      "id": "picture",
+      "title": "Stitch a picture",
+      "steps": [
+        { "id": "open", "target": "home-picture", "title": "Choose your picture", "body": "Click here and pick a logo or drawing. Flat colours work best. I will wait for it to finish.", "advanceOn": { "type": "state", "cond": "has-objects" }, "guideId": "auto-digitize" },
+        { "id": "colours", "target": "digitize-colours", "title": "How many colours?", "body": "Fewer colours mean fewer thread swaps. Try a lower number, then press Digitize again.", "advanceOn": { "type": "next" }, "guideId": "auto-digitize" },
+        { "id": "size", "target": "digitize-size", "title": "Set the size", "body": "Type a width in millimetres. A logo on a suit lining is often 40 to 80 mm wide.", "advanceOn": { "type": "next" }, "guideId": "sizing-and-hoops" },
+        { "id": "sewing", "target": "sewing-chip", "title": "What are you sewing on?", "body": "Open this card and pick your fabric, thread weight and quality. Lilo tunes the stitches to match.", "advanceOn": { "type": "state", "cond": "sewing-open" }, "guideId": "sewing-setup" },
+        { "id": "hoop", "target": "hoop-chip", "title": "Check the hoop", "body": "The hoop is the frame that holds the cloth. Your design must fit inside it. Click here to change it.", "advanceOn": { "type": "next" }, "guideId": "sizing-and-hoops" },
+        { "id": "play", "target": "player-play", "title": "Watch it sew", "body": "Press Play. The needle sews the design on screen and stops at each colour change.", "advanceOn": { "type": "state", "cond": "played" }, "guideId": "stitch-player" },
+        { "id": "strip", "target": "stepper", "title": "Your progress", "body": "These five steps tick themselves off. Click one for a tip.", "advanceOn": { "type": "next" }, "guideId": "learning-aids" },
+        { "id": "send", "target": "topbar-send", "title": "Send or export", "body": "Send goes to a Brother or Baby Lock machine over Wi-Fi. Export saves a file for a USB stick. Open either.", "advanceOn": { "type": "state", "cond": "dialog:any" }, "guideId": "send-a-design" }
+      ]
+    },
+    {
+      "id": "draw",
+      "title": "Draw from scratch",
+      "steps": [
+        { "id": "new", "target": "home-new", "title": "Start a blank design", "body": "Click New design to open an empty hoop.", "advanceOn": { "type": "state", "cond": "view:editor" }, "guideId": "first-design" },
+        { "id": "tool", "target": "tool-closed", "title": "Pick a shape tool", "body": "Closed shape draws an outline that fills in. Click it, or press 2.", "advanceOn": { "type": "state", "cond": "tool:closed" }, "guideId": "drawing-tools" },
+        { "id": "draw", "target": "canvas", "title": "Draw a shape", "body": "Click to add corners. Click the first point, or press Enter, to close it.", "advanceOn": { "type": "state", "cond": "has-objects" }, "guideId": "drawing-tools" },
+        { "id": "settings", "target": "settings-panel", "title": "Change how it sews", "body": "Pick filled or outlined, a fill pattern, or the run type. Every change shows at once.", "advanceOn": { "type": "next" }, "guideId": "run-vs-fill" },
+        { "id": "hoop", "target": "hoop-chip", "title": "Check the hoop", "body": "Make sure your shape fits the hoop. Click here to pick a different one.", "advanceOn": { "type": "next" }, "guideId": "sizing-and-hoops" },
+        { "id": "play", "target": "player-play", "title": "Watch it sew", "body": "Press Play to see your shape stitched.", "advanceOn": { "type": "state", "cond": "played" }, "guideId": "stitch-player" },
+        { "id": "send", "target": "topbar-send", "title": "Send or export", "body": "Send over Wi-Fi, or Export a file for a USB stick. Open either.", "advanceOn": { "type": "state", "cond": "dialog:any" }, "guideId": "send-a-design" }
+      ]
+    },
+    {
+      "id": "monogram",
+      "title": "Type a monogram",
+      "steps": [
+        { "id": "start", "target": "home-monogram", "title": "Start a monogram", "body": "Click here to open a blank design with the Text tool ready.", "advanceOn": { "type": "state", "cond": "tool:text" }, "guideId": "lettering-fonts" },
+        { "id": "place", "target": "canvas", "title": "Choose the spot", "body": "Click on the canvas where the initials should sit.", "advanceOn": { "type": "next" }, "guideId": "lettering-fonts" },
+        { "id": "type", "target": "text-input", "title": "Type your initials", "body": "Two or three letters, like JK, make a neat lining mark.", "advanceOn": { "type": "next" }, "guideId": "lettering-fonts" },
+        { "id": "height", "target": "text-height", "title": "Set the height", "body": "Letters under 6 mm fill in with standard thread. 10 mm is a good size for a lining monogram.", "advanceOn": { "type": "next" }, "guideId": "small-letters" },
+        { "id": "font", "target": "text-fonts", "title": "Pick a font", "body": "These fonts were drawn to be sewn. Keep the box ticked to see only fonts that suit your height.", "advanceOn": { "type": "next" }, "guideId": "lettering-fonts" },
+        { "id": "add", "target": "text-add", "title": "Add it", "body": "Press Add text. The letters appear on the canvas as stitches.", "advanceOn": { "type": "state", "cond": "has-objects" }, "guideId": "lettering-fonts" },
+        { "id": "play", "target": "player-play", "title": "Watch it sew", "body": "Press Play to see the letters stitched.", "advanceOn": { "type": "state", "cond": "played" }, "guideId": "stitch-player" },
+        { "id": "send", "target": "topbar-send", "title": "Send or export", "body": "Send over Wi-Fi, or Export a file for a USB stick. Open either.", "advanceOn": { "type": "state", "cond": "dialog:any" }, "guideId": "send-a-design" }
+      ]
+    },
+    {
+      "id": "open",
+      "title": "Open a file",
+      "steps": [
+        { "id": "open", "target": "home-open", "title": "Open your project", "body": "Click Open and choose a .lilo project. Recent projects are listed further down.", "advanceOn": { "type": "state", "cond": "view:editor" }, "guideId": "projects-and-autosave" },
+        { "id": "look", "target": "canvas", "title": "Look it over", "body": "Your design is on the canvas. Scroll to zoom, hold Space and drag to pan.", "advanceOn": { "type": "next" }, "guideId": "screen-tour" },
+        { "id": "hoop", "target": "hoop-chip", "title": "Check the hoop", "body": "Make sure the design fits the hoop on your machine.", "advanceOn": { "type": "next" }, "guideId": "sizing-and-hoops" },
+        { "id": "sewing", "target": "sewing-chip", "title": "Check the sewing setup", "body": "Open this card to confirm the fabric and thread weight still match your job.", "advanceOn": { "type": "state", "cond": "sewing-open" }, "guideId": "sewing-setup" },
+        { "id": "order", "target": "sequencer", "title": "Check the order", "body": "This lists your shapes in sewing order, grouped by colour. Move them up or down here.", "advanceOn": { "type": "next" }, "guideId": "sequencer" },
+        { "id": "play", "target": "player-play", "title": "Watch it sew", "body": "Press Play to see the whole design stitched.", "advanceOn": { "type": "state", "cond": "played" }, "guideId": "stitch-player" },
+        { "id": "send", "target": "topbar-send", "title": "Send or export", "body": "Send over Wi-Fi, or Export a file for a USB stick. Open either.", "advanceOn": { "type": "state", "cond": "dialog:any" }, "guideId": "send-a-design" }
+      ]
+    }
+  ],
+  "done": { "title": "You are all set", "body": "You can replay this tour any time from Help. Have a look at the guide when you want more." }
+}

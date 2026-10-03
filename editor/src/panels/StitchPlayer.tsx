@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useSyncExternalStore } from "react";
 import type { PlanResult } from "../engine/client";
 import { MAX_SPEED, MIN_SPEED, formatDuration, type PlayerController } from "../state/player";
+import { Hint } from "../guide/Hint";
+import { markPlayed } from "../guide/guideStore";
 import { useEditor } from "../state/store";
 
 /** The thread name as it appears on the spool: "Brother 513 — Blue". */
@@ -26,6 +28,11 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
     return c;
   }, [plan, total]);
 
+  // playing the stitches ticks the workflow strip
+  useEffect(() => {
+    if (snap.playing) markPlayed();
+  }, [snap.playing]);
+
   // Drive the controller from the display clock while it has work to do.
   const active = snap.playing || (snap.stop !== null && snap.autoContinue);
   useEffect(() => {
@@ -33,7 +40,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
     let raf = 0;
     let last = performance.now();
     const frame = (now: number) => {
-      player.tick(Math.min(0.1, (now - last) / 1000)); // clamp so a background tab doesn't leap ahead
+      player.tick(Math.max(0, Math.min(0.1, (now - last) / 1000))); // never negative: a frame stamp can predate `last` // clamp so a background tab doesn't leap ahead
       last = now;
       raf = requestAnimationFrame(frame);
     };
@@ -51,7 +58,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
 
   const { stats } = planResult;
   const stopThread = snap.stop ? plan.threads[snap.stop.threadIndex] : null;
-  const shown = Math.min(total, Math.floor(snap.index));
+  const shown = Math.max(0, Math.min(total, Math.floor(snap.index)));
 
   return (
     <div className="player" role="group" aria-label="Stitch player">
@@ -71,9 +78,10 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
         </div>
       )}
       <div className="player-controls">
-        <button onClick={() => player.toggle()} aria-label={snap.playing ? "Pause" : "Play"} className="play">
+        <button onClick={() => player.toggle()} aria-label={snap.playing ? "Pause" : "Play"} className="play" data-tour="player-play">
           {snap.playing ? "❚❚" : "▶"}
         </button>
+        <Hint id="player.play" />
         <input
           className="scrub"
           type="range"
@@ -84,6 +92,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
           aria-label="Scrub stitches"
           onChange={(e) => player.seek(Number(e.target.value))}
         />
+        <Hint id="player.scrub" />
         <label className="speed">
           Speed
           <input
@@ -96,12 +105,14 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
             onChange={(e) => player.setSpeed(Number(e.target.value))}
           />
           <output>{snap.speed}×</output>
+          <Hint id="player.speed" />
         </label>
         <label className="check">
           <input type="checkbox" checked={snap.autoContinue} onChange={(e) => player.setAutoContinue(e.target.checked)} /> Auto-continue
         </label>
+        <Hint id="player.auto-continue" />
       </div>
-      <div className="player-stats" aria-label="Design totals">
+      <div className="player-stats" aria-label="Design totals" data-tour="player-totals">
         <span>
           <strong>{cumulative[shown].toLocaleString()}</strong> / {stats.stitchCount.toLocaleString()} stitches
         </span>
@@ -112,6 +123,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
           {stats.widthMm.toFixed(1)} × {stats.heightMm.toFixed(1)} mm
         </span>
         <span title="at 850 stitches per minute">≈ {formatDuration(stats.estimatedSeconds)}</span>
+        <Hint id="player.totals" />
       </div>
     </div>
   );

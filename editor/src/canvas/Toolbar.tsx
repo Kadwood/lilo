@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { TOOLS, type ToolId } from "../tools/registry";
 import { ThreadPicker } from "../panels/ThreadPicker";
+import { hintById } from "../guide/data";
+import { HintList } from "../guide/Hint";
 import { useEditor } from "../state/store";
 import { defaultThread, findThread } from "../state/editorStore";
 
@@ -86,6 +88,13 @@ const ICONS: Record<ToolId, ReactNode> = {
   ),
 };
 
+/** A tool's tooltip from the guide's hints (one copy source), with the registry text as the fallback. */
+function toolTitle(id: string, label: string, key: string, help: string): string {
+  const k = key.trim() ? ` (${key.toUpperCase()})` : " (Space)";
+  const h = hintById(`tool.${id}`);
+  return h ? `${label}${k}: ${h.what} ${h.when}` : `${label}${k}: ${help}`;
+}
+
 /** The bottom toolbar: tools, undo/redo and the colour new shapes are drawn in. */
 export function Toolbar() {
   const { state, actions } = useEditor();
@@ -101,7 +110,8 @@ export function Toolbar() {
           aria-pressed={state.tool === tool.id}
           aria-label={tool.label}
           disabled={!tool.enabled}
-          title={`${tool.label}${tool.key.trim() ? ` (${tool.key.toUpperCase()})` : " (Space)"}: ${tool.help}`}
+          title={toolTitle(tool.id, tool.label, tool.key, tool.help)}
+          data-tour={`tool-${tool.id}`}
           onClick={() => actions.setTool(tool.id)}
           data-tool={tool.id}
         >
@@ -121,6 +131,7 @@ export function Toolbar() {
         </I>
       </button>
       <span className="toolbar-sep" aria-hidden="true" />
+      <HintList ids={[...TOOLS.map((t) => `tool.${t.id}`), "tool.undo", "tool.redo", "tool.drawing-colour"]} label="Help: what each tool does" guideId="drawing-tools" name="tool.toolbar-help" />
       <div className="toolbar-colour">
         <button className="tool colour" aria-label="Drawing colour" aria-expanded={pick} title={`Drawing colour: ${t.brand} ${t.code} ${t.name}`} onClick={() => setPick((v) => !v)}>
           <span className="swatch" style={{ background: t.hex }} aria-hidden="true" />

@@ -1,0 +1,42 @@
+name: Machine report
+description: Tell us how Lilo worked with your embroidery machine.
+labels: ["machine-report"]
+body:
+  - type: input
+    id: machine
+    attributes:
+      label: Brand and model
+      placeholder: Brother Innov-is NV2700
+    validations:
+      required: true
+  - type: dropdown
+    id: scan
+    attributes:
+      label: Did Lilo Link find the machine on the Wi-Fi scan?
+      options: ["Yes", "No", "Did not try Wi-Fi"]
+    validations:
+      required: true
+  - type: dropdown
+    id: send
+    attributes:
+      label: Did Send work?
+      options: ["Yes", "No", "Did not try"]
+    validations:
+      required: true
+  - type: dropdown
+    id: sewed
+    attributes:
+      label: Did the design sew?
+      options: ["Yes, clean", "Yes, with problems", "No", "Did not try"]
+    validations:
+      required: true
+  - type: input
+    id: format
+    attributes:
+      label: File format you used
+      placeholder: PES
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: Error codes, machine screen messages, or tips for the next person.

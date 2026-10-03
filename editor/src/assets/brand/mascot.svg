@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB36B"/><stop offset=".55" stop-color="#FF7A8A"/><stop offset="1" stop-color="#7A5CC8"/></linearGradient>
+<radialGradient id="fur" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#5FD0E6"/><stop offset="1" stop-color="#1F8FB3"/></radialGradient>
+</defs>
+<rect x="64" y="64" width="896" height="896" rx="200" fill="url(#sky)"/>
+<clipPath id="tile"><rect x="64" y="64" width="896" height="896" rx="200"/></clipPath><circle cx="512" cy="760" r="300" fill="#2A3D8F" opacity=".35" clip-path="url(#tile)"/>
+<!-- antennae with pom-poms -->
+<path d="M430 330 Q 380 200 300 190" stroke="#1F8FB3" stroke-width="22" fill="none" stroke-linecap="round"/>
+<path d="M594 330 Q 650 210 730 210" stroke="#1F8FB3" stroke-width="22" fill="none" stroke-linecap="round"/>
+<circle cx="296" cy="188" r="42" fill="#FF5C8A"/><circle cx="734" cy="210" r="42" fill="#FFD25C"/>
+<!-- round fluffy body -->
+<path d="M512 300 C 700 300 790 450 780 600 C 770 770 650 840 512 840 C 374 840 254 770 244 600 C 234 450 324 300 512 300 Z" fill="url(#fur)"/>
+<!-- tufts -->
+<path d="M470 305 L 490 260 L 512 302 L 534 258 L 556 306" fill="#5FD0E6"/>
+<!-- belly -->
+<ellipse cx="512" cy="700" rx="160" ry="110" fill="#BFF1F7"/>
+<!-- one big eye + wink -->
+<circle cx="430" cy="530" r="78" fill="#fff"/><circle cx="445" cy="540" r="44" fill="#1B1E2B"/><circle cx="462" cy="522" r="14" fill="#fff"/>
+<path d="M560 535 Q 610 500 660 535" stroke="#1B1E2B" stroke-width="18" fill="none" stroke-linecap="round"/>
+<!-- grin with one fang -->
+<path d="M440 640 Q 520 700 610 630" stroke="#1B1E2B" stroke-width="16" fill="none" stroke-linecap="round"/>
+<path d="M560 652 L 572 688 L 584 648 Z" fill="#fff"/>
+<!-- lei -->
+<g fill="#FF5C8A"><circle cx="330" cy="790" r="34"/><circle cx="400" cy="822" r="34" fill="#FFD25C"/><circle cx="470" cy="838" r="34"/><circle cx="540" cy="840" r="34" fill="#FFD25C"/><circle cx="610" cy="828" r="34"/><circle cx="680" cy="800" r="34" fill="#FFD25C"/></g>
+<!-- needle held like a spear -->
+<g transform="rotate(30 800 560)"><rect x="788" y="380" width="22" height="330" rx="11" fill="#E6E9F0"/><path d="M788 700 L799 760 L810 700Z" fill="#E6E9F0"/><rect x="793" y="400" width="12" height="44" rx="6" fill="#FF7A8A"/></g>
+<path d="M820 430 C 900 470 880 560 930 600" stroke="#fff" stroke-width="10" fill="none" stroke-dasharray="22 16" stroke-linecap="round"/>
+</svg>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DEFAULT_FILL_PARAMS, patternInfo, type FillParams, type RunParams, type RunType } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
+import { Hint } from "../guide/Hint";
 import { Field, rowsHint, Section, Segmented, Toggle } from "./controls";
 import { PatternPicker } from "./PatternPicker";
 import { RUN_TYPES, RUN_WIDTH_DEFAULT } from "./SettingsPanel";
@@ -162,6 +163,8 @@ export function ClickStitchPanel({ onOpen }: { onOpen: () => void }) {
             Stitch {pendingRegions.length} selected
           </button>
           <button onClick={actions.clearPendingRegions}>Clear</button>
+          <Hint id="cs.stitch-regions" />
+          <Hint id="cs.clear-selection" />
         </div>
       )}
 
@@ -170,9 +173,13 @@ export function ClickStitchPanel({ onOpen }: { onOpen: () => void }) {
       <button onClick={actions.clearStitches} disabled={(design?.objects.length ?? 0) === 0}>
         Clear the automatic stitches
       </button>
-      <button className="primary wide" onClick={() => actions.setTool("select")}>
-        Done
-      </button>
+      <Hint id="cs.clear-stitches" />
+      <div className="with-hint">
+        <button className="primary wide" onClick={() => actions.setTool("select")}>
+          Done
+        </button>
+        <Hint id="cs.back" />
+      </div>
     </aside>
   );
 }

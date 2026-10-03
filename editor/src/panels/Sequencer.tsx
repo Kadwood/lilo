@@ -4,6 +4,7 @@ import { useEditor } from "../state/store";
 import { groupObjects } from "../state/reorder";
 import { SequencerColours } from "./SequencerColours";
 import { SequencerImages } from "./SequencerImages";
+import { Hint } from "../guide/Hint";
 import { ShelfPanel } from "./ShelfPanel";
 
 type Drag = { kind: "object"; index: number } | { kind: "group"; index: number };
@@ -81,7 +82,7 @@ export function Sequencer() {
 
   if (state.seqTab === "threads") {
     return (
-      <aside className="panel panel-right" aria-label="Sequencer">
+      <aside className="panel panel-right" aria-label="Sequencer" data-tour="sequencer">
         <h2>My Threads</h2>
         {tabs}
         <ShelfPanel />
@@ -91,7 +92,7 @@ export function Sequencer() {
 
   if (state.seqTab === "images") {
     return (
-      <aside className="panel panel-right" aria-label="Sequencer">
+      <aside className="panel panel-right" aria-label="Sequencer" data-tour="sequencer">
         <h2>Sequencer</h2>
         {tabs}
         <SequencerImages />
@@ -101,7 +102,7 @@ export function Sequencer() {
 
   if (!design || design.objects.length === 0) {
     return (
-      <aside className="panel panel-right" aria-label="Sequencer">
+      <aside className="panel panel-right" aria-label="Sequencer" data-tour="sequencer">
         <h2>Sequencer</h2>
         {tabs}
         <p className="muted">Colour blocks and stitch order will appear here.</p>
@@ -111,7 +112,7 @@ export function Sequencer() {
 
   if (state.seqTab === "colours") {
     return (
-      <aside className="panel panel-right" aria-label="Sequencer">
+      <aside className="panel panel-right" aria-label="Sequencer" data-tour="sequencer">
         <h2>Sequencer</h2>
         {tabs}
         <SequencerColours />
@@ -152,12 +153,29 @@ export function Sequencer() {
   };
 
   return (
-    <aside className="panel panel-right" aria-label="Sequencer">
+    <aside className="panel panel-right" aria-label="Sequencer" data-tour="sequencer">
       <h2>Sequencer</h2>
       {tabs}
       <p className="muted small">
         {design.objects.length} objects · {groups.length} colour block{groups.length === 1 ? "" : "s"}. Drag to reorder.
       </p>
+      <div className="hint-strip" aria-label="Sequencer help">
+        <span>
+          Views <Hint id="seq.tabs" />
+        </span>
+        <span>
+          Order <Hint id="seq.move" />
+        </span>
+        <span>
+          Hide <Hint id="seq.hide" />
+        </span>
+        <span>
+          Rename <Hint id="seq.rename" />
+        </span>
+        <span>
+          Details <Hint id="seq.details" />
+        </span>
+      </div>
       <ol className="seq" onDragLeave={() => setMark(null)}>
         {groups.map((group, gi) => {
           const t = threadOf.get(group.threadId);
