@@ -126,7 +126,11 @@ export function chainPieces(pieces: readonly (readonly Pt[])[], o: ChainOptions)
       const seg = oriented(next);
       used[next.piece] = true;
       remaining--;
-      for (const p of seg) chain.push(p);
+      // drop the join point when the new piece starts on top of where the chain ended
+      seg.forEach((p, k) => {
+        if (k === 0 && dist(chain[chain.length - 1], p) < 0.2) return;
+        chain.push(p);
+      });
     }
     chains.push(chain);
     cursor = chain[chain.length - 1];

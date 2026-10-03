@@ -84,7 +84,7 @@ describe("validatePlan", () => {
     for (let i = 0; i < 12; i++) stitches.push({ x: 0.5, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 });
     stitches.push({ x: 200, y: 0.5, type: "jump" as const, threadIndex: 0, objectIndex: 0 });
     stitches.push({ x: 200, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 });
-    const { warnings } = validatePlan({ threads: [blue], warnings: [], stitches }, { name: "tiny", widthMm: 100, heightMm: 100 });
+    const { warnings } = validatePlan({ threads: [blue], warnings: [], stitches }, { name: "tiny", widthMm: 100, heightMm: 100 }, { minStitchMm: 0 }); // stacked drops, so don't merge them
     expect(warnings.map((w) => w.code).sort()).toEqual(["density", "outside-hoop"]);
   });
 

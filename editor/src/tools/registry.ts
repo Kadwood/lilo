@@ -2,9 +2,8 @@
  * The tool registry: one entry per tool in the bottom toolbar, command palette and keyboard
  * shortcuts. Handlers for the drawing tools live in `canvas/tools.ts`.
  *
- * Extension point for lettering (M4): the `text` entry is a placeholder. M4 flips `enabled` to true
- * and calls `registerToolHandler("text", handler)` from `canvas/tools.ts`; nothing else in the
- * toolbar, palette or shortcut code needs to change.
+ * The Text tool opens the lettering panel (`lettering/TextPanel.tsx`); a click on the canvas sets
+ * where new text lands (`canvas/controller.ts`).
  */
 
 export type ToolId = "select" | "pan" | "measure" | "open" | "closed" | "circle" | "rect" | "pen" | "satin" | "text" | "manual";
@@ -30,7 +29,7 @@ export const TOOLS: readonly ToolInfo[] = [
   { id: "rect", label: "Rectangle", key: "4", help: "Drag a box. Hold Ctrl for a square.", enabled: true },
   { id: "pen", label: "Pen", key: "5", help: "Draw freehand; the line is smoothed when you let go. Finish near the start to close it.", enabled: true },
   { id: "satin", label: "Satin blocks", key: "6", help: "Click the left edge, then the right edge, and repeat along the column. Enter finishes.", enabled: true },
-  { id: "text", label: "Text", key: "t", help: "Type text and sew it as lettering. Coming with the lettering update.", enabled: false },
+  { id: "text", label: "Text", key: "t", help: "Click where the text should go, then type in the panel. Select a word to edit it.", enabled: true },
   { id: "manual", label: "Manual stitch", key: "7", help: "Click to place each stitch exactly where you want the needle. Enter finishes.", enabled: true },
 ];
 

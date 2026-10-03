@@ -186,7 +186,11 @@ export function Sequencer() {
                 </button>
               </div>
               <ul>
-                {group.indices.map((i) => {
+                {clusterText(group.indices, design.objects).map((cl) => {
+                  if (cl.length > 1 || design.objects[cl[0]].sourceText) {
+                    return <TextRow key={`text-${design.objects[cl[0]].sourceText?.group}-${cl[0]}`} indices={cl} counts={counts} thread={t?.hex} />;
+                  }
+                  const i = cl[0];
                   const o = design.objects[i];
                   const hidden = o.visible === false;
                   return (
@@ -277,6 +281,68 @@ export function Sequencer() {
         <li className={`seq-end${mark?.kind === "group" && mark.at === groups.length ? " drop-before" : ""}`} onDragOver={(e) => overGroup(e, groups.length)} onDrop={(e) => dropOnGroup(e, groups.length)} aria-hidden="true" />
       </ol>
     </aside>
+  );
+}
+
+/** Split consecutive indices into runs: objects of one text block stay together, everything else is alone. */
+export function clusterText(indices: number[], objects: readonly DesignObject[]): number[][] {
+  const out: number[][] = [];
+  for (const i of indices) {
+    const g = objects[i].sourceText?.group;
+    const last = out[out.length - 1];
+    if (g && last && objects[last[0]].sourceText?.group === g) last.push(i);
+    else out.push([i]);
+  }
+  return out;
+}
+
+/** One row for a whole text block ("Text: Lilo"); the arrow shows its letters. */
+function TextRow({ indices, counts, thread }: { indices: number[]; counts: Map<number, number>; thread?: string }) {
+  const { state, actions } = useEditor();
+  const [open, setOpen] = useState(false);
+  const design = state.design!;
+  const objs = indices.map((i) => design.objects[i]);
+  const group = objs[0].sourceText!.group;
+  const block = design.textBlocks?.find((b) => b.id === group);
+  const label = block ? `Text: ${block.text.replace(/\s+/g, " ").trim().slice(0, 24)}` : `Text: ${group}`;
+  const total = indices.reduce((n, i) => n + (counts.get(i) ?? 0), 0);
+  const selected = objs.every((o) => state.selectedIds.includes(o.id));
+  const hidden = objs.every((o) => o.visible === false);
+  return (
+    <li className={`seq-row text-row${selected ? " selected" : ""}${hidden ? " hidden" : ""}`} aria-selected={selected} onClick={() => actions.setSelection(selected ? [] : objs.map((o) => o.id))}>
+      <button className="icon" aria-expanded={open} aria-label={`${open ? "Collapse" : "Expand"} ${label}`} onClick={(e) => (e.stopPropagation(), setOpen(!open))}>
+        {open ? "▾" : "▸"}
+      </button>
+      <span className="swatch small" style={{ background: thread }} aria-hidden="true" />
+      <span className="seq-name" title={block?.text}>
+        {label}
+      </span>
+      <span className="seq-kind">Text</span>
+      <span className="seq-count" title="stitches">
+        {total.toLocaleString()}
+      </span>
+      <button
+        className={`icon${hidden ? " off" : ""}`}
+        aria-label={`${hidden ? "Show" : "Hide"} ${label}`}
+        aria-pressed={!hidden}
+        onClick={(e) => {
+          e.stopPropagation();
+          actions.updateObjects(objs.map((o) => o.id), hidden ? "Show text" : "Hide text", (o) => void (o.visible = hidden));
+        }}
+      >
+        {hidden ? "◌" : "●"}
+      </button>
+      {open && (
+        <ul className="text-letters">
+          {indices.map((i) => (
+            <li key={design.objects[i].id}>
+              <span className="seq-name">{design.objects[i].sourceText?.char ?? design.objects[i].name}</span>
+              <span className="seq-count">{(counts.get(i) ?? 0).toLocaleString()}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
   );
 }
 

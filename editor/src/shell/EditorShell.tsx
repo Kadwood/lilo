@@ -2,12 +2,14 @@ import { CanvasView } from "../canvas/CanvasView";
 import { Toolbar } from "../canvas/Toolbar";
 import { IMPORT_EXTENSIONS } from "../io/decode";
 import { DesignSection } from "../panels/DesignSection";
+import { TextPanel } from "../lettering/TextPanel";
 import { DigitizePanel } from "../panels/DigitizePanel";
 import { Sequencer } from "../panels/Sequencer";
 import { SettingsPanel } from "../panels/SettingsPanel";
 import { StitchPlayer } from "../panels/StitchPlayer";
 import { getPlatform } from "../platform";
 import { useEditor } from "../state/store";
+import { singleTextGroup } from "../state/textGroups";
 import { CommandPalette } from "./CommandPalette";
 import { TopBar } from "./TopBar";
 
@@ -31,11 +33,17 @@ export function EditorShell() {
     }
   };
 
+  // The Text panel takes the left side for the Text tool, and for a selected word (to edit it).
+  const selected = state.design ? state.design.objects.filter((o) => state.selectedIds.includes(o.id)) : [];
+  const textPanel = state.tool === "text" || singleTextGroup(selected) !== null;
+
   return (
     <div className="editor">
       <TopBar />
       <div className="editor-body">
-        {state.selectedIds.length > 0 ? (
+        {textPanel ? (
+          <TextPanel />
+        ) : state.selectedIds.length > 0 ? (
           <SettingsPanel />
         ) : (
           <DigitizePanel onOpen={open}>

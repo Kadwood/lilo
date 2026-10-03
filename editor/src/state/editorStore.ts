@@ -38,6 +38,7 @@ import type { EngineClient, DigitizeResponse, PlanResult } from "../engine/clien
 import { decodeFile, type DecodedImport } from "../io/decode";
 import type { ToolId } from "../tools/registry";
 import { moveGroup, moveObject, setGroupVisible, setObjectVisible } from "./reorder";
+import { expandTextGroups, nextTextGroup, pruneTextBlocks } from "./textGroups";
 
 enablePatches();
 // Designs are passed to the engine worker and to stitchjs/jsts; nothing should mutate them, but
@@ -160,6 +161,8 @@ export interface EditorState {
   /** Which top-level dialog is open (opened from the top bar or the command palette). */
   dialog: "export" | "send" | null;
   mapDraft: MapDraft | null;
+  /** Where the Text tool was last clicked: new text is placed centred here. */
+  textAnchor: Pt | null;
   /** True while a re-stitch is pending or running. */
   planning: boolean;
 }
@@ -193,6 +196,7 @@ export const initialState: EditorState = {
   paletteOpen: false,
   dialog: null,
   mapDraft: null,
+  textAnchor: null,
   planning: false,
 };
 
@@ -224,7 +228,7 @@ export interface CommitOptions {
   /** ...but only if the previous one was this recent (ms). Omit for "until another edit happens" (drags). */
   mergeWithinMs?: number;
   /** Selection after the edit (default: keep, minus anything that no longer exists). */
-  select?: string[];
+  select?: string[] | (() => string[]);
 }
 
 const MAX_HISTORY = 200;
@@ -256,6 +260,7 @@ export interface EditorActions {
   /** End a merged group (e.g. at pointer-up) so the next edit starts a new undo step. */
   endGroup(): void;
   setTool(tool: ToolId): void;
+  setTextAnchor(p: Pt | null): void;
   setMode(mode: ShapeMode): void;
   setThread(threadId: string): void;
   setUnits(u: "mm" | "in"): void;
@@ -393,7 +398,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     const have = new Set(design.objects.map((o) => o.id));
     return ids.filter((i) => have.has(i));
   };
-  const setSel = (ids: string[], extra: Partial<EditorState> = {}) => {
+  const setSel = (rawIds: string[], extra: Partial<EditorState> = {}) => {
+    const ids = expandTextGroups(get().design, rawIds);
     const same = ids.length === get().selectedIds.length && ids.every((i, k) => i === get().selectedIds[k]);
     set({
       selectedIds: ids,
@@ -418,7 +424,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     const [next, patches, inverse] = produceWithPatches(design, recipe);
     if (patches.length === 0) return false;
     const selBefore = get().selectedIds;
-    const selAfter = opts.select ?? existing(next, selBefore);
+    const selAfter = typeof opts.select === "function" ? opts.select() : (opts.select ?? existing(next, selBefore));
     const now = Date.now();
     const last = undoStack[undoStack.length - 1];
     const canMerge =
@@ -579,7 +585,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     endGroup: () => {
       openKey = null;
     },
-    setTool: (tool) => set({ tool, mode: "none" }),
+    setTool: (tool) => set({ tool, mode: "none", textAnchor: null }),
+    setTextAnchor: (textAnchor) => set({ textAnchor }),
     setMode: (mode) => set({ mode }),
     setThread: (threadId) => set({ threadId }),
     setUnits: (units) => set({ units }),
@@ -659,12 +666,34 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const objs = selectedObjects();
       if (!d || objs.length === 0) return;
       const copies = duplicateObjects(objs, makeIdGen(d));
-      commit("Duplicate", (draft) => void draft.objects.push(...copies), { select: copies.map((c) => c.id) });
+      commit(
+        "Duplicate",
+        (draft) => {
+          // a copied word is its own text block, not more letters of the original
+          const remap = new Map<string, string>();
+          for (const c of copies) {
+            const g = c.sourceText?.group;
+            if (!g) continue;
+            if (!remap.has(g)) {
+              const ng = nextTextGroup(draft, remap.values());
+              remap.set(g, ng);
+              const block = draft.textBlocks?.find((x) => x.id === g);
+              if (block) draft.textBlocks!.push({ ...block, id: ng, origin: [block.origin[0] + 3, block.origin[1] + 3] });
+            }
+            c.sourceText = { ...c.sourceText!, group: remap.get(g)! };
+          }
+          draft.objects.push(...copies);
+        },
+        { select: copies.map((c) => c.id) },
+      );
     },
     deleteSelection() {
       const ids = new Set(get().selectedIds);
       if (ids.size === 0) return;
-      commit("Delete", (d) => void (d.objects = d.objects.filter((o) => !ids.has(o.id) || o.locked)));
+      commit("Delete", (d) => {
+        d.objects = d.objects.filter((o) => !ids.has(o.id) || o.locked);
+        pruneTextBlocks(d);
+      });
     },
     toggleLockSelection() {
       const objs = selectedObjects();

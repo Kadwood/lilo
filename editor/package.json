@@ -5,10 +5,10 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "pnpm typecheck && vite build",
+    "dev": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && vite",
+    "build": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && pnpm typecheck && vite build",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json"
   },
   "dependencies": {

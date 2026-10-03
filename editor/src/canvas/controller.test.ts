@@ -313,10 +313,12 @@ describe("drawing tools", () => {
     expect(t.c.getSnapshot().measure).toBeNull();
   });
 
-  it("the text tool is a stub: it exists but does nothing yet", () => {
+  it("the text tool sets where new text goes", () => {
     const t = setup([], "text");
     t.click(5, 5);
     expect(t.objs()).toHaveLength(0);
+    expect(t.st().textAnchor).toEqual([5, 5]);
+    expect(t.st().tool).toBe("text");
   });
 
   it("new shapes use the active thread and add it to the design", () => {

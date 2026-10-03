@@ -141,3 +141,23 @@ describe("Sequencer: images tab", () => {
     expect(lastEditor!.state.refImages).toHaveLength(1);
   });
 });
+
+describe("Sequencer: text blocks", () => {
+  it("shows a word as one expandable 'Text: ...' row", async () => {
+    const d = testDesign();
+    const sat = (id: string, ch: string, i: number) => ({ ...d.objects[2], id, name: ch, sourceText: { group: "text-1", char: ch, index: i } });
+    d.objects = [...d.objects, sat("text-1-0", "H", 0), sat("text-1-1", "i", 1)];
+    d.textBlocks = [{ id: "text-1", text: "Hi", fontId: "geneva_simple", heightMm: 10, letterSpacingMm: 0, lineSpacing: 1, align: "center", origin: [0, 0] }];
+    renderEditor(<Sequencer />, { design: d });
+    await loaded();
+    expect(screen.getByText("Text: Hi")).toBeTruthy();
+    expect(document.querySelectorAll(".text-row")).toHaveLength(1);
+    expect(screen.queryByText("H")).toBeNull();
+    fireEvent.click(screen.getByLabelText("Expand Text: Hi"));
+    expect(screen.getByText("H")).toBeTruthy();
+    fireEvent.click(screen.getByText("Text: Hi"));
+    expect(lastEditor!.state.selectedIds).toEqual(["text-1-0", "text-1-1"]);
+    fireEvent.click(screen.getByLabelText("Hide Text: Hi"));
+    expect(lastEditor!.state.design!.objects.filter((o) => o.sourceText).every((o) => o.visible === false)).toBe(true);
+  });
+});

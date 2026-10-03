@@ -6,6 +6,9 @@
   "packageManager": "pnpm@10.0.0",
   "scripts": {
     "dev": "pnpm --filter editor dev",
+    "fonts": "node --experimental-strip-types scripts/import-fonts.mjs --ensure",
+    "fonts:force": "node --experimental-strip-types scripts/import-fonts.mjs",
+    "fonts:check": "node --experimental-strip-types scripts/import-fonts.mjs --ensure && node --experimental-strip-types scripts/import-fonts.mjs --check-notice",
     "tauri": "cd app && tauri",
     "build": "pnpm -r build",
     "test": "pnpm -r test",

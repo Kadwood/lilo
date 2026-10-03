@@ -56,6 +56,8 @@ function hintFor(tool: string, mode: string, drafting: boolean): string | null {
       return "Click the left edge, then the right edge, and repeat. Enter to finish.";
     case "manual":
       return "Click to place each stitch. Enter to finish.";
+    case "text":
+      return "Click where the text should go, then type it in the panel. Click a word to edit it.";
     case "measure":
       return "Drag to measure.";
     default:

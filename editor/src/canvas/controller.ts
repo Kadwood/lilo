@@ -260,8 +260,22 @@ export class CanvasController {
         this.draft = { kind: "manual", closed: false, nodes: [], purpose: "shape" };
         this.draftPointer(i, p);
         return;
+      case "text": {
+        // Text tool: clicking a word selects it (the panel then edits it); clicking elsewhere sets
+        // where new text will be placed.
+        if (i.button !== 0) return;
+        const d = s.design;
+        const hit = d ? [...d.objects].reverse().find((o) => o.sourceText && hitObject(o, p, this.px(PICK_PX))) : undefined;
+        if (hit) this.a.setSelection([hit.id]);
+        else {
+          this.a.setSelection([]);
+          this.a.setTextAnchor(p);
+        }
+        this.changed();
+        return;
+      }
       default:
-        return; // text (M4) and anything unknown: no handler yet
+        return;
     }
   }
 

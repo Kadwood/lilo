@@ -9,6 +9,8 @@ export const TRIM_JUMP_MM = 3;
 const MAX_JUMP_MM = 200;
 /** Needle penetrations per 1 mm^2 cell above which fabric tends to pucker or thread breaks. */
 export const DENSITY_WARN_PER_MM2 = 10;
+/** Needle drops closer than this to the previous one are merged away (thread piles up and can snap). */
+export const MIN_STITCH_MM = 0.3;
 /** Default length of lock (tie) stitches in mm. */
 export const LOCK_STITCH_MM = 0.4;
 
@@ -18,6 +20,8 @@ export interface ValidationOptions {
   densityWarnPerMm2?: number;
   /** Length (mm) of the tie-in/tie-off stitches; 0 turns them off. Default 0.4. */
   lockStitchMm?: number;
+  /** Merge consecutive needle drops closer than this (mm) within one run. 0 turns it off. Default 0.3. */
+  minStitchMm?: number;
 }
 
 export interface ValidationResult {
@@ -82,8 +86,9 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
     });
   }
 
+  const merged = mergeShortStitches(out, options.minStitchMm ?? MIN_STITCH_MM);
   const lockMm = options.lockStitchMm ?? LOCK_STITCH_MM;
-  const sewn = lockMm > 0 ? addLockStitches(out, lockMm) : out;
+  const sewn = lockMm > 0 ? addLockStitches(merged, lockMm) : merged;
   const result: StitchPlan = { threads: plan.threads, stitches: sewn, warnings: [] };
   const stats = planStats(result);
   if (stats.stitchCount === 0) {
@@ -121,6 +126,49 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
 
   result.warnings = warnings;
   return { plan: result, warnings };
+}
+
+/**
+ * Drop needle drops that land within `minMm` of the previous drop of the same object, so no run has
+ * tiny stitches (they pile thread up and break needles). Only touches runs of consecutive `stitch`
+ * entries: jumps, trims and colour changes break a run, so nothing merges across them. The first
+ * stitch of a run always stays; the last one replaces the stitch before it when they are too close
+ * (unless that one is the first). Run before lock stitches are added.
+ */
+export function mergeShortStitches(list: PlanStitch[], minMm: number): PlanStitch[] {
+  if (minMm <= 0) return list;
+  const out: PlanStitch[] = [];
+  let runStart = -1; // index in `out` of the first stitch of the current run
+  for (let i = 0; i < list.length; i++) {
+    const s = list[i];
+    if (s.type !== "stitch") {
+      out.push(s);
+      runStart = -1;
+      continue;
+    }
+    const prev = out[out.length - 1];
+    if (!prev || prev.type !== "stitch" || prev.objectIndex !== s.objectIndex || runStart < 0) {
+      runStart = out.length;
+      out.push(s);
+      continue;
+    }
+    if (Math.hypot(s.x - prev.x, s.y - prev.y) >= minMm) {
+      out.push(s);
+      continue;
+    }
+    const next = list[i + 1];
+    const isLast = !next || next.type !== "stitch" || next.objectIndex !== s.objectIndex;
+    if (isLast && out.length - 1 !== runStart) {
+      out[out.length - 1] = s;
+      // moving the end point can bring it too close to the stitch before: fold those away too
+      while (out.length - 2 > runStart && Math.hypot(s.x - out[out.length - 2].x, s.y - out[out.length - 2].y) < minMm) {
+        out.splice(out.length - 2, 1);
+      }
+      if (out.length - 2 === runStart && Math.hypot(s.x - out[runStart].x, s.y - out[runStart].y) < minMm) out.pop();
+    }
+    // otherwise the close stitch is simply dropped
+  }
+  return out;
 }
 
 /**
@@ -174,7 +222,7 @@ export function addLockStitches(list: PlanStitch[], len: number): PlanStitch[] {
         const dx = next.x - s.x;
         const dy = next.y - s.y;
         const d = Math.hypot(dx, dy);
-        if (d > 1e-6) {
+        if (d >= 2 * MIN_STITCH_MM) {
           const l = Math.min(len, d / 2);
           const mk = (k: number): PlanStitch => ({ ...s, x: s.x + (dx / d) * l * k, y: s.y + (dy / d) * l * k, lock: true });
           out.push(mk(1), mk(0), mk(1));

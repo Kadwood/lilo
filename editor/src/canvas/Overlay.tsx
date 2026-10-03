@@ -148,6 +148,18 @@ export function Overlay({ controller, view }: Props) {
     }
   }
 
+  // ---- where new text will go ----------------------------------------------------------------
+  if (tool === "text" && s.textAnchor) {
+    const [ax, ay] = s.textAnchor;
+    const r = px(9);
+    nodes.push(<path key="anchor" className="ov-centre" d={`M${ax - r} ${ay} L${ax + r} ${ay} M${ax} ${ay - r} L${ax} ${ay + r}`} vectorEffect="non-scaling-stroke" />);
+    nodes.push(
+      <text key="anchor-t" className="ov-label" x={ax + r} y={ay - r} fontSize={px(12)}>
+        Text goes here
+      </text>,
+    );
+  }
+
   // ---- draft, drags --------------------------------------------------------------------------
   const draft: Draft | null = model.draft;
   if (draft) nodes.push(<DraftView key="draft" draft={draft} cursor={model.cursor} zoom={z} />);

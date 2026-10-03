@@ -15,11 +15,11 @@ const palOptions = () => within(screen.getByRole("listbox", { name: "Commands" }
 const paletteBox = () => within(screen.getByRole("dialog", { name: "Command palette" })).getByRole("combobox");
 
 describe("bottom toolbar", () => {
-  it("has every tool; the text tool is a disabled placeholder for M4", () => {
+  it("has every tool, the text tool included", () => {
     renderEditor(<EditorShell />);
     const bar = screen.getByRole("toolbar", { name: "Tools" });
     for (const t of TOOLS) expect(within(bar).getByRole("button", { name: t.label })).toBeTruthy();
-    expect((within(bar).getByRole("button", { name: "Text" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((within(bar).getByRole("button", { name: "Text" }) as HTMLButtonElement).disabled).toBe(false);
     expect(TOOLS.map((t) => t.key)).toEqual(expect.arrayContaining(["s", " ", "m", "1", "2", "3", "4", "5", "6", "t"]));
   });
 
@@ -45,15 +45,15 @@ describe("bottom toolbar", () => {
 });
 
 describe("keyboard shortcuts", () => {
-  it("letters and digits pick tools; the stub text tool ignores T", () => {
+  it("letters and digits pick tools, T opens the text tool", () => {
     renderEditor(<EditorShell />);
     for (const [k, tool] of [["1", "open"], ["2", "closed"], ["3", "circle"], ["4", "rect"], ["5", "pen"], ["6", "satin"], ["m", "measure"], ["7", "manual"], ["s", "select"]] as const) {
       key(k);
       expect(lastEditor!.state.tool).toBe(tool);
     }
     key("t");
-    expect(lastEditor!.state.tool).toBe("select");
-    expect(toolForKey("t")).toBeNull();
+    expect(lastEditor!.state.tool).toBe("text");
+    expect(toolForKey("t")).toBe("text");
   });
 
   it("⌘Z / ⇧⌘Z undo and redo; ⌘A selects all; ⌘D duplicates; Backspace deletes", async () => {
