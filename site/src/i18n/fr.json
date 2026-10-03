@@ -1,0 +1,242 @@
+{
+  "_review": "needs native speaker review",
+  "meta": {
+    "lang": "fr",
+    "dir": "ltr",
+    "name": "Français",
+    "path": "fr",
+    "ogLocale": "fr_FR",
+    "title": "Lilo par Kadwood : transformez tout en broderie",
+    "description": "Lilo est une appli gratuite et open source qui transforme images, dessins et lettres en fichiers de broderie, puis les envoie à votre machine. Mac, Windows et Linux."
+  },
+  "nav": {
+    "features": "Ce qu'elle fait",
+    "works": "Compatibilité",
+    "how": "Comment ça marche",
+    "faq": "Questions",
+    "download": "Télécharger",
+    "menu": "Menu",
+    "language": "Langue",
+    "home": "Lilo par Kadwood, accueil",
+    "primary": "Principal",
+    "skip": "Aller au contenu"
+  },
+  "hero": {
+    "title": "Transformez tout en broderie",
+    "sub": "Déposez une image, un dessin ou un prénom. Lilo crée les points et les envoie à votre machine.",
+    "price": "Gratuit. Pour toujours. Open source.",
+    "cta": "Télécharger Lilo",
+    "cta2": "Voir comment ça marche",
+    "dropTitle": "Déposez une image ici",
+    "dropHint": "ou appuyez pour en choisir une",
+    "dropAria": "Déposez une image ici, ou appuyez pour en choisir une",
+    "demoCaption": "Un vrai exemple. Le moteur de Lilo a transformé cette fleur en {stitches} points, en {colours} couleurs.",
+    "stageLook": "Lilo regarde l'image",
+    "stageTrace": "Lilo trace les formes",
+    "stageSew": "Lilo brode les points",
+    "replay": "Rejouer",
+    "pause": "Pause",
+    "play": "Lecture",
+    "droppedTitle": "Quelle jolie image !",
+    "droppedText": "Lilo la transforme en points sur votre ordinateur. Votre image ne le quitte jamais.",
+    "droppedCta": "Télécharger Lilo pour la broder",
+    "droppedAlt": "L'image que vous avez choisie",
+    "droppedOther": "Essayer une autre image",
+    "notImage": "Ce n'est pas une image. Essayez un PNG, JPG, WEBP ou SVG."
+  },
+  "download": {
+    "title": "Obtenez Lilo",
+    "sub": "Une petite appli. Pas de compte. Elle marche sans internet.",
+    "button": "Télécharger pour {os}",
+    "version": "Version {version}",
+    "versionNone": "La première version arrive bientôt.",
+    "notYet": "Voir les téléchargements sur GitHub",
+    "other": "Autres systèmes",
+    "otherHint": "Choisissez-en un autre si vous téléchargez pour un autre ordinateur.",
+    "mac": "Mac",
+    "windows": "Windows",
+    "linux": "Linux",
+    "macNote": "Mac avec macOS 13 ou plus récent. Puces Apple et Intel.",
+    "windowsNote": "Windows 64 bits. Si Windows affiche une boîte bleue, cliquez sur Informations complémentaires, puis sur Exécuter quand même.",
+    "linuxNote": "Linux 64 bits. Choisissez l'AppImage, ou le .deb pour Ubuntu et Debian.",
+    "macFile": "Installateur Mac (.dmg)",
+    "windowsFile": "Installateur Windows (.exe)",
+    "linuxAppImage": "AppImage Linux",
+    "linuxDeb": "Paquet .deb Linux",
+    "all": "Tous les téléchargements et les sommes de contrôle",
+    "mobile": "Lilo est une appli pour ordinateur. Ouvrez cette page sur votre Mac, Windows ou Linux pour la télécharger."
+  },
+  "features": {
+    "title": "Tout pour passer de l'idée au point",
+    "cards": [
+      {
+        "id": "digitize",
+        "img": "digitize",
+        "alt": "Lilo transforme l'image d'une fleur en points, avec la liste des couleurs à droite",
+        "title": "Numérisation automatique",
+        "sub": "Déposez une image. Lilo la trace et choisit vos fils.",
+        "cta": "Essayer la numérisation",
+        "items": [
+          { "icon": "image", "title": "Toute image", "text": "PNG, JPG, WEBP ou SVG" },
+          { "icon": "palette", "title": "Choisit les couleurs", "text": "Colle aux vraies couleurs de fil" },
+          { "icon": "scan", "title": "Tracé en direct", "text": "Voyez les formes apparaître" },
+          { "icon": "wand", "title": "Tout se modifie", "text": "Chaque point peut être changé" }
+        ]
+      },
+      {
+        "id": "letters",
+        "img": "letters",
+        "alt": "Le mot Lilo écrit en lettres de broderie sur le cerceau",
+        "title": "Lettres et monogrammes",
+        "sub": "Tapez un prénom. Choisissez un style. Ou utilisez votre police.",
+        "cta": "Créer un monogramme",
+        "items": [
+          { "icon": "type", "title": "Environ 100 polices", "text": "Pensées pour la broderie" },
+          { "icon": "upload", "title": "Vos propres polices", "text": "Ajoutez n'importe quel TTF ou OTF" },
+          { "icon": "text", "title": "Réglages simples", "text": "Taille, espacement, lignes" },
+          { "icon": "check", "title": "Conseils de taille", "text": "Prévient si les lettres sont trop petites" }
+        ]
+      },
+      {
+        "id": "send",
+        "img": "send",
+        "alt": "La fenêtre Envoyer à la machine avec une liste à cocher avant de coudre",
+        "title": "Envoi à votre machine",
+        "sub": "Par Wi-Fi ou avec une clé USB. C'est vous qui choisissez.",
+        "cta": "Voir comment envoyer",
+        "items": [
+          { "icon": "wifi", "title": "Wi-Fi Brother", "text": "Fonctionne avec les machines Brother Wi-Fi (détection automatique)" },
+          { "icon": "usb", "title": "Clé USB", "text": "Enregistrez le fichier, branchez la clé" },
+          { "icon": "list", "title": "Avant de coudre", "text": "Une liste pour ne rien oublier" },
+          { "icon": "files", "title": "12 types de fichiers", "text": "PES, DST, JEF, EXP et plus" }
+        ]
+      },
+      {
+        "id": "threads",
+        "img": "hoops",
+        "alt": "La fenêtre Choisir un cerceau avec les machines et les tailles",
+        "title": "Fils et cerceaux",
+        "sub": "De vraies couleurs de fil. De vraies tailles de cerceau. Sans deviner.",
+        "cta": "Parcourir fils et cerceaux",
+        "items": [
+          { "icon": "spool", "title": "{threadColours} couleurs", "text": "Dans {threadLines} gammes de fil" },
+          { "icon": "shelf", "title": "Mes fils", "text": "Ajoutez les bobines que vous avez" },
+          { "icon": "hoop", "title": "{hoops} cerceaux", "text": "Choisissez le vôtre, ou créez-en un" },
+          { "icon": "ruler", "title": "Règles et grille", "text": "Voyez la taille réelle en mm" }
+        ]
+      },
+      {
+        "id": "pixel",
+        "img": "pixel",
+        "alt": "Un cœur rouge peint case par case, avec ses points à droite",
+        "title": "Pixel art et convertisseur",
+        "sub": "Peignez case par case. Ou changez un fichier d'un type à un autre.",
+        "cta": "Ouvrir le pixel art",
+        "items": [
+          { "icon": "grid", "title": "Case par case", "text": "Comme le point de croix, à l'écran" },
+          { "icon": "cross", "title": "Trois styles de point", "text": "Tatami, croix ou satin" },
+          { "icon": "swap", "title": "Convertisseur", "text": "Changez un DST en PES" },
+          { "icon": "play", "title": "Lecteur de points", "text": "Regardez la broderie, point par point" }
+        ]
+      },
+      {
+        "id": "free",
+        "img": "home",
+        "alt": "L'écran d'accueil de Lilo avec un message de bienvenue et les créations récentes",
+        "title": "Gratuit et open source",
+        "sub": "Pas de compte. Pas de facture. Elle marche hors ligne, et le code est ouvert à tous.",
+        "cta": "Voir le code",
+        "items": [
+          { "icon": "heart", "title": "Gratuit. Pour toujours.", "text": "Rien à débloquer" },
+          { "icon": "code", "title": "Licence GPL-3", "text": "Lisez-le, partagez-le, améliorez-le" },
+          { "icon": "user", "title": "Pas de compte", "text": "Ni inscription, ni suivi" },
+          { "icon": "offline", "title": "Hors ligne", "text": "Vos créations restent sur votre ordinateur" }
+        ]
+      }
+    ]
+  },
+  "works": {
+    "title": "Compatible avec les machines que vous avez déjà",
+    "sub": "Lilo enregistre les types de fichiers que lit votre machine. Les machines Wi-Fi Brother et Baby Lock peuvent aussi recevoir les créations directement.",
+    "wifi": "Fonctionne avec les machines Brother Wi-Fi (détection automatique). Pour toutes les autres : enregistrez le fichier et copiez-le avec une clé USB.",
+    "stats": {
+      "formats": "types de fichiers",
+      "brands": "marques",
+      "machines": "machines listées",
+      "threads": "couleurs de fil",
+      "hoops": "cerceaux"
+    },
+    "cta": "Voir la liste complète",
+    "brandsLabel": "Marques de machines de la liste"
+  },
+  "how": {
+    "title": "Comment ça marche",
+    "steps": [
+      { "icon": "image", "title": "Ajoutez une image", "text": "Déposez une photo, un dessin, un logo ou un prénom." },
+      { "icon": "wand", "title": "Lilo crée les points", "text": "Choisissez les couleurs de fil et la taille. Regardez d'abord la broderie à l'écran." },
+      { "icon": "send", "title": "Envoyez à votre machine", "text": "Par Wi-Fi, ou sur une clé USB. Puis appuyez sur démarrer." }
+    ]
+  },
+  "faq": {
+    "title": "Questions",
+    "items": [
+      { "q": "Lilo est-il vraiment gratuit ?", "a": "Oui. Il est gratuit maintenant et le restera. Pas d'essai, pas de compte, pas de partie payante cachée." },
+      { "q": "Que veut dire open source ?", "a": "Tout le monde peut lire comment Lilo est fait. Tout le monde peut le partager ou l'améliorer. Lilo utilise la licence GPL-3." },
+      { "q": "Qu'est-ce que la numérisation de broderie ?", "a": "Une machine à coudre ne lit pas une image. Elle lit une liste de points, comme un plan pour l'aiguille. Numériser, c'est transformer votre image en ce plan. Lilo le fait pour vous." },
+      { "q": "Est-ce que ça marche avec ma machine ?", "a": "Lilo enregistre 12 types de fichiers, donc il convient à la plupart des machines. Ouvrez la liste complète et cherchez votre marque. Lisez aussi le manuel de votre machine, et faites un essai sur un chiffon." },
+      { "q": "Comment marche l'envoi par Wi-Fi ?", "a": "Si votre machine Brother ou Baby Lock a le Wi-Fi, Lilo la cherche sur votre réseau à la maison et la trouve tout seul. Pas de Wi-Fi ? Enregistrez le fichier sur une clé USB." },
+      { "q": "Faut-il internet ?", "a": "Non. Lilo marche hors ligne. Il vérifie seulement s'il existe une nouvelle version, et vous pouvez le désactiver." },
+      { "q": "Où vont mes créations ?", "a": "Nulle part. Elles restent sur votre ordinateur. Lilo n'envoie jamais vos images ni vos créations." },
+      { "q": "Pourquoi Windows affiche-t-il une boîte bleue ?", "a": "L'installateur Windows n'est pas encore signé, alors Windows vous demande d'être prudent. Cliquez sur Informations complémentaires, puis sur Exécuter quand même. La version Mac est signée et vérifiée par Apple." }
+    ]
+  },
+  "cta": {
+    "title": "Prêt à broder ?",
+    "sub": "Gratuit. Pour toujours. Open source."
+  },
+  "footer": {
+    "by": "par",
+    "tagline": "Logiciel de broderie libre et gratuit.",
+    "github": "Code sur GitHub",
+    "licence": "Licence GPL-3.0",
+    "releases": "Téléchargements",
+    "compat": "Compatibilité",
+    "changelog": "Nouveautés",
+    "kadwood": "Kadwood",
+    "kadwoodAria": "Kadwood, ouvre kadwood.com",
+    "trademark": "Le nom et le logo Kadwood, ainsi que le nom Lilo et le logo hibiscus, sont des marques de Kadwood. Tous les autres noms de marques et de machines appartiennent à leurs propriétaires. Lilo n'est pas affilié à eux.",
+    "rights": "Fait avec soin par Kadwood."
+  },
+  "langBanner": {
+    "text": "Cette page existe aussi en {language}.",
+    "switch": "Passer en {language}",
+    "dismiss": "Non merci",
+    "dismissAria": "Fermer ce message"
+  },
+  "compat": {
+    "metaTitle": "Compatibilité : machines, types de fichiers et marques | Lilo",
+    "metaDescription": "Les machines à broder, marques et types de fichiers compatibles avec Lilo, et comment envoyer une création à chacune.",
+    "title": "Compatibilité",
+    "intro": "Trouvez la marque de votre machine. Voyez quels types de fichiers elle lit et comment lui donner une création.",
+    "status": "État, en toute honnêteté",
+    "statusText": "Lilo n'a pas encore été testé sur de vraies machines. Le code Wi-Fi suit la méthode de transfert de Brother. « Vérifié » veut dire qu'une page du fabricant l'indiquait à la date ci-dessous. « Non vérifié » veut dire que ça vient de la mémoire ou d'un tiers : lisez le manuel de votre machine.",
+    "compiled": "Compilé le {date}.",
+    "back": "Retour à l'accueil",
+    "formatsTitle": "Types de fichiers",
+    "formatsText": "Lilo les ouvre et les enregistre. Certains gardent les couleurs de fil. D'autres gardent seulement les arrêts de couleur.",
+    "ext": "Type",
+    "name": "Nom",
+    "colours": "Couleurs de fil conservées",
+    "yes": "oui",
+    "no": "non",
+    "rw": "ouvre et enregistre",
+    "wo": "enregistre seulement",
+    "brandsTitle": "Marques et machines",
+    "reads": "Lit",
+    "getsDesign": "Comment lui donner une création",
+    "machines": "{n} machines listées",
+    "checked": "{n} vérifiées sur la page du fabricant",
+    "wifiLine": "Lilo Link (Wi-Fi) cherche les machines tout seul. Il n'a pas encore été essayé sur du vrai matériel.",
+    "disclaimer": "Les noms de marques et de produits appartiennent à leurs propriétaires. Lilo n'est pas affilié à eux."
+  }
+}

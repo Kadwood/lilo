@@ -56,7 +56,7 @@ async function compose(name, spec, mode) {
     return;
   }
   const [l, t, w, h] = spec.crop;
-  const scale = Math.min((W * spec.fit) / w, (H * spec.fit) / h);
+  const scale = Math.min((W * 0.86) / w, (H * 0.7) / h); // the lower ~25% stays empty for the card title
   const tw = Math.round(w * scale);
   const th = Math.round(h * scale);
   const r = 28;
@@ -84,11 +84,18 @@ async function compose(name, spec, mode) {
     .toBuffer();
   const blurred = await sharp(shadow).extend({ top: 80, bottom: 80, left: 80, right: 80, background: { r: 0, g: 0, b: 0, alpha: 0 } }).blur(36).toBuffer();
   const x = Math.round((W - tw) / 2);
-  const y = Math.round((H - th) / 2);
+  const y = Math.round(H * 0.07);
+  // the bottom of every card fades into the card's own colour (--card-bg in styles.css), so the
+  // title area, and on phones the text block under the picture, join the image without a seam
+  const cardBg = mode === "dark" ? "#17110f" : "#f3ece4";
+  const fade = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0.68" stop-color="${cardBg}" stop-opacity="0"/><stop offset="1" stop-color="${cardBg}" stop-opacity="1"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#f)"/></svg>`,
+  );
   const base = await sharp(bg(mode, spec.tone))
     .composite([
       { input: blurred, left: x - 80, top: y - 80 + 34 },
       { input: shot, left: x, top: y },
+      { input: fade, left: 0, top: 0 },
     ])
     .png()
     .toBuffer();

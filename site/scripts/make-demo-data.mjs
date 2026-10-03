@@ -30,7 +30,8 @@ const initVtracerNode = () => initVtracer(readFileSync(join(root, "editor/node_m
 
 await initVtracerNode();
 const SIZE = 480;
-const svg = join(root, "editor/src/assets/brand/lilo-icon.svg");
+// the app icon without its cream tile: just the black hibiscus on a transparent background
+const svg = Buffer.from(readFileSync(join(root, "editor/src/assets/brand/lilo-icon.svg"), "utf8").replace(/<rect [^>]*\/>/, ""));
 const { data, info } = await sharp(svg, { density: 300 })
   .resize(SIZE, SIZE, { fit: "contain", background: { r: 255, g: 255, b: 255, alpha: 0 } })
   .ensureAlpha()

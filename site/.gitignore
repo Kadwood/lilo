@@ -2,3 +2,4 @@ node_modules
 dist
 raw-shots
 .gen
+public/downloads.json

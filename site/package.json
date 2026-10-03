@@ -9,10 +9,13 @@
     "build": "node build.mjs",
     "downloads": "node scripts/make-downloads.mjs",
     "images": "node scripts/make-images.mjs",
+    "demo-data": "node scripts/make-demo-data.mjs",
+    "a11y": "node scripts/a11y.mjs",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
+    "axe-core": "^4.13.0",
     "esbuild": "^0.25.0",
     "playwright-core": "1.62.1",
     "sharp": "^0.34.0",
