@@ -2,6 +2,7 @@
 import "pixi.js/unsafe-eval";
 import { Application, Container, Graphics, Sprite, Texture } from "pixi.js";
 import type { DesignObject, Hoop, PlanStitch, StitchPlan } from "@lilo/engine";
+import { drawHoop, type HoopDrawOptions } from "./hoopArt";
 import { StitchLayer, type StitchStyle } from "./stitchLayer";
 import { visibleRect, type Rect, type View } from "./viewport";
 
@@ -11,6 +12,9 @@ export interface Theme {
   hoop: number;
   accent: number;
   needle: number;
+  /** The hoop's frame ring and its edge/clamp (optional: older callers omit them). */
+  frame?: number;
+  frameEdge?: number;
 }
 
 export interface Placement {
@@ -41,6 +45,7 @@ export class Scene {
   private view: View = { x: 0, y: 0, zoom: 8 };
   private hoop: Hoop | null = null;
   private gridOn = true;
+  private hoopOpts: HoopDrawOptions = { frame: true, safeArea: true, safeMarginMm: 5 };
   private theme: Theme;
   private highlighted: DesignObject | null = null;
   private plan: StitchPlan | null = null;
@@ -101,6 +106,12 @@ export class Scene {
     this.redrawBackdrop();
   }
 
+  /** What to draw of the hoop: the frame ring and clamp, the dashed safe margin. */
+  setHoopOptions(o: HoopDrawOptions): void {
+    this.hoopOpts = o;
+    this.redrawBackdrop();
+  }
+
   setGridVisible(on: boolean): void {
     this.gridOn = on;
     this.redrawBackdrop();
@@ -128,10 +139,10 @@ export class Scene {
       g.stroke({ width: 1 / z, color: this.theme.gridMajor, alpha: 1 });
     }
     const h = this.hoopG;
-    h.clear();
     if (this.hoop) {
-      h.roundRect(-this.hoop.widthMm / 2, -this.hoop.heightMm / 2, this.hoop.widthMm, this.hoop.heightMm, 6);
-      h.stroke({ width: 2 / z, color: this.theme.hoop, alpha: 0.9 });
+      drawHoop(h, this.hoop, z, { hoop: this.theme.hoop, frame: this.theme.frame ?? 0xcdbb9a, frameEdge: this.theme.frameEdge ?? 0x9c8a68 }, this.hoopOpts);
+    } else {
+      h.clear();
     }
   }
 

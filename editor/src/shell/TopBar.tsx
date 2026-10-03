@@ -22,7 +22,8 @@ export function TopBar() {
   const hasDesign = state.design !== null && (state.planResult?.stats.stitchCount ?? 0) > 0;
 
   return (
-    <header className="topbar">
+    <>
+    <header className="topbar" data-tauri-drag-region>
       <FileMenu />
       <input
         className="project-name"
@@ -36,7 +37,7 @@ export function TopBar() {
         </span>
       )}
       <HoopSelect compact />
-      <span className="topbar-note" role="status">
+      <span className="topbar-note" role="status" data-tauri-drag-region>
         {projectNotice?.text ?? note}
       </span>
       <button className="palette-hint" onClick={() => actions.setPaletteOpen(true)} title="Search every tool and action">
@@ -48,9 +49,10 @@ export function TopBar() {
       <button className="primary" onClick={() => actions.setDialog("send")} disabled={!hasDesign} title={hasDesign ? undefined : "Draw or digitize something first"}>
         Send
       </button>
+    </header>
       {state.dialog === "export" && <ExportDialog onClose={() => actions.setDialog(null)} onSaved={setNote} />}
       {state.dialog === "send" && <SendDialog onClose={() => actions.setDialog(null)} />}
       {state.dialog === "history" && <HistoryPanel onClose={() => actions.setDialog(null)} />}
-    </header>
+    </>
   );
 }

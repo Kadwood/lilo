@@ -17,7 +17,10 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["tray-icon"] }
+# `macos-private-api` = a transparent webview, so the window's glass shows through the page. It must
+# match `app.macOSPrivateApi` in tauri.conf.json (tauri-build checks) and rules out the Mac App Store,
+# which is fine for direct-download releases. It does nothing off macOS.
+tauri = { version = "2", features = ["tray-icon", "macos-private-api"] }
 tauri-plugin-opener = "2"
 # Native Open/Save dialogs and file I/O for the editor (paths picked in a dialog are auto-scoped).
 tauri-plugin-dialog = "2"
@@ -67,3 +70,10 @@ http-body-util = "0.1"
 objc2 = "0.6"
 objc2-foundation = "0.3"
 objc2-vision = "0.3"
+# The NSView type `window-vibrancy`'s Liquid Glass options take (same 0.3.x it already uses).
+objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSView", "NSResponder", "NSWorkspace", "NSAccessibility"] }
+
+# Window material: Liquid Glass (macOS 26+) / sidebar vibrancy (older macOS) / Mica (Windows 11).
+# Pinned: 0.7 -> 0.8 changed the Liquid Glass API (positional args -> LiquidGlassOptions).
+[target.'cfg(any(target_os = "macos", target_os = "windows"))'.dependencies]
+window-vibrancy = "=0.8.1"

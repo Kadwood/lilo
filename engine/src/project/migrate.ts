@@ -1,4 +1,5 @@
 import { validateDesign } from "../model";
+import { isUsableHoop, normalizeHoop } from "../hoops";
 import { importShelf, ShelfError } from "../threads/shelf";
 import { validatePixelArt } from "../pixelart/grid";
 import { PROJECT_FORMAT, PROJECT_VERSION, ProjectError, type ProjectDoc } from "./types";
@@ -52,6 +53,10 @@ function checkDoc(d: Record<string, unknown>): ProjectDoc {
   if (typeof d.createdAt !== "string") d.createdAt = now;
   if (typeof d.savedAt !== "string") d.savedAt = d.createdAt;
   if (!isObj(d.design) || !Array.isArray(d.design.threads) || !Array.isArray(d.design.objects)) bad("the design is missing");
+  // An old hoop (name + size only) is valid as it is; the editor reads it through `normalizeHoop`. Only a hoop with
+  // nonsense sizes is replaced, so a damaged field cannot stop the project from opening.
+  const design = d.design as Record<string, unknown>;
+  if (!isUsableHoop(design.hoop)) design.hoop = normalizeHoop(design.hoop);
   const problems = validateDesign(d.design as never);
   if (problems.length) bad(`the design has problems (${problems.slice(0, 3).join("; ")})`);
   if (!isObj(d.view)) d.view = { zoom: 1, panX: 0, panY: 0 };

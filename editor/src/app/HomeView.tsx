@@ -6,6 +6,8 @@ import { useProject, useProjectState } from "../project/ProjectProvider";
 import { openImagePicker } from "./openImage";
 import { useApp } from "./AppContext";
 import { useEditor } from "../state/store";
+import iconUrl from "../assets/brand/lilo-icon.svg";
+import { KadwoodWordmark } from "../shell/BrandMark";
 
 /** One card: the thumbnail from inside the file, its title and when it was last saved. */
 function Card({ card, onOpen }: { card: RecentCard; onOpen: () => void }) {
@@ -23,7 +25,50 @@ function Card({ card, onOpen }: { card: RecentCard; onOpen: () => void }) {
   );
 }
 
-/** Home: the launch screen. New, Open, and the gallery of recent projects. */
+const KADWOOD_URL = "https://kadwood.com";
+
+const ICONS = {
+  new: <path d="M12 5v14M5 12h14" />,
+  picture: (
+    <>
+      <rect x="3.5" y="5" width="17" height="14" rx="3" />
+      <circle cx="9" cy="10" r="1.6" />
+      <path d="m4.5 17 4.5-4.5 3 3 3-3.5 4.5 5" />
+    </>
+  ),
+  type: <path d="M5 7V5h14v2M12 5v14M9 19h6" />,
+  pixel: (
+    <>
+      <rect x="4" y="4" width="6" height="6" rx="1" />
+      <rect x="14" y="4" width="6" height="6" rx="1" />
+      <rect x="4" y="14" width="6" height="6" rx="1" />
+      <rect x="14" y="14" width="6" height="6" rx="1" />
+    </>
+  ),
+  open: <path d="M3.5 7.5a2 2 0 0 1 2-2H10l2 2.2h6.5a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z" />,
+  convert: <path d="M5 8h12l-3-3M19 16H7l3 3" />,
+} as const;
+
+/** One quick-start card: a small icon, what it does in a word, and a line about it. */
+function Quick({ icon, title, hint, primary, onClick }: { icon: keyof typeof ICONS; title: string; hint: string; primary?: boolean; onClick: () => void }) {
+  return (
+    <li>
+      <button className={`quick-card${primary ? " primary-card" : ""}`} onClick={onClick} aria-label={title}>
+        <span className="quick-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            {ICONS[icon]}
+          </svg>
+        </span>
+        <strong aria-hidden="true">{title}</strong>
+        <span className="muted small" aria-hidden="true">
+          {hint}
+        </span>
+      </button>
+    </li>
+  );
+}
+
+/** Home: the launch screen. A welcome, the ways to start, and the gallery of recent projects. */
 export function HomeView() {
   const m = useProject();
   const app = useApp();
@@ -40,30 +85,52 @@ export function HomeView() {
   return (
     <div className="screen home" aria-label="Home">
       <header className="home-hero">
-        <h1>Lilo</h1>
-        <p className="muted">Free embroidery digitizing. Start something new, or pick up where you left off.</p>
-        <div className="button-row">
-          <button className="primary" onClick={() => go(m.newProject())}>
-            New design
+        <img className="home-icon" src={iconUrl} alt="" width={96} height={96} />
+        <div className="home-welcome">
+          <h1>Welcome to Lilo</h1>
+          <p className="muted">Free embroidery digitizing. Turn a picture into stitches, type a monogram, or pick up where you left off.</p>
+          <button className="lockup" onClick={() => void getPlatform().openUrl(KADWOOD_URL)} title="kadwood.com">
+            <span>Lilo by</span>
+            <KadwoodWordmark height={14} />
           </button>
-          <button onClick={() => go(m.openDialog())}>Open…</button>
-          <button
+        </div>
+      </header>
+
+      <section aria-labelledby="start-title">
+        <h2 id="start-title">Start</h2>
+        <ul className="quick-grid" aria-label="Ways to start">
+          <Quick icon="new" title="New design" hint="A blank hoop to draw in" primary onClick={() => go(m.newProject())} />
+          <Quick
+            icon="picture"
+            title="Digitize a picture…"
+            hint="Turn a logo or photo into stitches"
             onClick={() => {
               app.go("editor");
               void openImagePicker(actions);
             }}
-          >
-            Digitize a picture…
-          </button>
-          <button onClick={() => app.go("pixel")}>Pixel art</button>
-          <button onClick={() => app.go("converter")}>Converter</button>
-        </div>
+          />
+          <Quick
+            icon="type"
+            title="Type a monogram"
+            hint="Letters, ready to stitch"
+            onClick={() =>
+              void m.newProject().then((ok) => {
+                if (!ok) return;
+                app.go("editor");
+                actions.setTool("text");
+              })
+            }
+          />
+          <Quick icon="pixel" title="Pixel art" hint="Cross-stitch style, square by square" onClick={() => app.go("pixel")} />
+          <Quick icon="open" title="Open…" hint="A Lilo project from your computer" onClick={() => go(m.openDialog())} />
+          <Quick icon="convert" title="Converter" hint="Change embroidery file formats" onClick={() => app.go("converter")} />
+        </ul>
         {notice && (
           <p className={notice.kind === "error" ? "error" : "muted"} role={notice.kind === "error" ? "alert" : "status"}>
             {notice.text}
           </p>
         )}
-      </header>
+      </section>
 
       <section aria-labelledby="recent-title">
         <h2 id="recent-title">Recent</h2>

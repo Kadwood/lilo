@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "window-chrome",
+  "description": "Drag the window by the top bar (overlay title bar) and follow the app's light/dark choice",
+  "windows": ["main"],
+  "permissions": ["core:window:allow-start-dragging", "core:window:allow-set-theme"]
+}

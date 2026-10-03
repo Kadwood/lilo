@@ -55,7 +55,27 @@ export const browserPlatform: Platform = {
   onCloseRequested: () => () => {},
   setDirty: () => {},
   readProjectBackup: async () => null,
+
+  async readHoops() {
+    try {
+      return { text: window.localStorage.getItem(HOOPS_KEY), backup: null, corrupt: false };
+    } catch {
+      return { text: null, backup: null, corrupt: false };
+    }
+  },
+  async writeHoops(json) {
+    window.localStorage.setItem(HOOPS_KEY, json);
+  },
+  screenInfo: async () => ({ pxPerMm: null, widthMm: null, heightMm: null, widthPt: null, source: "unknown" }),
+  onWindowMaterial(callback) {
+    callback("solid");
+    return () => {};
+  },
+  reduceTransparency: async () => false,
+  setWindowTheme: async () => {},
 };
+
+const HOOPS_KEY = "lilo.hoops";
 
 const SHELF_KEY = "lilo.my-threads";
 

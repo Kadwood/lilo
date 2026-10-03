@@ -15,6 +15,7 @@ export * from "./pixelart/grid";
 export * from "./presets";
 export * from "./pixelart/import";
 export * from "./clickstitch";
+export * from "./hoops";
 export * from "./project/types";
 export {
   createProject,

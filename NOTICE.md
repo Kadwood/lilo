@@ -2,6 +2,10 @@
 
 Lilo is GPL-3.0 (see [LICENSE](LICENSE)). It includes or depends on the following.
 
+## Trademarks
+
+The Kadwood name and logo, and the Lilo name and hibiscus logo, are trademarks of Kadwood. They are not licensed under the GPL-3.0; you may not use them to identify modified versions without permission.
+
 ## Ember Bridge (MIT)
 
 `app/src-tauri/` (the Rust shell) and `editor/src/link/` (the "Lilo Link" UI) are forked from

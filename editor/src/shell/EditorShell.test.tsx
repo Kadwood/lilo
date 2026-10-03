@@ -107,7 +107,7 @@ describe("contextual settings panel", () => {
     renderEditor(<EditorShell />, { design: testDesign() });
     await loaded();
     expect(screen.getByText("Auto digitize")).toBeTruthy();
-    expect(screen.getAllByLabelText("Hoop").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("button", { name: /^Hoop:/ }).length).toBeGreaterThan(0);
     act(() => lastEditor!.actions.setSelection(["f1"]));
     expect(screen.queryByText("Auto digitize")).toBeNull();
     expect(screen.getByRole("listbox", { name: "Fill pattern" })).toBeTruthy();
@@ -115,20 +115,29 @@ describe("contextual settings panel", () => {
     expect(screen.getByText("Auto digitize")).toBeTruthy();
   });
 
-  it("the hoop selector changes the design's hoop (undoable) and offers a custom size", async () => {
+  it("the hoop picker changes the design's hoop (undoable); the custom form adds a size of your own", async () => {
     renderEditor(<EditorShell />, { design: testDesign() });
     await loaded();
-    const select = screen.getAllByLabelText("Hoop")[0] as HTMLSelectElement;
-    expect([...select.options].map((o) => o.value)).toEqual(["NV2700 160 x 260", "NV2700 130 x 180", "custom"]);
-    fireEvent.change(select, { target: { value: "NV2700 130 x 180" } });
-    expect(lastEditor!.state.design!.hoop.widthMm).toBe(130);
-    fireEvent.change(screen.getAllByLabelText("Hoop")[0], { target: { value: "custom" } });
-    const w = screen.getAllByLabelText("Hoop width (mm)")[0];
-    fireEvent.change(w, { target: { value: "100" } });
-    fireEvent.blur(w);
-    expect(lastEditor!.state.design!.hoop).toMatchObject({ widthMm: 100, heightMm: 180 });
+    fireEvent.click(screen.getAllByRole("button", { name: /^Hoop:/ })[0]);
+    const dialog = screen.getByRole("dialog", { name: "Choose a hoop" });
+    fireEvent.change(within(dialog).getByLabelText("Search hoops"), { target: { value: "nv2700 130" } });
+    fireEvent.click(within(within(dialog).getByRole("list", { name: "Search results" })).getByRole("button", { name: /NV2700 130 x 180/ }));
+    expect(screen.queryByRole("dialog", { name: "Choose a hoop" })).toBeNull();
+    expect(lastEditor!.state.design!.hoop).toMatchObject({ widthMm: 130, heightMm: 180, id: "brother-nv2700-130x180" });
     act(() => lastEditor!.actions.undo());
-    expect(lastEditor!.state.design!.hoop.widthMm).toBe(130);
+    expect(lastEditor!.state.design!.hoop.widthMm).toBe(160);
+    // a hoop of your own, with a size and a shape
+    fireEvent.click(screen.getAllByRole("button", { name: /^Hoop:/ })[0]);
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Choose a hoop" })).getByRole("button", { name: /My custom hoops/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Add a hoop…" }));
+    const form = screen.getByRole("dialog", { name: "Add a hoop" });
+    fireEvent.change(within(form).getByPlaceholderText(/Jacket back/), { target: { value: "Cap test" } });
+    fireEvent.change(within(form).getByLabelText(/^Width/), { target: { value: "100" } });
+    fireEvent.change(within(form).getByLabelText(/^Height/), { target: { value: "60" } });
+    await act(async () => {
+      fireEvent.click(within(form).getByRole("button", { name: "Add hoop" }));
+    });
+    await waitFor(() => expect(lastEditor!.state.design!.hoop).toMatchObject({ name: "Cap test", widthMm: 100, heightMm: 60, shape: "rect" }));
   });
 });
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePreparedPes, WarningList } from "./ExportDialog";
+import { BeforeYouSew } from "../sewing/BeforeYouSew";
 import { useEditor } from "../state/store";
 import { getPlatform, type PlatformMachine, type SendProgress } from "../platform";
 
@@ -76,6 +77,7 @@ export function SendDialog({ onClose }: { onClose: () => void }) {
         <p className="muted">Sends {label}.pes{prepared ? ` (${prepared.stats.stitchCount.toLocaleString()} stitches, ${prepared.stats.colorChanges} colour changes)` : ""}. Pair and save machines under Lilo Link.</p>
         {prepError && <p className="error">{prepError}</p>}
         {prepared && <WarningList warnings={prepared.warnings} />}
+        <BeforeYouSew />
 
         {loadError && <p className="error">{loadError}</p>}
         {machines && machines.length === 0 && (

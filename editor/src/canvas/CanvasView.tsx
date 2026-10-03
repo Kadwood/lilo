@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { DEFAULT_HOOP, designBounds } from "@lilo/engine/light";
+import { useStore } from "zustand";
+import { useHoop } from "../hoops/autoPick";
+import { currentScale, loadScreen } from "../hoops/CalibrationDialog";
+import { ACTUAL_SIZE_EVENT } from "../panels/DesignSection";
+import { APPEARANCE_EVENT } from "../shell/useAppearance";
+import { hoopViewStore, setHoopView } from "../state/hoopViewStore";
+import { shouldAskCalibration } from "./actualSize";
+import { GuidesLayer, Rulers } from "./HoopOverlays";
+import { SAFE_MARGIN_MM } from "../hoops/autoPick";
 import { useEditor } from "../state/store";
 import { CanvasController, type PointerInput } from "./controller";
 import { MapDialog } from "./MapDialog";
@@ -83,6 +92,11 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   const [size, setSize] = useState({ w: 800, h: 600 });
   const [ready, setReady] = useState(false);
   const [glError, setGlError] = useState<string | null>(null);
+  const hoopLook = {
+    frame: useStore(hoopViewStore, (s) => s.showFrame),
+    safeArea: useStore(hoopViewStore, (s) => s.showSafeArea),
+  };
+  const hoopNow = useHoop();
   const [zoomPct, setZoomPct] = useState(100);
   const [dragOver, setDragOver] = useState(false);
   const [anim, setAnim] = useState<{ key: number; timeline: Timeline; phase: AnimPhase } | null>(null);
@@ -185,11 +199,17 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
 
   // ---- theme ----------------------------------------------------------------------------------
   useEffect(() => {
-    if (!ready || typeof window.matchMedia !== "function") return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (!ready) return;
     const on = () => sceneRef.current?.setTheme(readTheme());
+    // the app's own light/dark choice (shell/useAppearance) fires an event; the system one a media query
+    window.addEventListener(APPEARANCE_EVENT, on);
+    if (typeof window.matchMedia !== "function") return () => window.removeEventListener(APPEARANCE_EVENT, on);
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
     mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
+    return () => {
+      window.removeEventListener(APPEARANCE_EVENT, on);
+      mq.removeEventListener("change", on);
+    };
   }, [ready]);
 
   // ---- scene <- state ------------------------------------------------------------------------
@@ -197,8 +217,12 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   const { realistic, jumps, grid, reference } = state.view;
 
   useEffect(() => {
-    sceneRef.current?.setHoop(design?.hoop ?? DEFAULT_HOOP);
-  }, [ready, design?.hoop]);
+    sceneRef.current?.setHoop(hoopNow);
+  }, [ready, hoopNow]);
+
+  useEffect(() => {
+    sceneRef.current?.setHoopOptions({ frame: hoopLook.frame, safeArea: hoopLook.safeArea, safeMarginMm: SAFE_MARGIN_MM });
+  }, [ready, hoopLook.frame, hoopLook.safeArea]);
 
   useEffect(() => {
     sceneRef.current?.setGridVisible(grid);
@@ -320,6 +344,24 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
 
   const skip = () => setAnim(null);
 
+  // ---- actual size ---------------------------------------------------------------------------
+  useEffect(() => void loadScreen(), []);
+  const actualSize = useCallback(async () => {
+    const host = hostRef.current;
+    if (!host) return;
+    const scale = await currentScale();
+    if (shouldAskCalibration(scale, hoopViewStore.getState().calibrationAsked)) setHoopView({ calibrationOpen: true });
+    const v = viewRef.current;
+    applyView(zoomAt(v, host.clientWidth / 2, host.clientHeight / 2, scale.pxPerMm / v.zoom));
+  }, [applyView]);
+  const actualRef = useRef(actualSize);
+  actualRef.current = actualSize;
+  useEffect(() => {
+    const on = () => void actualRef.current();
+    window.addEventListener(ACTUAL_SIZE_EVENT, on);
+    return () => window.removeEventListener(ACTUAL_SIZE_EVENT, on);
+  }, []);
+
   // ---- zoom ----------------------------------------------------------------------------------
   useEffect(() => {
     const host = hostRef.current;
@@ -419,7 +461,9 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
       <svg className="trace-overlay" aria-hidden="true">
         <g ref={svgGroupRef}>{anim && state.design && <TraceOutlines key={anim.key} design={state.design} timeline={anim.timeline} />}</g>
       </svg>
+      <GuidesLayer view={view} width={size.w} height={size.h} units={state.units} />
       <Overlay controller={controller} view={view} />
+      <Rulers view={view} width={size.w} height={size.h} units={state.units} onToggleUnits={() => actions.setUnits(state.units === "mm" ? "in" : "mm")} />
       <ShapeBar controller={controller} view={view} width={size.w} height={size.h} />
       <MapDialog />
 
@@ -487,6 +531,9 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
             +
           </button>
           <button onClick={fit}>Fit</button>
+          <button onClick={() => void actualSize()} title="Show the design at its real size on this screen (⌘0)" aria-label="Actual size">
+            1:1
+          </button>
         </div>
       </div>
     </div>

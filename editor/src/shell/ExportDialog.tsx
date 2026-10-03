@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FORMATS, type FormatExt, type Origin, type PlanStats, type PlanWarning } from "@lilo/engine/light";
 import { useEngine } from "../engine/context";
+import { BeforeYouSew } from "../sewing/BeforeYouSew";
 import { useModalFocus } from "./useModalFocus";
 import { getPlatform } from "../platform";
 import { formatDuration } from "../state/player";
@@ -111,6 +112,7 @@ export function ExportPanel({
   deps,
   onClose,
   onSaved,
+  before,
 }: {
   defaultName: string;
   /** Shown in the stats. */
@@ -119,6 +121,8 @@ export function ExportPanel({
   deps: readonly unknown[];
   onClose: () => void;
   onSaved: (msg: string) => void;
+  /** Shown under the warnings: the "Before you sew" card (not for pixel art, which has no sewing setup). */
+  before?: React.ReactNode;
 }) {
   const modal = useModalFocus<HTMLDivElement>();
   const [name, setName] = useState(() => cleanName(defaultName));
@@ -211,6 +215,7 @@ export function ExportPanel({
         )}
 
         {prepared && <WarningList warnings={prepared.warnings} />}
+        {before}
         {saveError && <p className="error">{saveError}</p>}
 
         <div className="dialog-actions">
@@ -249,6 +254,7 @@ export function ExportDialog({ onClose, onSaved }: { onClose: () => void; onSave
       deps={[engine, design, planResult]}
       onClose={onClose}
       onSaved={onSaved}
+      before={<BeforeYouSew />}
     />
   );
 }

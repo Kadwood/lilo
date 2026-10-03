@@ -22,10 +22,38 @@ export const DESIGN_VERSION = 1;
 export type Pt = readonly [number, number];
 
 
+/** The shape of the sewing area. `cap` is a flat rectangle that stands for a curved cap front. */
+export type HoopShape = "rect" | "round" | "oval" | "cap";
+/** Which side of the frame carries the clamp (tightening screw). */
+export type HoopClamp = "top" | "right" | "bottom" | "left" | "none";
+
+/**
+ * The hoop a design is stitched in: its sewing area, centred on the origin. Only `name`, `widthMm` and
+ * `heightMm` are required, so files from before the hoop library still load; `normalizeHoop`
+ * (hoops/index.ts) fills in the rest. Everything else is for drawing and picking.
+ */
 export interface Hoop {
   name: string;
   widthMm: number;
   heightMm: number;
+  /** Library id (`brother-130x180`) or `custom-...`; absent on files from before the library. */
+  id?: string;
+  /** Default `rect`. `round` and `oval` are ellipses (`round` has width = height). */
+  shape?: HoopShape;
+  /** Rounded corners of a `rect` sewing area, mm. */
+  cornerRadiusMm?: number;
+  clamp?: HoopClamp;
+  /** Outer size of the frame, mm, when known (else a ring is drawn around the sewing area). */
+  outerWidthMm?: number;
+  outerHeightMm?: number;
+  brand?: string;
+}
+
+/** The sewing setup a design is stored with. Ids are those of `presets/sewing.ts`. */
+export interface DesignSewing {
+  fabric: "suiting" | "shirting" | "twill" | "knit" | "denim" | "towel" | "leather";
+  threadWeight: 40 | 60;
+  quality: "standard" | "premium";
 }
 
 /** A physical thread, resolved from a catalogue (see `threads.ts`). */
@@ -254,6 +282,13 @@ interface ObjectBase {
   endPoint?: Pt;
   /** Id of the `Design.mapGroups` entry this object was mapped to a path by, until it is detached. */
   mapGroup?: string;
+  /**
+   * The parameter values the sewing setup (`Design.sewing`) generated for this object, kept so a later
+   * change of setup can tell a value it set from one the user edited by hand: a key still equal to its
+   * snapshot is re-applied, a key that differs is the user's and is left alone. Absent on objects
+   * drawn by hand, which the setup never touches.
+   */
+  autoParams?: Record<string, unknown>;
 }
 
 /** How a selection is repeated along a path (the "map to path" action). */
@@ -324,6 +359,8 @@ export interface Design {
   /** Millimetres per coordinate unit. Always 1 in v1 (geometry is already in mm); reserved for imports. */
   unitsMm: 1;
   hoop: Hoop;
+  /** What the design is sewn on and with (see `presets/sewing.ts`). Absent: the defaults. */
+  sewing?: DesignSewing;
   /** The threads this design uses (a subset of a catalogue, in first-use order). */
   threads: Thread[];
   /** Stitch order. */
