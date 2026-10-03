@@ -1,0 +1,244 @@
+#!/usr/bin/env node
+// Import Ink/Stitch's hand-digitized embroidery fonts into Lilo's compact JSON format.
+//
+//   node scripts/import-fonts.mjs [--cache <dir>] [--only <id,id>]
+//
+// What it does
+//   1. Downloads inkstitch/embroidery-fonts at a PINNED commit (tarball, cached in the OS temp dir).
+//   2. Reads each font's font.json + LICENSE and keeps ONLY open licences: OFL, public domain/CC0,
+//      CC-BY, CC-BY-SA. NC (non-commercial), ND (no-derivatives), GPL-only, unrecognised or
+//      self-contradicting licences are excluded and reported.
+//   3. Converts the glyph layers of ltr.svg (plus font.json metrics) with
+//      engine/src/lettering/inkstitch.ts, writing data/fonts/<id>/{font.json,LICENSE,preview.png}.
+//   4. Writes data/fonts/index.json and regenerates the font section of NOTICE.md.
+//
+// The converter is TypeScript (single source of truth, in the engine). Node >= 22.6 strips the types;
+// scripts/ts-resolve-hook.mjs resolves the engine's extensionless relative imports.
+import { execFileSync } from "node:child_process";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { register } from "node:module";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+/** Pinned: inkstitch/embroidery-fonts main as of 2026-08-28. */
+const FONTS_REPO = "inkstitch/embroidery-fonts";
+const FONTS_COMMIT = "c7e3a05c3d6f5c77b881c50f257851af9a8e9cb8";
+/** Pinned: the Ink/Stitch code the lettering semantics were ported from. */
+const INKSTITCH_COMMIT = "d59c9ab1e390285a6c67822436ffd9ba9843d8b4";
+/** A font with more than this share of unsupported stitch types (cross stitch, meander...) is skipped. */
+const MAX_UNSUPPORTED_SHARE = 0.2;
+/** Fonts bigger than this are skipped to keep the repo and app bundle sane (they are giant display fonts). */
+const MAX_FONT_BYTES = 3_000_000;
+
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const outDir = join(root, "data", "fonts");
+
+const args = process.argv.slice(2);
+const opt = (name) => {
+  const i = args.indexOf(name);
+  return i >= 0 ? args[i + 1] : undefined;
+};
+const cacheDir = opt("--cache") ?? join(tmpdir(), "lilo-fonts-cache");
+const only = opt("--only")?.split(",");
+
+register(pathToFileURL(join(root, "scripts", "ts-resolve-hook.mjs")).href);
+const { convertInkstitchFont } = await import(pathToFileURL(join(root, "engine", "src", "lettering", "inkstitch.ts")).href);
+
+// ---------------------------------------------------------------------------------------------
+// 1. Fetch the pinned tarball
+// ---------------------------------------------------------------------------------------------
+async function fetchFonts() {
+  const dir = join(cacheDir, FONTS_COMMIT);
+  if (existsSync(join(dir, "src"))) return join(dir, "src");
+  mkdirSync(dir, { recursive: true });
+  const url = `https://codeload.github.com/${FONTS_REPO}/tar.gz/${FONTS_COMMIT}`;
+  console.log(`Downloading ${url}`);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`download failed: ${res.status} ${res.statusText}`);
+  const tgz = join(dir, "fonts.tgz");
+  writeFileSync(tgz, Buffer.from(await res.arrayBuffer()));
+  execFileSync("tar", ["xzf", tgz, "--strip-components=1", "-C", dir]);
+  rmSync(tgz);
+  return join(dir, "src");
+}
+
+// ---------------------------------------------------------------------------------------------
+// 2. Licence classification
+// ---------------------------------------------------------------------------------------------
+/** Returns { cls, reason }. cls is an allowed id ("OFL"|"PD"|"CC0"|"CC-BY"|"CC-BY-SA") or an exclusion code. */
+function classify(text) {
+  const t = text.toLowerCase().replace(/\s+/g, " ");
+  // Order matters: restrictions win over permissions.
+  if (/non-?commercial|by-nc|by nc|\bcc[- ]?nc|\bnc[- ]?(sa|nd)/.test(t)) return "NC";
+  if (/no-?derivativ|by-nd|by nd|\bcc[- ]?nd|\bnd\b/.test(t)) return "ND";
+  if (/open font licen[sc]e|\bofl\b/.test(t)) return "OFL";
+  if (/cc0|creative commons zero/.test(t)) return "CC0";
+  if (/(public|mublic) domain/.test(t)) return "PD";
+  if (/by-sa|by sa|sa 4\.0|sa 2\.5|share ?alike/.test(t)) return "CC-BY-SA";
+  if (/\bcc[- ]?by\b|creative commons attribution|attribution 4/.test(t)) return "CC-BY";
+  if (/gnu general public|\bgpl\b/.test(t)) return "GPL";
+  return "UNKNOWN";
+}
+const ALLOWED = new Set(["OFL", "PD", "CC0", "CC-BY", "CC-BY-SA"]);
+/** "SCC-BY-SA" in the upstream field is a typo for CC-BY-SA; classify() already handles it by substring. */
+
+function licenceOf(meta, licenceText) {
+  const field = String(meta.font_license ?? "");
+  const f = classify(field);
+  const t = classify(licenceText);
+  // Either source saying NC/ND/GPL excludes the font.
+  for (const c of [f, t]) if (!ALLOWED.has(c)) return { cls: c, reason: `${c} (font.json: "${field}")` };
+  // Both are allowed; if they disagree pick the more restrictive requirement for the label.
+  const rank = { PD: 0, CC0: 0, OFL: 1, "CC-BY": 2, "CC-BY-SA": 3 };
+  const cls = rank[f] >= rank[t] ? f : t;
+  return { cls, label: field || cls };
+}
+
+// ---------------------------------------------------------------------------------------------
+// 3. Convert
+// ---------------------------------------------------------------------------------------------
+function svgFilesOf(dir) {
+  for (const v of ["ltr", "rtl"]) {
+    const file = join(dir, `${v}.svg`);
+    if (existsSync(file)) return [file];
+    const sub = join(dir, v);
+    if (existsSync(sub) && statSync(sub).isDirectory()) {
+      const files = readdirSync(sub).filter((f) => f.endsWith(".svg")).sort().map((f) => join(sub, f));
+      if (files.length) return files;
+    }
+  }
+  return [];
+}
+
+const src = await fetchFonts();
+const ids = readdirSync(src).filter((d) => statSync(join(src, d)).isDirectory()).sort();
+
+rmSync(outDir, { recursive: true, force: true });
+mkdirSync(outDir, { recursive: true });
+
+const kept = [];
+const excluded = []; // { id, reason, cls }
+for (const id of ids) {
+  if (only && !only.includes(id)) continue;
+  const dir = join(src, id);
+  try {
+    const meta = JSON.parse(readFileSync(join(dir, "font.json"), "utf8").replace(/^﻿/, ""));
+    const licFile = readdirSync(dir).find((f) => /^licen[sc]e(\.txt)?$/i.test(f));
+    const licText = licFile ? readFileSync(join(dir, licFile), "utf8") : "";
+    if (!licFile) {
+      excluded.push({ id, cls: "UNKNOWN", reason: "no LICENSE file" });
+      continue;
+    }
+    const lic = licenceOf(meta, licText);
+    if (!ALLOWED.has(lic.cls)) {
+      excluded.push({ id, cls: lic.cls, reason: lic.reason });
+      continue;
+    }
+    const files = svgFilesOf(dir);
+    if (!files.length) {
+      excluded.push({ id, cls: "NO-SVG", reason: "no glyph SVG (ltr/rtl) found" });
+      continue;
+    }
+    const { font, stats } = convertInkstitchFont({
+      id,
+      meta,
+      svgs: files.map((f) => readFileSync(f, "utf8")),
+      licence: { id: lic.cls, label: lic.label },
+    });
+    const total = stats.satin + stats.fill + stats.run;
+    if (stats.unsupported / Math.max(1, total) > MAX_UNSUPPORTED_SHARE) {
+      excluded.push({ id, cls: "UNSUPPORTED", reason: `${stats.unsupported}/${total} elements use stitch types Lilo does not sew (cross stitch, meander...)` });
+      continue;
+    }
+    const json = JSON.stringify(font);
+    if (Buffer.byteLength(json) > MAX_FONT_BYTES) {
+      excluded.push({ id, cls: "TOO-HEAVY", reason: `${(Buffer.byteLength(json) / 1e6).toFixed(1)} MB font.json (limit ${MAX_FONT_BYTES / 1e6} MB; giant ${font.capHeightMm} mm display font)` });
+      continue;
+    }
+    const target = join(outDir, id);
+    mkdirSync(target, { recursive: true });
+    writeFileSync(join(target, "font.json"), json);
+    writeFileSync(join(target, "LICENSE"), licText);
+    const hasPreview = existsSync(join(dir, "preview.png"));
+    if (hasPreview) copyFileSync(join(dir, "preview.png"), join(target, "preview.png"));
+
+    const kinds = new Set();
+    for (const g of Object.values(font.glyphs)) for (const e of g.els) kinds.add({ s: "satin", f: "fill", r: "run" }[e.k]);
+    const coverage = Object.keys(font.glyphs)
+      .filter((k) => [...k].length === 1)
+      .sort()
+      .join("");
+    kept.push({
+      id,
+      name: font.name,
+      licence: lic.cls,
+      licenceLabel: lic.label,
+      coverage,
+      glyphCount: Object.keys(font.glyphs).length,
+      minHeightMm: Math.round(font.capHeightMm * font.minScale * 10) / 10,
+      maxHeightMm: Math.round(font.capHeightMm * font.maxScale * 10) / 10,
+      capHeightMm: font.capHeightMm,
+      colors: font.colors.length,
+      autoSatin: font.autoSatin,
+      kinds: [...kinds].sort(),
+      keywords: font.keywords ?? [],
+      bytes: Buffer.byteLength(json),
+      preview: hasPreview ? "preview.png" : "",
+      _warn: [stats.baselineGuess ? "baseline guessed" : "", Math.abs(stats.unitRatio - 1) > 0.02 ? `unit ratio ${stats.unitRatio.toFixed(3)}` : "", stats.unsupported ? `${stats.unsupported} unsupported` : "", stats.skipped ? `${stats.skipped} elements skipped (single-path satin / unstyled)` : ""].filter(Boolean),
+    });
+    process.stdout.write(`  ok  ${id} (${Object.keys(font.glyphs).length} glyphs, ${(Buffer.byteLength(json) / 1024) | 0} KB)\n`);
+  } catch (e) {
+    excluded.push({ id, cls: "ERROR", reason: e instanceof Error ? e.message : String(e) });
+    process.stdout.write(`  ERR ${id}: ${e instanceof Error ? e.message : e}\n`);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
+// 4. index.json + NOTICE.md + report
+// ---------------------------------------------------------------------------------------------
+const warnings = kept.filter((k) => k._warn.length).map((k) => `${k.id}: ${k._warn.join(", ")}`);
+const fonts = kept.map(({ _warn, ...k }) => k);
+writeFileSync(
+  join(outDir, "index.json"),
+  JSON.stringify({ source: { repo: `https://github.com/${FONTS_REPO}`, commit: FONTS_COMMIT, inkstitchCommit: INKSTITCH_COMMIT }, fonts }, null, 1) + "\n",
+);
+
+const BEGIN = "<!-- fonts:begin (generated by scripts/import-fonts.mjs; do not edit) -->";
+const END = "<!-- fonts:end -->";
+const byLicence = {};
+for (const f of fonts) (byLicence[f.licence] ??= []).push(f);
+const LICENCE_NAMES = { OFL: "SIL Open Font License 1.1", PD: "Public domain", CC0: "CC0 1.0", "CC-BY": "Creative Commons Attribution 4.0", "CC-BY-SA": "Creative Commons Attribution-ShareAlike" };
+let section = `${BEGIN}\n## Embroidery fonts (Ink/Stitch)\n\n`;
+section += `The built-in lettering fonts are hand-digitized embroidery fonts from the Ink/Stitch project\n`;
+section += `([${FONTS_REPO}](https://github.com/${FONTS_REPO}), commit \`${FONTS_COMMIT}\`). Their glyph geometry was converted\n`;
+section += `into Lilo's JSON format by \`scripts/import-fonts.mjs\`; each font keeps its own \`LICENSE\` in \`data/fonts/<id>/\`.\n`;
+section += `Only OFL, public-domain/CC0, CC-BY and CC-BY-SA fonts are included (non-commercial, no-derivatives, GPL-only and\n`;
+section += `unrecognised licences are excluded).\n\n`;
+section += `The lettering layout and satin-column conversion port ideas from Ink/Stitch \`lib/lettering\` and\n`;
+section += `\`lib/elements/satin_column.py\` (commit \`${INKSTITCH_COMMIT}\`), GPL-3.0-or-later, same licence as Lilo.\n\n`;
+section += `${fonts.length} fonts:\n\n`;
+for (const cls of Object.keys(byLicence).sort()) {
+  section += `### ${LICENCE_NAMES[cls] ?? cls} (${byLicence[cls].length})\n\n`;
+  for (const f of byLicence[cls]) section += `- ${f.name} (\`${f.id}\`)${f.licenceLabel !== LICENCE_NAMES[cls] ? ` - upstream label: ${f.licenceLabel}` : ""}\n`;
+  section += "\n";
+}
+section += END;
+const noticePath = join(root, "NOTICE.md");
+let notice = readFileSync(noticePath, "utf8");
+const a = notice.indexOf("<!-- fonts:begin");
+const b = notice.indexOf(END);
+if (a >= 0 && b > a) notice = notice.slice(0, a) + section + notice.slice(b + END.length);
+else notice = notice.replace(/\s*$/, "\n\n") + section + "\n";
+writeFileSync(noticePath, notice);
+
+const count = (list) => {
+  const m = {};
+  for (const x of list) m[x] = (m[x] ?? 0) + 1;
+  return Object.entries(m).sort().map(([k, v]) => `${k}=${v}`).join(", ");
+};
+const totalBytes = fonts.reduce((s, f) => s + f.bytes, 0);
+console.log(`\nKept ${fonts.length} fonts (${count(fonts.map((f) => f.licence))}); ${(totalBytes / 1e6).toFixed(1)} MB of font.json`);
+console.log(`Excluded ${excluded.length} (${count(excluded.map((e) => e.cls))})`);
+for (const e of excluded) console.log(`  - ${e.id} [${e.cls}] ${e.reason}`);
+if (warnings.length) console.log(`Warnings:\n  ${warnings.join("\n  ")}`);
