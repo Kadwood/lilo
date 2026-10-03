@@ -1,16 +1,34 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useApp } from "../app/AppContext";
+import { openImagePicker } from "../app/openImage";
+import { pixelCommands } from "../app/pixelCommands";
+import { useEngine } from "../engine/context";
+import { projectCommands } from "../project/commands";
+import { useOptionalProject } from "../project/ProjectProvider";
 import { buildCommands, searchCommands, type CommandHost } from "../tools/commands";
 import { useEditor } from "../state/store";
 
-/** ⌘K: type to find any tool or action, arrows to move, Enter to run. */
-export function CommandPalette({ openImage, fit }: Pick<CommandHost, "openImage" | "fit">) {
+const fitEvent = () => window.dispatchEvent(new Event("lilo:fit"));
+
+/**
+ * ⌘K: type to find any tool or action (editor, projects, threads, pixel art, screens), arrows to
+ * move, Enter to run. Mounted by the app for every screen, and by the editor shell on its own.
+ */
+export function CommandPalette({ openImage, fit = fitEvent }: Partial<Pick<CommandHost, "openImage" | "fit">>) {
   const { state, actions } = useEditor();
+  const app = useApp();
+  const engine = useEngine();
+  const project = useOptionalProject();
   const open = state.paletteOpen;
+  const openIt = useMemo(() => openImage ?? (() => void openImagePicker(actions)), [openImage, actions]);
+  const extra = open && project ? [...projectCommands(project, app, state, actions), ...pixelCommands(engine, app, state, actions)] : open ? pixelCommands(engine, app, state, actions) : [];
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const input = useRef<HTMLInputElement>(null);
 
-  const all = useMemo(() => (open ? buildCommands({ state, actions, openImage, fit }) : []), [open, state, actions, openImage, fit]);
+  // rebuilt on each open, so what is enabled reflects the project and the pixel grid right now
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const all = useMemo(() => (open ? buildCommands({ state, actions, openImage: openIt, fit, app, extra }) : []), [open, state, actions, openIt, fit, app]);
   const shown = useMemo(() => searchCommands(all, query).slice(0, 60), [all, query]);
 
   useEffect(() => {

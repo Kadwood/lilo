@@ -5,6 +5,8 @@ import type { OcrLine, OpenedFile, OpenedPath, Platform, RecentProject } from ".
  * desktop app). Everything the real platform persists lands in `state`, where a test can look at it.
  */
 export interface MockState {
+  /** What `platform.kind` says. "tauri" makes Save keep a path, as on the desktop. Default "browser". */
+  kind: "tauri" | "browser";
   /** Files by path: projects the Home screen lists and Open can read. */
   files: Map<string, Uint8Array>;
   recents: RecentProject[];
@@ -25,6 +27,7 @@ export interface MockState {
 
 export function createMockPlatform(init: Partial<MockState> = {}): { platform: Platform; state: MockState } {
   const state: MockState = {
+    kind: "browser",
     files: new Map(),
     recents: [],
     shelfJson: null,
@@ -39,7 +42,9 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
   };
   const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p;
   const platform: Platform = {
-    kind: "browser",
+    get kind() {
+      return state.kind;
+    },
     discoverMachines: async () => [],
     savedMachines: async () => [],
     sendToMachine: async () => ({ jobId: "mock", state: "done", storedAs: null, error: null }),

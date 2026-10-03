@@ -13,6 +13,7 @@ import {
 } from "@lilo/engine/light";
 import { createInlineEngine, type EngineClient } from "../engine/client";
 import { EngineProvider } from "../engine/context";
+import { ProjectProvider } from "../project/ProjectProvider";
 import { EditorProvider, useEditor } from "../state/store";
 
 const cat = getCatalogue().threads;
@@ -57,8 +58,10 @@ export function renderEditor(ui: ReactElement, opts: { design?: Design; engine?:
   return render(
     <EngineProvider engine={opts.engine ?? createInlineEngine()}>
       <EditorProvider initialDesign={opts.design}>
-        <Probe />
-        {ui}
+        <ProjectProvider>
+          <Probe />
+          {ui}
+        </ProjectProvider>
       </EditorProvider>
     </EngineProvider>,
   );
