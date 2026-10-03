@@ -28,6 +28,20 @@ describe("railsToStrip", () => {
     expect(lefts).toContain(6);
   });
 
+  it("flips a backwards second rail when there are no rungs", () => {
+    const strip = railsToStrip([[0, 0, 10, 0], [10, 2, 0, 2]], [], 1);
+    expect(strip[0]).toEqual([0, 0]);
+    expect(strip[1]).toEqual([0, 2]); // start pairs with start, not with the far end
+    expect(strip[strip.length - 1]).toEqual([10, 2]);
+    for (const w of stripWidths(strip)) expect(w).toBeCloseTo(2, 6);
+  });
+
+  it("flips a backwards second rail with a single rung", () => {
+    const strip = railsToStrip([[0, 0, 10, 0], [10, 2, 0, 2]], [[5, 0, 5, 2]], 1);
+    expect(strip[1]).toEqual([0, 2]);
+    for (const w of stripWidths(strip)) expect(w).toBeCloseTo(2, 6);
+  });
+
   it("returns nothing for degenerate rails", () => {
     expect(railsToStrip([[0, 0], [1, 1]], [])).toEqual([]);
   });

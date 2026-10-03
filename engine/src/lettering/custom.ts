@@ -386,6 +386,8 @@ export function customTypeface(cf: CustomFont): Typeface {
           } catch {
             kern = 0;
           }
+          // OpenType convention (opentype.js getKerningValue): negative = tighten, so we ADD it.
+          // The built-in Ink/Stitch fonts use the SVG hkern sign instead (subtract); see layout.ts.
           pos += kern * k + ctx.letterSpacingMm;
         }
         const key = `${g.index}@${Math.round(ctx.heightMm * 100)}`;

@@ -144,8 +144,14 @@ export function railsToStrip(
   if (p1.length < 2 || p2.length < 2) return [];
   const rr = rungs.map(asPts).filter((r) => r.length >= 2);
   const l1 = lineOf(p1);
-  const l2 = lineOf(p2);
+  let l2 = lineOf(p2);
   if (l1.length < 1e-6 || l2.length < 1e-6) return [];
+  if (rr.length < 2) {
+    // Too few rungs to tell from their order: if the rails' ends match up better crosswise, rail 2 runs backwards.
+    const same = dist(p1[0], p2[0]) + dist(p1[p1.length - 1], p2[p2.length - 1]);
+    const flip = dist(p1[0], p2[p2.length - 1]) + dist(p1[p1.length - 1], p2[0]);
+    if (flip < same) l2 = lineOf([...p2].reverse());
+  }
   let out = build(l1, l2, rr, spacingMm);
   if (rr.length > 1 && out.reversedScore > 0) {
     out = build(l1, lineOf([...l2.pts].reverse()), rr, spacingMm);

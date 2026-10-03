@@ -250,6 +250,9 @@ export function builtinTypeface(font: LiloFont): Typeface {
           if (last !== null) {
             let kern = rtl ? (font.kerning[`${name} ${last}`] ?? font.kerning[name + last]) : (font.kerning[`${last} ${name}`] ?? font.kerning[last + name]);
             kern = kern ?? 0;
+            // SVG hkern convention (positive = tighten), as Ink/Stitch lib/lettering/font.py:487:
+            //   position.x += glyph.min_x - kerning + letter_spacing
+            // so we SUBTRACT kern. (Custom/OpenType fonts use the opposite sign; see custom.ts.)
             pos += g.x0 * s - kern * s + ctx.letterSpacingMm;
           }
           const els = place(g, s, pos);

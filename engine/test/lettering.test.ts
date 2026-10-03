@@ -63,6 +63,17 @@ describe("built-in fonts", () => {
     expect(wide.maxX - wide.minX).toBeCloseTo(base.maxX - base.minX + 2 + 3, 1);
   });
 
+  it("kerning follows the SVG hkern convention: a positive pair moves the next glyph LEFT", () => {
+    const firstX = (f: typeof font, ch: string) => bounds(layoutText("AB", f, { heightMm: 10, threadId: t.id }).objects.filter((o) => o.sourceText?.char === ch)).minX;
+    const tight = { ...font, kerning: { "A B": 2 } };
+    const loose = { ...font, kerning: { "A B": -2 } };
+    const s = 10 / font.capHeightMm;
+    const base = firstX(font, "B");
+    expect(firstX(tight, "B")).toBeCloseTo(base - 2 * s, 6);
+    expect(firstX(loose, "B")).toBeCloseTo(base + 2 * s, 6);
+    expect(firstX(tight, "A")).toBeCloseTo(firstX(font, "A"), 6); // the first glyph does not move
+  });
+
   it("warns below the font's designed height and reports missing glyphs", () => {
     const r = layoutText("A☃", font, { heightMm: 3, threadId: t.id });
     expect(r.warnings.map((w) => w.code)).toEqual(expect.arrayContaining(["below-min-height", "missing-glyph"]));
