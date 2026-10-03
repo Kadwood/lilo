@@ -224,6 +224,12 @@ export function createProjectManager(deps: ProjectDeps) {
   const api = {
     store,
 
+    /**
+     * Ask the unsaved-changes question ("…if you <action> without saving…"), then run `fn`. Resolves
+     * to whether it ran. For things that end the session, like installing an update.
+     */
+    runGuarded: guarded,
+
     /** Answer the open question (the dialog's buttons). */
     resolveConfirm(choice: UnsavedChoice) {
       const r = confirmResolve;
