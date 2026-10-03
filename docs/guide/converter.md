@@ -16,7 +16,7 @@ The **converter** changes files from one format to another. Use it when a client
 ## Steps
 
 1. Open **Converter** from the top of the window.
-2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC) or pictures (PNG, JPG, WEBP, SVG).
+2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF) or pictures (PNG, JPG, WEBP, SVG).
 3. Tick the formats you want. You can tick several.
 4. Press **Convert**.
 5. Under **Results**, press **Save…** next to a result, or **Save all**.

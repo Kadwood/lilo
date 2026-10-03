@@ -1,6 +1,6 @@
 [package]
 name = "lilo"
-version = "0.1.0"
+version = "1.0.0"
 description = "Lilo — free, open-source embroidery digitizer with Wi-Fi send to embroidery machines"
 authors = ["Kadwood"]
 edition = "2021"

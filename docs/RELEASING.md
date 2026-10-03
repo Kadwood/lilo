@@ -117,6 +117,22 @@ files and fails the job if any fails.
 - `.github/workflows/release.yml`: `verify` (versions, changelog, key) then a build matrix (macOS
   universal DMG, Windows NSIS, Linux AppImage + deb), then `release` (tags only) which writes
   `SHA256SUMS`, builds `latest.json` with `scripts/make-latest-json.mjs`, and creates the draft in one go.
+- **Smoke tests** run between the builds and `release` (on tags and on manual runs). `release` needs
+  all three, so a failing one means no draft.
+  - Windows: silent per-user install of the NSIS setup, launch `Lilo.exe`, uninstall silently and
+    check the files are gone. Screenshot of the desktop is kept as the `smoke-windows-screenshot` artifact.
+  - Linux: install the `.deb` (and remove it again), then run the AppImage with
+    `--appimage-extract-and-run` (no FUSE). Both under Xvfb. Screenshots: `smoke-linux-screenshots`.
+  - macOS: copy `Lilo.app` out of the DMG, `spctl` check (signed builds only), launch the binary.
+  - "Launch" means: `GET http://127.0.0.1:17841/api/health` answers within 60 s with `app: "lilo"`
+    and the version being released (`scripts/smoke-health.mjs`; Mac/Linux launcher is
+    `scripts/smoke-launch.sh`).
+  - **They prove:** the installer runs, the app starts, the web view loads far enough to start the
+    local API, the version is right, uninstall works.
+  - **They don't prove:** Wi-Fi sending to a real machine, stitch quality on real hardware, the
+    updater actually updating, SmartScreen/Gatekeeper first-run prompts on a user's own computer, or
+    that the window looks right (the screenshots are for a human to glance at; the window starts hidden
+    until the editor is ready, so a blank desktop shot is not automatically a failure).
 - Updater bundles are only produced when `TAURI_SIGNING_PRIVATE_KEY` exists. They are switched on
   from CI (`--config`), not in `tauri.conf.json`, so building from source doesn't need our key.
 - The Mac DMG layout and hibiscus background are `app/src-tauri/dmg/`. Known Tauri limitation: on CI

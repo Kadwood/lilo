@@ -1,7 +1,7 @@
 {
   "name": "lilo",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "GPL-3.0-only",
   "packageManager": "pnpm@10.0.0",
   "scripts": {
@@ -12,8 +12,12 @@
     "tauri": "cd app && tauri",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "test:scripts": "node --test scripts/release-scripts.test.mjs scripts/forbidden-name-guard.test.mjs scripts/guide.test.mjs",
+    "test:scripts": "node --test scripts/release-scripts.test.mjs scripts/forbidden-name-guard.test.mjs scripts/compat-docs.test.mjs scripts/guide.test.mjs",
+    "compat": "node scripts/build-compat-docs.mjs",
+    "compat:check": "node scripts/build-compat-docs.mjs --check",
     "check-versions": "node scripts/check-versions.mjs",
+    "site:dev": "pnpm --dir site install --ignore-workspace --prefer-offline && pnpm --dir site dev",
+    "site:build": "pnpm --dir site install --ignore-workspace --prefer-offline && pnpm --dir site build",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r typecheck",
     "guide": "node --experimental-strip-types --no-warnings scripts/gen-guide-reference.mjs && node scripts/build-guide-index.mjs",

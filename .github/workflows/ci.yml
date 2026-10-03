@@ -26,6 +26,8 @@ jobs:
       - run: node scripts/check-no-ember.mjs
       # The guide: pages, links, hints, tour and warnings validate, and the generated pages and index.json are current.
       - run: pnpm guide:check
+      # docs/compatibility.md, docs/compat.json and the README "Works with" block are generated from data/compat.
+      - run: pnpm compat:check
       # Built-in embroidery fonts are generated, not committed. Cache the pinned download.
       - id: fonts-pin
         run: echo "commit=$(node --experimental-strip-types --no-warnings scripts/import-fonts.mjs --print-commit)" >> "$GITHUB_OUTPUT"

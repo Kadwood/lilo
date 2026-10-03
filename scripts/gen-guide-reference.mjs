@@ -178,24 +178,24 @@ You do not have to remember these. Press **⌘K** and type what you want. The se
   let body = `${front({
     id: "formats-reference",
     title: "File formats",
-    summary: `The ${FORMATS.length} embroidery file formats Lilo reads and writes, and which machines use each one.`,
+    summary: `The ${FORMATS.length} embroidery file formats Lilo writes (all but G-code it also reads), and which machines use each one.`,
     section: "reference",
     order: 20,
     keywords: ["format", "pes", "dst", "exp", "jef", "vp3", "xxx", "u01", "pec", "brand", "machine", "compatibility"],
     appContext: ["dialog.export", "view.converter"],
     status: "generated",
   })}
-Lilo reads and writes ${FORMATS.length} embroidery formats. The list is built from the app's own format table.
+Lilo writes ${FORMATS.length} embroidery formats and reads ${FORMATS.filter((f) => f.canRead !== false).length} of them. The list is built from the app's own format table.
 
 A format is the file type your machine understands. Brother and Baby Lock machines use **PES**. Most commercial machines use **DST**. If you are not sure, check your machine manual or the type of file it already sews.
 
-| Extension | Name | Keeps thread colours? | Used by |
-| --- | --- | --- | --- |
+| Extension | Name | Lilo | Keeps thread colours? | Used by |
+| --- | --- | --- | --- | --- |
 `;
   for (const f of FORMATS) {
     const m = meta.get(f.ext);
     const brands = m ? m.brands.join(", ") : "See your machine manual";
-    body += `| .${f.ext} | ${cell(f.label)} | ${f.hasColors ? "Yes" : "No"} | ${cell(brands)} |\n`;
+    body += `| .${f.ext} | ${cell(f.label)} | ${f.canRead === false ? "Write only" : "Read and write"} | ${f.hasColors ? "Yes" : "No"} | ${cell(brands)} |\n`;
   }
   body += `\n**Keeps thread colours** matters when you send a file. Formats without colours still sew in the right order. They just show you "colour 1, colour 2" instead of real thread names. See [Choosing a format](export-formats.md).\n\n`;
   if (compat) {

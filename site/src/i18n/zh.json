@@ -1,0 +1,242 @@
+{
+  "_review": "needs native speaker review",
+  "meta": {
+    "lang": "zh-Hans",
+    "dir": "ltr",
+    "name": "简体中文",
+    "path": "zh",
+    "ogLocale": "zh_CN",
+    "title": "Lilo by Kadwood：把任何东西变成刺绣",
+    "description": "Lilo 是一款免费开源的应用，能把图片、手绘和文字变成刺绣文件，并发送到你的绣花机。支持 Mac、Windows 和 Linux。"
+  },
+  "nav": {
+    "features": "功能",
+    "works": "支持的机器",
+    "how": "怎么用",
+    "faq": "常见问题",
+    "download": "下载",
+    "menu": "菜单",
+    "language": "语言",
+    "home": "Lilo by Kadwood，首页",
+    "primary": "主导航",
+    "skip": "跳到正文"
+  },
+  "hero": {
+    "title": "把任何东西变成刺绣",
+    "sub": "放进一张图片、一幅画或一个名字。Lilo 生成针迹，并发送到你的绣花机。",
+    "price": "免费。永远免费。开源。",
+    "cta": "下载 Lilo",
+    "cta2": "看看怎么用",
+    "dropTitle": "把图片拖到这里",
+    "dropHint": "或点击选择一张",
+    "dropAria": "把图片拖到这里，或点击选择一张",
+    "demoCaption": "真实示例。Lilo 自己的引擎把这朵花变成了 {stitches} 针，用了 {colours} 种颜色。",
+    "stageLook": "正在看图片",
+    "stageTrace": "正在描出形状",
+    "stageSew": "正在绣出针迹",
+    "replay": "再看一遍",
+    "pause": "暂停",
+    "play": "播放",
+    "droppedTitle": "好漂亮的图片！",
+    "droppedText": "Lilo 在你自己的电脑上把它变成针迹。你的图片不会离开电脑。",
+    "droppedCta": "下载 Lilo 把它绣出来",
+    "droppedAlt": "你选的图片",
+    "droppedOther": "换一张图片",
+    "notImage": "这不是图片。请试试 PNG、JPG、WEBP 或 SVG。"
+  },
+  "download": {
+    "title": "获取 Lilo",
+    "sub": "一个小应用。不用注册。没有网络也能用。",
+    "button": "下载 {os} 版",
+    "version": "版本 {version}",
+    "versionNone": "第一个版本即将发布。",
+    "notYet": "在 GitHub 查看下载",
+    "other": "其他系统",
+    "otherHint": "如果你要给另一台电脑下载，请选择其他系统。",
+    "mac": "Mac",
+    "windows": "Windows",
+    "linux": "Linux",
+    "macNote": "需要 macOS 13 或更新版本。苹果芯片和英特尔都可以。",
+    "windowsNote": "Windows 64 位。如果 Windows 弹出蓝色窗口，请点“更多信息”，再点“仍要运行”。",
+    "linuxNote": "Linux 64 位。选 AppImage，或者给 Ubuntu 和 Debian 选 .deb。",
+    "macFile": "Mac 安装包 (.dmg)",
+    "windowsFile": "Windows 安装程序 (.exe)",
+    "linuxAppImage": "Linux AppImage",
+    "linuxDeb": "Linux .deb 安装包",
+    "all": "全部下载和校验码",
+    "mobile": "Lilo 是电脑应用。请在 Mac、Windows 或 Linux 电脑上打开本页下载。"
+  },
+  "features": {
+    "title": "从想法到针迹，需要的都在这里",
+    "cards": [
+      {
+        "id": "digitize",
+        "img": "digitize",
+        "alt": "Lilo 把一朵花的图片变成针迹，右边是颜色列表",
+        "title": "自动打版",
+        "sub": "放进一张图片，Lilo 帮你描形状、选线色。",
+        "cta": "试试自动打版",
+        "items": [
+          { "icon": "image", "title": "任何图片", "text": "PNG、JPG、WEBP 或 SVG" },
+          { "icon": "palette", "title": "自动选色", "text": "对应真实的线色" },
+          { "icon": "scan", "title": "实时描摹", "text": "看着形状一点点出现" },
+          { "icon": "wand", "title": "都能修改", "text": "每一针都可以改" }
+        ]
+      },
+      {
+        "id": "letters",
+        "img": "letters",
+        "alt": "绣框里用刺绣字母写出的 Lilo 一词",
+        "title": "文字和字母组合",
+        "sub": "输入名字，选个样式，或者用你自己的字体。",
+        "cta": "做一个字母组合",
+        "items": [
+          { "icon": "type", "title": "约 100 种字体", "text": "专为刺绣设计" },
+          { "icon": "upload", "title": "用你自己的字体", "text": "可添加任何 TTF 或 OTF" },
+          { "icon": "text", "title": "轻松调整", "text": "大小、间距和行距" },
+          { "icon": "check", "title": "大小提示", "text": "字太小会提醒你" }
+        ]
+      },
+      {
+        "id": "send",
+        "img": "send",
+        "alt": "“发送到机器”窗口，里面有缝纫前的检查清单",
+        "title": "发送到你的机器",
+        "sub": "用 Wi-Fi 或 U 盘，由你选。",
+        "cta": "看看怎么发送",
+        "items": [
+          { "icon": "wifi", "title": "Brother Wi-Fi", "text": "适用于 Brother Wi-Fi 机器（自动识别）" },
+          { "icon": "usb", "title": "U 盘", "text": "保存文件，插上就行" },
+          { "icon": "list", "title": "开绣之前", "text": "一张清单，不会漏掉" },
+          { "icon": "files", "title": "12 种文件类型", "text": "PES、DST、JEF、EXP 等" }
+        ]
+      },
+      {
+        "id": "threads",
+        "img": "hoops",
+        "alt": "“选择绣框”窗口，列出机器和绣框尺寸",
+        "title": "线和绣框",
+        "sub": "真实的线色，真实的绣框尺寸，不用猜。",
+        "cta": "浏览线和绣框",
+        "items": [
+          { "icon": "spool", "title": "{threadColours} 种颜色", "text": "来自 {threadLines} 个线系列" },
+          { "icon": "shelf", "title": "我的线", "text": "加入你自己有的线轴" },
+          { "icon": "hoop", "title": "{hoops} 种绣框", "text": "选你的，或自己添加" },
+          { "icon": "ruler", "title": "标尺和网格", "text": "以毫米查看真实大小" }
+        ]
+      },
+      {
+        "id": "pixel",
+        "img": "pixel",
+        "alt": "一格一格画出的红色爱心，右边是它的针迹",
+        "title": "像素画和格式转换",
+        "sub": "一格一格地画。或者把文件从一种类型转成另一种。",
+        "cta": "打开像素画",
+        "items": [
+          { "icon": "grid", "title": "一格一格画", "text": "像十字绣，在屏幕上做" },
+          { "icon": "cross", "title": "三种针法", "text": "平铺、十字或缎面" },
+          { "icon": "swap", "title": "文件转换", "text": "把 DST 变成 PES" },
+          { "icon": "play", "title": "针迹播放器", "text": "一针一针看它绣" }
+        ]
+      },
+      {
+        "id": "free",
+        "img": "home",
+        "alt": "Lilo 首页，有欢迎语和最近的设计",
+        "title": "免费开源",
+        "sub": "不用注册，不用付费。离线可用，代码向所有人公开。",
+        "cta": "查看代码",
+        "items": [
+          { "icon": "heart", "title": "免费。永远。", "text": "没有需要解锁的东西" },
+          { "icon": "code", "title": "GPL-3 许可", "text": "可以阅读、分享、改进" },
+          { "icon": "user", "title": "无需账号", "text": "不用注册，不跟踪" },
+          { "icon": "offline", "title": "离线可用", "text": "你的设计留在你的电脑里" }
+        ]
+      }
+    ]
+  },
+  "works": {
+    "title": "适用于你已有的机器",
+    "sub": "Lilo 会保存你的机器能读的文件类型。Brother 和 Baby Lock 的 Wi-Fi 机器还能直接从 Lilo 收到设计。",
+    "wifi": "适用于 Brother Wi-Fi 机器（自动识别）。其他机器：保存文件，用 U 盘拷过去。",
+    "stats": {
+      "formats": "种文件类型",
+      "brands": "个品牌",
+      "machines": "台机器已列出",
+      "threads": "种线色",
+      "hoops": "种绣框"
+    },
+    "cta": "查看完整列表",
+    "brandsLabel": "列表中的机器品牌"
+  },
+  "how": {
+    "title": "怎么用",
+    "steps": [
+      { "icon": "image", "title": "放进一张图片", "text": "照片、手绘、标志或名字都可以。" },
+      { "icon": "wand", "title": "Lilo 生成针迹", "text": "选好线色和大小。先在屏幕上看它怎么绣。" },
+      { "icon": "send", "title": "发送到你的机器", "text": "用 Wi-Fi，或保存到 U 盘。然后按下开始。" }
+    ]
+  },
+  "faq": {
+    "title": "常见问题",
+    "items": [
+      { "q": "Lilo 真的免费吗？", "a": "是的。现在免费，以后也免费。没有试用期，不用账号，也没有藏起来的收费部分。" },
+      { "q": "开源是什么意思？", "a": "任何人都能看到 Lilo 是怎么做的，也能分享或改进它。Lilo 使用 GPL-3 许可。" },
+      { "q": "什么是刺绣打版？", "a": "缝纫机看不懂图片，它读的是一串针迹，像是给针的地图。打版就是把你的图片变成这张地图。Lilo 帮你完成。" },
+      { "q": "我的机器能用吗？", "a": "Lilo 能保存 12 种文件类型，适合大多数家用和商用机器。打开完整列表，找找你的品牌。也请看看机器说明书，并先在碎布上试绣。" },
+      { "q": "Wi-Fi 发送是怎么回事？", "a": "如果你的 Brother 或 Baby Lock 机器有 Wi-Fi，Lilo 会在你家的网络里自己找到它。没有 Wi-Fi？把文件存到 U 盘就行。" },
+      { "q": "需要联网吗？", "a": "不需要。Lilo 可以离线使用。它只会检查有没有新版本，你也可以关掉。" },
+      { "q": "我的设计会去哪里？", "a": "哪里也不去。它们留在你的电脑里。Lilo 从不上传你的图片或设计。" },
+      { "q": "为什么 Windows 会弹出蓝色窗口？", "a": "Windows 安装程序还没有签名，所以 Windows 提醒你小心。请点“更多信息”，再点“仍要运行”。Mac 版已由苹果签名并检查。" }
+    ]
+  },
+  "cta": {
+    "title": "准备好开始绣了吗？",
+    "sub": "免费。永远免费。开源。"
+  },
+  "footer": {
+    "by": "by",
+    "tagline": "免费开源的刺绣软件。",
+    "github": "GitHub 上的代码",
+    "licence": "GPL-3.0 许可",
+    "releases": "下载",
+    "compat": "兼容性",
+    "changelog": "更新内容",
+    "kadwood": "Kadwood",
+    "kadwoodAria": "Kadwood，打开 kadwood.com",
+    "trademark": "Kadwood 的名称和标志，以及 Lilo 的名称和木槿花标志，是 Kadwood 的商标。其他品牌和机器名称归其所有者所有。Lilo 与它们没有关联。",
+    "rights": "Kadwood 用心制作。"
+  },
+  "langBanner": {
+    "text": "本页也有{language}版。",
+    "switch": "切换到{language}",
+    "dismiss": "不用了",
+    "dismissAria": "关闭此提示"
+  },
+  "compat": {
+    "metaTitle": "兼容性：机器、文件类型和品牌 | Lilo",
+    "metaDescription": "Lilo 支持哪些绣花机、品牌和文件类型，以及怎么把设计送到每一台机器。",
+    "title": "兼容性",
+    "intro": "找到你的机器品牌。看看它能读哪些文件类型，以及怎么把设计放进去。",
+    "status": "实话实说",
+    "statusText": "Lilo 还没有在真实机器上测试过。Wi-Fi 部分遵循 Brother 自己的传输方式。“已核对”是指厂商网页在下面的日期这样写过。“未核对”是指来自记忆或第三方，请阅读你的机器说明书。",
+    "compiled": "整理于 {date}。",
+    "back": "回到首页",
+    "formatsTitle": "文件类型",
+    "formatsText": "Lilo 可以打开和保存这些文件。有些会保留线色，有些只保留换色停顿。",
+    "ext": "类型",
+    "name": "名称",
+    "colours": "是否保留线色",
+    "yes": "是",
+    "no": "否",
+    "rw": "可打开和保存",
+    "wo": "只能保存",
+    "brandsTitle": "品牌和机器",
+    "reads": "能读",
+    "getsDesign": "怎么把设计送过去",
+    "machines": "已列出 {n} 台机器",
+    "checked": "{n} 台已在厂商网页核对",
+    "wifiLine": "Lilo Link（Wi-Fi）会自己查找机器。还没有在真实设备上试过。",
+    "disclaimer": "品牌和产品名称归其所有者所有。Lilo 与它们没有关联。"
+  }
+}

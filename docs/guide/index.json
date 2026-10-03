@@ -2487,7 +2487,7 @@
     "dialog.before-you-sew"
    ],
    "status": "ready",
-   "words": 242,
+   "words": 275,
    "headings": [
     {
      "level": 2,
@@ -2515,7 +2515,7 @@
      "slug": "press-save"
     }
    ],
-   "body": "# Choosing a format and exporting\n\nPress **Export** at the top right. It is greyed out until the design has stitches.\n\n## Choose the format\n\nUnder **File format**, press the one your machine reads. If you do not know:\n\n- **Brother or Baby Lock:** PES.\n- **Janome:** JEF.\n- **Pfaff or Husqvarna Viking:** VP3.\n- **Singer:** XXX.\n- **Commercial multi-needle machines:** DST.\n- **Melco:** EXP. **Barudan:** U01.\n\nThere is also a **PNG** picture of the design. Use it for emails and mock-ups.\n\nRead [File formats](formats-reference.md) for the full list. Formats such as DST, EXP and U01 do not keep thread colours.\n\n## The details\n\nThe window shows **Export stats**: stitches, colour changes, size and time. Check them.\n\n- **File name:** set the name. Lilo adds the right ending.\n- **Origin point:** where the design's zero sits in the hoop. The centre is right for most machines. Some commercial machines start from a corner.\n\n## Before you sew\n\nThe **Before you sew** list sits in the same window. It lists the needle, stabiliser and hooping tips for your fabric. Read it, then press **Save**.\n\n## Warnings\n\nWarnings list anything that may sew badly, like stitches longer than 12 mm that Lilo had to split. Read [What the warnings mean](warnings-explained.md).\n\n## Press Save\n\nPress **Save**. Your computer asks where to put the file. Choose a USB stick for a machine without Wi-Fi. Read [USB stick](usb-stick.md).\n\nSaving ticks the **Send** step in the workflow strip.\n"
+   "body": "# Choosing a format and exporting\n\nPress **Export** at the top right. It is greyed out until the design has stitches.\n\n## Choose the format\n\nUnder **File format**, press the one your machine reads. If you do not know:\n\n- **Brother or Baby Lock:** PES.\n- **Janome:** JEF.\n- **Pfaff or Husqvarna Viking:** VP3.\n- **Singer:** XXX.\n- **Commercial multi-needle machines:** DST.\n- **Melco:** EXP. **Barudan:** U01. **Tajima with colours:** TBF.\n- **Older Husqvarna Viking:** HUS. **Pfaff and Viking with exact colours:** VIP.\n- **CNC, plotter and DIY tools:** G-code, a stitch path that Lilo writes but cannot read back.\n\nThere is also a **PNG** picture of the design. Use it for emails and mock-ups.\n\nRead [File formats](formats-reference.md) for the full list. Formats such as DST, EXP and U01 do not keep thread colours.\n\n## The details\n\nThe window shows **Export stats**: stitches, colour changes, size and time. Check them.\n\n- **File name:** set the name. Lilo adds the right ending.\n- **Origin point:** where the design's zero sits in the hoop. The centre is right for most machines. Some commercial machines start from a corner.\n\n## Before you sew\n\nThe **Before you sew** list sits in the same window. It lists the needle, stabiliser and hooping tips for your fabric. Read it, then press **Save**.\n\n## Warnings\n\nWarnings list anything that may sew badly, like stitches longer than 12 mm that Lilo had to split. Read [What the warnings mean](warnings-explained.md).\n\n## Press Save\n\nPress **Save**. Your computer asks where to put the file. Choose a USB stick for a machine without Wi-Fi. Read [USB stick](usb-stick.md).\n\nSaving ticks the **Send** step in the workflow strip.\n"
   },
   {
    "id": "pixel-art",
@@ -2606,7 +2606,7 @@
     "view.converter"
    ],
    "status": "ready",
-   "words": 243,
+   "words": 246,
    "headings": [
     {
      "level": 2,
@@ -2634,7 +2634,7 @@
      "slug": "related"
     }
    ],
-   "body": "# The converter\n\nThe **converter** changes files from one format to another. Use it when a client sends a DST and your machine needs a PES.\n\n## Steps\n\n1. Open **Converter** from the top of the window.\n2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC) or pictures (PNG, JPG, WEBP, SVG).\n3. Tick the formats you want. You can tick several.\n4. Press **Convert**.\n5. Under **Results**, press **Save…** next to a result, or **Save all**.\n\nYou can remove a file from the list with its **Remove** button, or clear the whole list.\n\n## Open in the editor\n\nPress **Open in editor** on an embroidery file to add its stitches to the editor as **Manual stitch** shapes. You can then move and resize them. You cannot change their stitch type, because the original instructions are fixed stitch points.\n\n## Warnings\n\nConversions can lose something. The results list shows a warning when:\n\n- the source file had no thread colours,\n- the target format cannot keep colours,\n- stops were converted,\n- stitches were longer than the target allows.\n\nRead the warnings before you save. Formats such as DST, EXP and U01 do not keep thread colours. Read [File formats](formats-reference.md).\n\n## Pictures\n\nA picture can become **stitches** (with the same auto-digitize as the editor) or a **traced SVG** you can edit in a drawing app.\n\n## Related\n\n[Opening files](opening-files.md)\n"
+   "body": "# The converter\n\nThe **converter** changes files from one format to another. Use it when a client sends a DST and your machine needs a PES.\n\n## Steps\n\n1. Open **Converter** from the top of the window.\n2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF) or pictures (PNG, JPG, WEBP, SVG).\n3. Tick the formats you want. You can tick several.\n4. Press **Convert**.\n5. Under **Results**, press **Save…** next to a result, or **Save all**.\n\nYou can remove a file from the list with its **Remove** button, or clear the whole list.\n\n## Open in the editor\n\nPress **Open in editor** on an embroidery file to add its stitches to the editor as **Manual stitch** shapes. You can then move and resize them. You cannot change their stitch type, because the original instructions are fixed stitch points.\n\n## Warnings\n\nConversions can lose something. The results list shows a warning when:\n\n- the source file had no thread colours,\n- the target format cannot keep colours,\n- stops were converted,\n- stitches were longer than the target allows.\n\nRead the warnings before you save. Formats such as DST, EXP and U01 do not keep thread colours. Read [File formats](formats-reference.md).\n\n## Pictures\n\nA picture can become **stitches** (with the same auto-digitize as the editor) or a **traced SVG** you can edit in a drawing app.\n\n## Related\n\n[Opening files](opening-files.md)\n"
   },
   {
    "id": "opening-files",
@@ -2662,7 +2662,7 @@
     "panel.digitize"
    ],
    "status": "ready",
-   "words": 231,
+   "words": 249,
    "headings": [
     {
      "level": 2,
@@ -2690,7 +2690,7 @@
      "slug": "where-projects-live"
     }
    ],
-   "body": "# Opening files\n\nLilo opens three kinds of files.\n\n## Pictures: PNG, JPG, WEBP, SVG\n\nOpen a picture to digitize it. Use **Digitize a picture…** on Home, **Open image…** in the left panel, or drop the file on the canvas. Read [Turn a picture into stitches](auto-digitize.md).\n\nSVG files are drawings. They trace more cleanly than photos.\n\n## Lilo projects: .lilo\n\nA **.lilo** file is a full project: shapes, settings, reference images and version history. Open with **Open…** on Home or **⌘O**. Double-clicking a .lilo file opens it in Lilo. Read [Projects and autosave](projects-and-autosave.md).\n\n## Embroidery files\n\nLilo reads PES, DST, JEF, VP3, EXP, XXX, U01 and PEC. Use the [converter](converter.md) to change a file's format, or press **Open in editor** there to bring the stitches into the editor.\n\nA file that has already been stitched has fixed needle points. Lilo shows them as **Manual stitch** shapes. You can move, resize and re-colour them, but you cannot change a fill's pattern, because the pattern is gone.\n\n## When a file will not open\n\n- Check the ending. Lilo does not read every format. See [File formats](formats-reference.md).\n- Very large files may be slow. Close other windows.\n- If a file is damaged, try the original from where you got it.\n\n## Where projects live\n\nNew projects save to **Documents, then Lilo**. Home shows the most recent ones as cards with a thumbnail.\n"
+   "body": "# Opening files\n\nLilo opens three kinds of files.\n\n## Pictures: PNG, JPG, WEBP, SVG\n\nOpen a picture to digitize it. Use **Digitize a picture…** on Home, **Open image…** in the left panel, or drop the file on the canvas. Read [Turn a picture into stitches](auto-digitize.md).\n\nSVG files are drawings. They trace more cleanly than photos.\n\n## Lilo projects: .lilo\n\nA **.lilo** file is a full project: shapes, settings, reference images and version history. Open with **Open…** on Home or **⌘O**. Double-clicking a .lilo file opens it in Lilo. Read [Projects and autosave](projects-and-autosave.md).\n\n## Embroidery files\n\nLilo reads PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF, and writes those plus G-code (a stitch path for CNC and plotter tools, write only). Use the [converter](converter.md) to change a file's format, or press **Open in editor** there to bring the stitches into the editor.\n\nA file that has already been stitched has fixed needle points. Lilo shows them as **Manual stitch** shapes. You can move, resize and re-colour them, but you cannot change a fill's pattern, because the pattern is gone.\n\n## When a file will not open\n\n- Check the ending. Lilo does not read every format. See [File formats](formats-reference.md).\n- Very large files may be slow. Close other windows.\n- If a file is damaged, try the original from where you got it.\n\n## Where projects live\n\nNew projects save to **Documents, then Lilo**. Home shows the most recent ones as cards with a thumbnail.\n"
   },
   {
    "id": "projects-and-autosave",
@@ -2858,7 +2858,7 @@
   {
    "id": "formats-reference",
    "title": "File formats",
-   "summary": "The 8 embroidery file formats Lilo reads and writes, and which machines use each one.",
+   "summary": "The 12 embroidery file formats Lilo writes (all but G-code it also reads), and which machines use each one.",
    "section": "reference",
    "order": 20,
    "keywords": [
@@ -2880,7 +2880,7 @@
     "view.converter"
    ],
    "status": "generated",
-   "words": 251,
+   "words": 372,
    "headings": [
     {
      "level": 2,
@@ -2888,7 +2888,7 @@
      "slug": "machine-compatibility"
     }
    ],
-   "body": "# File formats\n\nLilo reads and writes 8 embroidery formats. The list is built from the app's own format table.\n\nA format is the file type your machine understands. Brother and Baby Lock machines use **PES**. Most commercial machines use **DST**. If you are not sure, check your machine manual or the type of file it already sews.\n\n| Extension | Name | Keeps thread colours? | Used by |\n| --- | --- | --- | --- |\n| .pes | Brother PES | Yes | See your machine manual |\n| .pec | Brother PEC | Yes | See your machine manual |\n| .dst | Tajima DST | No | See your machine manual |\n| .exp | Melco EXP | No | See your machine manual |\n| .jef | Janome JEF | Yes | See your machine manual |\n| .vp3 | Pfaff/Viking VP3 | Yes | See your machine manual |\n| .xxx | Singer XXX | Yes | See your machine manual |\n| .u01 | Barudan U01 | No | See your machine manual |\n\n**Keeps thread colours** matters when you send a file. Formats without colours still sew in the right order. They just show you \"colour 1, colour 2\" instead of real thread names. See [Choosing a format](export-formats.md).\n\n## Machine compatibility\n\nWi-Fi sending works with Brother and Baby Lock machines that have built-in Wi-Fi. Every other machine uses a file on a USB stick. Read [Send over Wi-Fi](lilo-link-wifi.md) and [USB stick](usb-stick.md).\n"
+   "body": "# File formats\n\nLilo writes 12 embroidery formats and reads 11 of them. The list is built from the app's own format table.\n\nA format is the file type your machine understands. Brother and Baby Lock machines use **PES**. Most commercial machines use **DST**. If you are not sure, check your machine manual or the type of file it already sews.\n\n| Extension | Name | Lilo | Keeps thread colours? | Used by |\n| --- | --- | --- | --- | --- |\n| .pes | Brother PES | Read and write | Yes | Brother, Baby Lock, Bernina (reads) |\n| .pec | Brother PEC | Read and write | Yes | Brother, Baby Lock |\n| .dst | Tajima DST | Read and write | No | Tajima, Barudan, Ricoma, Melco, SWF, Happy, ZSK, Toyota, Janome MB-7, Brother, Baby Lock |\n| .exp | Melco EXP | Read and write | No | Melco, Bernina |\n| .jef | Janome JEF | Read and write | Yes | Janome, Elna (some) |\n| .vp3 | Pfaff/Viking VP3 | Read and write | Yes | Pfaff, Husqvarna Viking |\n| .xxx | Singer XXX | Read and write | Yes | Singer, Compucon |\n| .u01 | Barudan U01 | Read and write | No | Barudan |\n| .hus | Husqvarna Viking HUS | Read and write | Yes | Husqvarna Viking |\n| .vip | Pfaff/Viking VIP | Read and write | Yes | Husqvarna Viking, Pfaff |\n| .tbf | Tajima TBF | Read and write | Yes | Tajima |\n| .gcode | G-code (stitch path) | Write only | No | CNC and plotter tools |\n\n**Keeps thread colours** matters when you send a file. Formats without colours still sew in the right order. They just show you \"colour 1, colour 2\" instead of real thread names. See [Choosing a format](export-formats.md).\n\n## Machine compatibility\n\nThe research behind Lilo covers 17 brands, 66 machines and 44 thread brands. No machine has been tested on real hardware beyond one pending Brother run, so treat every machine as \"should work\" until you have sewn one design. The full tables are in compatibility.md in the docs folder.\n"
   },
   {
    "id": "glossary",

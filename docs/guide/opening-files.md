@@ -25,7 +25,7 @@ A **.lilo** file is a full project: shapes, settings, reference images and versi
 
 ## Embroidery files
 
-Lilo reads PES, DST, JEF, VP3, EXP, XXX, U01 and PEC. Use the [converter](converter.md) to change a file's format, or press **Open in editor** there to bring the stitches into the editor.
+Lilo reads PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF, and writes those plus G-code (a stitch path for CNC and plotter tools, write only). Use the [converter](converter.md) to change a file's format, or press **Open in editor** there to bring the stitches into the editor.
 
 A file that has already been stitched has fixed needle points. Lilo shows them as **Manual stitch** shapes. You can move, resize and re-colour them, but you cannot change a fill's pattern, because the pattern is gone.
 

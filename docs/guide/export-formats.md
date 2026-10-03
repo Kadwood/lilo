@@ -22,7 +22,9 @@ Under **File format**, press the one your machine reads. If you do not know:
 - **Pfaff or Husqvarna Viking:** VP3.
 - **Singer:** XXX.
 - **Commercial multi-needle machines:** DST.
-- **Melco:** EXP. **Barudan:** U01.
+- **Melco:** EXP. **Barudan:** U01. **Tajima with colours:** TBF.
+- **Older Husqvarna Viking:** HUS. **Pfaff and Viking with exact colours:** VIP.
+- **CNC, plotter and DIY tools:** G-code, a stitch path that Lilo writes but cannot read back.
 
 There is also a **PNG** picture of the design. Use it for emails and mock-ups.
 

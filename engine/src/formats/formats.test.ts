@@ -17,7 +17,7 @@ import {
 const needles = (p: StitchPlan): string[] => p.stitches.filter((s) => s.type === "stitch").map((s) => `${Math.round(s.x * 10)},${Math.round(s.y * 10)}`);
 const blockCount = (p: StitchPlan) => p.stitches.filter((s) => s.type === "colorChange").length + 1;
 
-const ALL: FormatExt[] = ["pes", "pec", "dst", "exp", "jef", "vp3", "xxx", "u01"];
+const ALL: FormatExt[] = ["pes", "pec", "dst", "exp", "jef", "vp3", "xxx", "u01", "hus", "vip", "tbf"];
 
 describe("embroidery formats", () => {
   for (const name of ["sample", "islands"] as const) {
@@ -37,11 +37,11 @@ describe("embroidery formats", () => {
   it("keeps exact colours where the format stores them (VP3, XXX), nearest slot otherwise", () => {
     const plan = islandsPlan();
     const want = [...new Set(plan.threads.map((t) => t.hex))];
-    for (const ext of ["vp3", "xxx"] as const) {
+    for (const ext of ["vp3", "xxx", "vip", "tbf"] as const) {
       const got = readEmbroidery(writeEmbroidery(plan, ext), ext).plan.threads.map((t) => t.hex);
       expect(got).toEqual(plan.threads.map((t) => t.hex));
     }
-    for (const ext of ["jef", "pes", "pec"] as const) {
+    for (const ext of ["jef", "pes", "pec", "hus"] as const) {
       const got = readEmbroidery(writeEmbroidery(plan, ext), ext).plan.threads;
       expect(got).toHaveLength(plan.threads.length);
       expect(new Set(got.map((t) => t.hex)).size).toBe(want.length);
@@ -63,7 +63,7 @@ describe("embroidery formats", () => {
 
   it("long gaps are split to what each format allows and trims survive", () => {
     const plan = islandsPlan();
-    for (const ext of ["dst", "exp", "jef", "xxx", "u01", "vp3"] as const) {
+    for (const ext of ["dst", "exp", "jef", "xxx", "u01", "vp3", "hus", "vip", "tbf"] as const) {
       const back = readEmbroidery(writeEmbroidery(plan, ext), ext).plan;
       expect(back.stitches.some((s) => s.type === "trim"), ext).toBe(true);
     }
@@ -98,7 +98,7 @@ describe("embroidery formats", () => {
     expect(formatFromName(".pes")).toBe("pes");
     expect(formatFromName("a.zip")).toBeNull();
     expect(() => convert(new Uint8Array(10), "pes", "svg")).toThrow(/can't read or write/);
-    expect(FORMATS.map((f) => f.ext).sort()).toEqual([...ALL].sort());
+    expect(FORMATS.map((f) => f.ext).sort()).toEqual([...ALL, "gcode"].sort());
   });
 
   it("refuses to write an empty design", () => {

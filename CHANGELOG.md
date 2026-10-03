@@ -10,10 +10,20 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 - A guide inside Lilo: a searchable Help panel (Help in the top bar, or ⌘? / Ctrl+?), 49 plain-words pages, a "?" hint next to almost every control (what it does, when to change it, a typical value), a five-step workflow strip that ticks itself (Get a design, Size and hoop, Stitches, Preview, Send), a first-launch tour with four paths that you can replay from Help, and a calm warnings tray with one-click fixes. All the wording lives in `docs/guide/` (`pnpm guide:check` validates it in CI).
 - Fixed: the stitch player could crash when a frame's time stamp came before the last one.
-- Faster on big designs: changing one shape re-stitches only that shape (about 60 ms instead of 2.4 s on a 300-object design); the canvas draws stitches as GPU quads that are culled off screen and simplified when zoomed out, so panning a 76,000-stitch design no longer freezes the window; version history is stored as small deltas (a project with 50 versions went from 9.4 MB to 1.7 MB and saves in a fifth of the time).
-- Minimum stitch follows quality (Standard 0.5 mm, Premium 0.6 mm). Custom-font lettering uses a 1.5 mm (Standard) or 1.0 mm (Premium) narrowest column, and the Text panel warns when letters are under 6 mm (40 wt) or 4 mm (60 wt), following the Sewing setup.
-- Fixed: the colour-change card hid under the tool dock, the File menu hid under the side panels, Home thumbnails could fail to load, and the Send dialog kept re-making its file in a loop.
-- A Playwright journey suite (`pnpm --filter editor e2e`, opt-in in CI) covers the main screens end to end.
-- Stitch defaults are now calibrated to published digitizing norms and live in one table (`engine/src/presets/defaults.ts`): satin density 0.40 mm same-side spacing, fill stitch length 4.0, minimum stitch 0.5, maximum 12.1, underlay chosen by column width.
-- Lettering: the default satin underlay and pull compensation changed (underlay now follows the width bands: centre walk, centre + edge, edge + zig-zag, double zig-zag; satin pull is a flat 0.15 mm). Lettering saved with an older Lilo keeps its stored objects, but regenerating or editing a text block re-stitches it slightly differently.
-- Auto-digitize gains Quality (Standard / Premium), Thread weight (40 / 60) and Fabric options; Standard now uses a 1.5 mm minimum satin column.
+
+## [1.0.0] - 2026-10-04
+
+The first release of Lilo: free, open-source embroidery for Mac, Windows and Linux.
+
+- **Turn a picture into stitches.** Drop in a logo or drawing. Lilo traces it, picks matching threads and makes satin, fill and running stitches. Click any part to stitch it your way.
+- **Draw and edit.** Shapes, pen, satin columns, holes, a knife and map-to-path. Seven stitch types and 36 fill patterns, with undo.
+- **Letters and monograms.** 108 built-in embroidery fonts, or use your own font file. Lilo warns you when letters are too small to sew well.
+- **Real threads.** 75 thread lines from 44 brands (20,784 colours). Keep your own spools in My Threads, and add one by taking a photo of its label.
+- **See it before you sew.** A stitch player that stops at every thread change, a realistic preview, and a "Before you sew" checklist.
+- **Good stitching by default.** Settings follow published digitizing norms. Pick your fabric, thread weight and Standard or Premium quality.
+- **Hoops.** 52 hoops from the main brands, or add your own. Rulers, a true actual-size view and placement guides.
+- **Send to your machine.** Save as PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF or G-code. Brother and Baby Lock Wi-Fi machines are found automatically on your network.
+- **Also:** pixel art, a file converter, projects that save themselves with version history, and automatic updates.
+- Free forever, no account, works offline. GPL-3.0.
+
+Windows: the installer is not signed yet, so Windows may show a blue box. Click **More info**, then **Run anyway**.
