@@ -1,4 +1,4 @@
-import type { AutoDigitizeOptions, Design, ExportOptions, StageEvent } from "@lilo/engine";
+import type { AutoDigitizeOptions, Design, DesignObject, ExportOptions, ShapeOpRequest, StageEvent } from "@lilo/engine";
 import type { DigitizeResponse, DigitizeSource, ExportResponse, PlanResult } from "./ops";
 
 export type { DigitizeResponse, DigitizeSource, ExportResponse, PlanResult } from "./ops";
@@ -11,6 +11,8 @@ export interface EngineClient {
   digitize(source: DigitizeSource, options: Partial<AutoDigitizeOptions>, onProgress?: (e: StageEvent) => void): Promise<DigitizeResponse>;
   plan(design: Design): Promise<PlanResult>;
   exportPes(design: Design, options: ExportOptions): Promise<ExportResponse>;
+  /** Knife / cut-hole: the pieces that replace the object. */
+  shapeOp(req: ShapeOpRequest): Promise<DesignObject[]>;
   dispose(): void;
 }
 
@@ -31,6 +33,9 @@ export function createInlineEngine(init: () => Promise<void> = async () => {}): 
     async exportPes(design, options) {
       return (await ops()).runExport(design, options);
     },
+    async shapeOp(req) {
+      return (await ops()).runShape(req);
+    },
     dispose() {},
   };
 }
@@ -41,11 +46,12 @@ type DistributiveOmit<T, K extends keyof never> = T extends unknown ? Omit<T, K>
 export type WorkerRequest =
   | { id: number; type: "digitize"; source: DigitizeSource; options: Partial<AutoDigitizeOptions> }
   | { id: number; type: "plan"; design: Design }
-  | { id: number; type: "export"; design: Design; options: ExportOptions };
+  | { id: number; type: "export"; design: Design; options: ExportOptions }
+  | { id: number; type: "shape"; req: ShapeOpRequest };
 
 export type WorkerResponse =
   | { id: number; type: "progress"; event: StageEvent }
-  | { id: number; type: "result"; result: DigitizeResponse | PlanResult | ExportResponse }
+  | { id: number; type: "result"; result: DigitizeResponse | PlanResult | ExportResponse | DesignObject[] }
   | { id: number; type: "error"; message: string };
 
 /**
@@ -99,6 +105,7 @@ export function createWorkerEngine(): EngineClient {
     },
     plan: (design) => call<PlanResult>({ type: "plan", design }),
     exportPes: (design, options) => call<ExportResponse>({ type: "export", design, options }),
+    shapeOp: (req) => call<DesignObject[]>({ type: "shape", req }),
     dispose() {
       worker?.terminate();
       worker = null;

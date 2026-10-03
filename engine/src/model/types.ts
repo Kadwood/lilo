@@ -13,11 +13,14 @@
  *   block; a colour change is emitted whenever the thread changes between neighbours.
  */
 
+import type { PathNode } from "./path";
+
 /** Bump when the shape changes incompatibly; `parseDesign` migrates or rejects older files. */
 export const DESIGN_VERSION = 1;
 
 /** `[x, y]` in mm. */
 export type Pt = readonly [number, number];
+
 
 export interface Hoop {
   name: string;
@@ -40,6 +43,10 @@ export interface Thread {
   hex: string;
 }
 
+/**
+ * Object kinds. M4 (lettering) adds `"text"` here, plus its object interface below and a generator
+ * registered through `registerObjectGenerator` in `stitch/generate.ts`.
+ */
 export type ObjectKind = "fill" | "satin" | "run";
 
 /** A filled area: outline plus holes. Stitched as tatami (rows) with optional underlay. */
@@ -48,6 +55,13 @@ export interface FillGeometry {
   shell: Pt[];
   /** Zero or more holes, each implicitly closed. */
   holes: Pt[][];
+  /**
+   * The nodes the shell was drawn with, when it was drawn (or reshaped) in the editor. `shell` is
+   * their flattened outline; editing nodes re-flattens it. Absent for imported/auto-digitized shapes.
+   */
+  shellNodes?: PathNode[];
+  /** Same, per hole (`undefined` entries are plain polylines). */
+  holeNodes?: (PathNode[] | undefined)[];
 }
 
 /** A satin column: alternating left/right points along the column, `[l0, r0, l1, r1, ...]`. */
@@ -59,6 +73,8 @@ export interface SatinGeometry {
 export interface RunGeometry {
   path: Pt[];
   closed: boolean;
+  /** Nodes the path was drawn with; `path` is their flattened result. See `FillGeometry.shellNodes`. */
+  nodes?: PathNode[];
 }
 
 export interface FillParams {
@@ -75,7 +91,50 @@ export interface FillParams {
    * rows stop up to a stitch short of the edge, which looks ragged; the outline gives a clean edge.
    */
   edgeRun?: boolean;
+  /** Fill pattern id (see `FILL_PATTERNS`). Default "tatami". */
+  pattern?: FillPatternId;
+  /** Pattern-specific numbers keyed by `PatternSetting.key`; missing keys use the pattern's default. */
+  patternParams?: Record<string, number>;
+  /** 0..5: seeded random wobble of needle positions so the fill looks hand-stitched. 0 = off. */
+  handStitch?: number;
+  /** Seed for every random choice (hand stitch, rainfall, stipple). Default derives from the object id. */
+  seed?: number;
+  /** Travel through the fill (hidden under the top stitches) instead of jumping between rows. */
+  underpath?: boolean;
+  /** Row-spacing gradient across the rows of a row-based pattern. */
+  gradient?: FillGradient;
+  /** Replaces the single `underlay` layer when set: any number of underlay passes. */
+  underlays?: FillUnderlay[];
+  /** Centre for centred patterns (Circular, Spiral, Tornado, Sunburst). Default: inside the shape. */
+  center?: Pt;
+  /** Guide curves that steer the Streamlines pattern. */
+  guides?: Pt[][];
 }
+
+/** One underlay pass under a fill. */
+export interface FillUnderlay {
+  /** Absolute row direction of the pass in degrees (same convention as `FillParams.angleDeg`). */
+  angleDeg: number;
+  spacingMm: number;
+  stitchLengthMm: number;
+  /** Shrink the area by this much so the underlay stays under the top stitches. */
+  insetMm: number;
+}
+
+/**
+ * Spacing gradient: the row spacing is multiplied by a factor that goes from `from` to `to`
+ * across the rows ("ramp"), or from `from` at both ends to `to` in the middle ("plateau").
+ * Factors above 1 are sparser, below 1 denser. `reverse` flips the direction.
+ */
+export interface FillGradient {
+  kind: "ramp" | "plateau";
+  from: number;
+  to: number;
+  reverse?: boolean;
+}
+
+/** Ids come from `FILL_PATTERNS` in `./patterns`. Kept a plain string so older files still load. */
+export type FillPatternId = string;
 
 export type SatinUnderlay = "none" | "center" | "contour" | "zigzag";
 
@@ -87,12 +146,32 @@ export interface SatinParams {
   /** Widen each side by this much (pull compensation). */
   pullCompMm: number;
   underlay: SatinUnderlay;
+  /** Split columns wider than this into stitched halves so long satin stitches don't snag. */
+  splitMaxWidthMm?: number;
+  /** Stagger the split stitches: pattern repeat length in stitches, and sideways shift. */
+  staggerCycles?: number;
+  staggerAmountMm?: number;
+  /** Shorten stitches on the inside of tight curves so they don't pile up. */
+  shortStitches?: boolean;
 }
+
+/** The seven run types. */
+export type RunType = "single" | "triple" | "satin" | "estitch" | "doublerope" | "triplerope" | "manual";
 
 export interface RunParams {
   stitchLengthMm: number;
-  /** 1 = single, 3 = triple (each stitch sewn forward-back-forward). */
+  /** 1 = single, 3 = triple (each stitch sewn forward-back-forward). Used when `type` is unset. */
   repeats: 1 | 3;
+  /** Which run type to sew. Unset: derived from `repeats` (single/triple). */
+  type?: RunType;
+  /** How far a stitch may stray from the drawn curve (mm, min 0.1). */
+  toleranceMm?: number;
+  /** Width in mm: satin column width, E-stitch tooth width, rope twist width. */
+  widthMm?: number;
+  /** E-stitch teeth on the other side of the path. */
+  flipped?: boolean;
+  /** Satin-along-path settings (density, pull comp, underlay, split, stagger, short stitches). */
+  satin?: Partial<SatinParams>;
 }
 
 /**
@@ -139,6 +218,31 @@ interface ObjectBase {
   visible?: boolean;
   /** Locked objects can't be edited in the UI. */
   locked?: boolean;
+  /** Where sewing of this object should start / end (mm). Optional; the generator picks the nearest vertex. */
+  startPoint?: Pt;
+  endPoint?: Pt;
+  /** Id of the `Design.mapGroups` entry this object was mapped to a path by, until it is detached. */
+  mapGroup?: string;
+}
+
+/** How a selection is repeated along a path (the "map to path" action). */
+export interface MapToPathOptions {
+  /** "count": exactly `count` copies spread over the path. "spacing": as many as fit, `spacingMm` apart. */
+  mode: "count" | "spacing";
+  count: number;
+  spacingMm: number;
+  /** Turn each copy to follow the path's direction. */
+  rotate: boolean;
+  /** Start from the far end of the path. */
+  reverse: boolean;
+}
+
+/** A live "map to path": the originals and the path, kept so the mapping can be edited until detached. */
+export interface MapGroup {
+  sources: DesignObject[];
+  path: Pt[];
+  closed: boolean;
+  options: MapToPathOptions;
 }
 
 export interface FillObject extends ObjectBase {
@@ -170,6 +274,8 @@ export interface Design {
   threads: Thread[];
   /** Stitch order. */
   objects: DesignObject[];
+  /** Live map-to-path groups by id. Objects point at one through `mapGroup`. */
+  mapGroups?: Record<string, MapGroup>;
   /** Text blocks behind `objects[].sourceText` (optional; absent in designs without lettering). */
   textBlocks?: TextBlock[];
 }

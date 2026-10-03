@@ -33,6 +33,8 @@ export class Scene {
   private hoopG = new Graphics();
   private reference = new Sprite();
   private quant = new Sprite();
+  /** Reference images the user placed behind the shapes (Sequencer > Images). */
+  private refLayer = new Container();
   readonly stitches = new StitchLayer();
   private highlightG = new Graphics();
   private needleG = new Graphics();
@@ -50,7 +52,7 @@ export class Scene {
     this.reference.visible = false;
     this.quant.visible = false;
     this.needleG.visible = false;
-    this.world.addChild(this.grid, this.hoopG, this.reference, this.quant, this.stitches.container, this.highlightG, this.needleG);
+    this.world.addChild(this.grid, this.hoopG, this.refLayer, this.reference, this.quant, this.stitches.container, this.highlightG, this.needleG);
     app.stage.addChild(this.world);
   }
 
@@ -154,6 +156,24 @@ export class Scene {
 
   setReferenceAlpha(a: number): void {
     this.reference.alpha = a;
+  }
+
+  /** Reference images, bottom first. Sprites are reused when the list keeps its size. */
+  setRefImages(list: { src: HTMLCanvasElement | HTMLImageElement; x: number; y: number; widthMm: number; heightMm: number; alpha: number }[]): void {
+    while (this.refLayer.children.length > list.length) this.refLayer.removeChildAt(this.refLayer.children.length - 1).destroy();
+    list.forEach((r, i) => {
+      let sp = this.refLayer.children[i] as Sprite | undefined;
+      if (!sp) {
+        sp = new Sprite();
+        this.refLayer.addChild(sp);
+      }
+      const tex = this.texture(r.src);
+      if (sp.texture !== tex) sp.texture = tex;
+      sp.width = r.widthMm;
+      sp.height = r.heightMm;
+      sp.position.set(r.x, r.y);
+      sp.alpha = r.alpha;
+    });
   }
 
   /** The quantised image shown during the tracing animation. */

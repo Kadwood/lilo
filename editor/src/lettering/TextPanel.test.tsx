@@ -2,13 +2,14 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeAll, describe, expect, it } from "vitest";
-import { cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, screen, waitFor } from "@testing-library/react";
 import { builtinTypeface, initLettering, layoutText, parseFont, type FontIndexEntry } from "@lilo/engine/lettering";
-import { validateDesign } from "@lilo/engine/light";
+import { objectBox, unionBox, validateDesign } from "@lilo/engine/light";
 import { lastEditor, renderEditor, testDesign } from "../test/helpers";
-import { textThread, withText } from "./adapter";
+import { placeText, replaceText, textThread } from "./adapter";
+import { EditorShell } from "../shell/EditorShell";
 import type { LayoutRequest, LayoutResponse, LetteringServices } from "./fonts";
-import { heightWarning, TextDock } from "./TextPanel";
+import { heightWarning, TextPanel } from "./TextPanel";
 
 afterEach(cleanup);
 const T = { timeout: 20_000 };
@@ -51,51 +52,145 @@ describe("heightWarning", () => {
   });
 });
 
-describe("withText", () => {
-  it("appends a block centred on the design, with a valid design and a text block record", async () => {
-    const d = testDesign();
-    const font = parseFont(JSON.parse(readFileSync(join(FONTS, "geneva_simple", "font.json"), "utf8")));
+/** A laid-out word, the way the panel gets it from the services. */
+async function laid(text: string, group: string, threadId: string, height = 10): Promise<LayoutResponse> {
+  const font = parseFont(JSON.parse(readFileSync(join(FONTS, "geneva_simple", "font.json"), "utf8")));
+  const r = layoutText(text, builtinTypeface(font), { heightMm: height, threadId, idPrefix: group });
+  const b = r.bounds!;
+  return { objects: r.objects, warnings: r.warnings, centre: [(b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2] };
+}
+const blockOf = (id: string, text: string, heightMm = 10) => ({ id, text, fontId: "geneva_simple", heightMm, letterSpacingMm: 0, lineSpacing: 1, align: "center" as const });
+
+describe("placeText / replaceText (inside commit)", () => {
+  it("adds a block at the anchor as one undo step, with a valid design and a text block record", async () => {
+    renderEditor(<div />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    const d = lastEditor!.state.design!;
     const thread = textThread(d);
-    const r = layoutText("Hi", builtinTypeface(font), { heightMm: 10, threadId: thread.id, idPrefix: "text-1" });
-    const b = r.bounds!;
-    const next = withText(d, { objects: r.objects, warnings: r.warnings, centre: [(b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2] }, { id: "text-1", text: "Hi", fontId: "geneva_simple", heightMm: 10, letterSpacingMm: 0, lineSpacing: 1, align: "center" }, thread);
-    expect(next.objects.length).toBe(d.objects.length + r.objects.length);
+    const layout = await laid("Hi", "text-1", thread.id);
+    let ids: string[] = [];
+    act(() => void lastEditor!.actions.commit("Add text", (draft) => void (ids = placeText(draft, layout, blockOf("text-1", "Hi"), thread, [50, 40])), { select: () => ids }));
+    const next = lastEditor!.state.design!;
+    expect(next.objects.length).toBe(d.objects.length + layout.objects.length);
     expect(next.textBlocks).toHaveLength(1);
     expect(validateDesign(next)).toEqual([]);
-    expect(d.objects).toHaveLength(3); // the input is untouched
+    const box = unionBox(next.objects.filter((o) => o.sourceText).map(objectBox))!;
+    expect((box.minX + box.maxX) / 2).toBeCloseTo(50, 0);
+    expect((box.minY + box.maxY) / 2).toBeCloseTo(40, 0);
+    expect(lastEditor!.state.selectedIds).toEqual(ids);
+    act(() => lastEditor!.actions.undo());
+    expect(lastEditor!.state.design!.objects).toHaveLength(d.objects.length);
+    expect(lastEditor!.state.design!.textBlocks).toBeUndefined();
+  });
+
+  it("re-lays a block out in place: same centre, same place in the stack, same colour", async () => {
+    renderEditor(<div />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    const thread = textThread(lastEditor!.state.design!);
+    const a = await laid("Hi", "text-1", thread.id);
+    act(() => void lastEditor!.actions.commit("Add text", (d) => void placeText(d, a, blockOf("text-1", "Hi"), thread, [20, 20])));
+    const before = lastEditor!.state.design!;
+    const boxBefore = unionBox(before.objects.filter((o) => o.sourceText).map(objectBox))!;
+    const b = await laid("Hello", "text-1", thread.id, 12);
+    act(() => void lastEditor!.actions.commit("Edit text", (d) => void replaceText(d, "text-1", b, blockOf("text-1", "Hello", 12))));
+    const after = lastEditor!.state.design!;
+    const boxAfter = unionBox(after.objects.filter((o) => o.sourceText).map(objectBox))!;
+    expect((boxAfter.minX + boxAfter.maxX) / 2).toBeCloseTo((boxBefore.minX + boxBefore.maxX) / 2, 0);
+    expect(after.textBlocks).toHaveLength(1);
+    expect(after.textBlocks![0].text).toBe("Hello");
+    expect(after.objects.slice(0, 3).map((o) => o.id)).toEqual(["f1", "r1", "s1"]);
+    expect(after.objects.filter((o) => o.sourceText).length).toBe(b.objects.length);
+    expect(validateDesign(after)).toEqual([]);
   });
 });
 
-describe("TextDock", () => {
-  it("lists built-in fonts first with previews, shows an upload button and adds text to the design", async () => {
+describe("Text tool and panel", () => {
+  const press = (k: string) => fireEvent.keyDown(window, { key: k });
+
+  it("T opens the Text panel in the left area and lists fonts", async () => {
+    renderEditor(<EditorShell />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    press("t");
+    expect(lastEditor!.state.tool).toBe("text");
+    expect(screen.getByLabelText("Text", { selector: "aside" })).toBeTruthy();
+    expect(screen.getByLabelText("Text to stitch")).toBeTruthy();
+    expect(screen.getByText(/Upload font/)).toBeTruthy();
+  });
+
+  it("clicking the canvas sets the anchor; Add text puts the word there and selects it; undo removes it", async () => {
     const calls: LayoutRequest[] = [];
-    renderEditor(<TextDock defaultOpen services={diskServices(calls)} />, { design: testDesign() });
+    renderEditor(<TextPanel services={diskServices(calls)} />, { design: testDesign() });
     await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
     await waitFor(() => expect(screen.getAllByRole("img").length).toBeGreaterThan(50), T);
-    const headings = screen.getAllByRole("heading").map((h) => h.textContent);
-    expect(headings.indexOf("Fonts")).toBeLessThan(headings.indexOf("Your fonts"));
-    expect(screen.getByText(/Upload font/)).toBeTruthy();
-
+    act(() => lastEditor!.actions.setTool("text"));
+    act(() => lastEditor!.actions.setTextAnchor([60, 30]));
     fireEvent.change(screen.getByLabelText("Text to stitch"), { target: { value: "AB" } });
     fireEvent.click(screen.getByRole("button", { name: "15" }));
     const before = lastEditor!.state.design!.objects.length;
     fireEvent.click(screen.getByRole("button", { name: "Add text" }));
     await waitFor(() => expect(lastEditor!.state.design!.objects.length).toBeGreaterThan(before), T);
     expect(calls[0]).toMatchObject({ text: "AB", heightMm: 15, align: "center" });
-    expect(lastEditor!.state.design!.textBlocks?.[0].text).toBe("AB");
+    const d = lastEditor!.state.design!;
+    expect(d.textBlocks?.[0].text).toBe("AB");
+    const box = unionBox(d.objects.filter((o) => o.sourceText).map(objectBox))!;
+    expect((box.minX + box.maxX) / 2).toBeCloseTo(60, 0);
+    expect(lastEditor!.state.selectedIds.length).toBe(d.objects.length - before);
+    expect(lastEditor!.state.tool).toBe("select");
+    expect(lastEditor!.state.textAnchor).toBeNull();
+    act(() => lastEditor!.actions.undo());
+    expect(lastEditor!.state.design!.objects).toHaveLength(before);
+    act(() => lastEditor!.actions.redo());
+    expect(lastEditor!.state.design!.objects.length).toBeGreaterThan(before);
   }, 60_000);
 
+  it("selecting a word reopens the panel in edit mode; Update text re-lays it out in place (one undo step)", async () => {
+    const calls: LayoutRequest[] = [];
+    renderEditor(<EditorShell />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    const thread = textThread(lastEditor!.state.design!);
+    const a = await laid("Hi", "text-1", thread.id);
+    act(() => void lastEditor!.actions.commit("Add text", (d) => void placeText(d, a, blockOf("text-1", "Hi"), thread, [0, 0])));
+    expect(calls).toHaveLength(0);
+    // clicking one letter selects the whole word
+    const firstLetter = lastEditor!.state.design!.objects.find((o) => o.sourceText)!;
+    act(() => lastEditor!.actions.setSelection([firstLetter.id]));
+    const word = lastEditor!.state.design!.objects.filter((o) => o.sourceText).map((o) => o.id);
+    expect(lastEditor!.state.selectedIds).toEqual(word);
+    expect(screen.getByRole("heading", { name: "Edit text" })).toBeTruthy();
+    expect((screen.getByLabelText("Text to stitch") as HTMLTextAreaElement).value).toBe("Hi");
+    expect(screen.getByRole("button", { name: "Update text" })).toBeTruthy();
+    expect(screen.getByLabelText("Width (mm)")).toBeTruthy(); // dimensions are right there too
+  });
+
+  it("text objects move, resize and rotate as one word and duplicate / delete cleanly", async () => {
+    renderEditor(<div />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    const thread = textThread(lastEditor!.state.design!);
+    const a = await laid("Hi", "text-1", thread.id);
+    act(() => void lastEditor!.actions.commit("Add text", (d) => void placeText(d, a, blockOf("text-1", "Hi"), thread, [0, 0])));
+    const ids = lastEditor!.state.design!.objects.filter((o) => o.sourceText).map((o) => o.id);
+    act(() => lastEditor!.actions.setSelection([ids[0]]));
+    const w0 = (() => { const b = unionBox(lastEditor!.state.design!.objects.filter((o) => o.sourceText).map(objectBox))!; return b.maxX - b.minX; })();
+    act(() => lastEditor!.actions.resizeSelection(w0 * 2, w0));
+    const b1 = unionBox(lastEditor!.state.design!.objects.filter((o) => o.sourceText).map(objectBox))!;
+    expect(b1.maxX - b1.minX).toBeCloseTo(w0 * 2, 3);
+    act(() => lastEditor!.actions.rotateSelection(90));
+    act(() => lastEditor!.actions.duplicateSelection());
+    const d = lastEditor!.state.design!;
+    expect(d.textBlocks).toHaveLength(2);
+    expect(new Set(d.objects.filter((o) => o.sourceText).map((o) => o.sourceText!.group)).size).toBe(2);
+    expect(validateDesign(d)).toEqual([]);
+    act(() => lastEditor!.actions.deleteSelection());
+    expect(lastEditor!.state.design!.textBlocks).toHaveLength(1);
+    act(() => lastEditor!.actions.setSelection([ids[1]]));
+    act(() => lastEditor!.actions.deleteSelection());
+    expect(lastEditor!.state.design!.textBlocks).toBeUndefined();
+  });
+
   it("shows the warning badge when the height is below the font's range", async () => {
-    renderEditor(<TextDock defaultOpen services={diskServices()} />);
+    renderEditor(<TextPanel services={diskServices()} />);
     await waitFor(() => expect(screen.getAllByRole("img").length).toBeGreaterThan(10), T);
     fireEvent.click(screen.getByRole("button", { name: "6" }));
     expect(await screen.findByText(/sew poorly/)).toBeTruthy();
-  });
-
-  it("starts collapsed in the editor", () => {
-    renderEditor(<TextDock services={diskServices()} />);
-    expect(screen.queryByLabelText("Text to stitch")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: /Text/ }));
-    expect(screen.getByLabelText("Text to stitch")).toBeTruthy();
   });
 });

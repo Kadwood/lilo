@@ -8,6 +8,11 @@ const CHUNK = 3000;
 export interface StitchStyle {
   realistic: boolean;
   jumps: boolean;
+  /**
+   * Thread thickness multiplier per `design.objects` index, so triple stitches, rope and satin
+   * read as heavier thread in the realistic view. Missing entries mean 1.
+   */
+  widthScale?: readonly number[];
 }
 
 interface Chunk {
@@ -82,7 +87,8 @@ export class StitchLayer {
     c.edge?.clear();
     c.core.clear();
     c.jump?.clear();
-    let any = false;
+    // Segments grouped by thread thickness (1 for most; heavier for triple, rope and satin).
+    const groups = new Map<number, number[]>();
     let anyJump = false;
     for (let i = c.start; i < upTo; i++) {
       const s: PlanStitch = list[i];
@@ -92,19 +98,24 @@ export class StitchLayer {
       const dy = s.y - prev.y;
       if (dx * dx + dy * dy < 1e-8) continue;
       if (s.type === "stitch") {
-        c.edge?.moveTo(prev.x, prev.y).lineTo(s.x, s.y);
-        c.core.moveTo(prev.x, prev.y).lineTo(s.x, s.y);
-        any = true;
+        const k = this.style.widthScale?.[s.objectIndex] ?? 1;
+        const g = groups.get(k);
+        if (g) g.push(prev.x, prev.y, s.x, s.y);
+        else groups.set(k, [prev.x, prev.y, s.x, s.y]);
       } else if (c.jump) {
         c.jump.moveTo(prev.x, prev.y).lineTo(s.x, s.y);
         anyJump = true;
       }
     }
+    const trace = (g: Graphics, seg: number[]) => {
+      for (let j = 0; j < seg.length; j += 4) g.moveTo(seg[j], seg[j + 1]).lineTo(seg[j + 2], seg[j + 3]);
+    };
+    const ordered = [...groups.entries()].sort((a, b) => a[0] - b[0]);
     if (this.style.realistic) {
-      if (any) c.edge?.stroke({ width: THREAD_WIDTH_MM * 1.4, color: shade(c.hex, 0.7), cap: "round", join: "round" });
-      if (any) c.core.stroke({ width: THREAD_WIDTH_MM * 0.6, color: shade(c.hex, 1.2), cap: "round", join: "round" });
-    } else if (any) {
-      c.core.stroke({ width: THREAD_WIDTH_MM, color: hexToNum(c.hex), cap: "round", join: "round" });
+      if (c.edge) for (const [k, seg] of ordered) (trace(c.edge, seg), c.edge.stroke({ width: THREAD_WIDTH_MM * 1.4 * k, color: shade(c.hex, 0.7), cap: "round", join: "round" }));
+      for (const [k, seg] of ordered) (trace(c.core, seg), c.core.stroke({ width: THREAD_WIDTH_MM * 0.6 * k, color: shade(c.hex, 1.2), cap: "round", join: "round" }));
+    } else {
+      for (const [k, seg] of ordered) (trace(c.core, seg), c.core.stroke({ width: THREAD_WIDTH_MM * k, color: hexToNum(c.hex), cap: "round", join: "round" }));
     }
     if (anyJump) c.jump?.stroke({ width: 0.1, color: 0x8a8a8a, alpha: 0.55 });
     c.drawnTo = upTo;

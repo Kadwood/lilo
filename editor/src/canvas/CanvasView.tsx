@@ -1,11 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { designBounds } from "@lilo/engine/light";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { DEFAULT_HOOP, designBounds } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
+import { CanvasController, type PointerInput } from "./controller";
+import { MapDialog } from "./MapDialog";
+import { Overlay } from "./Overlay";
 import type { Scene, Placement } from "./scene";
+import { ShapeBar } from "./ShapeBar";
 import { readTheme } from "./theme";
 import { buildTimeline, phaseAt, prefersReducedMotion, type AnimPhase, type Timeline } from "./timeline";
 import { TraceOutlines } from "./TraceOutlines";
-import { classifyWheel, fitView, panBy, wheelZoomFactor, zoomAt, type View } from "./viewport";
+import { useShortcuts } from "./useShortcuts";
+import { classifyWheel, fitView, wheelZoomFactor, zoomAt, panBy, type View } from "./viewport";
 
 const STAGE_LABEL: Record<AnimPhase, string> = {
   quantize: "Matching thread colours",
@@ -16,6 +21,9 @@ const STAGE_LABEL: Record<AnimPhase, string> = {
 
 const FALLBACK_VIEW: View = { x: 0, y: 0, zoom: 6 };
 
+/** Heavier thread in the realistic view for the stitch types that are sewn thicker. */
+const RUN_WIDTH_SCALE = { single: 1, triple: 1.5, satin: 1.15, estitch: 1.05, doublerope: 1.25, triplerope: 1.4, manual: 1 } as const;
+
 /** Where an image of `w` x `h` source pixels sits in design space. */
 function placementOf(
   p: { imageToMm: { scale: number; cx: number; cy: number }; origin: [number, number] },
@@ -23,23 +31,59 @@ function placementOf(
   return { scale: p.imageToMm.scale, x: (p.origin[0] - p.imageToMm.cx) * p.imageToMm.scale, y: (p.origin[1] - p.imageToMm.cy) * p.imageToMm.scale };
 }
 
+/** One-line hint for what the current tool does next. */
+function hintFor(tool: string, mode: string, drafting: boolean): string | null {
+  if (mode === "knife") return "Drag a line across the shape to slice it. Esc to cancel.";
+  if (mode === "hole") return "Click to outline the hole, Enter to cut. Esc to cancel.";
+  if (mode === "setStart") return "Click where sewing should start.";
+  if (mode === "setEnd") return "Click where sewing should end.";
+  if (mode === "angle") return "Drag around the shape to turn the stitch angle. Ctrl snaps to 15°.";
+  if (mode === "pickPath") return "Click points for the path, Enter to finish.";
+  if (mode === "guide") return "Click points for the guide curve, Enter to finish.";
+  if (mode === "reshape") return "Drag points. Click an edge to add one, Backspace deletes, double-click toggles curve.";
+  if (drafting) return "Click to add a point · right-click or double-click for a curve · Enter to finish · Esc to cancel";
+  switch (tool) {
+    case "open":
+    case "closed":
+      return "Click to start. Right-click or double-click makes a curve point.";
+    case "circle":
+      return "Drag to draw. Hold Ctrl for a perfect circle.";
+    case "rect":
+      return "Drag to draw. Hold Ctrl for a square.";
+    case "pen":
+      return "Drag to draw freehand.";
+    case "satin":
+      return "Click the left edge, then the right edge, and repeat. Enter to finish.";
+    case "manual":
+      return "Click to place each stitch. Enter to finish.";
+    case "text":
+      return "Click where the text should go, then type it in the panel. Click a word to edit it.";
+    case "measure":
+      return "Drag to measure.";
+    default:
+      return null;
+  }
+}
+
 /**
- * The PixiJS canvas: grid, hoop, reference image, stitches, selection and needle, plus the pan/zoom
+ * The PixiJS canvas: grid, hoop, reference images, stitches, selection and needle, plus the pan/zoom
  * controls and the tracing animation. WebGL is created lazily so tests and non-GL environments
- * fall back to a message instead of crashing.
+ * fall back to a message instead of crashing. Pointer input goes to a `CanvasController`; the SVG
+ * `Overlay` draws handles and drafts on top.
  */
 export function CanvasView({ onOpen }: { onOpen: () => void }) {
-  const { state, actions, player } = useEditor();
+  const { state, actions, player, api } = useEditor();
   const hostRef = useRef<HTMLDivElement>(null);
   const svgGroupRef = useRef<SVGGElement>(null);
   const sceneRef = useRef<Scene | null>(null);
   const viewRef = useRef<View>(FALLBACK_VIEW);
+  const [view, setViewState] = useState<View>(FALLBACK_VIEW);
+  const [size, setSize] = useState({ w: 800, h: 600 });
   const [ready, setReady] = useState(false);
   const [glError, setGlError] = useState<string | null>(null);
   const [zoomPct, setZoomPct] = useState(100);
   const [dragOver, setDragOver] = useState(false);
   const [anim, setAnim] = useState<{ key: number; timeline: Timeline; phase: AnimPhase } | null>(null);
-  const spaceDown = useRef(false);
 
   // ---- scene lifecycle ------------------------------------------------------------------------
   useEffect(() => {
@@ -77,21 +121,65 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
     sceneRef.current?.setView(v);
     svgGroupRef.current?.setAttribute("transform", `translate(${v.x} ${v.y}) scale(${v.zoom})`);
     setZoomPct(Math.round((v.zoom / 6) * 100));
+    setViewState(v);
   }, []);
+
+  // track the stage size for the floating shape bar
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setSize({ w: host.clientWidth, h: host.clientHeight }));
+    ro.observe(host);
+    setSize({ w: host.clientWidth, h: host.clientHeight });
+    return () => ro.disconnect();
+  }, []);
+
+  const design = state.design;
+  const hasObjects = (design?.objects.length ?? 0) > 0;
 
   const fit = useCallback(() => {
     const host = hostRef.current;
     if (!host) return;
-    const b = state.design ? designBounds(state.design) : null;
-    const rect = b ?? { minX: -40, minY: -40, maxX: 40, maxY: 40 };
+    const b = state.design && state.design.objects.length ? designBounds(state.design) : null;
+    const hoop = state.design?.hoop ?? DEFAULT_HOOP;
+    const rect = b ?? { minX: -hoop.widthMm / 2, minY: -hoop.heightMm / 2, maxX: hoop.widthMm / 2, maxY: hoop.heightMm / 2 };
     applyView(fitView(host.clientWidth, host.clientHeight, rect, 0.2));
   }, [applyView, state.design]);
+  const fitRef = useRef(fit);
+  fitRef.current = fit;
+  // the command palette asks for a fit by event (see shell/EditorShell.tsx)
+  useEffect(() => {
+    const on = () => fitRef.current();
+    window.addEventListener("lilo:fit", on);
+    return () => window.removeEventListener("lilo:fit", on);
+  }, []);
 
   // Fit when the scene first appears and whenever a fresh result lands.
   useEffect(() => {
     if (ready) fit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, state.animationKey]);
+
+  // ---- tools ----------------------------------------------------------------------------------
+  const controller = useMemo(
+    () =>
+      new CanvasController({
+        api,
+        actions,
+        getView: () => viewRef.current,
+        setView: applyView,
+        fit: () => fitRef.current(),
+      }),
+    [api, actions, applyView],
+  );
+  useShortcuts(controller);
+  const model = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
+  useEffect(() => controller.reset(), [controller, state.tool, state.mode]);
+  useEffect(() => {
+    // a changed selection ends reshape point selection; tool-specific gestures are left alone
+    controller.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [controller, state.selectedIds.join(",")]);
 
   // ---- theme ----------------------------------------------------------------------------------
   useEffect(() => {
@@ -103,12 +191,11 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   }, [ready]);
 
   // ---- scene <- state ------------------------------------------------------------------------
-  const design = state.design;
   const plan = state.planResult?.plan ?? null;
   const { realistic, jumps, grid, reference } = state.view;
 
   useEffect(() => {
-    sceneRef.current?.setHoop(design?.hoop ?? null);
+    sceneRef.current?.setHoop(design?.hoop ?? DEFAULT_HOOP);
   }, [ready, design?.hoop]);
 
   useEffect(() => {
@@ -131,19 +218,30 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
     }
   }, [ready, state.source, state.placement, reference, plan]);
 
+  // images the user placed behind the shapes
   useEffect(() => {
-    const s = sceneRef.current;
-    if (!s) return;
-    s.setPlan(plan, { realistic, jumps });
-    s.setProgress(player.snapshot().index, false);
-  }, [ready, plan, realistic, jumps, player]);
+    sceneRef.current?.setRefImages(
+      reference ? state.refImages.filter((r) => r.visible).map((r) => ({ src: r.src, x: r.x, y: r.y, widthMm: r.widthMm, heightMm: (r.widthMm * r.h) / Math.max(1, r.w), alpha: r.opacity })) : [],
+    );
+  }, [ready, state.refImages, reference]);
+
+  // thread thickness per object, so the realistic view shows triple, rope and satin as heavier thread
+  const widthScale = useMemo(
+    () =>
+      (design?.objects ?? []).map((o) => {
+        if (o.kind === "satin") return RUN_WIDTH_SCALE.satin;
+        if (o.kind === "run") return RUN_WIDTH_SCALE[o.params.type ?? (o.params.repeats === 3 ? "triple" : "single")];
+        return 1;
+      }),
+    [design?.objects],
+  );
 
   useEffect(() => {
     const s = sceneRef.current;
     if (!s) return;
-    const o = design?.objects.find((x) => x.id === state.selectedId) ?? null;
-    s.setHighlight(o);
-  }, [ready, design, state.selectedId]);
+    s.setPlan(plan, { realistic, jumps, widthScale });
+    s.setProgress(player.snapshot().index, false);
+  }, [ready, plan, realistic, jumps, widthScale, player]);
 
   // Player -> scene (imperative: this runs at 60 fps and must not re-render React).
   useEffect(() => {
@@ -220,7 +318,7 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
 
   const skip = () => setAnim(null);
 
-  // ---- pan / zoom ----------------------------------------------------------------------------
+  // ---- zoom ----------------------------------------------------------------------------------
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
@@ -237,46 +335,18 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
     return () => host.removeEventListener("wheel", onWheel);
   }, [applyView]);
 
-  useEffect(() => {
-    const isTyping = (t: EventTarget | null) => t instanceof HTMLElement && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.tagName === "SELECT" || t.isContentEditable);
-    const down = (e: KeyboardEvent) => {
-      if (e.code === "Space" && !isTyping(e.target)) {
-        spaceDown.current = true;
-        hostRef.current?.classList.add("grab");
-        e.preventDefault();
-      }
-    };
-    const up = (e: KeyboardEvent) => {
-      if (e.code === "Space") {
-        spaceDown.current = false;
-        hostRef.current?.classList.remove("grab");
-      }
-    };
-    window.addEventListener("keydown", down);
-    window.addEventListener("keyup", up);
-    return () => {
-      window.removeEventListener("keydown", down);
-      window.removeEventListener("keyup", up);
-    };
-  }, []);
-
-  const drag = useRef<{ x: number; y: number } | null>(null);
+  // ---- pointer -> controller ------------------------------------------------------------------
+  const input = (e: React.PointerEvent): PointerInput => {
+    const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top, button: e.button, shift: e.shiftKey, ctrl: e.ctrlKey, alt: e.altKey, detail: e.detail };
+  };
   const onPointerDown = (e: React.PointerEvent) => {
-    if (e.button === 0 || e.button === 1) {
-      drag.current = { x: e.clientX, y: e.clientY };
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-      hostRef.current?.classList.add("panning");
-    }
+    if (e.button > 2) return;
+    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    controller.pointerDown(input(e));
   };
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!drag.current) return;
-    applyView(panBy(viewRef.current, e.clientX - drag.current.x, e.clientY - drag.current.y));
-    drag.current = { x: e.clientX, y: e.clientY };
-  };
-  const onPointerUp = () => {
-    drag.current = null;
-    hostRef.current?.classList.remove("panning");
-  };
+  const onPointerMove = (e: React.PointerEvent) => controller.pointerMove(input(e));
+  const onPointerUp = (e: React.PointerEvent) => controller.pointerUp(input(e));
 
   const zoomBy = (f: number) => {
     const host = hostRef.current;
@@ -311,8 +381,12 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   }, [actions]);
 
   const working = state.status.kind === "working";
-  const empty = !state.design && !working;
+  const drawing = ["open", "closed", "circle", "rect", "pen", "satin", "manual", "text"].includes(state.tool);
+  const empty = !hasObjects && !working && !drawing && !state.source;
   const phase = anim?.phase ?? "done";
+  const hint = hintFor(state.tool, state.mode, model.draft !== null);
+  const dragKind = model.drag?.kind;
+  const cursor = dragKind === "pan" ? "grabbing" : model.spaceDown || state.tool === "pan" ? "grab" : drawing || state.tool === "measure" || state.mode === "knife" ? "crosshair" : "default";
 
   return (
     <div
@@ -332,15 +406,20 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
         ref={hostRef}
         className="canvas-host"
         data-testid="canvas-host"
+        data-tool={state.tool}
+        style={{ cursor }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        onDoubleClick={fit}
+        onContextMenu={(e) => e.preventDefault()}
       />
       <svg className="trace-overlay" aria-hidden="true">
         <g ref={svgGroupRef}>{anim && state.design && <TraceOutlines key={anim.key} design={state.design} timeline={anim.timeline} />}</g>
       </svg>
+      <Overlay controller={controller} view={view} />
+      <ShapeBar controller={controller} view={view} width={size.w} height={size.h} />
+      <MapDialog />
 
       {glError && (
         <p className="canvas-message error" role="alert">
@@ -350,10 +429,16 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
       {empty && !glError && (
         <div className="canvas-empty">
           <p className="canvas-empty-title">Drop an image to auto-digitize</p>
-          <p className="muted">PNG, JPG, WEBP or SVG. You can also paste one.</p>
+          <p className="muted">PNG, JPG, WEBP or SVG. Or pick a drawing tool below and sketch a shape.</p>
           <button className="primary" onClick={onOpen}>
             Open image…
           </button>
+        </div>
+      )}
+
+      {hint && (
+        <div className="canvas-hint" role="note">
+          {hint}
         </div>
       )}
 
@@ -373,6 +458,7 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
           </span>
         )}
         {state.status.kind === "error" && <span className="status-pill error">{state.status.message}</span>}
+        {state.planning && !working && !anim && hasObjects && <span className="status-pill subtle">Stitching…</span>}
       </div>
 
       <div className="canvas-hud">
@@ -401,7 +487,6 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
           <button onClick={fit}>Fit</button>
         </div>
       </div>
-
     </div>
   );
 }

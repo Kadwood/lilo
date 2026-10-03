@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FontIndexEntry, TextAlign } from "@lilo/engine/lettering";
+import { DimensionsSection } from "../panels/DimensionsSection";
+import { ThreadPicker } from "../panels/ThreadPicker";
 import { nextTextGroup, textThread, useTextTarget } from "./adapter";
 import { defaultServices, type CustomFontInfo, type FontRef, type LetteringServices } from "./fonts";
 import "./lettering.css";
@@ -17,22 +19,14 @@ export function heightWarning(font: { kind: "builtin"; entry: FontIndexEntry } |
   return null;
 }
 
-/** The Text panel as a collapsible dock over the canvas: the one thing the editor shell mounts. */
-export function TextDock({ defaultOpen = false, services }: { defaultOpen?: boolean; services?: LetteringServices }) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="text-dock">
-      <button className="dock-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
-        Text {open ? "▾" : "▸"}
-      </button>
-      {open && <TextPanel services={services} />}
-    </div>
-  );
-}
-
-/** Text tool: pick a font, type, set the size, and add the stitched letters to the design. */
+/**
+ * The Text tool's panel (left, in place of the settings panel). With nothing text selected it adds a
+ * new word, centred where you clicked; with a word selected it edits that word and re-lays it out
+ * in place. Either way the change is one undo step.
+ */
 export function TextPanel({ services = defaultServices }: { services?: LetteringServices }) {
-  const { design, insert } = useTextTarget();
+  const { design, insert, replace, editing, anchor, threadId, startNew, actions } = useTextTarget();
+  const [pickColour, setPickColour] = useState(false);
   const [index, setIndex] = useState<FontIndexEntry[]>([]);
   const [custom, setCustom] = useState<CustomFontInfo[]>([]);
   const [font, setFont] = useState<FontRef>({ kind: "builtin", id: "geneva_simple" });
@@ -48,12 +42,32 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
 
   useEffect(() => {
     let live = true;
-    void services.loadIndex().then((i) => live && setIndex(i));
-    void services.listCustom().then((c) => live && setCustom(c));
+    void services
+      .loadIndex()
+      .then((i) => live && setIndex(i))
+      .catch((e) => live && setMessage({ kind: "error", text: e instanceof Error ? e.message : String(e) }));
+    void services
+      .listCustom()
+      .then((c) => live && setCustom(c))
+      .catch(() => {});
     return () => {
       live = false;
     };
   }, [services]);
+
+  // Opening a word (or switching to another) loads its settings into the form.
+  const editKey = editing?.id ?? null;
+  useEffect(() => {
+    if (!editing) return;
+    setText(editing.text);
+    setHeight(editing.heightMm);
+    setSpacing(editing.letterSpacingMm);
+    setLineSpacing(editing.lineSpacing);
+    setAlign(editing.align);
+    setFont(editing.fontId.startsWith("custom:") ? { kind: "custom", key: editing.fontId.slice(7) } : { kind: "builtin", id: editing.fontId });
+    setMessage(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editKey]);
 
   const selected = useMemo(() => {
     if (font.kind === "builtin") {
@@ -86,15 +100,17 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
     setBusy(true);
     setMessage(null);
     try {
-      const thread = textThread(design);
-      const group = nextTextGroup(design);
+      const thread = textThread(design, threadId);
+      const group = editing ? editing.id : nextTextGroup(design);
       const fontId = font.kind === "builtin" ? font.id : `custom:${font.key}`;
       const r = await services.layout({ text, font, heightMm: height, letterSpacingMm: spacing, lineSpacing, align, threadId: thread.id, idPrefix: group });
       if (r.objects.length === 0) {
         setMessage({ kind: "error", text: r.warnings[0]?.message ?? "Nothing to stitch." });
         return;
       }
-      await insert(r, { id: group, text, fontId, heightMm: height, letterSpacingMm: spacing, lineSpacing, align }, thread);
+      const block = { id: group, text, fontId, heightMm: height, letterSpacingMm: spacing, lineSpacing, align };
+      if (editing) replace(group, r, block);
+      else insert(r, block, thread);
       const notes = r.warnings.filter((w) => w.code === "missing-glyph" || w.code === "text-longer-than-path").map((w) => w.message);
       if (notes.length) setMessage({ kind: "info", text: notes.join(" ") });
     } catch (e) {
@@ -105,8 +121,28 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
   };
 
   return (
-    <aside className="panel panel-text" aria-label="Text">
-      <h2>Text</h2>
+    <aside className="panel panel-left panel-text" aria-label="Text">
+      <h2>{editing ? "Edit text" : "Text"}</h2>
+      {!editing && <p className="muted small">{anchor ? "New text goes where you clicked." : "Click the canvas to place text, or just add it."}</p>}
+      {editing && (
+        <>
+          <DimensionsSection />
+          <div className="field">
+            <button className="colour-current" onClick={() => setPickColour((v) => !v)} aria-expanded={pickColour}>
+              <span className="swatch" style={{ background: design?.threads.find((t) => t.id === design.objects.find((o) => o.sourceText?.group === editing.id)?.threadId)?.hex }} aria-hidden="true" />
+              <span>Text colour</span>
+            </button>
+            {pickColour && (
+              <ThreadPicker
+                onPick={(t) => {
+                  actions.setObjectThread(design!.objects.filter((o) => o.sourceText?.group === editing.id).map((o) => o.id), t);
+                  setPickColour(false);
+                }}
+              />
+            )}
+          </div>
+        </>
+      )}
 
       <label className="field">
         <span className="field-row">Text</span>
@@ -157,8 +193,9 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
 
       <div className="field">
         <button className="primary" onClick={() => void add()} disabled={busy || !text.trim() || !selected}>
-          {busy ? "Working..." : "Add text"}
+          {busy ? "Working..." : editing ? "Update text" : "Add text"}
         </button>
+        {editing && <button onClick={startNew}>New text</button>}
         {message && (
           <span className={message.kind === "error" ? "error small" : "muted small"} role={message.kind === "error" ? "alert" : "status"}>
             {message.text}

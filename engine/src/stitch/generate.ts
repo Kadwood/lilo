@@ -1,19 +1,13 @@
 import { Core, Math as StitchMath } from "@stitchables/stitchjs";
 import { bufferGeom, polygonFromRings, polygonsOf, ringsOf } from "../geom";
-import type { Design, DesignObject, FillObject, RunObject, SatinObject, Pt } from "../model";
+import type { Design, DesignObject, FillObject, FillUnderlay, Pt, SatinObject } from "../model";
+import { DEFAULT_FILL_PATTERN, patternInfo } from "../model";
+import { generateFill, hashString } from "./fills";
 import type { PlanStitch, PlanWarning, StitchPlan, StitchType } from "./plan";
+import { PX, STITCHJS_JUMP, closedV, polylineRun, reversedStrip, runObjectRuns, satinOptions, toV, widenStrip, type IRun } from "./runs";
 
-const { Vector, Polyline } = StitchMath;
-type IRun = { getStitches: (pixelsPerMm: number) => InstanceType<typeof Core.Stitch>[] };
-type V = InstanceType<typeof Vector>;
+const { Polyline } = StitchMath;
 
-/**
- * stitchjs works in "px" and takes a px-per-mm factor. We author everything in mm and run it at a
- * fixed 10 px/mm, then divide back, so geometry never touches stitchjs in raw mm.
- */
-const PX = 10;
-/** stitchjs's `StitchType.JUMP` (the enum is not exported at runtime): 0 NORMAL, 1 JUMP, 2 COLOR_CHANGE, 3 TRIM... */
-const STITCHJS_JUMP = 1;
 /** Moves shorter than this (mm) are not worth a jump. */
 const SAME_SPOT_MM = 0.05;
 const UNDERLAY_INSET_MM = 0.5;
@@ -23,8 +17,19 @@ const UNDERLAY_STITCH_MM = 3.5;
 /** Fills smaller than this (mm^2) get no underlay: it would be all edge. */
 const UNDERLAY_MIN_AREA_MM2 = 6;
 
-const toV = (p: Pt): V => new Vector(p[0] * PX, p[1] * PX);
-const closed = (pts: V[]): V[] => (pts.length && pts[0].distance(pts[pts.length - 1]) > 1e-9 ? [...pts, pts[0]] : pts);
+/**
+ * Stitch generation for object kinds this file doesn't know. Lettering (M4) registers `"text"`
+ * here: `runs` turns the object into stitchjs-style runs, `centre` (optional) says where the object
+ * sits so the previous object can aim its exit at it.
+ */
+export interface ObjectGenerator {
+  runs: (o: DesignObject, from: Pt, next: Pt) => IRun[];
+  centre?: (o: DesignObject) => Pt;
+}
+const EXTRA_GENERATORS = new Map<string, ObjectGenerator>();
+export function registerObjectGenerator(kind: string, gen: ObjectGenerator): void {
+  EXTRA_GENERATORS.set(kind, gen);
+}
 
 function nearest(pts: readonly Pt[], to: Pt): Pt {
   let best = pts[0];
@@ -40,7 +45,9 @@ function nearest(pts: readonly Pt[], to: Pt): Pt {
 }
 
 function centreOf(o: DesignObject): Pt {
-  const pts = o.kind === "fill" ? o.geometry.shell : o.kind === "satin" ? o.geometry.strip : o.geometry.path;
+  const extra = EXTRA_GENERATORS.get(o.kind)?.centre;
+  if (extra) return extra(o);
+  const pts: readonly Pt[] = o.kind === "fill" ? o.geometry.shell : o.kind === "satin" ? o.geometry.strip : o.kind === "run" ? o.geometry.path : [[0, 0]];
   let x = 0;
   let y = 0;
   for (const p of pts) {
@@ -50,69 +57,83 @@ function centreOf(o: DesignObject): Pt {
   return [x / pts.length, y / pts.length];
 }
 
+type Rings = { shell: Pt[]; holes: Pt[][] };
+
+function tatami(rings: Rings, ang: number, spacing: number, stitchLen: number, from: Pt, next: Pt): IRun {
+  const start = toV(nearest(rings.shell, from));
+  const end = toV(nearest(rings.shell, next));
+  return new Core.Runs.TatamiFill(
+    Polyline.fromVectors(closedV(rings.shell.map(toV)), true as never),
+    rings.holes.map((h) => Polyline.fromVectors(closedV(h.map(toV)), true as never)),
+    ang,
+    spacing,
+    stitchLen,
+    3,
+    start,
+    end,
+  );
+}
+
+const rad = (deg: number) => (deg * Math.PI) / 180;
+
 function fillRuns(o: FillObject, from: Pt, next: Pt): IRun[] {
   const p = o.params;
   const poly = polygonFromRings(o.geometry.shell, o.geometry.holes);
   const grown = p.pullCompMm > 0 ? bufferGeom(poly, p.pullCompMm) : poly;
   const runs: IRun[] = [];
-  const angle = (p.angleDeg * Math.PI) / 180;
-
-  const tatami = (rings: { shell: Pt[]; holes: Pt[][] }, ang: number, spacing: number, stitchLen: number): IRun => {
-    const start = toV(nearest(rings.shell, from));
-    const end = toV(nearest(rings.shell, next));
-    return new Core.Runs.TatamiFill(
-      Polyline.fromVectors(closed(rings.shell.map(toV)), true as never),
-      rings.holes.map((h) => Polyline.fromVectors(closed(h.map(toV)), true as never)),
-      ang,
-      spacing,
-      stitchLen,
-      3,
-      start,
-      end,
-    );
-  };
+  const enter = o.startPoint ?? from;
+  const leave = o.endPoint ?? next;
+  const pattern = p.pattern ?? DEFAULT_FILL_PATTERN;
+  const hand = p.handStitch ?? 0;
+  // Plain tatami keeps stitchjs's router; anything else (patterns, gradient, hand stitch) is ours.
+  const usePatternEngine = pattern !== DEFAULT_FILL_PATTERN || !!p.gradient || hand > 0;
+  // Open patterns (motifs, crosshatch...) would show a plain underlay through their gaps, so only
+  // hand-made underlay passes apply to them.
+  const autoUnderlay = p.underlay && patternInfo(pattern).underlay;
+  const underlays: FillUnderlay[] =
+    p.underlays ?? (autoUnderlay ? [{ angleDeg: p.angleDeg + 90, spacingMm: UNDERLAY_ROW_SPACING_MM, stitchLengthMm: UNDERLAY_STITCH_MM, insetMm: UNDERLAY_INSET_MM }] : []);
 
   for (const part of polygonsOf(grown)) {
     if (part.getArea() < 0.05) continue;
-    if (p.underlay && part.getArea() >= UNDERLAY_MIN_AREA_MM2) {
-      for (const inner of polygonsOf(bufferGeom(part, -UNDERLAY_INSET_MM))) {
-        if (inner.getArea() < 0.5) continue;
-        runs.push(tatami(ringsOf(inner), angle + Math.PI / 2, UNDERLAY_ROW_SPACING_MM, UNDERLAY_STITCH_MM));
+    if (part.getArea() >= UNDERLAY_MIN_AREA_MM2) {
+      for (const u of underlays) {
+        for (const inner of polygonsOf(bufferGeom(part, -Math.max(0, u.insetMm)))) {
+          if (inner.getArea() < 0.5) continue;
+          runs.push(tatami(ringsOf(inner), rad(u.angleDeg), Math.max(0.2, u.spacingMm), Math.max(0.5, u.stitchLengthMm), enter, leave));
+        }
       }
     }
     const rings = ringsOf(part);
-    runs.push(tatami(rings, angle, p.rowSpacingMm, p.stitchLengthMm));
+    if (usePatternEngine) {
+      const chains = generateFill({
+        poly: part,
+        pattern,
+        patternParams: p.patternParams,
+        angleDeg: p.angleDeg,
+        rowSpacingMm: p.rowSpacingMm,
+        stitchLengthMm: p.stitchLengthMm,
+        handStitch: hand,
+        seed: p.seed ?? hashString(o.id),
+        underpath: p.underpath,
+        gradient: p.gradient,
+        center: p.center,
+        guides: p.guides,
+        from: enter,
+      });
+      if (chains.length) runs.push(polylineRun(chains));
+    } else {
+      runs.push(tatami(rings, rad(p.angleDeg), p.rowSpacingMm, p.stitchLengthMm, enter, leave));
+    }
     if (p.edgeRun !== false) {
       for (const ring of [rings.shell, ...rings.holes]) {
         // start at the vertex nearest the needle so the outline doesn't add a long jump
-        const k = ring.indexOf(nearest(ring, from));
+        const k = ring.indexOf(nearest(ring, enter));
         const rot = [...ring.slice(k), ...ring.slice(0, k)];
-        runs.push(new Core.Runs.Run(closed(rot.map(toV)), { stitchLengthMm: EDGE_RUN_STITCH_MM }));
+        runs.push(new Core.Runs.Run(closedV(rot.map(toV)), { stitchLengthMm: EDGE_RUN_STITCH_MM }));
       }
     }
   }
   return runs;
-}
-
-/** Widen a left/right strip by `pc` mm on each side. */
-function widenStrip(strip: readonly Pt[], pc: number): Pt[] {
-  if (pc <= 0) return [...strip];
-  const out: Pt[] = [];
-  for (let i = 0; i + 1 < strip.length; i += 2) {
-    const l = strip[i];
-    const r = strip[i + 1];
-    const dx = l[0] - r[0];
-    const dy = l[1] - r[1];
-    const d = Math.hypot(dx, dy) || 1;
-    out.push([l[0] + (dx / d) * pc, l[1] + (dy / d) * pc], [r[0] - (dx / d) * pc, r[1] - (dy / d) * pc]);
-  }
-  return out;
-}
-
-function reversedStrip(strip: readonly Pt[]): Pt[] {
-  const out: Pt[] = [];
-  for (let i = strip.length - 2; i >= 0; i -= 2) out.push(strip[i], strip[i + 1]);
-  return out;
 }
 
 function satinRuns(o: SatinObject, from: Pt): IRun[] {
@@ -120,51 +141,24 @@ function satinRuns(o: SatinObject, from: Pt): IRun[] {
   const mid = (i: number): Pt => [(strip[i][0] + strip[i + 1][0]) / 2, (strip[i][1] + strip[i + 1][1]) / 2];
   const a = mid(0);
   const b = mid(strip.length - 2);
-  const da = (a[0] - from[0]) ** 2 + (a[1] - from[1]) ** 2;
-  const db = (b[0] - from[0]) ** 2 + (b[1] - from[1]) ** 2;
+  const anchor = o.startPoint ?? from;
+  const da = (a[0] - anchor[0]) ** 2 + (a[1] - anchor[1]) ** 2;
+  const db = (b[0] - anchor[0]) ** 2 + (b[1] - anchor[1]) ** 2;
   if (db < da) strip = reversedStrip(strip);
-  const underlays: { type: string }[] =
-    o.params.underlay === "center"
-      ? [{ type: "CENTER_LINE" }]
-      : o.params.underlay === "contour"
-        ? [{ type: "CONTOUR" }]
-        : o.params.underlay === "zigzag"
-          ? [{ type: "ZIGZAG" }]
-          : [];
-  return [new Core.Runs.ClassicSatin(strip.map(toV), { densityMm: o.params.densityMm, underlays })];
+  return [new Core.Runs.ClassicSatin(strip.map(toV), satinOptions(o.params) as never)];
 }
 
 /** A run whose stitch length is at least this is "manual": every path point is one needle drop, in order. */
-export const MANUAL_STITCH_LENGTH_MM = 1000;
-
-function runRuns(o: RunObject, from: Pt): IRun[] {
-  if (o.params.stitchLengthMm >= MANUAL_STITCH_LENGTH_MM) {
-    const pts = o.geometry.closed ? [...o.geometry.path, o.geometry.path[0]] : o.geometry.path;
-    const stitches = pts.map((p) => ({ position: { x: p[0] * PX, y: p[1] * PX }, stitchType: 0 }));
-    return [{ getStitches: () => stitches as unknown as InstanceType<typeof Core.Stitch>[] }];
-  }
-  let path = [...o.geometry.path];
-  if (o.geometry.closed) path.push(path[0]);
-  const first = path[0];
-  const last = path[path.length - 1];
-  if ((last[0] - from[0]) ** 2 + (last[1] - from[1]) ** 2 < (first[0] - from[0]) ** 2 + (first[1] - from[1]) ** 2) {
-    path = path.reverse();
-  }
-  if (o.params.repeats === 3) {
-    const back = [...path].reverse().slice(1);
-    path = [...path, ...back, ...path.slice(1)];
-  }
-  return [new Core.Runs.Run(path.map(toV), { stitchLengthMm: o.params.stitchLengthMm })];
-}
+export { MANUAL_STITCH_LENGTH_MM } from "./runs";
 
 /**
  * Turn a design into a flat, machine-oriented list of needle moves.
  *
- * Each object becomes one or more stitchjs runs (TatamiFill for fills, with a perpendicular
- * underlay; ClassicSatin for satins; Run for runs). Runs are evaluated eagerly, one after another,
- * so each can start near where the needle currently is. Between objects we emit a `jump` (the
- * later `validatePlan` upgrades long ones to `trim`) followed by a stitch at the landing point, and
- * a `colorChange` whenever the thread differs from the previous object's.
+ * Each object becomes one or more stitchjs runs (TatamiFill or a pattern fill for fills, with
+ * underlay; ClassicSatin for satins; one of the seven run types for runs). Runs are evaluated
+ * eagerly, one after another, so each can start near where the needle currently is. Between objects
+ * we emit a `jump` (the later `validatePlan` upgrades long ones to `trim`) followed by a stitch at
+ * the landing point, and a `colorChange` whenever the thread differs from the previous object's.
  *
  * Hidden objects are skipped. An object whose generation throws is skipped with an
  * `object-failed` warning rather than failing the whole design.
@@ -191,7 +185,8 @@ export function designToStitchPlan(design: Design): StitchPlan {
     let runs: IRun[];
     let produced: PlanStitch[] = [];
     try {
-      runs = o.kind === "fill" ? fillRuns(o, cur, next) : o.kind === "satin" ? satinRuns(o, cur) : runRuns(o, cur);
+      const extra = EXTRA_GENERATORS.get(o.kind);
+      runs = extra ? extra.runs(o, cur, next) : o.kind === "fill" ? fillRuns(o, cur, next) : o.kind === "satin" ? satinRuns(o, cur) : runObjectRuns(o, cur);
       const newBlock = o.threadId !== curThreadId;
       const blockIndex = newBlock ? blocks.length : blocks.length - 1;
       let at: Pt = cur;
@@ -241,12 +236,7 @@ function dedupe(list: PlanStitch[]): PlanStitch[] {
   const out: PlanStitch[] = [];
   for (const s of list) {
     const prev = out[out.length - 1];
-    if (
-      prev &&
-      s.type === "stitch" &&
-      prev.type === "stitch" &&
-      Math.hypot(s.x - prev.x, s.y - prev.y) < 0.02
-    ) {
+    if (prev && s.type === "stitch" && prev.type === "stitch" && Math.hypot(s.x - prev.x, s.y - prev.y) < 0.02) {
       continue;
     }
     out.push(s);
@@ -255,3 +245,4 @@ function dedupe(list: PlanStitch[]): PlanStitch[] {
 }
 
 export type { StitchType };
+export type { IRun } from "./runs";

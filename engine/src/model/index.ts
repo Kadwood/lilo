@@ -10,6 +10,10 @@ import {
 } from "./types";
 
 export * from "./types";
+export * from "./patterns";
+export * from "./path";
+export * from "./transform";
+export * from "./edit";
 
 /** Brother NV2700 hoops. */
 export const HOOPS: readonly Hoop[] = [

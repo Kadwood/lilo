@@ -13,6 +13,9 @@ import {
   type ImageDataLike,
   type PlanStats,
   type PlanWarning,
+  type DesignObject,
+  type ShapeOpRequest,
+  runShapeOp,
   type StageEvent,
   type StitchPlan,
 } from "@lilo/engine";
@@ -61,4 +64,9 @@ export async function runDigitize(
 export function runExport(design: Design, options: ExportOptions): ExportResponse {
   const r: ExportResult = designToPes(design, options);
   return { pes: r.pes, stats: r.stats, warnings: r.warnings };
+}
+
+/** Boolean shape ops (knife, cut hole) need jsts, so they run where the engine runs. */
+export function runShape(req: ShapeOpRequest): DesignObject[] {
+  return runShapeOp(req);
 }

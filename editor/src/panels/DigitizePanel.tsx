@@ -1,11 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { CATALOGUES, designBounds } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
 /** Left panel: import settings and the live palette. Changing any control re-runs the digitizer. */
-export function DigitizePanel({ onOpen }: { onOpen: () => void }) {
+export function DigitizePanel({ onOpen, children }: { onOpen: () => void; children?: ReactNode }) {
   const { state, actions } = useEditor();
   const { options, source, design, palette, status } = state;
   const working = status.kind === "working";
@@ -148,6 +148,7 @@ export function DigitizePanel({ onOpen }: { onOpen: () => void }) {
           ))}
         </ul>
       )}
+      {children}
     </aside>
   );
 }

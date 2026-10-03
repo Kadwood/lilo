@@ -1,3 +1,6 @@
+// Side effect: attaches the overlay/relate methods (`intersection`, `covers`, `getInteriorPoint`...)
+// to jsts geometries. The modular build leaves them off otherwise.
+import "jsts/org/locationtech/jts/monkey";
 import { Coordinate, GeometryFactory } from "jsts/org/locationtech/jts/geom";
 import BufferOp from "jsts/org/locationtech/jts/operation/buffer/BufferOp";
 import BufferParameters from "jsts/org/locationtech/jts/operation/buffer/BufferParameters";
