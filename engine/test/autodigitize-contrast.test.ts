@@ -98,3 +98,20 @@ describe("auto-digitize a high-contrast serif wordmark", () => {
     expect(lo.satin).toBeGreaterThan(hi.satin);
   });
 });
+
+describe("click-to-stitch on the same artwork", () => {
+  it("the regions are the traced shapes, not the per-stroke pieces: a click stitches with the user's settings whatever auto decided", async () => {
+    const { design, traceRegions } = await autoDigitizeSvg(svg, { widthMm: 60 });
+    const auto = objectCounts(design);
+    expect(auto.run + auto.satin).toBeGreaterThan(0); // auto split the letters into strokes
+    expect(traceRegions.length).toBeGreaterThan(0);
+    const { regionToObjects, DEFAULT_REGION_SETTINGS } = await import("../src/clickstitch");
+    const { makeIdGen } = await import("../src/model");
+    for (const r of traceRegions) {
+      const { objects } = regionToObjects(r, { ...DEFAULT_REGION_SETTINGS, fill: { ...DEFAULT_REGION_SETTINGS.fill, angleDeg: 12 } }, makeIdGen(design));
+      expect(objects).toHaveLength(1);
+      expect(objects[0].kind).toBe("fill");
+      expect(objects[0].kind === "fill" && objects[0].params.angleDeg).toBe(12);
+    }
+  });
+});

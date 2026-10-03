@@ -1,6 +1,7 @@
 import { init as initStitch } from "@stitchables/stitchjs";
 import { DEFAULT_CATALOGUE_ID, getCatalogue } from "../threads";
 import { regionsToDesign, regionsTransform } from "./cleanup";
+import { buildTraceRegions } from "./traceRegions";
 import { prep, downscale } from "./prep";
 import { quantize } from "./quantize";
 import { svgToRegions, tracedSvgToRegions } from "./regions";
@@ -71,7 +72,8 @@ export async function autoDigitize(
   const design = regionsToDesign(regions, threads, o);
   onProgress?.({ stage: "cleanup", design });
   onProgress?.({ stage: "done", design });
-  return { design, svg, palette: q.palette, imageWidth: p.width, imageHeight: p.height, imageToMm, imageOrigin: [0, 0] };
+  const traceRegions = buildTraceRegions(regions, threads, imageToMm);
+  return { design, svg, palette: q.palette, imageWidth: p.width, imageHeight: p.height, imageToMm, imageOrigin: [0, 0], traceRegions };
 }
 
 /**
@@ -96,5 +98,6 @@ export async function autoDigitizeSvg(
   }));
   onProgress?.({ stage: "cleanup", design });
   onProgress?.({ stage: "done", design });
-  return { design, svg: svgText, palette, imageWidth: doc.width, imageHeight: doc.height, imageToMm: regionsTransform(regions, o), imageOrigin: [doc.minX, doc.minY] };
+  const imageToMm = regionsTransform(regions, o);
+  return { design, svg: svgText, palette, imageWidth: doc.width, imageHeight: doc.height, imageToMm, imageOrigin: [doc.minX, doc.minY], traceRegions: buildTraceRegions(regions, threads, imageToMm) };
 }

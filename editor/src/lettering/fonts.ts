@@ -164,6 +164,52 @@ async function customFont(key: string): Promise<CustomFont> {
 }
 
 // ---------------------------------------------------------------------------------------------
+// Fonts inside a project file
+// ---------------------------------------------------------------------------------------------
+
+/** An uploaded font as it travels in a `.lilo`: `id` is the key text blocks refer to (`custom:<id>`). */
+export interface EmbeddedFont {
+  id: string;
+  name: string;
+  ext: string;
+  bytes: Uint8Array;
+}
+
+/** The uploaded fonts behind these keys, ready to embed in a project. Keys with no font are skipped. */
+export async function collectCustomFonts(keys: readonly string[]): Promise<EmbeddedFont[]> {
+  await hydrate();
+  const out: EmbeddedFont[] = [];
+  for (const key of new Set(keys)) {
+    const f = memory.get(key);
+    if (f) out.push({ id: key, name: f.name, ext: /\.([A-Za-z0-9]+)(#\d+)?$/.exec(key)?.[1] ?? "ttf", bytes: new Uint8Array(f.bytes) });
+  }
+  return out;
+}
+
+/** Make fonts that came out of a project file usable here. A font the user already has under the same key is kept. */
+export async function restoreCustomFonts(fonts: readonly { id: string; name: string; bytes: Uint8Array }[]): Promise<void> {
+  if (fonts.length === 0) return;
+  await hydrate();
+  const { listFaces, initLettering } = await engine();
+  await initLettering();
+  for (const f of fonts) {
+    if (memory.has(f.id)) continue;
+    const buf = f.bytes.buffer.slice(f.bytes.byteOffset, f.bytes.byteOffset + f.bytes.byteLength) as ArrayBuffer;
+    let faces = 1;
+    try {
+      faces = listFaces(buf).length || 1;
+    } catch {
+      // the layout will say so when someone uses it
+    }
+    const faceIndex = Number(f.id.split("#").pop()) || 0;
+    const stored: StoredFont = { key: f.id, name: f.name, faces, faceIndex, bytes: buf };
+    memory.set(f.id, stored);
+    parsed.delete(f.id);
+    await dbPut(stored);
+  }
+}
+
+// ---------------------------------------------------------------------------------------------
 // Services
 // ---------------------------------------------------------------------------------------------
 

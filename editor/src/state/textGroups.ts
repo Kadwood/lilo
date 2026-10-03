@@ -1,4 +1,4 @@
-import type { Design, DesignObject } from "@lilo/engine/light";
+import { applyAffine, compose, objectBox, unionBox, type Affine, type Design, type DesignObject, type Pt, type TextBlock } from "@lilo/engine/light";
 
 /** Helpers for text blocks (lettering): objects of one block share `sourceText.group`. Pure, no store. */
 
@@ -39,4 +39,44 @@ export function pruneTextBlocks(d: Design): void {
   const used = new Set(d.objects.map((o) => o.sourceText?.group));
   d.textBlocks = d.textBlocks.filter((b) => used.has(b.id));
   if (d.textBlocks.length === 0) delete d.textBlocks;
+}
+
+const IDENTITY_LINEAR = [1, 0, 0, 1] as const;
+
+/** Where a text block's letters are centred now: the stored centre, else the middle of their box. */
+function blockCentre(d: Design, b: TextBlock): Pt | null {
+  if (b.centre) return b.centre;
+  const box = unionBox(d.objects.filter((o) => o.sourceText?.group === b.id).map(objectBox));
+  return box ? [(box.minX + box.maxX) / 2, (box.minY + box.maxY) / 2] : null;
+}
+
+/**
+ * Call inside a commit recipe BEFORE the objects `moved` are transformed by `m`: records the move on
+ * every text block whose letters all move (a word moves as one), so editing the text later re-lays it
+ * out with the same rotation, scale, flip and position. Blocks that only partly move are left alone.
+ */
+export function transformTextBlocks(d: Design, moved: ReadonlySet<string>, m: Affine): void {
+  if (!d.textBlocks?.length) return;
+  d.textBlocks = d.textBlocks.map((b) => {
+    const members = d.objects.filter((o) => o.sourceText?.group === b.id);
+    if (members.length === 0 || !members.every((o) => moved.has(o.id) && !o.locked)) return b;
+    const c = blockCentre(d, b);
+    if (!c) return b;
+    const l = b.linear ?? IDENTITY_LINEAR;
+    const [a0, a1, a2, a3] = compose([l[0], l[1], l[2], l[3], 0, 0], m);
+    return { ...b, centre: applyAffine(m, c), linear: [a0, a1, a2, a3] as const };
+  });
+}
+
+/**
+ * The transform that puts a freshly laid-out block (centred on `layoutCentre`) where the block it
+ * replaces is: same centre, same rotation/scale/flip. Null for a block with no record of either
+ * (older files) or one that follows a path: those keep the old behaviour of centring on the letters.
+ */
+export function relayoutAffine(d: Design, old: TextBlock | undefined, next: { path?: unknown }, layoutCentre: Pt): Affine | null {
+  if (!old || next.path || old.path) return null;
+  const c = blockCentre(d, old);
+  if (!c) return null;
+  const l = old.linear ?? IDENTITY_LINEAR;
+  return [l[0], l[1], l[2], l[3], c[0] - (l[0] * layoutCentre[0] + l[2] * layoutCentre[1]), c[1] - (l[1] * layoutCentre[0] + l[3] * layoutCentre[1])];
 }

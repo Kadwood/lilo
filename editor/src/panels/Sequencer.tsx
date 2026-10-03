@@ -4,6 +4,7 @@ import { useEditor } from "../state/store";
 import { groupObjects } from "../state/reorder";
 import { SequencerColours } from "./SequencerColours";
 import { SequencerImages } from "./SequencerImages";
+import { ShelfPanel } from "./ShelfPanel";
 
 type Drag = { kind: "object"; index: number } | { kind: "group"; index: number };
 /** Where a drop would land: before object `at` (kind object) or before group `at`. */
@@ -70,13 +71,23 @@ export function Sequencer() {
 
   const tabs = (
     <div className="seq-tabs" role="tablist" aria-label="Sequencer views">
-      {(["shapes", "colours", "images"] as const).map((t) => (
+      {(["shapes", "colours", "images", "threads"] as const).map((t) => (
         <button key={t} role="tab" aria-selected={state.seqTab === t} className={state.seqTab === t ? "active" : ""} onClick={() => actions.setSeqTab(t)}>
-          {t === "shapes" ? "Shapes" : t === "colours" ? "Colours" : "Images"}
+          {t === "shapes" ? "Shapes" : t === "colours" ? "Colours" : t === "images" ? "Images" : "Threads"}
         </button>
       ))}
     </div>
   );
+
+  if (state.seqTab === "threads") {
+    return (
+      <aside className="panel panel-right" aria-label="Sequencer">
+        <h2>My Threads</h2>
+        {tabs}
+        <ShelfPanel />
+      </aside>
+    );
+  }
 
   if (state.seqTab === "images") {
     return (

@@ -6,7 +6,7 @@
  * where new text lands (`canvas/controller.ts`).
  */
 
-export type ToolId = "select" | "pan" | "measure" | "open" | "closed" | "circle" | "rect" | "pen" | "satin" | "text" | "manual";
+export type ToolId = "select" | "pan" | "measure" | "open" | "closed" | "circle" | "rect" | "pen" | "satin" | "text" | "manual" | "clickstitch";
 
 export interface ToolInfo {
   id: ToolId;
@@ -30,6 +30,7 @@ export const TOOLS: readonly ToolInfo[] = [
   { id: "pen", label: "Pen", key: "5", help: "Draw freehand; the line is smoothed when you let go. Finish near the start to close it.", enabled: true },
   { id: "satin", label: "Satin blocks", key: "6", help: "Click the left edge, then the right edge, and repeat along the column. Enter finishes.", enabled: true },
   { id: "text", label: "Text", key: "t", help: "Click where the text should go, then type in the panel. Select a word to edit it.", enabled: true },
+  { id: "clickstitch", label: "Click to stitch", key: "k", help: "After you open an image: pick fill or outline settings, then click the regions of the trace you want stitched. Shift-click collects several, Enter stitches them. Esc leaves.", enabled: true },
   { id: "manual", label: "Manual stitch", key: "7", help: "Click to place each stitch exactly where you want the needle. Enter finishes.", enabled: true },
 ];
 

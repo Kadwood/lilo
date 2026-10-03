@@ -102,6 +102,68 @@ describe("placeText / replaceText (inside commit)", () => {
     expect(after.objects.filter((o) => o.sourceText).length).toBe(b.objects.length);
     expect(validateDesign(after)).toEqual([]);
   });
+
+  it("re-layout keeps the rotation, scale and position the user gave the word", async () => {
+    renderEditor(<div />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    const thread = textThread(lastEditor!.state.design!);
+    const a = await laid("Hi", "text-1", thread.id);
+    act(() => void lastEditor!.actions.commit("Add text", (d) => void placeText(d, a, blockOf("text-1", "Hi"), thread, [20, 20])));
+    const textIds = () => lastEditor!.state.design!.objects.filter((o) => o.sourceText).map((o) => o.id);
+    const boxOf = () => unionBox(lastEditor!.state.design!.objects.filter((o) => o.sourceText).map(objectBox))!;
+    const size = (b: ReturnType<typeof boxOf>) => ({ w: b.maxX - b.minX, h: b.maxY - b.minY });
+
+    // the user turns the word a quarter turn, doubles it and moves it
+    act(() => lastEditor!.actions.setSelection(textIds()));
+    act(() => lastEditor!.actions.rotateSelection(90));
+    const turned = size(boxOf());
+    expect(turned.h).toBeGreaterThan(turned.w); // "Hi" is wider than tall: now it stands up
+    act(() => lastEditor!.actions.resizeSelection(turned.w * 2, turned.h * 2));
+    act(() => lastEditor!.actions.nudgeSelection(7, -3));
+    const placed = boxOf();
+    const block = lastEditor!.state.design!.textBlocks![0];
+    expect(block.linear).toBeDefined();
+    const [l0, l1, l2, l3] = block.linear!;
+    expect(Math.abs(l0 * l3 - l1 * l2)).toBeCloseTo(4, 1); // area scale of a doubling
+    expect(Math.abs(l0)).toBeLessThan(0.01); // x no longer maps to x: a quarter turn
+
+    // editing the text lays out new letters with the same turn, size and centre
+    const b = await laid("Hello", "text-1", thread.id);
+    const undoDepth = lastEditor!.state.undoLabel;
+    act(() => void lastEditor!.actions.commit("Edit text", (d) => void replaceText(d, "text-1", b, blockOf("text-1", "Hello"))));
+    const after = boxOf();
+    expect((after.minX + after.maxX) / 2).toBeCloseTo((placed.minX + placed.maxX) / 2, 0);
+    expect((after.minY + after.maxY) / 2).toBeCloseTo((placed.minY + placed.maxY) / 2, 0);
+    const s = size(after);
+    expect(s.h).toBeGreaterThan(s.w); // still standing up
+    // doubled: the word is ~2.5x longer than "Hi" at the same height, so the long side grows with the text
+    const flat = await laid("Hello", "text-1", thread.id);
+    const fb = unionBox(flat.objects.map(objectBox))!;
+    expect(s.h).toBeCloseTo((fb.maxX - fb.minX) * 2, 0);
+    expect(s.w).toBeCloseTo((fb.maxY - fb.minY) * 2, 0);
+    expect(lastEditor!.state.design!.textBlocks![0].text).toBe("Hello");
+    expect(validateDesign(lastEditor!.state.design!)).toEqual([]);
+
+    // one undo step brings the old word back, turned and doubled
+    act(() => lastEditor!.actions.undo());
+    expect(lastEditor!.state.design!.textBlocks![0].text).toBe("Hi");
+    expect(lastEditor!.state.undoLabel).toBe(undoDepth);
+    expect(boxOf().maxX - boxOf().minX).toBeCloseTo(placed.maxX - placed.minX, 3);
+  });
+
+  it("a word with no record of its transform (an older file) is still centred on its letters", async () => {
+    renderEditor(<div />, { design: testDesign() });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    const thread = textThread(lastEditor!.state.design!);
+    const a = await laid("Hi", "text-1", thread.id);
+    act(() => void lastEditor!.actions.commit("Add text", (d) => void placeText(d, a, blockOf("text-1", "Hi"), thread, [20, 20])));
+    act(() => void lastEditor!.actions.commit("Forget", (d) => void (d.textBlocks = d.textBlocks!.map(({ centre: _c, linear: _l, ...rest }) => rest))));
+    const before = unionBox(lastEditor!.state.design!.objects.filter((o) => o.sourceText).map(objectBox))!;
+    const b = await laid("Hello", "text-1", thread.id);
+    act(() => void lastEditor!.actions.commit("Edit text", (d) => void replaceText(d, "text-1", b, blockOf("text-1", "Hello"))));
+    const after = unionBox(lastEditor!.state.design!.objects.filter((o) => o.sourceText).map(objectBox))!;
+    expect((after.minX + after.maxX) / 2).toBeCloseTo((before.minX + before.maxX) / 2, 0);
+  });
 });
 
 describe("Text tool and panel", () => {

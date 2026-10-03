@@ -70,6 +70,12 @@ const ICONS: Record<ToolId, ReactNode> = {
       <path d="M5 6V4h14v2M12 4v16M9 20h6" />
     </I>
   ),
+  clickstitch: (
+    <I>
+      <path d="M5 4l9 7-4 1 2.5 5-2 1-2.5-5-3 3z" />
+      <path d="M15 4h5v5h-5z" strokeDasharray="2 2" />
+    </I>
+  ),
   manual: (
     <I>
       <path d="M4 17l4-3 4 2 3-5 5 1" strokeDasharray="2 2" />

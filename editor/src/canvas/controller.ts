@@ -7,6 +7,7 @@ import {
   ellipseNodes,
   flattenNodes,
   hitObject,
+  hitRegion,
   insertNodeNear,
   makeFill,
   makeRun,
@@ -83,6 +84,8 @@ export interface OverlayModel {
   measure: { a: Pt; b: Pt } | null;
   nodeSel: { ring: number; index: number } | null;
   spaceDown: boolean;
+  /** Click-to-stitch: the traced region under the pointer. */
+  hoverRegion: string | null;
 }
 
 const HANDLE_PX = 7;
@@ -115,6 +118,7 @@ export class CanvasController {
   private measureLine: { a: Pt; b: Pt } | null = null;
   private nodeSel: { ring: number; index: number } | null = null;
   private space = false;
+  private hoverRegion: string | null = null;
   private listeners = new Set<() => void>();
   private snap: OverlayModel;
 
@@ -129,7 +133,7 @@ export class CanvasController {
   };
   getSnapshot = (): OverlayModel => this.snap;
   private build(): OverlayModel {
-    return { drag: this.drag, draft: this.draft, cursor: this.cursor, measure: this.measureLine, nodeSel: this.nodeSel, spaceDown: this.space };
+    return { drag: this.drag, draft: this.draft, cursor: this.cursor, measure: this.measureLine, nodeSel: this.nodeSel, spaceDown: this.space, hoverRegion: this.hoverRegion };
   }
   private changed() {
     this.snap = this.build();
@@ -260,6 +264,15 @@ export class CanvasController {
         this.draft = { kind: "manual", closed: false, nodes: [], purpose: "shape" };
         this.draftPointer(i, p);
         return;
+      case "clickstitch": {
+        // Click-to-stitch: a click on a traced region stitches it; shift-click collects it for Enter.
+        if (i.button !== 0) return;
+        const hit = this.regionAt(p);
+        if (!hit) return;
+        if (i.shift) this.a.togglePendingRegion(hit);
+        else this.a.stitchRegions([hit]);
+        return;
+      }
       case "text": {
         // Text tool: clicking a word selects it (the panel then edits it); clicking elsewhere sets
         // where new text will be placed.
@@ -369,10 +382,24 @@ export class CanvasController {
     return p[0] >= r.x && p[0] <= r.x + r.widthMm && p[1] >= r.y && p[1] <= r.y + h;
   }
 
+  /** Id of the traced region at `p` (click-to-stitch), if any. */
+  private regionAt(p: Pt): string | null {
+    const regions = this.s.trace?.regions;
+    return regions ? (hitRegion(regions, p)?.id ?? null) : null;
+  }
+
   pointerMove(i: { x: number; y: number; ctrl: boolean; shift: boolean }): void {
     const p = this.mm(i);
     this.cursor = p;
     const d = this.drag;
+    if (!d && this.s.tool === "clickstitch") {
+      const hover = this.regionAt(p);
+      if (hover !== this.hoverRegion) {
+        this.hoverRegion = hover;
+        this.changed();
+      }
+      return;
+    }
     if (!d) {
       if (this.draft || this.s.mode !== "none") this.changed();
       return;
@@ -511,6 +538,7 @@ export class CanvasController {
         this.a.endGroup();
         break;
       case "image":
+        this.a.endGroup(); // one undo step per drag of a picture
         break;
       case "pan":
         break;
@@ -741,6 +769,18 @@ export class CanvasController {
   key(k: KeyInput): boolean {
     const s = this.s;
     const mod = k.ctrl || k.meta;
+    if (s.tool === "clickstitch" && !mod) {
+      if (k.key === "Escape") {
+        if (s.pendingRegions.length > 0) this.a.clearPendingRegions();
+        else this.a.setTool("select");
+        return true;
+      }
+      if (k.key === "Enter") {
+        if (s.pendingRegions.length === 0) return false;
+        this.a.stitchPending();
+        return true;
+      }
+    }
     if (k.key === "Escape") {
       if (this.draft) {
         this.draft = null;
@@ -819,6 +859,7 @@ export class CanvasController {
 
   /** Leave any half-finished gesture (tool switch, selection change). */
   reset(): void {
+    this.hoverRegion = null;
     this.draft = null;
     this.drag = null;
     this.nodeSel = null;

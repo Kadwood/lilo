@@ -1,7 +1,10 @@
 import type { AutoDigitizeOptions, Design, DesignObject, ExportOptions, ShapeOpRequest, StageEvent } from "@lilo/engine";
-import type { DigitizeResponse, DigitizeSource, ExportResponse, PlanResult } from "./ops";
+import type { DigitizeResponse, DigitizeSource, ExportResponse, ExtraOps, PlanResult } from "./ops";
 
-export type { DigitizeResponse, DigitizeSource, ExportResponse, PlanResult } from "./ops";
+export type { ConvertResponse, DigitizeResponse, DigitizeSource, ExportResponse, ExtraOps, FormatExportResponse, PixelObjectsResponse, PlanResult, ReadFileResponse } from "./ops";
+
+export type ExtraOpName = keyof ExtraOps;
+export type ExtraOpResult<K extends ExtraOpName> = Awaited<ReturnType<ExtraOps[K]>>;
 
 // `ops` pulls in stitchjs and the WASM; keep it out of the main bundle (the Worker owns it).
 const ops = () => import("./ops");
@@ -13,6 +16,8 @@ export interface EngineClient {
   exportPes(design: Design, options: ExportOptions): Promise<ExportResponse>;
   /** Knife / cut-hole: the pieces that replace the object. */
   shapeOp(req: ShapeOpRequest): Promise<DesignObject[]>;
+  /** Any of the other engine operations (formats, converter, pixel art, thumbnails): see `extraOps` in `ops.ts`. */
+  call<K extends ExtraOpName>(name: K, ...args: Parameters<ExtraOps[K]>): Promise<ExtraOpResult<K>>;
   dispose(): void;
 }
 
@@ -36,6 +41,11 @@ export function createInlineEngine(init: () => Promise<void> = async () => {}): 
     async shapeOp(req) {
       return (await ops()).runShape(req);
     },
+    async call(name, ...args) {
+      await ready();
+      // the table is a union of functions; the signature above guarantees the arguments fit
+      return ((await ops()).extraOps[name] as (...a: unknown[]) => never)(...args);
+    },
     dispose() {},
   };
 }
@@ -47,11 +57,12 @@ export type WorkerRequest =
   | { id: number; type: "digitize"; source: DigitizeSource; options: Partial<AutoDigitizeOptions> }
   | { id: number; type: "plan"; design: Design }
   | { id: number; type: "export"; design: Design; options: ExportOptions }
-  | { id: number; type: "shape"; req: ShapeOpRequest };
+  | { id: number; type: "shape"; req: ShapeOpRequest }
+  | { id: number; type: "op"; name: ExtraOpName; args: unknown[] };
 
 export type WorkerResponse =
   | { id: number; type: "progress"; event: StageEvent }
-  | { id: number; type: "result"; result: DigitizeResponse | PlanResult | ExportResponse | DesignObject[] }
+  | { id: number; type: "result"; result: DigitizeResponse | PlanResult | ExportResponse | DesignObject[] | ExtraOpResult<ExtraOpName> }
   | { id: number; type: "error"; message: string };
 
 /**
@@ -106,6 +117,7 @@ export function createWorkerEngine(): EngineClient {
     plan: (design) => call<PlanResult>({ type: "plan", design }),
     exportPes: (design, options) => call<ExportResponse>({ type: "export", design, options }),
     shapeOp: (req) => call<DesignObject[]>({ type: "shape", req }),
+    call: (name, ...args) => call({ type: "op", name, args: args as unknown[] }),
     dispose() {
       worker?.terminate();
       worker = null;

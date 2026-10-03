@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useSyncExternalStore } from "react";
-import { MAX_SPEED, MIN_SPEED, formatDuration } from "../state/player";
+import type { PlanResult } from "../engine/client";
+import { MAX_SPEED, MIN_SPEED, formatDuration, type PlayerController } from "../state/player";
 import { useEditor } from "../state/store";
 
 /** The thread name as it appears on the spool: "Brother 513 — Blue". */
@@ -10,8 +11,12 @@ export function threadLabel(t: { brand: string; code: string; name: string }): s
 /** Bottom bar above the toolbar: play/pause, scrubber, speed, colour-change card and totals. */
 export function StitchPlayer() {
   const { state, player } = useEditor();
+  return <StitchPlayerBar player={player} planResult={state.planResult} emptyText="Stitch player: digitize an image to preview it stitch by stitch." />;
+}
+
+/** The player for any plan and any `PlayerController` (the editor's, or the pixel-art preview's). */
+export function StitchPlayerBar({ player, planResult, emptyText }: { player: PlayerController; planResult: PlanResult | null; emptyText: string }) {
   const snap = useSyncExternalStore(player.subscribe, player.snapshot);
-  const planResult = state.planResult;
   const plan = planResult?.plan ?? null;
   const total = plan?.stitches.length ?? 0;
   // cumulative[i] = needle drops among the first i entries (jumps and colour changes don't count)
@@ -39,7 +44,7 @@ export function StitchPlayer() {
   if (!plan || !planResult || total === 0) {
     return (
       <div className="player player-empty" role="group" aria-label="Stitch player">
-        <span className="muted">Stitch player: digitize an image to preview it stitch by stitch.</span>
+        <span className="muted">{emptyText}</span>
       </div>
     );
   }

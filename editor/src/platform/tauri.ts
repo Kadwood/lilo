@@ -1,11 +1,13 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open, save } from "@tauri-apps/plugin-dialog";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { readFile, writeFile } from "@tauri-apps/plugin-fs";
 import { BridgeClient } from "../link/api/client";
 import type { SavedMachine } from "../link/api/types";
 import type { JobRecord } from "../link/api/types";
-import type { OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, SendResult } from "./types";
+import type { MyThreadsFile, OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, SendResult } from "./types";
 
 const TERMINAL = new Set(["done", "failed", "cancelled", "needs_reconciliation"]);
 const POLL_MS = 500;
@@ -21,6 +23,9 @@ function client(): Promise<BridgeClient> {
   });
   return clientPromise;
 }
+
+const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p;
+const joinPath = (dir: string, name: string) => `${dir}${dir.includes("\\") && !dir.includes("/") ? "\\" : "/"}${name}`;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -103,6 +108,97 @@ export const tauriPlatform: Platform = {
     return { name: picked.split(/[\\/]/).pop() ?? picked, bytes };
   },
 
+  async openFiles(options) {
+    const picked = await open({
+      multiple: true,
+      directory: false,
+      filters: options?.extensions?.length ? [{ name: "Files", extensions: options.extensions }] : undefined,
+    });
+    if (!picked) return [];
+    return Promise.all(picked.map(async (p) => ({ name: nameOf(p), bytes: await readFile(p) })));
+  },
+
+  async saveFilesToFolder(files) {
+    const dir = await open({ multiple: false, directory: true, title: "Choose a folder to save into" });
+    if (!dir) return null;
+    for (const f of files) await writeFile(joinPath(dir, f.name), f.bytes);
+    return dir;
+  },
+
+  readMyThreads() {
+    return invoke<MyThreadsFile>("read_my_threads");
+  },
+
+  setDirty(dirty) {
+    void Promise.resolve(invoke("set_dirty", { dirty })).catch(() => {});
+  },
+
+  async readProjectBackup(path) {
+    try {
+      const data = await invoke<ArrayBuffer | number[]>("read_project_backup", { path });
+      return data instanceof ArrayBuffer ? new Uint8Array(data) : Uint8Array.from(data);
+    } catch {
+      return null;
+    }
+  },
+
+  async writeMyThreads(json) {
+    await invoke("write_my_threads", { json });
+  },
+
+  async openUrl(url) {
+    await openUrl(url);
+  },
+
+  async openProjectDialog() {
+    const folder = await invoke<string>("projects_folder").catch(() => undefined);
+    const picked = await open({ multiple: false, directory: false, defaultPath: folder, filters: [{ name: "Lilo project", extensions: ["lilo"] }] });
+    if (!picked) return null;
+    await invoke("allow_project_path", { path: picked });
+    return { path: picked, name: nameOf(picked), bytes: await tauriPlatform.readProjectFile(picked) };
+  },
+
+  async saveProjectAs(suggestedName, bytes) {
+    const folder = await invoke<string>("projects_folder").catch(() => undefined);
+    const path = await save({ defaultPath: folder ? joinPath(folder, suggestedName) : suggestedName, filters: [{ name: "Lilo project", extensions: ["lilo"] }] });
+    if (!path) return null;
+    const withExt = /\.lilo$/i.test(path) ? path : `${path}.lilo`;
+    await invoke("allow_project_path", { path: withExt });
+    await tauriPlatform.writeProjectFile(withExt, bytes);
+    return withExt;
+  },
+
+  onCloseRequested(handler) {
+    let active = true;
+    const unlisten: (() => void)[] = [];
+    // one at a time: a second request while the question is open must not open a second question
+    let asking = false;
+    const ask = async () => {
+      if (asking) return;
+      asking = true;
+      try {
+        // the shell exits for real only on `quit_now`; it knows how to do that without asking again
+        if (await handler()) await invoke("quit_now");
+      } finally {
+        asking = false;
+      }
+    };
+    const keep = (u: () => void) => (active ? unlisten.push(u) : u());
+    // the window's own close button
+    void getCurrentWindow()
+      .onCloseRequested((event) => {
+        event.preventDefault();
+        void ask();
+      })
+      .then(keep);
+    // Cmd-Q, the app menu, the Dock and the tray's Quit: the shell holds the exit back and asks us
+    void listen("lilo-quit-requested", () => void ask()).then(keep);
+    return () => {
+      active = false;
+      unlisten.splice(0).forEach((u) => u());
+    };
+  },
+
   ocrImage(bytes) {
     // a Uint8Array goes to Rust as the raw request body (no JSON round trip for megabytes)
     return invoke<OcrLine[]>("ocr_image", bytes);
@@ -115,7 +211,6 @@ export const tauriPlatform: Platform = {
   onOpenFile(callback) {
     let active = true;
     let unlisten: (() => void) | null = null;
-    const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p;
     const drain = async () => {
       const paths = await invoke<string[]>("take_open_files");
       for (const path of paths) {

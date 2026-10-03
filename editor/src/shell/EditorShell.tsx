@@ -3,6 +3,7 @@ import { Toolbar } from "../canvas/Toolbar";
 import { IMPORT_EXTENSIONS } from "../io/decode";
 import { DesignSection } from "../panels/DesignSection";
 import { TextPanel } from "../lettering/TextPanel";
+import { ClickStitchPanel } from "../panels/ClickStitchPanel";
 import { DigitizePanel } from "../panels/DigitizePanel";
 import { Sequencer } from "../panels/Sequencer";
 import { SettingsPanel } from "../panels/SettingsPanel";
@@ -41,7 +42,9 @@ export function EditorShell() {
     <div className="editor">
       <TopBar />
       <div className="editor-body">
-        {textPanel ? (
+        {state.tool === "clickstitch" ? (
+          <ClickStitchPanel onOpen={open} />
+        ) : textPanel ? (
           <TextPanel />
         ) : state.selectedIds.length > 0 ? (
           <SettingsPanel />

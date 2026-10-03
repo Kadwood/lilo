@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 import vtracerWasm from "vtracer-wasm/vtracer.wasm?url";
 import { initVtracer } from "@lilo/engine";
-import { buildPlan, runDigitize, runExport, runShape } from "./ops";
+import { buildPlan, extraOps, runDigitize, runExport, runShape } from "./ops";
 import type { WorkerRequest, WorkerResponse } from "./client";
 
 // Load the tracer once; every request waits for it (harmless for plan/export).
@@ -24,6 +24,8 @@ self.onmessage = async (ev: MessageEvent<WorkerRequest>) => {
       post({ id: req.id, type: "result", result: buildPlan(req.design) });
     } else if (req.type === "shape") {
       post({ id: req.id, type: "result", result: runShape(req.req) });
+    } else if (req.type === "op") {
+      post({ id: req.id, type: "result", result: (extraOps[req.name] as (...a: unknown[]) => never)(...req.args) });
     } else {
       post({ id: req.id, type: "result", result: runExport(req.design, req.options) });
     }

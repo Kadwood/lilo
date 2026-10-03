@@ -13,6 +13,8 @@ import {
 } from "@lilo/engine/light";
 import { createInlineEngine, type EngineClient } from "../engine/client";
 import { EngineProvider } from "../engine/context";
+import { AppContext, type AppApi } from "../app/AppContext";
+import { ProjectProvider } from "../project/ProjectProvider";
 import { EditorProvider, useEditor } from "../state/store";
 
 const cat = getCatalogue().threads;
@@ -53,13 +55,16 @@ function Probe() {
 }
 
 /** Render `ui` inside the engine (in-thread) and editor providers, optionally preloaded with a design. */
-export function renderEditor(ui: ReactElement, opts: { design?: Design; engine?: EngineClient } = {}) {
-  return render(
+export function renderEditor(ui: ReactElement, opts: { design?: Design; engine?: EngineClient; app?: AppApi } = {}) {
+  const tree = (
     <EngineProvider engine={opts.engine ?? createInlineEngine()}>
       <EditorProvider initialDesign={opts.design}>
-        <Probe />
-        {ui}
+        <ProjectProvider>
+          <Probe />
+          {ui}
+        </ProjectProvider>
       </EditorProvider>
-    </EngineProvider>,
+    </EngineProvider>
   );
+  return render(opts.app ? <AppContext.Provider value={opts.app}>{tree}</AppContext.Provider> : tree);
 }

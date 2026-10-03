@@ -19,7 +19,7 @@ import { DimensionsSection } from "./DimensionsSection";
 import { PatternPicker } from "./PatternPicker";
 import { ThreadPicker } from "./ThreadPicker";
 
-const RUN_TYPES: { id: RunType; label: string; help: string }[] = [
+export const RUN_TYPES: { id: RunType; label: string; help: string }[] = [
   { id: "single", label: "Single", help: "One line of stitches. The everyday running stitch." },
   { id: "triple", label: "Triple", help: "Each stitch is sewn forward, back and forward again: a heavier, bolder line (bean stitch)." },
   { id: "satin", label: "Satin", help: "A satin column of fixed width along the line, like a stroke with thread across it." },
@@ -29,7 +29,7 @@ const RUN_TYPES: { id: RunType; label: string; help: string }[] = [
   { id: "manual", label: "Manual", help: "Sew exactly the stitch points you placed, in order." },
 ];
 
-const RUN_WIDTH_DEFAULT: Partial<Record<RunType, number>> = { satin: 2.5, estitch: 3, doublerope: 0.4, triplerope: 0.4 };
+export const RUN_WIDTH_DEFAULT: Partial<Record<RunType, number>> = { satin: 2.5, estitch: 3, doublerope: 0.4, triplerope: 0.4 };
 
 const UNDERLAYS: { id: SatinUnderlay; label: string }[] = [
   { id: "none", label: "None" },
