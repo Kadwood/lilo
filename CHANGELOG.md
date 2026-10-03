@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+All notable changes to Lilo, newest first. The section for a version becomes that release's notes on
+GitHub (the in-app update banner's "What's new" links there).
+
+Add notes under **Unreleased** as you work. `node scripts/bump-version.mjs <x.y.z>` moves them into a
+dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
+
+## [Unreleased]
 
 - Stitch defaults are now calibrated to published digitizing norms and live in one table (`engine/src/presets/defaults.ts`): satin density 0.40 mm same-side spacing, fill stitch length 4.0, minimum stitch 0.5, maximum 12.1, underlay chosen by column width.
 - Lettering: the default satin underlay and pull compensation changed (underlay now follows the width bands: centre walk, centre + edge, edge + zig-zag, double zig-zag; satin pull is a flat 0.15 mm). Lettering saved with an older Lilo keeps its stored objects, but regenerating or editing a text block re-stitches it slightly differently.

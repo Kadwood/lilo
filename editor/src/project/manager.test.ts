@@ -321,6 +321,26 @@ describe("the unsaved-changes guard (New, Open, close)", () => {
     expect(ids()).toEqual([]);
   });
 
+  it("runGuarded (used by 'Install and restart') asks first and only runs after Save or Don't save", async () => {
+    await setup();
+    const fn = vi.fn(async () => {});
+    expect(await m.runGuarded("install the update", fn)).toBe(true); // clean: no question
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    edit();
+    let r = m.runGuarded("install the update", fn);
+    expect(m.store.getState().confirm).toMatchObject({ kind: "unsaved", action: "install the update" });
+    m.resolveConfirm("cancel");
+    expect(await r).toBe(false);
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    r = m.runGuarded("install the update", fn);
+    m.resolveConfirm("save");
+    expect(await r).toBe(true);
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(mock.files.size).toBe(1); // saved before the restart
+  });
+
   it("Open asks too, and a cancelled Save dialog stops the whole thing", async () => {
     await setup();
     edit();

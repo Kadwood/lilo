@@ -31,6 +31,7 @@ pub mod projects;
 pub mod quit;
 pub mod screen;
 pub mod server;
+pub mod updates;
 
 use serde::Serialize;
 use server::state::AppState;
@@ -96,6 +97,9 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
+        // In-app updates (see updates.rs) and the relaunch after one is installed.
+        .plugin(updates::plugin())
+        .plugin(tauri_plugin_process::init())
         // Autostart launches the app with `--minimized` so a login-time start
         // boots straight to the tray without popping the window.
         .plugin(tauri_plugin_autostart::init(
@@ -236,6 +240,7 @@ pub fn run() {
             glass::reduce_transparency,
             quit::set_dirty,
             quit::quit_now,
+            updates::updater_enabled,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

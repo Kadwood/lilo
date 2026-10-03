@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import type { Settings } from "../api/types";
 import { useBridge } from "../hooks/useBridge";
 import { ErrorNote, Pill, Section } from "../components/ui";
+import { UpdatesSection } from "../../updates/UpdatesSection";
 
 export function SettingsPage() {
   const { client } = useBridge();
@@ -83,6 +84,8 @@ export function SettingsPage() {
           <dd>{health.version}</dd>
         </dl>
       </Section>
+
+      <UpdatesSection version={health.version} />
 
       <details>
         <summary>Advanced connection settings</summary>

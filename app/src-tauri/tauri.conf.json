@@ -36,6 +36,11 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Kadwood",
+    "copyright": "© Kadwood",
+    "category": "GraphicsAndDesign",
+    "shortDescription": "Free, open-source embroidery digitizer",
+    "longDescription": "Lilo turns pictures and drawings into embroidery stitches, with lettering, a stitch player, thread catalogues and Wi-Fi send to embroidery machines.",
     "fileAssociations": [
       {
         "ext": ["lilo"],
@@ -56,9 +61,32 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "macOS": {
+      "minimumSystemVersion": "13.0",
+      "hardenedRuntime": true,
+      "entitlements": "Entitlements.plist",
+      "dmg": {
+        "background": "dmg/dmg-background.png",
+        "windowSize": { "width": 660, "height": 400 },
+        "appPosition": { "x": 180, "y": 170 },
+        "applicationFolderPosition": { "x": 480, "y": 170 }
+      }
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
   },
   "plugins": {
+    "updater": {
+      "pubkey": "REPLACE_WITH_UPDATER_PUBLIC_KEY",
+      "endpoints": [
+        "https://github.com/Kadwood/lilo/releases/latest/download/latest.json"
+      ],
+      "requireSignedVersion": true
+    },
     "deep-link": {
       "desktop": {
         "schemes": [

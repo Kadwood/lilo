@@ -22,6 +22,31 @@ Free, open-source embroidery digitizing. Turn images, SVGs and fonts into stitch
 
 One desktop app for macOS, Windows and Linux. No account needed.
 
+## Install
+
+Download the latest version from the **[Releases page](https://github.com/Kadwood/lilo/releases/latest)**.
+Every release lists a `SHA256SUMS` file if you want to check your download.
+
+**Mac** (macOS 13 or newer, Apple Silicon and Intel): download `Lilo_<version>_universal.dmg`, open
+it and drag Lilo onto Applications. Lilo is signed and notarized by Apple, so the first time you open
+it macOS shows "Lilo is an app downloaded from the Internet" with an **Open** button; click it. The
+first time you look for machines on your network, macOS asks to allow Local Network access: say yes.
+
+**Windows** (64-bit): download `Lilo_<version>_x64-setup.exe` and run it. The Windows installer is
+not code-signed yet, so SmartScreen may say "Windows protected your PC". Click **More info**, then
+**Run anyway**. It installs for your user only, no admin rights needed.
+
+**Linux** (64-bit): download either
+- `Lilo_<version>_amd64.AppImage`: `chmod +x Lilo_*.AppImage`, then run it (needs FUSE 2, `libfuse2`, on newer Ubuntu), or
+- `Lilo_<version>_amd64.deb`: `sudo apt install ./Lilo_*.deb`.
+
+**Updates**: Lilo checks GitHub for a new version when it starts (at most once a day) and shows a
+banner with "Install and restart". Turn that off, or check by hand, under Lilo Link > Settings >
+Updates. It only ever talks to GitHub Releases.
+
+**Build from source**: see [Develop](#develop). Builds from source have no update key, so they never
+self-update.
+
 ## Built on
 
 - [stitchjs](https://github.com/stitchables/stitchjs) (MIT): stitch engine
@@ -123,7 +148,8 @@ Layout: `app/src-tauri` (Rust shell), `editor/` (React UI, Lilo Link under `edit
 `engine/` (stitch generation, no UI), `data/`, `scripts/`, `docs/`.
 
 The app serves a local API on `127.0.0.1:17841` (Ember Bridge used 17831, so both can be installed).
-Lilo never contacts Ember's servers and has no auto-updater.
+Lilo never contacts Ember's servers. Its only update check goes to this repo's GitHub Releases.
+Maintainers: see [docs/RELEASING.md](docs/RELEASING.md).
 
 ## Licence
 

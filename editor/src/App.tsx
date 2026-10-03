@@ -12,6 +12,8 @@ import { CommandPalette } from "./shell/CommandPalette";
 import { useApplyAppearance } from "./shell/useAppearance";
 import { EditorShell } from "./shell/EditorShell";
 import { EditorProvider, useEditor } from "./state/store";
+import { UpdateBanner } from "./updates/UpdateBanner";
+import { UpdatesProvider } from "./updates/UpdatesProvider";
 
 // The Link view carries Ember Bridge's whole UI + its (dark) stylesheet; load it on demand.
 const LinkApp = lazy(() => import("./link/LinkApp"));
@@ -96,6 +98,7 @@ function Shell() {
         )}
         <AppearanceMenu />
       </nav>
+      <UpdateBanner />
       <div className="app-view">
         {app.view === "home" && <HomeView />}
         {app.view === "editor" && <EditorShell />}
@@ -138,7 +141,9 @@ export default function App() {
       <EngineProvider>
         <EditorProvider>
           <ProjectProvider>
-            <Shell />
+            <UpdatesProvider>
+              <Shell />
+            </UpdatesProvider>
           </ProjectProvider>
         </EditorProvider>
       </EngineProvider>
