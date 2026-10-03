@@ -81,7 +81,7 @@ impl EmbroideryMachine for Handle {
         if self
             .sim
             .busy
-            .fetch_update(Ordering::SeqCst, Ordering::SeqCst, |v| v.checked_sub(1))
+            .try_update(Ordering::SeqCst, Ordering::SeqCst, |v| v.checked_sub(1))
             .is_ok()
         {
             return Err(MachineError::Busy);
