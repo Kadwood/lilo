@@ -1,3 +1,4 @@
+import { DEFAULTS } from "../presets/defaults";
 import {
   DESIGN_VERSION,
   type Design,
@@ -23,20 +24,20 @@ export const HOOPS: readonly Hoop[] = [
 export const DEFAULT_HOOP: Hoop = HOOPS[0];
 
 export const DEFAULT_FILL_PARAMS: FillParams = {
-  angleDeg: 45,
-  rowSpacingMm: 0.4,
-  stitchLengthMm: 3,
-  pullCompMm: 0.2,
+  angleDeg: DEFAULTS.fill.angleDeg,
+  rowSpacingMm: DEFAULTS.fill.rowSpacingMm,
+  stitchLengthMm: DEFAULTS.fill.stitchLengthMm,
+  pullCompMm: DEFAULTS.fill.pullCompMm,
   underlay: true,
   edgeRun: true,
 };
 export const DEFAULT_SATIN_PARAMS: SatinParams = {
-  densityMm: 0.4,
-  widthMm: 2,
-  pullCompMm: 0.15,
-  underlay: "center",
+  densityMm: DEFAULTS.satin.densityMm,
+  widthMm: DEFAULTS.satin.widthMm,
+  pullCompMm: DEFAULTS.satin.pullCompMm,
+  underlay: DEFAULTS.satin.underlay,
 };
-export const DEFAULT_RUN_PARAMS: RunParams = { stitchLengthMm: 2.5, repeats: 1 };
+export const DEFAULT_RUN_PARAMS: RunParams = { stitchLengthMm: DEFAULTS.run.stitchLengthMm, repeats: 1 };
 
 export function emptyDesign(hoop: Hoop = DEFAULT_HOOP): Design {
   return { version: DESIGN_VERSION, unitsMm: 1, hoop, threads: [], objects: [] };

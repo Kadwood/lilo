@@ -13,6 +13,7 @@
  * check, exactly as for a normal design.
  */
 import type { Hoop } from "../model";
+import { DEFAULTS as STITCH_DEFAULTS } from "../presets/defaults";
 import type { PlanStitch, StitchPlan } from "../stitch/plan";
 import { validatePlan } from "../stitch/validate";
 import { applyOrigin, CENTER_ORIGIN, writePes, type Origin } from "../pes";
@@ -133,7 +134,8 @@ function satinPiece(run: PixelRun, g: Geometry, dir: 1 | -1, o: Required<PixelSt
   } else out.push([from, mid]);
   // zig-zag back from `to` to `from`
   const len = Math.abs(to - from);
-  const n = Math.max(1, Math.round(len / o.satinDensityMm));
+  // zig-zag: every drop is on the opposite side to the last, so same-side spacing = 2 x the drop spacing
+  const n = Math.max(1, Math.round(len / (o.satinDensityMm / 2)));
   for (let i = 0; i <= n; i++) {
     const x = to + ((from - to) * i) / n;
     out.push([x, i % 2 === 0 ? y0 : y1]);
@@ -143,10 +145,10 @@ function satinPiece(run: PixelRun, g: Geometry, dir: 1 | -1, o: Required<PixelSt
 
 const DEFAULTS: Required<PixelStitchOptions> = {
   style: "tatami",
-  rowSpacingMm: 0.4,
-  stitchLengthMm: 3,
-  pullCompMm: 0.1,
-  satinDensityMm: 0.4,
+  rowSpacingMm: STITCH_DEFAULTS.pixelArt.rowSpacingMm,
+  stitchLengthMm: STITCH_DEFAULTS.pixelArt.stitchLengthMm,
+  pullCompMm: STITCH_DEFAULTS.pixelArt.pullCompMm,
+  satinDensityMm: STITCH_DEFAULTS.pixelArt.satinDensityMm,
   underlay: true,
   colorOrder: "area",
 };

@@ -1,18 +1,19 @@
 import type { Hoop } from "../model";
+import { DEFAULTS } from "../presets/defaults";
 import { planStats, type PlanStitch, type PlanWarning, type StitchPlan } from "./plan";
 
 /** Longest needle-to-needle distance we allow; longer ones are split. Machines snag above ~12 mm. */
-export const MAX_STITCH_MM = 12;
+export const MAX_STITCH_MM = DEFAULTS.limits.maxStitchMm;
 /** Jumps longer than this get a thread trim, so no long floats are left on the fabric. */
-export const TRIM_JUMP_MM = 3;
+export const TRIM_JUMP_MM = DEFAULTS.limits.trimJumpMm;
 /** PEC/PES moves carry 12-bit deltas (+-204.7 mm); split anything beyond this. */
-const MAX_JUMP_MM = 200;
+const MAX_JUMP_MM = DEFAULTS.limits.maxJumpMm;
 /** Needle penetrations per 1 mm^2 cell above which fabric tends to pucker or thread breaks. */
-export const DENSITY_WARN_PER_MM2 = 10;
+export const DENSITY_WARN_PER_MM2 = DEFAULTS.limits.densityWarnPerMm2;
 /** Needle drops closer than this to the previous one are merged away (thread piles up and can snap). */
-export const MIN_STITCH_MM = 0.3;
+export const MIN_STITCH_MM = DEFAULTS.limits.minStitchMm;
 /** Default length of lock (tie) stitches in mm. */
-export const LOCK_STITCH_MM = 0.4;
+export const LOCK_STITCH_MM = DEFAULTS.limits.lockStitchMm;
 
 export interface ValidationOptions {
   maxStitchMm?: number;
