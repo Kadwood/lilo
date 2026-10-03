@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "lang": "en",
+    "dir": "ltr",
+    "name": "English",
+    "path": "",
+    "ogLocale": "en_US",
+    "title": "Lilo by Kadwood: turn anything into embroidery",
+    "description": "Lilo is a free, open-source app that turns pictures, drawings and letters into embroidery files and sends them to your machine. Mac, Windows and Linux."
+  },
+  "nav": {
+    "features": "What it does",
+    "works": "Works with",
+    "how": "How it works",
+    "faq": "Questions",
+    "download": "Download",
+    "menu": "Menu",
+    "language": "Language",
+    "home": "Lilo by Kadwood, home",
+    "primary": "Main",
+    "skip": "Skip to content"
+  },
+  "hero": {
+    "title": "Turn anything into embroidery",
+    "sub": "Drop in a picture, a drawing or a name. Lilo makes the stitches and sends them to your machine.",
+    "price": "Free. Forever. Open source.",
+    "cta": "Download Lilo",
+    "cta2": "See how it works",
+    "dropTitle": "Drop a picture here",
+    "dropHint": "or press to pick one",
+    "dropAria": "Drop a picture here, or press to choose one",
+    "demoCaption": "A real sample. Lilo's own engine turned this flower into {stitches} stitches in {colours} colours.",
+    "stageLook": "Looking at the picture",
+    "stageTrace": "Tracing the shapes",
+    "stageSew": "Sewing the stitches",
+    "replay": "Play again",
+    "pause": "Pause",
+    "play": "Play",
+    "droppedTitle": "Lovely picture!",
+    "droppedText": "Lilo turns it into stitches on your own computer. Your picture never leaves it.",
+    "droppedCta": "Download Lilo to sew it",
+    "droppedAlt": "The picture you chose",
+    "droppedOther": "Try another picture",
+    "notImage": "That is not a picture. Try a PNG, JPG, WEBP or SVG."
+  },
+  "download": {
+    "title": "Get Lilo",
+    "sub": "One small app. No account. It works without the internet.",
+    "button": "Download for {os}",
+    "version": "Version {version}",
+    "versionNone": "The first version is coming soon.",
+    "notYet": "See downloads on GitHub",
+    "other": "Other platforms",
+    "otherHint": "Pick another one if you are downloading for a different computer.",
+    "mac": "Mac",
+    "windows": "Windows",
+    "linux": "Linux",
+    "macNote": "Mac with macOS 13 or newer. Works on Apple chips and Intel.",
+    "windowsNote": "Windows 64-bit. If Windows shows a blue box, click More info, then Run anyway.",
+    "linuxNote": "Linux 64-bit. Pick the AppImage, or the .deb for Ubuntu and Debian.",
+    "macFile": "Mac installer (.dmg)",
+    "windowsFile": "Windows installer (.exe)",
+    "linuxAppImage": "Linux AppImage",
+    "linuxDeb": "Linux .deb package",
+    "all": "All downloads and checksums",
+    "mobile": "Lilo is a computer app. Open this page on your Mac, Windows or Linux computer to download it."
+  },
+  "features": {
+    "title": "Everything you need to go from idea to stitch",
+    "cards": [
+      {
+        "id": "digitize",
+        "img": "digitize",
+        "alt": "Lilo turning a flower picture into stitches, with the colour list on the right",
+        "title": "Auto digitize",
+        "sub": "Drop in a picture. Lilo traces it and picks your threads.",
+        "cta": "Try auto digitize",
+        "items": [
+          { "icon": "image", "title": "Any picture", "text": "PNG, JPG, WEBP or SVG" },
+          { "icon": "palette", "title": "Picks colours", "text": "Matches real thread colours" },
+          { "icon": "scan", "title": "Live tracing", "text": "Watch the shapes appear" },
+          { "icon": "wand", "title": "You can edit", "text": "Every stitch is yours to change" }
+        ]
+      },
+      {
+        "id": "letters",
+        "img": "letters",
+        "alt": "The word Lilo typed as embroidery letters on the hoop",
+        "title": "Letters and monograms",
+        "sub": "Type a name. Choose a style. Or use your own font.",
+        "cta": "Make a monogram",
+        "items": [
+          { "icon": "type", "title": "About 100 fonts", "text": "Made for stitching" },
+          { "icon": "upload", "title": "Your own fonts", "text": "Add any TTF or OTF" },
+          { "icon": "text", "title": "Easy spacing", "text": "Size, spacing and lines" },
+          { "icon": "check", "title": "Size advice", "text": "Warns if letters are too small" }
+        ]
+      },
+      {
+        "id": "send",
+        "img": "send",
+        "alt": "The Send to machine window with a checklist before you sew",
+        "title": "Send to your machine",
+        "sub": "Over Wi-Fi or with a USB stick. Your pick.",
+        "cta": "See how sending works",
+        "items": [
+          { "icon": "wifi", "title": "Brother Wi-Fi", "text": "Works with Brother Wi-Fi machines (auto-detected)" },
+          { "icon": "usb", "title": "USB stick", "text": "Save the file, plug it in" },
+          { "icon": "list", "title": "Before you sew", "text": "A checklist so nothing is missed" },
+          { "icon": "files", "title": "12 file types", "text": "PES, DST, JEF, EXP and more" }
+        ]
+      },
+      {
+        "id": "threads",
+        "img": "hoops",
+        "alt": "The Choose a hoop window listing machines and hoop sizes",
+        "title": "Threads and hoops",
+        "sub": "Real thread colours. Real hoop sizes. No guessing.",
+        "cta": "Browse threads and hoops",
+        "items": [
+          { "icon": "spool", "title": "{threadColours} colours", "text": "From {threadLines} thread lines" },
+          { "icon": "shelf", "title": "My Threads", "text": "Add the spools you own" },
+          { "icon": "hoop", "title": "{hoops} hoops", "text": "Pick yours, or add a custom one" },
+          { "icon": "ruler", "title": "Rulers and grid", "text": "See the real size in mm" }
+        ]
+      },
+      {
+        "id": "pixel",
+        "img": "pixel",
+        "alt": "A red heart painted square by square, with its stitches shown on the right",
+        "title": "Pixel art and converter",
+        "sub": "Paint square by square. Or change a file from one type to another.",
+        "cta": "Open pixel art",
+        "items": [
+          { "icon": "grid", "title": "Square by square", "text": "Like cross stitch, on screen" },
+          { "icon": "cross", "title": "Three stitch styles", "text": "Tatami, cross or satin" },
+          { "icon": "swap", "title": "File converter", "text": "Turn a DST into a PES" },
+          { "icon": "play", "title": "Stitch player", "text": "Watch it sew, stitch by stitch" }
+        ]
+      },
+      {
+        "id": "free",
+        "img": "home",
+        "alt": "The Lilo home screen with a welcome and recent designs",
+        "title": "Free and open source",
+        "sub": "No account. No bill. It works offline, and the code is open to everyone.",
+        "cta": "See the code",
+        "items": [
+          { "icon": "heart", "title": "Free. Forever.", "text": "Nothing to unlock" },
+          { "icon": "code", "title": "GPL-3 licence", "text": "Read it, share it, improve it" },
+          { "icon": "user", "title": "No account", "text": "No sign-up, no tracking" },
+          { "icon": "offline", "title": "Works offline", "text": "Your designs stay on your computer" }
+        ]
+      }
+    ]
+  },
+  "works": {
+    "title": "Works with the machines you already have",
+    "sub": "Lilo saves the file types your machine reads. Brother and Baby Lock Wi-Fi machines can also get designs straight from Lilo.",
+    "wifi": "Works with Brother Wi-Fi machines (auto-detected). For every other machine: save the file and copy it over with a USB stick.",
+    "stats": {
+      "formats": "file types",
+      "brands": "brands",
+      "machines": "machines listed",
+      "threads": "thread colours",
+      "hoops": "hoops"
+    },
+    "cta": "See the full list",
+    "brandsLabel": "Machine brands in the list"
+  },
+  "how": {
+    "title": "How it works",
+    "steps": [
+      { "icon": "image", "title": "Add a picture", "text": "Drop in a photo, a drawing, a logo or a name." },
+      { "icon": "wand", "title": "Lilo makes the stitches", "text": "Pick your thread colours and size. Watch it sew on screen first." },
+      { "icon": "send", "title": "Send it to your machine", "text": "Over Wi-Fi, or save it to a USB stick. Then press start." }
+    ]
+  },
+  "faq": {
+    "title": "Questions",
+    "items": [
+      { "q": "Is Lilo really free?", "a": "Yes. It is free now and it will stay free. There is no trial, no account and no hidden paid part." },
+      { "q": "What does open source mean?", "a": "Anyone can read how Lilo is made. Anyone can share it or make it better. Lilo uses the GPL-3 licence." },
+      { "q": "What is embroidery digitizing?", "a": "A sewing machine cannot read a picture. It reads a list of stitches, like a map for the needle. Digitizing turns your picture into that map. Lilo does it for you." },
+      { "q": "Will it work with my machine?", "a": "Lilo saves 12 file types, so it fits most home and work machines. Open the full list and look for your brand. Always check your machine manual too, and do a test sew on scrap cloth first." },
+      { "q": "How does Wi-Fi sending work?", "a": "If your Brother or Baby Lock machine has Wi-Fi, Lilo looks for it on your home network and finds it by itself. No Wi-Fi? Save the file to a USB stick instead." },
+      { "q": "Do I need the internet?", "a": "No. Lilo works offline. It only checks for new versions, and you can turn that off." },
+      { "q": "Where do my designs go?", "a": "Nowhere. They stay on your computer. Lilo never uploads your pictures or your designs." },
+      { "q": "Why does Windows show a blue box?", "a": "The Windows installer is not signed yet, so Windows asks you to be careful. Click More info, then Run anyway. The Mac version is signed and checked by Apple." }
+    ]
+  },
+  "cta": {
+    "title": "Ready to stitch?",
+    "sub": "Free. Forever. Open source."
+  },
+  "footer": {
+    "by": "by",
+    "tagline": "Free, open-source embroidery software.",
+    "github": "Code on GitHub",
+    "licence": "GPL-3.0 licence",
+    "releases": "Downloads",
+    "compat": "Compatibility",
+    "changelog": "What's new",
+    "kadwood": "Kadwood",
+    "kadwoodAria": "Kadwood, opens kadwood.com",
+    "trademark": "The Kadwood name and logo, and the Lilo name and hibiscus logo, are trademarks of Kadwood. All other brand and machine names belong to their owners. Lilo is not affiliated with them.",
+    "rights": "Made with care by Kadwood."
+  },
+  "langBanner": {
+    "text": "This page is also in {language}.",
+    "switch": "Switch to {language}",
+    "dismiss": "No thanks",
+    "dismissAria": "Close this message"
+  },
+  "compat": {
+    "metaTitle": "Compatibility: machines, file types and brands | Lilo",
+    "metaDescription": "Which embroidery machines, brands and file types Lilo works with, and how to get a design to each one.",
+    "title": "Compatibility",
+    "intro": "Find your machine brand. See which file types it reads and how to get a design onto it.",
+    "status": "Honest status",
+    "statusText": "Lilo has not been tested on real machines yet. The Wi-Fi code follows Brother's own transfer method. \"Checked\" means a maker's web page said so on the date below. \"Not checked\" means it comes from memory or a third party, so read your machine manual.",
+    "compiled": "Compiled {date}.",
+    "back": "Back to home",
+    "formatsTitle": "File types",
+    "formatsText": "Lilo opens and saves these. Some files keep thread colours. Some only keep colour stops.",
+    "ext": "Type",
+    "name": "Name",
+    "colours": "Thread colours kept",
+    "yes": "yes",
+    "no": "no",
+    "rw": "open and save",
+    "wo": "save only",
+    "brandsTitle": "Brands and machines",
+    "reads": "Reads",
+    "getsDesign": "How to get a design there",
+    "machines": "{n} machines listed",
+    "checked": "{n} checked on the maker's page",
+    "wifiLine": "Lilo Link (Wi-Fi) looks for machines by itself. It has not been tried on real hardware yet.",
+    "disclaimer": "Brand and product names belong to their owners. Lilo is not affiliated with them."
+  }
+}

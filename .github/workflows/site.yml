@@ -1,0 +1,47 @@
+name: Site
+
+# Builds lilo.kadwood.com and deploys it to the Cloudflare Pages project "lilo-site".
+# It runs when the site (or the compatibility data it shows) changes on main, and again whenever a
+# release is published, so the download buttons point at the new installers.
+# Needs two repository secrets: CLOUDFLARE_API_TOKEN (Pages: Edit) and CLOUDFLARE_ACCOUNT_ID.
+# See site/README.md.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "docs/compat.json"
+      - "app/src-tauri/icons/icon.png"
+      - ".github/workflows/site.yml"
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The site is its own small package (not part of the app workspace).
+      - run: pnpm --dir site install --frozen-lockfile --ignore-workspace
+      # Writes site/public/downloads.json from the latest GitHub release, then builds site/dist.
+      - run: pnpm --dir site build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config site/wrangler.jsonc

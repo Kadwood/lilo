@@ -2,6 +2,8 @@
 
 Free, open-source embroidery digitizing. Turn images, SVGs and fonts into stitch files and send them to your machine over Wi-Fi.
 
+Website: [lilo.kadwood.com](https://lilo.kadwood.com) (source in [`site/`](site/README.md)).
+
 > Status: **M5 (screens)**: Home with recent projects, click-to-stitch, My Threads, pixel art, the
 > converter, all export formats, projects with autosave and version history. Before that, **M3
 > (Editor)**: drop a PNG, JPG, WEBP or SVG on the canvas: Lilo traces it, snaps the
