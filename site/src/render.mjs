@@ -349,7 +349,7 @@ export function renderHome(loc, locales, build) {
           </div>
           <figure class="showcase" id="showcase">
             <div class="showcase-stage">
-              <canvas id="demo" width="${build.demo.width}" height="${build.demo.height}" role="img" aria-label="${esc(h.demoAlt)}"></canvas>
+              <img class="demo-fallback" src="/demo/final.webp?v=${build.demo.v}" alt="" width="${build.demo.width}" height="${build.demo.height}" decoding="async"><canvas id="demo" data-v="${build.demo.v}" width="${build.demo.width}" height="${build.demo.height}" role="img" aria-label="${esc(h.demoAlt)}"></canvas>
             </div>
             <figcaption>
               <ol class="stages" id="stages" aria-hidden="true"><li data-s="0">${esc(h.stageLook)}</li><li data-s="1">${esc(h.stageTrace)}</li><li data-s="2">${esc(h.stageSew)}</li></ol>
