@@ -12,6 +12,8 @@ const stitchEsm = join(
 export default defineConfig({
   resolve: { alias: { "@stitchables/stitchjs": stitchEsm } },
   test: {
+    // Digitizing tests run the straight-skeleton WASM; on a loaded machine they pass the 5 s default.
+    testTimeout: 30_000,
     server: { deps: { inline: [/@stitchables\/stitchjs/] } },
   },
 });

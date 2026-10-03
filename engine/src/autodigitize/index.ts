@@ -1,4 +1,5 @@
 import { init as initStitch } from "@stitchables/stitchjs";
+import { resolveSewingSetup } from "../presets";
 import { DEFAULT_CATALOGUE_ID, getCatalogue } from "../threads";
 import { regionsToDesign, regionsTransform } from "./cleanup";
 import { buildTraceRegions } from "./traceRegions";
@@ -19,12 +20,21 @@ export * from "./types";
 export { initVtracer, isVtracerInitialised } from "./trace";
 export { regionsToDesign, regionsTransform, RUN_MAX_WIDTH_MM, SATIN_MAX_WIDTH_MM, type UnitsToMm } from "./cleanup";
 export { parseSvgDocument } from "./svg";
+export { satinParamsFor, satinDensityMm, satinPullCompMm, satinUnderlayFor } from "./profile";
+export { trimJunctions, trimStripEnds, resampleStrip } from "./junction";
 
 function resolve(options: Partial<AutoDigitizeOptions>) {
   const o: AutoDigitizeOptions = { ...DEFAULT_AUTODIGITIZE_OPTIONS, ...options };
   o.colors = Math.max(2, Math.min(12, Math.round(o.colors)));
   const threads = o.threads ?? getCatalogue(o.catalogueId || DEFAULT_CATALOGUE_ID).threads;
-  return { o, threads };
+  // The presets are the single source of every quality / thread / fabric dependent number.
+  // (`setup` wins over the flat fields, but only for the fields it actually sets.)
+  const sewing = resolveSewingSetup({
+    quality: o.setup?.quality ?? o.quality,
+    threadWeight: o.setup?.threadWeight ?? o.threadWeight,
+    fabric: o.setup?.fabric ?? o.fabric,
+  }).engine;
+  return { o: { ...o, sewing }, threads };
 }
 
 /**

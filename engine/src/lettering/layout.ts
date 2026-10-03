@@ -1,4 +1,4 @@
-import {
+import { type SatinUnderlay,
   DEFAULT_FILL_PARAMS,
   DEFAULT_RUN_PARAMS,
   DEFAULT_SATIN_PARAMS,
@@ -58,7 +58,7 @@ export interface LayoutResult {
 
 /** An element in final mm, relative to its glyph's drawing origin (x = 0 at the left edge, y = 0 baseline). */
 export type PlacedElement =
-  | { k: "satin"; strip: Pt[]; widthMm: number; pull: number; underlay: "none" | "center" | "contour" | "zigzag"; density: number; c: number }
+  | { k: "satin"; strip: Pt[]; widthMm: number; pull: number; underlay: SatinUnderlay; density: number; c: number }
   | { k: "fill"; shell: Pt[]; holes: Pt[][]; angle: number; rowSpacing: number; stitchLen: number; pull: number; underlay: boolean; edgeRun: boolean; c: number }
   | { k: "run"; path: Pt[]; closed: boolean; stitchLen: number; repeats: 1 | 3; c: number };
 

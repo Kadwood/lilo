@@ -167,8 +167,10 @@ describe("SettingsPanel: runs and satins", () => {
     expect(run().params.widthMm).toBe(2.5);
     fireEvent.change(screen.getByLabelText("Width", { selector: "input[type=range]" }), { target: { value: "6" } });
     expect(run().params.widthMm).toBe(6);
-    fireEvent.change(screen.getByLabelText("Density", { selector: "input[type=range]" }), { target: { value: "0.6" } });
+    fireEvent.change(screen.getByLabelText("Density (spacing)", { selector: "input[type=range]" }), { target: { value: "0.6" } });
     expect(run().params.satin?.densityMm).toBe(0.6);
+    // 0.6 mm same-side spacing = a stitch every 0.3 mm = about 33 per cm along the column
+    expect(screen.getByLabelText("Density (spacing) hint").textContent).toBe("≈ 33 stitches/cm along the column");
     fireEvent.change(screen.getByLabelText("Split above", { selector: "input[type=range]" }), { target: { value: "4" } });
     expect(run().params.satin?.splitMaxWidthMm).toBe(4);
     fireEvent.change(screen.getByLabelText("Stagger cycles", { selector: "input[type=range]" }), { target: { value: "3" } });

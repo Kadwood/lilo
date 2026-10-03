@@ -126,6 +126,11 @@ export interface FillParams {
   gradient?: FillGradient;
   /** Replaces the single `underlay` layer when set: any number of underlay passes. */
   underlays?: FillUnderlay[];
+  /**
+   * Edge-walk underlay: a running-stitch loop along the shell and holes, `insetMm` inside the edge,
+   * sewn before the tatami underlay. It fences the fabric so the top stitches don't pull the edge in.
+   */
+  edgeWalk?: { insetMm: number; stitchLengthMm: number };
   /** Centre for centred patterns (Circular, Spiral, Tornado, Sunburst). Default: inside the shape. */
   center?: Pt;
   /** Guide curves that steer the Streamlines pattern. */
@@ -157,10 +162,19 @@ export interface FillGradient {
 /** Ids come from `FILL_PATTERNS` in `./patterns`. Kept a plain string so older files still load. */
 export type FillPatternId = string;
 
-export type SatinUnderlay = "none" | "center" | "contour" | "zigzag";
+/**
+ * `center-contour`: centre walk plus edge walk (2.5 to 4 mm). `contour-zigzag` is the "German" underlay:
+ * an edge walk up both sides and a loose zig-zag back (4 to 6 mm). `double-zigzag`: two zig-zag passes
+ * at different spacing (over 6 mm). [IS-SATIN] "For wide columns or challenging fabrics, use all three."
+ */
+export type SatinUnderlay = "none" | "center" | "contour" | "zigzag" | "contour-zigzag" | "center-contour" | "double-zigzag";
 
 export interface SatinParams {
-  /** Distance between satin stitches along the column. */
+  /**
+   * Satin density: mm between two needle penetrations on the SAME side of the column, the commercial
+   * number (Hatch "stitch spacing", Wilcom "density 0.40"). Smaller = denser. Because every leg crosses
+   * the column, 0.40 mm is a leg every 0.2 mm: 2 / densityMm legs per mm, 50 per cm. stitchjs takes it as is.
+   */
   densityMm: number;
   /** Nominal column width, informational (the strip carries the real widths). */
   widthMm: number;
@@ -174,6 +188,12 @@ export interface SatinParams {
   staggerAmountMm?: number;
   /** Shorten stitches on the inside of tight curves so they don't pile up. */
   shortStitches?: boolean;
+  /** Stitch length (mm) of the centre / edge-walk underlay passes. Unset: the stitchjs default (3). */
+  underlayStitchMm?: number;
+  /** How far the edge walk / zig-zag underlay stays inside the column edge (mm). Unset: stitchjs default (0.6). */
+  underlayInsetMm?: number;
+  /** Peak-to-peak spacing of the zig-zag underlay (mm). Unset: stitchjs default (3). */
+  underlayZigzagMm?: number;
 }
 
 /** The seven run types. */

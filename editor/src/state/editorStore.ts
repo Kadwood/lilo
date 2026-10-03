@@ -41,7 +41,7 @@ import {
   type Thread,
   type TraceRegion,
 } from "@lilo/engine/light";
-import type { AutoDigitizeOptions, ImageDataLike, PaletteChip, StageEvent, UnitsToMm } from "@lilo/engine";
+import type { AutoDigitizeOptions, FabricId, ImageDataLike, PaletteChip, Quality, StageEvent, ThreadWeight, UnitsToMm } from "@lilo/engine";
 import type { EngineClient, DigitizeResponse, PlanResult } from "../engine/client";
 import { decodeFile, type DecodedImport } from "../io/decode";
 import type { ToolId } from "../tools/registry";
@@ -63,6 +63,10 @@ export interface DigitizeUiOptions {
   aspectLock: boolean;
   minRegionMm2: number;
   removeBackground: boolean;
+  /** Sewing setup (see the engine's `resolveSewingSetup`): Premium follows what a professional digitizer would do. */
+  quality: Quality;
+  threadWeight: ThreadWeight;
+  fabric: FabricId;
   /** Snap colours to My Threads first (the brand above is the fallback when the shelf is empty). */
   useMyThreads: boolean;
 }
@@ -75,6 +79,9 @@ export const DEFAULT_UI_OPTIONS: DigitizeUiOptions = {
   aspectLock: true,
   minRegionMm2: 2,
   removeBackground: true,
+  quality: "standard",
+  threadWeight: 40,
+  fabric: "suiting",
   useMyThreads: false,
 };
 
@@ -244,6 +251,7 @@ export function toEngineOptions(o: DigitizeUiOptions, shelf: Shelf = getShelf())
     heightMm: o.heightMm ?? undefined,
     minRegionMm2: o.minRegionMm2,
     removeBackground: o.removeBackground,
+    setup: { quality: o.quality, threadWeight: o.threadWeight, fabric: o.fabric },
   };
 }
 

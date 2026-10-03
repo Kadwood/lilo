@@ -1,3 +1,4 @@
+import { DEFAULTS } from "../presets/defaults";
 import { DEFAULT_HOOP, emptyDesign, type Design, type Hoop, type RunObject, type RunParams, type Thread } from "../model";
 import { MANUAL_STITCH_LENGTH_MM } from "../stitch/generate";
 import type { StitchPlan } from "../stitch/plan";
@@ -106,7 +107,7 @@ export function readEmbroidery(bytes: Uint8Array, from: string): ReadResult {
   }
   const longStitches = countLong(plan);
   if (longStitches > 0) {
-    warnings.push({ code: "long-stitches", message: `${longStitches} stitch(es) are longer than 12.1 mm; some machines will snag.` });
+    warnings.push({ code: "long-stitches", message: `${longStitches} stitch(es) are longer than ${DEFAULTS.limits.maxStitchMm} mm; some machines will snag.` });
   }
   return { plan, warnings, ...(pattern.name ? { name: pattern.name } : {}), placeholderColors: filler };
 }
@@ -118,7 +119,7 @@ function countLong(plan: StitchPlan): number {
   let have = false;
   for (const s of plan.stitches) {
     if (s.type === "colorChange") continue;
-    if (s.type === "stitch" && have && Math.hypot(s.x - px, s.y - py) > 12.1) n++;
+    if (s.type === "stitch" && have && Math.hypot(s.x - px, s.y - py) > DEFAULTS.limits.maxStitchMm) n++;
     px = s.x;
     py = s.y;
     have = true;

@@ -1,7 +1,11 @@
 import { Coordinate } from "jsts/org/locationtech/jts/geom";
+import type { SatinUnderlay } from "../model";
 import { factory, intersectionArea, unionAll, type Poly } from "../geom";
 import type { Pt } from "../model";
 import { stripWidths } from "../lettering/satin";
+import { DEFAULTS } from "../presets/defaults";
+import { underlayTypeFor } from "./underlay";
+import { trimJunctions } from "./junction";
 import { branchToStrip, edgesOf, skeletonBranches, stripPolygon, subdivide, type Branch } from "./spine";
 
 /**
@@ -38,6 +42,15 @@ export interface StrokeOptions {
   minPieceMm: number;
   /** When there are no satin columns at all, skip the coverage test (a run cannot "cover" a hairline). */
   skipCoverageForRunsOnly: boolean;
+  /**
+   * Premium: a stroke narrower than `minSatinMm` (and at least `hairlineMinMm` long) becomes a narrow
+   * satin column this wide (mm) along its centre line instead of a faint single run. 0 / unset = off.
+   */
+  hairlineSatinMm?: number;
+  /** Shortest hairline (mm) that gets a narrow satin column; shorter ones stay (triple) runs. */
+  hairlineMinMm?: number;
+  /** Premium: trim columns that meet so they overlap by this much (mm) instead of stacking. Unset = off. */
+  junctionOverlapMm?: number;
 }
 
 /** The values custom-font lettering has always used (so its output is unchanged). */
@@ -54,11 +67,11 @@ export const LETTERING_STROKES: StrokeOptions = {
 
 /** Defaults for auto-digitizing artwork. */
 export const AUTODIGITIZE_STROKES: StrokeOptions = {
-  minSatinMm: 1,
+  minSatinMm: DEFAULTS.satin.minWidthMm.standard,
   peakMaxMm: 9,
   minElongation: 2,
   minCoverage: 0.8,
-  minRunMm: 1.5,
+  minRunMm: DEFAULTS.run.minRunMm,
   splitByWidth: true,
   minPieceMm: 1,
   skipCoverageForRunsOnly: true,
@@ -88,9 +101,64 @@ export const median = (a: number[]): number => {
 
 export const pathLength = (pts: readonly Pt[]): number => pts.reduce((n, p, i) => (i ? n + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
 
-/** Pull compensation and underlay for a satin column of width `w`. */
-export function satinTraits(w: number): { pull: number; underlay: "none" | "center" | "contour" } {
-  return { pull: w < 1.2 ? 0.1 : 0.15, underlay: w < 1.2 ? "none" : w < 4 ? "center" : "contour" };
+/** Round the facets of a skeleton centre line (corner cutting; end points stay put). */
+export function smoothPath(path: Pt[], closed: boolean): Pt[] {
+  let pts = path;
+  for (let it = 0; it < 2 && pts.length >= 3; it++) {
+    const out: Pt[] = closed ? [] : [pts[0]];
+    const m = pts.length;
+    for (let i = 0; i < (closed ? m : m - 1); i++) {
+      const p0 = pts[i];
+      const p1 = pts[(i + 1) % m];
+      out.push([0.75 * p0[0] + 0.25 * p1[0], 0.75 * p0[1] + 0.25 * p1[1]], [0.25 * p0[0] + 0.75 * p1[0], 0.25 * p0[1] + 0.75 * p1[1]]);
+    }
+    if (!closed) out.push(pts[m - 1]);
+    pts = out;
+  }
+  return pts;
+}
+
+/**
+ * A constant-width satin strip along a (smoothed) centre line. Rung directions come from a baseline of
+ * about 1 mm either side of each point, not the next segment: a skeleton path that hooks sideways for
+ * a tenth of a millimetre at a junction would otherwise start the column with a stray cross-bar.
+ */
+export function hairlineStrip(path: readonly Pt[], widthMm: number, closed: boolean, stepMm = 0.25, baseMm = 0.5): Pt[] {
+  const pts: Pt[] = closed && path.length > 1 ? [...path, path[0]] : [...path];
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const total = cum[cum.length - 1];
+  if (total < 1e-6) return [];
+  const at = (sIn: number): Pt => {
+    const s = closed ? ((sIn % total) + total) % total : Math.min(total, Math.max(0, sIn));
+    let k = 1;
+    while (k < cum.length - 1 && cum[k] < s) k++;
+    const seg = cum[k] - cum[k - 1] || 1;
+    const t = (s - cum[k - 1]) / seg;
+    return [pts[k - 1][0] + (pts[k][0] - pts[k - 1][0]) * t, pts[k - 1][1] + (pts[k][1] - pts[k - 1][1]) * t];
+  };
+  const n = Math.max(1, Math.ceil(total / stepMm));
+  const strip: Pt[] = [];
+  const h = widthMm / 2;
+  for (let i = 0; i <= n; i++) {
+    const s = (i / n) * total;
+    const a = at(s - baseMm);
+    const b = at(s + baseMm);
+    let tx = b[0] - a[0];
+    let ty = b[1] - a[1];
+    const l = Math.hypot(tx, ty);
+    if (l < 1e-9) continue;
+    tx /= l;
+    ty /= l;
+    const p = at(s);
+    strip.push([p[0] - ty * h, p[1] + tx * h], [p[0] + ty * h, p[1] - tx * h]);
+  }
+  return strip;
+}
+
+/** Pull compensation and underlay type for a satin column of width `w` (Standard rules; Premium refines both in profile.ts). */
+export function satinTraits(w: number): { pull: number; underlay: SatinUnderlay } {
+  return { pull: DEFAULTS.satin.pullCompMm, underlay: underlayTypeFor(w, 1, true, 0) };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -282,6 +350,19 @@ export function strokePlan(part: Poly, opts: StrokeOptions): StrokePlan | null {
       else satins.push({ strip: s, widthMm: sw });
     }
   }
+  if (opts.hairlineSatinMm) {
+    // Strokes below the satin minimum: a narrow satin at the minimum width reads as a fine line on the
+    // cloth; one single run is a 0.2 mm thread that vanishes. Too short for a column: stays a run.
+    for (let i = runs.length - 1; i >= 0; i--) {
+      const r = runs[i];
+      const body = r.closed ? r.path.slice(0, -1) : r.path;
+      if (body.length < 2 || pathLength(r.path) < (opts.hairlineMinMm ?? 1.6)) continue;
+      const strip = hairlineStrip(smoothPath(body, r.closed), opts.hairlineSatinMm, r.closed);
+      if (strip.length < 4) continue;
+      satins.push({ strip, widthMm: opts.hairlineSatinMm });
+      runs.splice(i, 1);
+    }
+  }
   if (opts.splitByWidth) dropShadowedSatins(satins);
   if (satins.length === 0 && runs.length === 0) return null;
 
@@ -303,5 +384,34 @@ export function strokePlan(part: Poly, opts: StrokeOptions): StrokePlan | null {
     const covered = covering.length ? intersectionArea(unionAll(covering), part) : 0;
     if (covered / area < opts.minCoverage) return null;
   }
-  return { satins, runs: runs.map(({ path, closed, widthMm }) => ({ path, closed, widthMm })) };
+  let outRuns = runs.map(({ path, closed, widthMm }) => ({ path, closed, widthMm }));
+  if (opts.junctionOverlapMm !== undefined && satins.length > 1) {
+    const trimmed = trimJunctions(satins.map((s) => s.strip), opts.junctionOverlapMm);
+    const next: SatinPiece[] = trimmed.map(({ index, strip }) => ({ strip, widthMm: satins[index].widthMm }));
+    satins.length = 0;
+    satins.push(...next);
+  }
+  if (opts.hairlineSatinMm && satins.length && outRuns.length) {
+    // Short stubs left at junctions (too short for a column) that already lie on a column add only a
+    // knot of thread: drop those, keep the ones that stand on their own (serif tips, dots).
+    const cover: Poly[] = [];
+    for (const s of satins) {
+      const sp = stripPolygon(s.strip);
+      if (sp && !sp.isEmpty()) cover.push(sp);
+    }
+    if (cover.length) {
+      const covered = unionAll(cover);
+      outRuns = outRuns.filter((r) => {
+        try {
+          const line = factory.createLineString(r.path.map(([x, y]) => new Coordinate(x, y)));
+          const halo = line.buffer(0.3);
+          const a = halo.getArea();
+          return a <= 0 || intersectionArea(covered, halo) / a < 0.6;
+        } catch {
+          return true;
+        }
+      });
+    }
+  }
+  return { satins, runs: outRuns };
 }

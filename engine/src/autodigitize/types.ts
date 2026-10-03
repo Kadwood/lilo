@@ -1,6 +1,8 @@
 import type { TraceRegion } from "../clickstitch";
 import type { Design, FillParams, Hoop } from "../model";
 import type { ThreadEntry } from "../threads";
+import { DEFAULTS } from "../presets/defaults";
+import type { FabricInput, Quality, SewingSetupInput, ThreadWeight } from "../presets";
 import type { UnitsToMm } from "./cleanup";
 
 /** The subset of the DOM `ImageData` the engine needs, so it runs in Node, Workers and the page. */
@@ -35,7 +37,7 @@ export interface AutoDigitizeOptions {
   hoop?: Hoop;
   /**
    * Narrowest satin column (mm). Strokes thinner than this (serif and Didone hairlines) are sewn as a
-   * running stitch along their centre; thicker stems of the same letter stay satin. Default 1; a
+   * running stitch along their centre; thicker stems of the same letter stay satin. Default 1.5; a
    * machine that sews clean 0.8 mm columns can go lower.
    */
   minSatinWidthMm?: number;
@@ -43,12 +45,25 @@ export interface AutoDigitizeOptions {
   minRunMm?: number;
   /** Overrides for the fill stitch settings of generated fills. */
   fill?: Partial<FillParams>;
+  /**
+   * "standard" (default) keeps the original fixed settings. "premium" digitizes the way a professional
+   * would: width-scaled satin spacing, pull compensation and underlay, narrow satin instead of faint
+   * runs for fine strokes (min column 0.8 mm at 40 wt), fills with edge-walk + cross underlay, and
+   * columns trimmed to overlap by about 0.4 mm where they meet. See `presets/sewing.ts` for the sources.
+   */
+  quality?: Quality;
+  /** Top thread: 40 (default) or 60. A finer thread sits its stitch lines closer and allows finer columns. */
+  threadWeight?: ThreadWeight;
+  /** What it is sewn on. "woven" is suiting and "cap" is twill; the full list is `FabricId`. Default suiting. */
+  fabric?: FabricInput;
+  /** The three settings above as one object (what the UI passes). Wins over the individual fields. */
+  setup?: SewingSetupInput;
 }
 
 export const DEFAULT_AUTODIGITIZE_OPTIONS: AutoDigitizeOptions = {
   colors: 6,
   catalogueId: "brother-embroidery",
-  minRegionMm2: 2,
+  minRegionMm2: DEFAULTS.fill.minRegionMm2,
   simplifyMm: 0.1,
   removeBackground: true,
   maxImageSide: 1200,

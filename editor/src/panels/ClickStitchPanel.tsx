@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { DEFAULT_FILL_PARAMS, patternInfo, type FillParams, type RunParams, type RunType } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
-import { Field, Section, Segmented, Toggle } from "./controls";
+import { Field, rowsHint, Section, Segmented, Toggle } from "./controls";
 import { PatternPicker } from "./PatternPicker";
 import { RUN_TYPES, RUN_WIDTH_DEFAULT } from "./SettingsPanel";
 import { ThreadPicker } from "./ThreadPicker";
@@ -120,7 +120,7 @@ export function ClickStitchPanel({ onOpen }: { onOpen: () => void }) {
           </Section>
           <Section title="Stitching" id="cs-stitching">
             <Field label="Angle" value={fill.angleDeg} min={-180} max={180} step={1} unit="°" onChange={(v) => editFill((q) => void (q.angleDeg = v))} />
-            <Field label="Row spacing" value={fill.rowSpacingMm} min={0.2} max={2} step={0.05} unit="mm" onChange={(v) => editFill((q) => void (q.rowSpacingMm = Math.max(0.1, v)))} />
+            <Field label="Row spacing" value={fill.rowSpacingMm} min={0.2} max={2} step={0.05} unit="mm" hint={rowsHint(fill.rowSpacingMm)} onChange={(v) => editFill((q) => void (q.rowSpacingMm = Math.max(0.1, v)))} />
             <Field label="Stitch length" value={fill.stitchLengthMm} min={1} max={8} step={0.1} unit="mm" onChange={(v) => editFill((q) => void (q.stitchLengthMm = Math.max(0.5, v)))} />
             <Field label="Pull compensation" value={fill.pullCompMm} min={0} max={1} step={0.05} unit="mm" onChange={(v) => editFill((q) => void (q.pullCompMm = v))} />
             <Toggle label="Underlay" checked={fill.underlay} onChange={(v) => editFill((q) => void (q.underlay = v))} help="One light pass at right angles to the fill." />
