@@ -249,7 +249,7 @@ describe("Pixel art: stitches, send and export", () => {
     fireEvent.click(screen.getByRole("button", { name: "Export…" }));
     const dlg = await screen.findByRole("dialog", { name: "Export" });
     const group = within(dlg).getByRole("radiogroup", { name: "File format" });
-    expect(within(group).getAllByRole("radio").map((r) => r.textContent?.slice(0, 3))).toEqual(["PES", "DST", "JEF", "VP3", "EXP", "XXX", "U01", "PEC", "PNG"]);
+    expect(within(group).getAllByRole("radio").map((r) => r.textContent?.slice(0, 3))).toEqual(["PES", "DST", "JEF", "VP3", "EXP", "XXX", "U01", "PEC", "HUS", "VIP", "TBF", "GCO", "PNG"]);
     fireEvent.click(within(group).getByRole("radio", { name: /JEF/ }));
     await waitFor(() => expect((within(dlg).getByRole("button", { name: "Save JEF" }) as HTMLButtonElement).disabled).toBe(false), T);
     fireEvent.click(within(dlg).getByRole("button", { name: "Save JEF" }));

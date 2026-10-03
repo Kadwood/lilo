@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FORMATS } from "@lilo/engine/light";
+import { FORMATS, READABLE_EXTENSIONS } from "@lilo/engine/light";
 import { useEngine } from "../engine/context";
 import { getPlatform } from "../platform";
 import { CONVERTER_EXTENSIONS, targetsFor, type ConvTarget } from "../state/converter";
@@ -8,7 +8,7 @@ import { toEngineOptions } from "../state/editorStore";
 import { useEditor } from "../state/store";
 import { useApp } from "./AppContext";
 
-const TARGET_ORDER: ConvTarget[] = ["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec", "svg"];
+const TARGET_ORDER: ConvTarget[] = ["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec", "hus", "vip", "tbf", "gcode", "svg"];
 const targetLabel = (t: ConvTarget) => (t === "svg" ? "SVG (traced)" : (FORMATS.find((f) => f.ext === t)?.label ?? t.toUpperCase()));
 const sizeLabel = (n: number) => (n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 1024).toFixed(0)} KB` : `${(n / 1048576).toFixed(1)} MB`);
 
@@ -86,7 +86,7 @@ export function ConverterView() {
         }}
       >
         <p className="dropzone-title">Drop files here</p>
-        <p className="muted small">PES, DST, JEF, VP3, EXP, XXX, U01, PEC, or PNG, JPG, WEBP, SVG</p>
+        <p className="muted small">{READABLE_EXTENSIONS.map((e) => e.toUpperCase()).join(", ")}, or PNG, JPG, WEBP, SVG</p>
         <button className="primary" onClick={() => void pick()}>
           Choose files…
         </button>
