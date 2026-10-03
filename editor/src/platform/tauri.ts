@@ -7,7 +7,7 @@ import { readFile, writeFile } from "@tauri-apps/plugin-fs";
 import { BridgeClient } from "../link/api/client";
 import type { SavedMachine } from "../link/api/types";
 import type { JobRecord } from "../link/api/types";
-import type { MyThreadsFile, OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, SendResult } from "./types";
+import type { HoopsFile, MyThreadsFile, OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, ScreenInfo, SendResult, WindowMaterial } from "./types";
 
 const TERMINAL = new Set(["done", "failed", "cancelled", "needs_reconciliation"]);
 const POLL_MS = 500;
@@ -245,5 +245,59 @@ export const tauriPlatform: Platform = {
 
   projectsFolder() {
     return invoke<string>("projects_folder");
+  },
+
+  readHoops() {
+    return invoke<HoopsFile>("read_hoops_file");
+  },
+
+  async writeHoops(json) {
+    await invoke("write_hoops_file", { json });
+  },
+
+  screenInfo() {
+    return invoke<ScreenInfo>("screen_info");
+  },
+
+  onWindowMaterial(callback) {
+    let active = true;
+    let unlisten: (() => void) | null = null;
+    let heard = false;
+    const hear = (m: WindowMaterial | null) => {
+      if (active && m) {
+        heard = true;
+        callback(m);
+      }
+    };
+    // the Rust side applies the material during setup, possibly before this page asks: ask, and also listen
+    void listen<WindowMaterial>("lilo-window-material", (e) => hear(e.payload)).then((u) => {
+      if (active) unlisten = u;
+      else u();
+    });
+    void invoke<WindowMaterial | null>("window_material")
+      .then((m) => {
+        if (!heard) hear(m);
+      })
+      .catch(() => hear("solid"));
+    return () => {
+      active = false;
+      unlisten?.();
+    };
+  },
+
+  async reduceTransparency() {
+    try {
+      return await invoke<boolean>("reduce_transparency");
+    } catch {
+      return false;
+    }
+  },
+
+  async setWindowTheme(theme) {
+    try {
+      await getCurrentWindow().setTheme(theme);
+    } catch {
+      // not allowed or not supported here: the page still follows the choice
+    }
   },
 };

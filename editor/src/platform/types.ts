@@ -77,6 +77,25 @@ export interface MyThreadsFile {
   corrupt: boolean;
 }
 
+/** What is on disk for the custom hoops list (`hoops.json`). Same shape as `MyThreadsFile`. */
+export interface HoopsFile {
+  text: string | null;
+  backup: string | null;
+  corrupt: boolean;
+}
+
+/** The display the window is on. `pxPerMm` is CSS pixels per physical millimetre, null when the OS can't say. */
+export interface ScreenInfo {
+  pxPerMm: number | null;
+  widthMm: number | null;
+  heightMm: number | null;
+  widthPt: number | null;
+  source: "display" | "unknown";
+}
+
+/** What is behind the page: see `app/src-tauri/src/glass.rs`. `solid` = nothing see-through. */
+export type WindowMaterial = "liquid-glass" | "vibrancy" | "mica" | "solid";
+
 export type Unsubscribe = () => void;
 
 export interface Platform {
@@ -138,4 +157,17 @@ export interface Platform {
   setDirty(dirty: boolean): void;
   /** The previous save of a project (its `.bak`), for when the file is damaged. Null if there is none. */
   readProjectBackup(path: string): Promise<Uint8Array | null>;
+
+  // ---- M6a: glass + hoops --------------------------------------------------------------------
+  /** The user's own hoops as JSON text (`~/Documents/Lilo/hoops.json`; localStorage in the browser). */
+  readHoops(): Promise<HoopsFile>;
+  writeHoops(json: string): Promise<void>;
+  /** The physical size of the screen the window is on (for Actual size). Unknown in the browser. */
+  screenInfo(): Promise<ScreenInfo>;
+  /** What the window is made of, once known; `callback` runs for the first answer and any change. Returns the unsubscribe function. The browser is always `solid`. */
+  onWindowMaterial(callback: (material: WindowMaterial) => void): Unsubscribe;
+  /** Has the user asked the OS for "Reduce transparency"? (macOS accessibility setting; false elsewhere and in the browser.) */
+  reduceTransparency(): Promise<boolean>;
+  /** Make the native window (and its glass) light or dark, or follow the system again (null). No-op in the browser. */
+  setWindowTheme(theme: "light" | "dark" | null): Promise<void>;
 }

@@ -1,53 +1,83 @@
 import { useState } from "react";
-import { HOOPS, emptyDesign, type Hoop } from "@lilo/engine/light";
+import { useStore } from "zustand";
+import { PLACEMENT_GUIDES, rotateHoop } from "@lilo/engine/light";
+import { fmtMm, fmtSize } from "../hoops/format";
+import { pickFor, useCustomHoops, useHoop } from "../hoops/autoPick";
 import { useEditor } from "../state/store";
 import { defaultThread, findThread } from "../state/editorStore";
-import { Section } from "./controls";
-import { NumberBox } from "./DimensionsSection";
+import { hoopViewStore, setHoopView } from "../state/hoopViewStore";
+import { rememberHoop } from "../state/hoopStore";
+import { Section, Toggle } from "./controls";
 import { ThreadPicker } from "./ThreadPicker";
 
-const CUSTOM = "custom";
+/** Ask the canvas for Actual size (it owns the view). */
+export const ACTUAL_SIZE_EVENT = "lilo:actual-size";
 
-/** The hoop selector (with an outline on the canvas) and the colour new shapes are drawn in. */
+/**
+ * The hoop: one button that names it and opens the picker (brand, machine, hoop, search, recents, your
+ * own). The roomy version, in the panel, adds the quick actions and what the canvas draws around it.
+ */
 export function HoopSelect({ compact = false }: { compact?: boolean } = {}) {
   const { state, actions } = useEditor();
-  const hoop = state.design?.hoop ?? emptyDesign().hoop;
-  const preset = HOOPS.find((h) => h.widthMm === hoop.widthMm && h.heightMm === hoop.heightMm && h.name === hoop.name);
-  const [custom, setCustom] = useState(!preset);
-  const value = custom || !preset ? CUSTOM : preset.name;
-  const setSize = (w: number, h: number) => actions.setHoop({ name: `Custom ${w} x ${h}`, widthMm: w, heightMm: h });
+  const hoop = useHoop();
+  const custom = useCustomHoops();
+  const view = useStore(hoopViewStore);
+  const [note, setNote] = useState<string | null>(null);
+
+  const smallest = () => {
+    const r = pickFor(state.design, hoop, custom);
+    if (!r) return setNote("Draw or digitize something first.");
+    if (r.kind === "fit") {
+      actions.setHoop(r.hoop);
+      rememberHoop(r.hoop);
+      return setNote(`${r.hoop.name}${r.rotated ? " (turned a quarter)" : ""} is the smallest that fits.`);
+    }
+    const o = r.overflowMm;
+    setNote(`Needs re-hooping: ${r.closest?.name ?? "no hoop"} is ${[o.x > 0.05 ? `${fmtMm(o.x)} too narrow` : null, o.y > 0.05 ? `${fmtMm(o.y)} too short` : null].filter(Boolean).join(" and ")}.`);
+  };
+
   return (
     <div className={`hoop-select${compact ? " compact" : ""}`}>
-      <label>
-        <select
-          aria-label="Hoop"
-          value={value}
-          onChange={(e) => {
-            if (e.target.value === CUSTOM) {
-              setCustom(true);
-              setSize(hoop.widthMm, hoop.heightMm);
-              return;
-            }
-            setCustom(false);
-            const h = HOOPS.find((x) => x.name === e.target.value) as Hoop;
-            actions.setHoop(h);
-          }}
-        >
-          {HOOPS.map((h) => (
-            <option key={h.name} value={h.name}>
-              {h.name}
-            </option>
-          ))}
-          <option value={CUSTOM}>Custom…</option>
-        </select>
-      </label>
-      {value === CUSTOM && (
-        <span className="hoop-custom">
-          <NumberBox label="Hoop width (mm)" value={hoop.widthMm} min={20} step={5} onCommit={(w) => setSize(w, hoop.heightMm)} />
-          ×
-          <NumberBox label="Hoop height (mm)" value={hoop.heightMm} min={20} step={5} onCommit={(h) => setSize(hoop.widthMm, h)} />
-          <span className="muted small">mm</span>
-        </span>
+      <button className="hoop-button" onClick={() => setHoopView({ pickerOpen: true })} aria-label={`Hoop: ${hoop.name}, ${fmtSize(hoop)}. Change`} title="Choose a hoop">
+        <span className="hoop-button-icon" aria-hidden="true" data-shape={hoop.shape ?? "rect"} />
+        <span className="hoop-button-name">{hoop.name}</span>
+        {!compact && <span className="muted small">{fmtSize(hoop)}</span>}
+      </button>
+      {!compact && (
+        <>
+          <div className="button-row">
+            <button onClick={smallest}>Smallest hoop that fits</button>
+            <button onClick={() => actions.setHoop(rotateHoop(hoop))} title="Swap width and height">
+              Turn 90°
+            </button>
+            <button onClick={() => setHoopView({ customEditor: { id: null } })}>Add my own…</button>
+          </div>
+          {note && (
+            <p className="small" role="status">
+              {note}
+            </p>
+          )}
+          <Toggle label="Show hoop frame" checked={view.showFrame} onChange={(v) => setHoopView({ showFrame: v })} help="Draws the frame and its clamp around the sewing area, like the real hoop." />
+          <Toggle label="Show safe margin" checked={view.showSafeArea} onChange={(v) => setHoopView({ showSafeArea: v })} help="A dashed line 5 mm inside the sewing area. Stitches closer to the edge are close to the presser foot and the frame." />
+          <Toggle label="Show rulers" checked={view.showRulers} onChange={(v) => setHoopView({ showRulers: v })} help="Rulers along the top and left of the canvas. Drag from a ruler to pull out a guide." />
+          <label className="field-line">
+            <span className="field-label">Placement guide</span>
+            <select aria-label="Placement guide" value={view.placementId ?? ""} onChange={(e) => setHoopView({ placementId: e.target.value || null })}>
+              <option value="">None</option>
+              {PLACEMENT_GUIDES.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="button-row">
+            <button onClick={() => window.dispatchEvent(new Event(ACTUAL_SIZE_EVENT))} title="Show the design at its real size on this screen (⌘0)">
+              Actual size <kbd>⌘0</kbd>
+            </button>
+            <button onClick={() => setHoopView({ calibrationOpen: true })}>Calibrate screen…</button>
+          </div>
+        </>
       )}
     </div>
   );
@@ -60,7 +90,7 @@ export function DesignSection() {
   const t = (state.threadId && (state.design?.threads.find((x) => x.id === state.threadId) ?? findThread(state.threadId))) || state.design?.threads[0] || defaultThread();
   return (
     <>
-      <Section title="Hoop" help="The embroidery area of your machine. Shapes outside it can't be sewn. The NV2700 takes 160 × 260 mm and 130 × 180 mm hoops." id="hoop">
+      <Section title="Hoop" help="The embroidery area of your machine. Shapes outside it can't be sewn. Pick yours from the list, or add your own." id="hoop">
         <HoopSelect />
       </Section>
       <Section title="Drawing colour" help="New shapes are drawn in this thread. Select a shape to change its own colour." id="drawing-colour">

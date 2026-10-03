@@ -1,4 +1,4 @@
-import type { OcrLine, OpenedFile, OpenedPath, Platform, RecentProject } from "./types";
+import type { OcrLine, OpenedFile, OpenedPath, Platform, RecentProject, ScreenInfo, WindowMaterial } from "./types";
 
 /**
  * An in-memory platform for tests and for `pnpm dev?mock` (screenshots, working on the UI without the
@@ -29,6 +29,17 @@ export interface MockState {
   closeHandler: (() => Promise<boolean>) | null;
   /** Callback registered by `onOpenFile`. */
   openFileCb: ((f: OpenedPath) => void) | null;
+  /** `hoops.json` text and its previous save. */
+  hoopsJson: string | null;
+  hoopsBackup: string | null;
+  /** What `screenInfo` returns. */
+  screen: ScreenInfo;
+  /** What `onWindowMaterial` reports. */
+  material: WindowMaterial;
+  /** What `reduceTransparency` answers. */
+  systemReduceTransparency: boolean;
+  /** Every theme passed to `setWindowTheme`, in order. */
+  themeCalls: ("light" | "dark" | null)[];
 }
 
 export function createMockPlatform(init: Partial<MockState> = {}): { platform: Platform; state: MockState } {
@@ -47,6 +58,12 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
     saved: [],
     closeHandler: null,
     openFileCb: null,
+    hoopsJson: null,
+    hoopsBackup: null,
+    screen: { pxPerMm: null, widthMm: null, heightMm: null, widthPt: null, source: "unknown" },
+    material: "solid",
+    systemReduceTransparency: false,
+    themeCalls: [],
     ...init,
   };
   const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p;
@@ -137,6 +154,45 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
       const path = `/mock/Documents/Lilo/${name}`;
       await platform.writeProjectFile(path, bytes);
       return path;
+    },
+    async readHoops() {
+      const main = state.hoopsJson;
+      if (main === null) return { text: null, backup: null, corrupt: false };
+      try {
+        JSON.parse(main);
+        return { text: main, backup: null, corrupt: false };
+      } catch {
+        let backup: string | null = null;
+        try {
+          if (state.hoopsBackup) {
+            JSON.parse(state.hoopsBackup);
+            backup = state.hoopsBackup;
+          }
+        } catch {
+          // a damaged backup is no backup
+        }
+        return { text: null, backup, corrupt: true };
+      }
+    },
+    async writeHoops(json) {
+      if (state.hoopsJson !== null) {
+        try {
+          JSON.parse(state.hoopsJson);
+          state.hoopsBackup = state.hoopsJson;
+        } catch {
+          // a damaged file never replaces a good backup
+        }
+      }
+      state.hoopsJson = json;
+    },
+    screenInfo: async () => state.screen,
+    onWindowMaterial(callback) {
+      callback(state.material);
+      return () => {};
+    },
+    reduceTransparency: async () => state.systemReduceTransparency,
+    async setWindowTheme(theme) {
+      state.themeCalls.push(theme);
     },
     onCloseRequested(handler) {
       state.closeHandler = handler;

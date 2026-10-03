@@ -22,5 +22,7 @@ export function readTheme(el: Element = document.documentElement): Theme {
     hoop: get("--canvas-hoop", 0x2f5fd0),
     accent: get("--accent", 0x2f5fd0),
     needle: get("--canvas-needle", 0xe0245e),
+    frame: get("--canvas-frame", 0xcdbb9a),
+    frameEdge: get("--canvas-frame-edge", 0x9c8a68),
   };
 }

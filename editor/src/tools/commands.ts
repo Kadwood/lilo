@@ -1,4 +1,5 @@
-import { FILL_PATTERNS, HOOPS, patternInfo, type RunType } from "@lilo/engine/light";
+import { FILL_PATTERNS, HOOPS, PLACEMENT_GUIDES, patternInfo, type RunType } from "@lilo/engine/light";
+import { clearGuides, hoopViewStore, setHoopView } from "../state/hoopViewStore";
 import type { EditorActions, EditorState, ShapeMode } from "../state/editorStore";
 import type { AppApi } from "../app/AppContext";
 import { TOOLS } from "./registry";
@@ -129,6 +130,17 @@ export function buildCommands({ state, actions, openImage, fit, app, extra }: Co
   add({ id: "view.reference", group: "View", label: `${state.view.reference ? "Hide" : "Show"} reference images`, run: () => actions.setView({ reference: !state.view.reference }) });
   add({ id: "view.jumps", group: "View", label: `${state.view.jumps ? "Hide" : "Show"} jump stitches`, run: () => actions.setView({ jumps: !state.view.jumps }) });
   add({ id: "view.fit", group: "View", label: "Fit to window", run: fit });
+  const hoopView = hoopViewStore.getState();
+  add({ id: "view.actual", group: "View", label: "Actual size (1 mm on screen = 1 mm)", keywords: "1:1 real size dpi zoom", run: () => window.dispatchEvent(new Event("lilo:actual-size")) });
+  add({ id: "view.calibrate", group: "View", label: "Calibrate the screen for actual size…", keywords: "credit card ruler dpi", run: () => setHoopView({ calibrationOpen: true }) });
+  add({ id: "view.rulers", group: "View", label: `${hoopView.showRulers ? "Hide" : "Show"} rulers`, keywords: "guides mm inches", run: () => setHoopView({ showRulers: !hoopView.showRulers }) });
+  add({ id: "view.hoopFrame", group: "View", label: `${hoopView.showFrame ? "Hide" : "Show"} hoop frame`, keywords: "clamp ring realistic", run: () => setHoopView({ showFrame: !hoopView.showFrame }) });
+  add({ id: "view.safeArea", group: "View", label: `${hoopView.showSafeArea ? "Hide" : "Show"} safe margin`, keywords: "hoop edge dashed", run: () => setHoopView({ showSafeArea: !hoopView.showSafeArea }) });
+  add({ id: "view.clearGuides", group: "View", label: "Clear guides", keywords: "rulers", enabled: hoopView.guides.length > 0, run: clearGuides });
+  add({ id: "hoop.pick", group: "View", label: "Hoop: choose from the library…", keywords: "brother janome bernina machine custom", run: () => setHoopView({ pickerOpen: true }) });
+  add({ id: "hoop.custom", group: "View", label: "Hoop: add my own…", keywords: "custom size", run: () => setHoopView({ customEditor: { id: null } }) });
+  add({ id: "placement.none", group: "View", label: "Placement guide: none", enabled: hoopView.placementId !== null, run: () => setHoopView({ placementId: null }) });
+  for (const g of PLACEMENT_GUIDES) add({ id: `placement.${g.id}`, group: "View", label: `Placement guide: ${g.label}`, keywords: "template garment", run: () => setHoopView({ placementId: g.id }) });
   add({ id: "view.units", group: "View", label: `Units: switch to ${state.units === "mm" ? "inches" : "millimetres"}`, keywords: "mm in cm", run: () => actions.setUnits(state.units === "mm" ? "in" : "mm") });
   for (const h of HOOPS) add({ id: `hoop.${h.name}`, group: "View", label: `Hoop: ${h.name}`, keywords: "nv2700 size", run: () => actions.setHoop(h) });
   add({ id: "view.seq.images", group: "View", label: "Sequencer: reference images", run: () => actions.setSeqTab("images") });

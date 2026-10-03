@@ -8,6 +8,8 @@ import { DigitizePanel } from "../panels/DigitizePanel";
 import { Sequencer } from "../panels/Sequencer";
 import { SettingsPanel } from "../panels/SettingsPanel";
 import { StitchPlayer } from "../panels/StitchPlayer";
+import { HoopAssist } from "../hoops/HoopAssist";
+import { HoopDialogs } from "../hoops/HoopDialogs";
 import { getPlatform } from "../platform";
 import { useEditor } from "../state/store";
 import { singleTextGroup } from "../state/textGroups";
@@ -55,14 +57,18 @@ export function EditorShell() {
         )}
 
         <main className="canvas" aria-label="Canvas">
-          <CanvasView onOpen={open} />
+          <div className="canvas-area">
+            <CanvasView onOpen={open} />
+            <HoopAssist />
+            <Toolbar />
+          </div>
           <StitchPlayer />
-          <Toolbar />
         </main>
 
         <Sequencer />
       </div>
       <CommandPalette openImage={open} fit={fit} />
+      <HoopDialogs />
     </div>
   );
 }

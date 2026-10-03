@@ -68,7 +68,7 @@ objc2 = "0.6"
 objc2-foundation = "0.3"
 objc2-vision = "0.3"
 # The NSView type `window-vibrancy`'s Liquid Glass options take (same 0.3.x it already uses).
-objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSView", "NSResponder"] }
+objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSView", "NSResponder", "NSWorkspace", "NSAccessibility"] }
 
 # Window material: Liquid Glass (macOS 26+) / sidebar vibrancy (older macOS) / Mica (Windows 11).
 # Pinned: 0.7 -> 0.8 changed the Liquid Glass API (positional args -> LiquidGlassOptions).

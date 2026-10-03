@@ -22,7 +22,7 @@ export function TopBar() {
   const hasDesign = state.design !== null && (state.planResult?.stats.stitchCount ?? 0) > 0;
 
   return (
-    <header className="topbar">
+    <header className="topbar" data-tauri-drag-region>
       <FileMenu />
       <input
         className="project-name"
@@ -36,7 +36,7 @@ export function TopBar() {
         </span>
       )}
       <HoopSelect compact />
-      <span className="topbar-note" role="status">
+      <span className="topbar-note" role="status" data-tauri-drag-region>
         {projectNotice?.text ?? note}
       </span>
       <button className="palette-hint" onClick={() => actions.setPaletteOpen(true)} title="Search every tool and action">

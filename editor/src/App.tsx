@@ -6,7 +6,10 @@ import { PixelView } from "./app/PixelView";
 import { EngineProvider } from "./engine/context";
 import { ConfirmDialog } from "./project/ConfirmDialog";
 import { ProjectProvider, useProject, useProjectState } from "./project/ProjectProvider";
+import { AppearanceMenu } from "./shell/AppearanceMenu";
+import { BrandMark } from "./shell/BrandMark";
 import { CommandPalette } from "./shell/CommandPalette";
+import { useApplyAppearance } from "./shell/useAppearance";
 import { EditorShell } from "./shell/EditorShell";
 import { EditorProvider, useEditor } from "./state/store";
 
@@ -63,17 +66,23 @@ function Shell() {
   const { state } = useEditor();
   const dirty = useProjectState((s) => s.dirty);
   useAppShortcuts();
+  useApplyAppearance();
 
   return (
     <div className="app">
-      <nav className="app-nav" aria-label="Views">
-        <span className="app-logo">Lilo</span>
+      <nav className="app-nav" aria-label="Views" data-tauri-drag-region>
+        <span className="app-logo" data-tauri-drag-region>
+          <BrandMark size={24} />
+          <span className="app-wordmark" data-tauri-drag-region>
+            Lilo
+          </span>
+        </span>
         {NAV.map((n) => (
           <button key={n.id} className={app.view === n.id ? "active" : ""} aria-current={app.view === n.id ? "page" : undefined} onClick={() => app.go(n.id)}>
             {n.label}
           </button>
         ))}
-        <span className="spacer" />
+        <span className="spacer" data-tauri-drag-region />
         {app.view !== "editor" && app.view !== "link" && (
           <span className="app-doc" title="The design in the editor">
             {state.projectName || "Untitled design"}
@@ -85,6 +94,7 @@ function Shell() {
             )}
           </span>
         )}
+        <AppearanceMenu />
       </nav>
       <div className="app-view">
         {app.view === "home" && <HomeView />}

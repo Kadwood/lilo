@@ -1,0 +1,1370 @@
+/* Lilo's look: calm, luxurious, Liquid Glass first. Loaded last, so it re-themes everything above it.
+
+   How it works
+   - The desktop window is see-through (Liquid Glass on macOS 26+, a frosted sidebar on older macOS, Mica
+     on Windows 11). <html data-material="..."> says which; <html data-solid="true"> means the chrome
+     must be opaque (the user chose "Reduce transparency", the OS asked for it, or there is nothing
+     behind the page, as in a browser or on Linux).
+   - Floating panels (top bar, left settings, right sequencer, tool dock) are translucent layers with a
+     backdrop blur. The CANVAS CARD IS OPAQUE: stitch colours must be true, so it never shows the glass.
+   - Text colours are chosen so they pass WCAG AA (4.5:1) against the WORST backdrop the glass can sit on
+     (pure white and pure black): src/shell/contrast.test.ts checks every pair below. Change a colour
+     here and that test tells you if it still holds.
+   - <html data-theme="light|dark"> forces a theme; without it the system's choice (prefers-color-scheme) wins.
+
+   Design basis: Apple's Human Interface Guidelines, read 2026-10-03 (developer.apple.com/design/human-interface-guidelines):
+   * Materials: Liquid Glass is a functional layer for controls and navigation that floats above the content
+     layer; "don't use Liquid Glass in the content layer" (the canvas is opaque, Home/Converter use the
+     standard material, --material-content); use it sparingly; honour "reduce transparency".
+   * Toolbars: custom components in a bar have corner radii concentric with the bar (child radius = parent
+     radius - padding; see --r-* below). Sidebars float above content in the glass layer.
+   * Sheets (macOS): a cardlike view with rounded corners floating over its window (our dialogs).
+   * Typography: the macOS built-in text styles (Large Title 26/32, Title 1 22/26, Title 2 17/22, Title 3
+     15/20, Headline 13/16 bold, Body 13/16, Callout 12/15, Subheadline 11/14, Footnote 10/13), see --text-*.
+   The HIG gives NO numbers for control heights, window/sidebar/inspector widths, window or panel radii or the
+   glass blur: those (--control-h*, --w-*, --r-window/--r-panel, --glass-*) are this file's judgement,
+   to be calibrated against Apple's macOS design kit. Every one is a token, so that pass is a token edit. */
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, sans-serif;
+  --font-serif: ui-serif, "New York", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  /* 8-point spacing */
+  /* typography: macOS text styles (HIG), size / line height in px (= pt on a 1x web view) */
+  --text-large-title: 26px;
+  --text-title-1: 22px;
+  --text-title-2: 17px;
+  --text-title-3: 15px;
+  --text-body: 13px;
+  --text-callout: 12px;
+  --text-subheadline: 11px;
+  --text-footnote: 10px;
+  --lh-body: 16px;
+  /* sizes: judgement (HIG gives none) */
+  --control-h: 28px;
+  --control-h-sm: 24px;
+  --toolbar-h: 52px;
+  --w-sidebar: 276px;
+  --w-inspector: 316px;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  /* corner radii, concentric: a child's radius is its parent's radius minus the padding between them */
+  --r-window: 26px;
+  --r-panel: 20px;
+  --pad-panel: 12px;
+  --r-in-panel: calc(var(--r-panel) - var(--pad-panel));
+  --r-dock: 24px;
+  --pad-dock: 6px;
+  --r-in-dock: calc(var(--r-dock) - var(--pad-dock));
+  --radius-sm: var(--r-in-panel);
+  --radius: 12px;
+  --radius-lg: var(--r-panel);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 160ms;
+
+  color-scheme: light;
+  --bg: #f1eee8;
+  --surface: #ffffff;
+  --surface-2: #e9e5dd;
+  --border: rgba(40, 36, 28, 0.18);
+  --text: #1d1c1a;
+  --muted: #55514a;
+  --accent: #2446a8;
+  --accent-text: #ffffff;
+  --danger: #8f2018;
+  --warn-text: #5e3700;
+  --warn-bg: rgba(217, 142, 4, 0.18);
+  --focus: #1b52e0;
+  --canvas-bg: #f7f5f0;
+  --canvas-grid: #e7e3da;
+  --canvas-grid-major: #cfcabf;
+  --canvas-hoop: #2446a8;
+  --canvas-needle: #d81b5a;
+  --canvas-frame: #d6c6a6;
+  --canvas-frame-edge: #9a8860;
+  --guide: #1c8a5a;
+  --guide-2: #b4690e;
+
+  /* the glass: translucent layer, blur, hairline highlight */
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --sheet-bg: rgba(255, 255, 255, 0.9);
+  /* the standard (non-glass) material of the content layer: Home, Converter */
+  --material-content: rgba(255, 255, 255, 0.9);
+  --glass-edge: rgba(255, 255, 255, 0.7);
+  --glass-line: rgba(40, 36, 28, 0.14);
+  --glass-shadow: 0 1px 2px rgba(20, 16, 8, 0.1), 0 12px 32px rgba(20, 16, 8, 0.16);
+  --glass-blur: 28px;
+  --glass-sat: 1.6;
+  --well: rgba(255, 255, 255, 0.72);
+  --control-bg: rgba(255, 255, 255, 0.6);
+  --control-hover: rgba(255, 255, 255, 0.92);
+  --hover-tint: rgba(40, 36, 28, 0.07);
+  --backdrop: rgba(20, 16, 8, 0.32);
+  --card-shadow: 0 1px 2px rgba(20, 16, 8, 0.08), 0 8px 28px rgba(20, 16, 8, 0.12);
+
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.23;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #1e1e1e;
+    --surface: #1e1e1e;
+    --surface-2: #2b2b32;
+    --border: rgba(255, 255, 255, 0.16);
+    --text: #f1f0ee;
+    --muted: #cac8d2;
+    --accent: #9db5ff;
+    --accent-text: #0d1330;
+    --danger: #ffa699;
+    --warn-text: #ffd27a;
+    --warn-bg: rgba(255, 190, 70, 0.2);
+    --focus: #b3c6ff;
+    --canvas-bg: #1c1c20;
+    --canvas-grid: #26262c;
+    --canvas-grid-major: #3a3a44;
+    --canvas-hoop: #9db5ff;
+    --canvas-needle: #ff6b95;
+    --canvas-frame: #5b4f3c;
+    --canvas-frame-edge: #3d3425;
+    --guide: #54d49a;
+    --guide-2: #ffb454;
+    --glass-bg: rgba(28, 28, 32, 0.82);
+    --sheet-bg: rgba(30, 30, 35, 0.92);
+  --material-content: rgba(30, 30, 35, 0.92);
+    --glass-edge: rgba(255, 255, 255, 0.14);
+    --glass-line: rgba(255, 255, 255, 0.14);
+    --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 36px rgba(0, 0, 0, 0.45);
+    --well: rgba(255, 255, 255, 0.09);
+    --control-bg: rgba(255, 255, 255, 0.07);
+    --control-hover: rgba(255, 255, 255, 0.18);
+    --hover-tint: rgba(255, 255, 255, 0.09);
+    --backdrop: rgba(0, 0, 0, 0.5);
+    --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1e1e1e;
+  --surface: #1e1e1e;
+  --surface-2: #2b2b32;
+  --border: rgba(255, 255, 255, 0.16);
+  --text: #f1f0ee;
+  --muted: #cac8d2;
+  --accent: #9db5ff;
+  --accent-text: #0d1330;
+  --danger: #ffa699;
+  --warn-text: #ffd27a;
+  --warn-bg: rgba(255, 190, 70, 0.2);
+  --focus: #b3c6ff;
+  --canvas-bg: #1c1c20;
+  --canvas-grid: #26262c;
+  --canvas-grid-major: #3a3a44;
+  --canvas-hoop: #9db5ff;
+  --canvas-needle: #ff6b95;
+  --canvas-frame: #5b4f3c;
+  --canvas-frame-edge: #3d3425;
+  --guide: #54d49a;
+  --guide-2: #ffb454;
+  --glass-bg: rgba(28, 28, 32, 0.82);
+  --sheet-bg: rgba(30, 30, 35, 0.92);
+  --material-content: rgba(30, 30, 35, 0.92);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-line: rgba(255, 255, 255, 0.14);
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 36px rgba(0, 0, 0, 0.45);
+  --well: rgba(255, 255, 255, 0.09);
+  --control-bg: rgba(255, 255, 255, 0.07);
+  --control-hover: rgba(255, 255, 255, 0.18);
+  --hover-tint: rgba(255, 255, 255, 0.09);
+  --backdrop: rgba(0, 0, 0, 0.5);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+
+/* Solid chrome: the user asked, the OS asked, or there is no glass behind the page. */
+:root:not([data-solid="false"]) {
+  --glass-bg: var(--surface);
+  --sheet-bg: var(--surface);
+  --material-content: var(--surface);
+  --glass-blur: 0px;
+  --glass-sat: 1;
+  --glass-edge: transparent;
+  --well: var(--bg);
+  --control-bg: var(--surface);
+  --control-hover: var(--surface-2);
+}
+
+/* The window shows through only when it is glass AND the user hasn't reduced transparency. */
+:root[data-solid="false"] body,
+:root[data-solid="false"] #root,
+:root[data-solid="false"] .app {
+  background: transparent;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--font-sans);
+  letter-spacing: -0.003em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- focus, motion ---------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.canvas-host:focus-visible {
+  outline-offset: -2px;
+}
+
+button,
+select,
+input {
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- controls ---------------------------------------------------------- */
+
+button {
+  padding: 4px 12px;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-in-panel);
+  background: var(--control-bg);
+  color: var(--text);
+}
+button:hover:not(:disabled) {
+  background: var(--control-hover);
+}
+.topbar button,
+.dialog-actions button,
+.hoop-picker-tools button {
+  min-height: var(--control-h);
+}
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+button.primary:hover:not(:disabled) {
+  background: var(--accent);
+  filter: brightness(1.1);
+}
+.link-button {
+  color: var(--accent);
+}
+input[type="number"],
+input[type="text"],
+input[type="search"],
+input:not([type]),
+select,
+.field input[type="number"],
+.field select,
+.name-row input,
+input.num,
+.thread-picker-bar select,
+.thread-picker-bar input,
+.field-line select {
+  border-color: var(--glass-line);
+  border-radius: var(--radius-sm);
+  background: var(--well);
+  color: var(--text);
+}
+input[type="range"] {
+  accent-color: var(--accent);
+}
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+kbd {
+  border-color: var(--glass-line);
+  background: var(--well);
+  color: var(--muted);
+}
+.segmented button {
+  border-radius: 0;
+}
+.segmented button:first-child {
+  border-radius: var(--r-in-panel) 0 0 var(--r-in-panel);
+}
+.segmented button:last-child {
+  border-radius: 0 var(--r-in-panel) var(--r-in-panel) 0;
+}
+.swatch {
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+/* continuous corners where the engine has them */
+@supports (corner-shape: squircle) {
+  .panel,
+  .topbar,
+  .canvas,
+  .toolbar,
+  .dialog,
+  .popover,
+  .palette,
+  button,
+  input,
+  select {
+    corner-shape: squircle;
+  }
+}
+
+/* ---- the frame: title strip, top bar, three floating areas --------------- */
+
+.app {
+  gap: 0;
+}
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  min-height: var(--toolbar-h);
+  padding: 0 var(--s-4);
+  background: transparent;
+  border-bottom: 0;
+}
+/* the macOS overlay title bar puts the traffic lights in the top-left: leave them room */
+:root[data-titlebar="overlay"] .app-nav {
+  padding-left: 88px;
+}
+.app-nav button {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+}
+.app-nav button:hover:not(:disabled) {
+  background: var(--hover-tint);
+}
+.app-nav button.active {
+  background: var(--glass-bg);
+  box-shadow: 0 0 0 1px var(--glass-line);
+  font-weight: 600;
+}
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-right: var(--s-3);
+  color: var(--text);
+  user-select: none;
+}
+.app-wordmark {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.brand-mark {
+  flex: none;
+  display: block;
+}
+.app-doc {
+  color: var(--muted);
+}
+
+.editor {
+  padding: 0 var(--s-3) var(--s-3);
+  gap: var(--s-3);
+}
+.topbar,
+.panel,
+.toolbar {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 1px solid var(--glass-line);
+  box-shadow:
+    var(--glass-shadow),
+    inset 0 1px 0 var(--glass-edge);
+}
+.topbar {
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-dock);
+}
+.project-name {
+  font-family: var(--font-serif);
+  font-size: var(--text-title-3);
+  border-radius: var(--radius-sm);
+}
+.project-name:hover,
+.project-name:focus {
+  background: var(--well);
+  border-color: var(--glass-line);
+}
+.topbar-note {
+  color: var(--muted);
+}
+
+.editor-body {
+  gap: var(--s-3);
+  grid-template-columns: var(--w-sidebar) minmax(0, 1fr) var(--w-inspector);
+}
+.panel {
+  padding: var(--s-3);
+  border-radius: var(--radius-lg);
+  align-self: stretch;
+  min-height: 0;
+}
+.panel-left,
+.panel-right {
+  border: 1px solid var(--glass-line);
+}
+.panel h2 {
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.section {
+  border-top-color: var(--glass-line);
+}
+.section > summary {
+  color: var(--muted);
+  letter-spacing: 0.07em;
+}
+.help-tip {
+  border-color: var(--muted);
+  color: var(--muted);
+}
+.chip,
+.colour-row,
+.image-row,
+.underlay-row,
+.stats div {
+  border-color: var(--glass-line);
+  background: var(--well);
+}
+.seq-group-head {
+  background: var(--well);
+}
+.seq-row:hover,
+.seq-tabs button.active {
+  background: var(--hover-tint);
+}
+
+/* The canvas card: opaque on purpose. Stitch colours are only true on a neutral, solid ground. */
+.canvas {
+  background: var(--canvas-bg);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+.canvas-area {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.player {
+  background: var(--surface);
+  border-top: 1px solid var(--glass-line);
+}
+
+/* the tool dock floats over the bottom of the canvas */
+.toolbar {
+  position: absolute;
+  left: 50%;
+  bottom: var(--s-4);
+  z-index: 8;
+  margin: 0;
+  max-width: calc(100% - 32px);
+  padding: var(--pad-dock);
+  border-radius: var(--r-dock);
+  transform: translateX(-50%);
+}
+.toolbar .tool {
+  border-radius: var(--r-in-dock);
+}
+.toolbar .tool:hover:not(.active) {
+  background: var(--hover-tint);
+}
+.toolbar .tool.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.toolbar-sep {
+  background: var(--glass-line);
+}
+
+/* view options and zoom sit at the top, under the rulers; status and hints stay clear of the dock */
+.canvas-hud {
+  top: calc(22px + var(--s-2));
+  bottom: auto;
+  left: calc(22px + var(--s-2));
+  right: var(--s-2);
+}
+.canvas-status {
+  top: calc(22px + var(--s-2));
+}
+.canvas-hint {
+  bottom: 88px;
+  background: var(--sheet-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  color: var(--text);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--glass-shadow);
+}
+.canvas-empty-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.hud-group,
+.status-pill {
+  border: 1px solid var(--glass-line);
+  background: var(--sheet-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  color: var(--text);
+}
+.hud-group button {
+  border-radius: 999px;
+}
+.zoom-pct {
+  color: var(--muted);
+}
+.shape-bar,
+.map-dialog,
+.swap-card,
+.popover {
+  background: var(--sheet-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+}
+.tool-overlay .ov-label {
+  stroke: var(--canvas-bg);
+}
+
+/* ---- dialogs and the command palette ------------------------------------- */
+
+.dialog-backdrop,
+.palette-backdrop {
+  background: var(--backdrop);
+}
+.dialog,
+.palette {
+  background: var(--sheet-bg);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.2)) saturate(var(--glass-sat));
+  backdrop-filter: blur(calc(var(--glass-blur) * 1.2)) saturate(var(--glass-sat));
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  color: var(--text);
+}
+.dialog h2 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+.palette li.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* ---- hoops --------------------------------------------------------------- */
+
+.hoop-select {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s-2);
+}
+.hoop-select.compact {
+  flex-direction: row;
+  align-items: center;
+}
+.hoop-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  text-align: left;
+  max-width: 100%;
+}
+.hoop-button-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.hoop-button-icon,
+.hoop-row-icon {
+  flex: none;
+  width: 18px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  opacity: 0.8;
+}
+[data-shape="round"] {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+[data-shape="oval"] {
+  border-radius: 50%;
+}
+[data-shape="cap"] {
+  border-radius: 4px 4px 9px 9px;
+}
+
+.hoop-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  width: min(880px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+}
+.hoop-picker-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.hoop-picker-head h2 {
+  margin: 0;
+}
+.hoop-search {
+  width: 100%;
+  padding: 8px 12px;
+}
+.hoop-picker-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+}
+.hoop-columns {
+  display: flex;
+  gap: var(--s-3);
+  min-height: 260px;
+  flex: 1;
+  overflow: hidden;
+}
+.hoop-brands,
+.hoop-machines,
+.hoop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+.hoop-brands {
+  flex: 0 0 200px;
+}
+.hoop-machines {
+  flex: 0 0 170px;
+}
+.hoop-list-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.hoop-list {
+  flex: 1;
+}
+.hoop-results {
+  max-height: 46vh;
+}
+.hoop-brands button,
+.hoop-machines button {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.hoop-brands button.active,
+.hoop-machines button.active {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.hoop-brands button.active .muted {
+  color: inherit;
+}
+.hoop-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  border-radius: var(--radius-sm);
+}
+.hoop-row.current {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.hoop-row-main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+  padding: 8px 10px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.hoop-row-main:hover {
+  background: var(--hover-tint);
+}
+.hoop-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.hoop-row-name {
+  font-weight: 600;
+}
+.hoop-row-text .muted {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hoop-row-actions {
+  display: flex;
+  gap: var(--s-1);
+}
+.hoop-row-actions button {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+.hoop-empty {
+  padding: var(--s-3);
+}
+.hoop-mine-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+.badge {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.badge.warn {
+  background: var(--warn-bg);
+  color: var(--warn-text);
+}
+.warnings-inline {
+  margin: 0;
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius-sm);
+  background: var(--warn-bg);
+  color: var(--warn-text);
+}
+.hoop-sources {
+  font-size: 12px;
+  color: var(--muted);
+}
+.hoop-sources ul {
+  margin: 4px 0 0;
+  padding-left: var(--s-4);
+}
+
+.custom-hoop {
+  width: min(520px, calc(100vw - 32px));
+}
+.custom-hoop-body {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: var(--s-4);
+  align-items: start;
+}
+.custom-hoop-size {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--s-2);
+}
+.custom-hoop .field input {
+  padding: 6px 8px;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-sm);
+}
+.hoop-preview {
+  width: 140px;
+  height: 140px;
+  border-radius: var(--radius);
+  background: var(--well);
+}
+.hoop-preview rect,
+.hoop-preview ellipse {
+  fill: color-mix(in srgb, var(--accent) 14%, transparent);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.calibration {
+  width: min(560px, calc(100vw - 32px));
+}
+.calibration-stage {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  margin: var(--s-3) 0;
+  border-radius: var(--radius);
+  background: var(--well);
+  overflow: auto;
+}
+.calibration-card {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--text);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--text) 14%, transparent);
+  color: var(--text);
+  font-size: 12px;
+}
+
+.hoop-assist {
+  position: absolute;
+  top: calc(22px + var(--s-2) + 44px);
+  left: 50%;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  max-width: min(720px, calc(100% - 48px));
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius);
+  background: var(--sheet-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  font-size: 13px;
+  transform: translateX(-50%);
+}
+.hoop-assist.warn {
+  border-color: var(--warn-text);
+}
+.hoop-assist button {
+  flex: none;
+}
+
+/* ---- rulers, guides, placement ------------------------------------------- */
+
+.rulers {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.ruler {
+  position: absolute;
+  pointer-events: auto;
+  background: var(--sheet-bg);
+  user-select: none;
+}
+.ruler-top {
+  top: 0;
+  left: 22px;
+  border-bottom: 1px solid var(--glass-line);
+  cursor: row-resize;
+}
+.ruler-left {
+  top: 22px;
+  left: 0;
+  border-right: 1px solid var(--glass-line);
+  cursor: col-resize;
+}
+.ruler line {
+  stroke: var(--muted);
+  stroke-width: 1;
+}
+.ruler text {
+  fill: var(--muted);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
+.ruler-corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--glass-line);
+  border-bottom: 1px solid var(--glass-line);
+  border-radius: 0;
+  background: var(--sheet-bg);
+  color: var(--muted);
+  font-size: 9px;
+  pointer-events: auto;
+}
+.guides-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+.guide-line {
+  stroke: var(--guide);
+  stroke-width: 1;
+  stroke-dasharray: 5 3;
+}
+.guide-hit {
+  stroke: transparent;
+  stroke-width: 10;
+  pointer-events: stroke;
+  cursor: grab;
+}
+.guide-label,
+.placement-label,
+.placement-sub {
+  paint-order: stroke;
+  stroke: var(--canvas-bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  font-size: 11px;
+}
+.guide-label {
+  fill: var(--guide);
+  font-weight: 600;
+}
+.placement-area path,
+.placement-area rect {
+  fill: color-mix(in srgb, var(--accent) 9%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 7 4;
+}
+.placement-area .placement-welt {
+  fill: color-mix(in srgb, var(--accent) 25%, transparent);
+  stroke: none;
+}
+.placement-max {
+  fill: none;
+  stroke: var(--guide-2);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 3;
+}
+.placement-label {
+  fill: var(--text);
+  font-weight: 600;
+}
+.placement-sub {
+  fill: var(--guide-2);
+}
+
+/* ---- appearance menu ---------------------------------------------------- */
+
+.appearance {
+  position: relative;
+}
+.appearance-pop {
+  top: calc(100% + var(--s-2));
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  width: 280px;
+  padding: var(--s-3);
+}
+.appearance-pop p {
+  margin: 0;
+}
+.field-label {
+  color: var(--muted);
+}
+
+/* Without backdrop-filter (older WebKitGTK) the glass would be unreadable text on a busy window: go solid. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass-bg: var(--surface);
+    --sheet-bg: var(--surface);
+  }
+}
+
+/* ---- the colour wash ------------------------------------------------------
+   A soft, low-saturation wash (hibiscus pink, ocean blue, cream) behind everything, so the glass has
+   something to refract. Static: no animation. It is painted on the page behind the panels and never
+   behind the canvas card, which is opaque, so thread colours stay true. contrast.test.ts includes the
+   wash in its worst-case backdrops. */
+
+:root {
+  --wash-a: 0.09;
+  --wash-pink: 217, 48, 90;
+  --wash-blue: 35, 105, 201;
+  --wash-cream: 240, 226, 200;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --wash-a: 0.13;
+  }
+}
+:root[data-theme="dark"] {
+  --wash-a: 0.13;
+}
+.app {
+  position: relative;
+  isolation: isolate;
+}
+.app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(62vmax 52vmax at 10% 6%, rgba(var(--wash-pink), var(--wash-a)), transparent 62%),
+    radial-gradient(58vmax 48vmax at 94% 20%, rgba(var(--wash-blue), var(--wash-a)), transparent 64%),
+    radial-gradient(54vmax 54vmax at 58% 108%, rgba(var(--wash-cream), calc(var(--wash-a) * 1.5)), transparent 62%);
+}
+:root[data-reduce-transparency="true"] .app::before {
+  display: none;
+}
+
+/* ---- title strip: every item sits on glass, so it reads over any window behind it ---- */
+
+.app-nav button,
+.app-logo,
+.app-doc,
+.appearance-button {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: 0 0 0 1px var(--glass-line);
+}
+.app-nav button.active {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.app-logo,
+.app-doc {
+  padding: 5px 12px 5px 6px;
+  border-radius: 999px;
+}
+.app-doc {
+  padding-left: 12px;
+}
+.brand-mark {
+  border-radius: 7px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+/* ---- screens (Home, Converter): one glass sheet ---------------------------- */
+
+.app-view > .screen {
+  width: calc(100% - 24px);
+  height: calc(100% - 12px);
+  max-width: 1120px;
+  margin: 0 auto 12px;
+  padding: 32px clamp(20px, 5vw, 56px) 48px;
+  background: var(--material-content);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    var(--glass-shadow),
+    inset 0 1px 0 var(--glass-edge);
+}
+.screen h1 {
+  font-family: var(--font-serif);
+  font-size: var(--text-large-title);
+  line-height: 32px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+.screen h2 {
+  color: var(--muted);
+}
+
+.home-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  padding: var(--s-2) 0 var(--s-4);
+}
+.home-icon {
+  flex: none;
+  border-radius: 22px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.1),
+    0 10px 28px rgba(20, 16, 8, 0.22);
+}
+.home-welcome p {
+  max-width: 52ch;
+  margin: 0 0 var(--s-3);
+  font-size: var(--text-title-3);
+  line-height: 20px;
+}
+.lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 4px 12px;
+  border-radius: 999px;
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: var(--text-body);
+  letter-spacing: 0.04em;
+}
+.kadwood-wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text);
+}
+.kadwood-wordmark svg {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.quick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-1);
+  width: 100%;
+  height: 100%;
+  padding: var(--s-4);
+  border-radius: var(--radius);
+  background: var(--control-bg);
+  text-align: left;
+}
+.quick-card strong {
+  font-size: var(--text-title-3);
+}
+.quick-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--s-2);
+  border-radius: 12px;
+  background: var(--well);
+  color: var(--text);
+}
+.quick-card.primary-card {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+.quick-card.primary-card .muted {
+  color: inherit;
+  opacity: 0.9;
+}
+.quick-card.primary-card .quick-icon {
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+}
+.recent-card {
+  border-radius: var(--radius);
+  background: var(--control-bg);
+}
+
+/* ---- calibration to the macOS 27 UI kit ------------------------------------
+   Apple's macOS 27 design kit (Figma community file, extracted 2026-10-03) supersedes the HIG guesses
+   above where it gives numbers: window radius 16, toolbar 52 (padding 8 8 8 18, gap 8), traffic lights
+   at x18/y19 (14px, 9px gap), capsule controls 36 tall with 28px buttons and 4px padding, sidebar 240
+   wide with 24px rows and an 8px selection pill, 11px sidebar type (Medium 510, headers Bold), the
+   toolbar glass rim/inner-shade recipe, 6px/12px scrollbar. Not in the kit yet (so HIG/judgement
+   values stay): sheets, popovers, alerts, form controls, sliders, toggles.
+   Deliberate differences: the kit's Blue (#0078f0) is 4.2:1 on white, below AA for body text, so
+   --accent stays a deeper blue for text/buttons and the kit blue is kept as --mac-accent-blue (icons
+   and fills only); the kit's secondary label (#727272) is likewise too light on glass, so --muted
+   stays darker. Plain CSS cannot do the kit's plus-lighter/plus-darker blends everywhere, so the
+   rim and inner-shade shadows are used and the blends are approximated by the glass colour. */
+
+:root {
+  --mac-accent-blue: #0078f0;
+  --mac-window-radius: 16px;
+  --mac-toolbar-height: 52px;
+  --mac-control-height: 36px;
+  --mac-control-inner: 28px;
+  --mac-control-pad: 4px;
+  --mac-sidebar-row: 24px;
+  --mac-sidebar-pill: 8px;
+  --mac-weight-medium: 510;
+  --mac-weight-semibold: 590;
+  --seg-selected: #e6e6e6;
+  --seg-sep: #d9d9d9;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.5);
+  --glass-rim: 1.25px 0 0 -0.75px #d0d0d0, -1.25px 0 0 -0.75px #d0d0d0, 0 0 0 0.5px #e8e8e8, 0 8px 15px rgba(0, 0, 0, 0.02);
+  --glass-inner: inset 0 40px 10px -40px rgba(40, 40, 40, 0.5), inset 0 -40px 10px -40px rgba(40, 40, 40, 0.5), inset 0 40px 30px -40px #e6e6e6;
+  --r-window: var(--mac-window-radius);
+  --toolbar-h: var(--mac-toolbar-height);
+  --control-h: var(--mac-control-inner);
+  --w-sidebar: 240px;
+  --w-inspector: 296px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --mac-accent-blue: #0a99ff;
+    --seg-selected: #141414;
+    --seg-sep: #262626;
+    --scrollbar-thumb: rgba(255, 255, 255, 0.55);
+    --glass-rim: 1.25px 0 0 -0.75px #a6a6a6, -1.25px 0 0 -0.75px #a6a6a6, 0 0 0 0.5px #a6a6a6, 0 8px 15px rgba(0, 0, 0, 0.04);
+    --glass-inner: inset 0 40px 10px -40px rgba(26, 26, 26, 0.7), inset 0 -40px 10px -40px rgba(26, 26, 26, 0.7), inset 0 40px 30px -40px rgba(230, 230, 230, 0.5);
+  }
+}
+:root[data-theme="dark"] {
+  --mac-accent-blue: #0a99ff;
+  --seg-selected: #141414;
+  --seg-sep: #262626;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.55);
+  --glass-rim: 1.25px 0 0 -0.75px #a6a6a6, -1.25px 0 0 -0.75px #a6a6a6, 0 0 0 0.5px #a6a6a6, 0 8px 15px rgba(0, 0, 0, 0.04);
+  --glass-inner: inset 0 40px 10px -40px rgba(26, 26, 26, 0.7), inset 0 -40px 10px -40px rgba(26, 26, 26, 0.7), inset 0 40px 30px -40px rgba(230, 230, 230, 0.5);
+}
+
+/* the toolbar: 52 tall, 8px padding, 18 on the left; room for the traffic lights (x18 + 68 + gap) */
+.app-nav {
+  min-height: var(--toolbar-h);
+  padding: 8px 8px 8px 18px;
+  gap: 8px;
+}
+:root[data-titlebar="overlay"] .app-nav {
+  padding-left: 94px;
+}
+.topbar {
+  min-height: var(--toolbar-h);
+  padding: 8px 8px 8px 14px;
+  gap: 8px;
+}
+
+/* controls in a bar are 28px capsules (the kit's 36px capsule holds 28px buttons with 4px padding) */
+.topbar button,
+.app-nav button,
+.hud-group button,
+.palette-hint {
+  min-height: var(--mac-control-inner);
+  padding: 0 12px;
+  border-radius: 1000px;
+  font-weight: var(--mac-weight-medium);
+}
+.app-nav button,
+.appearance-button,
+.topbar button:not(.primary),
+.toolbar,
+.hud-group,
+.status-pill {
+  box-shadow:
+    var(--glass-rim),
+    var(--glass-inner);
+}
+.app-nav button.active {
+  box-shadow:
+    var(--glass-rim),
+    inset 0 0 0 2px var(--accent);
+}
+.toolbar {
+  padding: var(--mac-control-pad);
+  border-radius: 1000px;
+}
+.toolbar .tool {
+  border-radius: 1000px;
+}
+.project-name {
+  font-weight: 700;
+}
+
+/* sidebar / inspector rows: 24px, 11px Medium; section headers 11px Bold; selection pill radius 8 */
+.panel {
+  font-size: var(--text-callout);
+}
+.panel h2,
+.section > summary {
+  font-size: var(--text-subheadline);
+  font-weight: 700;
+  line-height: 14px;
+}
+.seq-row,
+.seq-group-head {
+  min-height: var(--mac-sidebar-row);
+  border-radius: var(--mac-sidebar-pill);
+  font-size: var(--text-subheadline);
+  font-weight: var(--mac-weight-medium);
+}
+.seq-row.selected {
+  background: var(--seg-selected);
+  outline: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+/* segmented control: a capsule whose selected item is a neutral fill, not an accent block */
+.segmented {
+  padding: 2px;
+  gap: 2px;
+  border-radius: 1000px;
+  background: var(--well);
+  box-shadow: inset 0 0 0 1px var(--glass-line);
+}
+.segmented button,
+.segmented button:first-child,
+.segmented button:last-child {
+  border: 0;
+  border-radius: 1000px;
+  background: transparent;
+  font-weight: var(--mac-weight-medium);
+}
+.segmented button.active {
+  background: var(--seg-selected);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--glass-line);
+}
+.segmented button:focus-visible {
+  outline-offset: 0;
+}
+
+/* scrollbars: 12px track, 6px rounded thumb */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 1000px;
+  background: var(--scrollbar-thumb);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

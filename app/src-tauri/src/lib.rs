@@ -233,6 +233,7 @@ pub fn run() {
             hoops::write_hoops_file,
             screen::screen_info,
             glass::window_material,
+            glass::reduce_transparency,
             quit::set_dirty,
             quit::quit_now,
         ])

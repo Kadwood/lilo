@@ -43,6 +43,10 @@ export function useShortcuts(controller: CanvasController): void {
         } else if (k === "d") {
           e.preventDefault();
           actions.duplicateSelection();
+        } else if (k === "0") {
+          // Actual size: the canvas owns the view, so ask it by event (like "fit")
+          e.preventDefault();
+          window.dispatchEvent(new Event("lilo:actual-size"));
         }
         return;
       }

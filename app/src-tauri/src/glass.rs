@@ -32,7 +32,8 @@ pub enum Material {
     LiquidGlass,
     /// macOS before 26: NSVisualEffectView, sidebar material.
     Vibrancy,
-    /// Windows 11 Mica.
+    /// Windows 11 Mica (only built on Windows).
+    #[allow(dead_code)]
     Mica,
     /// Nothing see-through (Linux, old Windows, or a failure): the page paints solid surfaces.
     Solid,
@@ -128,6 +129,23 @@ pub fn setup(app: &tauri::App) {
     match app.get_webview_window("main") {
         Some(window) => apply(app.handle(), &window),
         None => announce(app.handle(), Material::Solid),
+    }
+}
+
+/// Has the user asked macOS for "Reduce transparency" (System Settings > Accessibility > Display)?
+/// Always false elsewhere. The page also asks the browser (`prefers-reduced-transparency`); this is the
+/// answer that works inside the webview.
+#[tauri::command]
+pub fn reduce_transparency() -> bool {
+    #[cfg(target_os = "macos")]
+    {
+        use objc2_app_kit::NSWorkspace;
+        // `NSWorkspace.shared` and this property can be read from any thread
+        NSWorkspace::sharedWorkspace().accessibilityDisplayShouldReduceTransparency()
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        false
     }
 }
 
