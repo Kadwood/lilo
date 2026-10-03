@@ -5,7 +5,7 @@ import {
 } from "./index";
 import { flattenNodes, nodesFromPolyline, type PathNode } from "./path";
 import { compose, objectBox, rotation, satinOutline, transformObject, translation, unionBox, type Affine, type Box } from "./transform";
-import type { Design, DesignObject, FillObject, Pt, RunObject, SatinObject, Thread } from "./types";
+import type { Design, DesignObject, FillObject, MapGroup, MapToPathOptions, Pt, RunObject, SatinObject, Thread } from "./types";
 
 /** Pure editing helpers shared by the tools, the shape actions and the command palette. */
 
@@ -182,17 +182,6 @@ export function autoRedwork(objects: readonly DesignObject[], threadId: string, 
 
 // ---- map to path ------------------------------------------------------------------------------
 
-export interface MapToPathOptions {
-  /** "count": exactly `count` copies spread over the path. "spacing": as many as fit, `spacingMm` apart. */
-  mode: "count" | "spacing";
-  count: number;
-  spacingMm: number;
-  /** Turn each copy to follow the path's direction. */
-  rotate: boolean;
-  /** Start from the far end of the path. */
-  reverse: boolean;
-}
-
 export const DEFAULT_MAP_OPTIONS: MapToPathOptions = { mode: "count", count: 5, spacingMm: 8, rotate: true, reverse: false };
 
 export interface PathStop {
@@ -254,7 +243,11 @@ export function mapToPath(sources: readonly DesignObject[], path: readonly Pt[],
 // ---- duplicate / box helpers ------------------------------------------------------------------
 
 export function duplicateObjects(objects: readonly DesignObject[], newId: () => string, dx = 3, dy = 3): DesignObject[] {
-  return objects.map((o) => ({ ...transformObject(o, translation(dx, dy)), id: newId(), name: `${o.name} copy` }));
+  return objects.map((o) => {
+    const copy = { ...transformObject(o, translation(dx, dy)), id: newId(), name: `${o.name} copy` };
+    delete copy.mapGroup; // a duplicate is its own thing, not another stop on the path
+    return copy;
+  });
 }
 
 /** Size of a box in mm. */
@@ -267,4 +260,34 @@ export function resizeAbout(b: Box, w: number, h: number, anchor: Pt = [b.minX, 
   const cw = b.maxX - b.minX || 1;
   const ch = b.maxY - b.minY || 1;
   return compose(translation(-anchor[0], -anchor[1]), compose([w / cw, 0, 0, h / ch, 0, 0], translation(anchor[0], anchor[1])));
+}
+
+/**
+ * Create or update a live map-to-path group on a design (mutates; call inside an Immer recipe).
+ * The group's copies replace the originals (new group) or the previous copies (existing group), at
+ * the position of the first object they replace. Returns the ids of the copies.
+ */
+export function applyMapGroup(design: Design, groupId: string, group: MapGroup, newId: () => string, replaceIds: readonly string[] = []): string[] {
+  const copies = mapToPath(group.sources, group.path, group.closed, group.options, newId).map((c) => ({ ...c, mapGroup: groupId }));
+  const gone = new Set([...replaceIds, ...design.objects.filter((o) => o.mapGroup === groupId).map((o) => o.id)]);
+  let at = design.objects.findIndex((o) => gone.has(o.id));
+  if (at < 0) at = design.objects.length;
+  const kept = design.objects.filter((o) => !gone.has(o.id));
+  // removing earlier objects shifts the insertion point left
+  const before = design.objects.slice(0, at).filter((o) => gone.has(o.id)).length;
+  kept.splice(at - before, 0, ...copies);
+  design.objects = kept;
+  design.mapGroups = { ...design.mapGroups, [groupId]: group };
+  return copies.map((c) => c.id);
+}
+
+/** Make a map group's copies ordinary objects again. Mutates (Immer recipe). */
+export function detachMapGroup(design: Design, groupId: string): void {
+  for (const o of design.objects) if (o.mapGroup === groupId) delete o.mapGroup;
+  if (design.mapGroups) {
+    const rest = { ...design.mapGroups };
+    delete rest[groupId];
+    design.mapGroups = Object.keys(rest).length ? rest : undefined;
+    if (!design.mapGroups) delete design.mapGroups;
+  }
 }

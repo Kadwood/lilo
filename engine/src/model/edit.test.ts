@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_MAP_OPTIONS,
+  applyMapGroup,
+  detachMapGroup,
   autoRedwork,
   compose,
   deleteNode,
@@ -213,5 +215,43 @@ describe("map to path", () => {
     const flat = mapToPath(d.objects, bent, false, { ...DEFAULT_MAP_OPTIONS, count: 3, rotate: false }, makeIdGen(d));
     const w = (o: DesignObject) => objectBox(o)!.maxX - objectBox(o)!.minX;
     expect(w(flat[1])).toBeCloseTo(10);
+  });
+});
+
+describe("live map groups", () => {
+  const setup = () => {
+    const d = emptyDesign();
+    d.threads = [];
+    d.objects = [sq(), line()];
+    return d;
+  };
+  const group = (count: number) => ({ sources: [sq()], path: [[0, 0], [30, 0]] as Pt[], closed: false, options: { ...DEFAULT_MAP_OPTIONS, count } });
+
+  it("replaces the source (and path) with tagged copies, in place, and can be re-run with a new count", () => {
+    const d = setup();
+    const id = makeIdGen(d);
+    const ids = applyMapGroup(d, "g1", group(3), id, ["o1", "o2"]);
+    expect(ids).toHaveLength(3);
+    expect(d.objects).toHaveLength(3);
+    expect(d.objects.every((o) => o.mapGroup === "g1")).toBe(true);
+    applyMapGroup(d, "g1", group(5), id);
+    expect(d.objects).toHaveLength(5);
+    expect(d.mapGroups?.g1.options.count).toBe(5);
+  });
+
+  it("detach leaves ordinary objects and forgets the group", () => {
+    const d = setup();
+    applyMapGroup(d, "g1", group(2), makeIdGen(d), ["o1"]);
+    detachMapGroup(d, "g1");
+    expect(d.objects.some((o) => o.mapGroup)).toBe(false);
+    expect(d.mapGroups).toBeUndefined();
+    expect(d.objects).toHaveLength(3); // 2 copies + the untouched line
+  });
+
+  it("a duplicate of a mapped copy is not part of the group", () => {
+    const d = setup();
+    applyMapGroup(d, "g1", group(2), makeIdGen(d), ["o1"]);
+    const [copy] = duplicateObjects([d.objects[0]], makeIdGen(d));
+    expect(copy.mapGroup).toBeUndefined();
   });
 });

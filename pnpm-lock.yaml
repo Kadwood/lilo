@@ -29,6 +29,9 @@ importers:
       '@tauri-apps/plugin-opener':
         specifier: ^2.7.0
         version: 2.7.0
+      immer:
+        specifier: ^11.1.21
+        version: 11.1.21
       pixi.js:
         specifier: 8.22.0
         version: 8.22.0
@@ -41,6 +44,9 @@ importers:
       vtracer-wasm:
         specifier: 0.1.0
         version: 0.1.0
+      zustand:
+        specifier: ^5.0.15
+        version: 5.0.15(@types/react@19.3.0)(immer@11.1.21)(react@19.3.0)
     devDependencies:
       '@testing-library/dom':
         specifier: ^10.4.2
@@ -683,6 +689,9 @@ packages:
   image-q@4.0.0:
     resolution: {integrity: sha512-PfJGVgIfKQJuq3s0tTDOKtztksibuUEbJQIYT3by6wctQo+Rdlh7ef4evJ5NCdxY4CfMbvFkocEwbl4BF8RlJw==}
 
+  immer@11.1.21:
+    resolution: {integrity: sha512-bZSadeCPGdaY5/qRLgr6mDSH1ra21rD3rqpiWk7+QTr4ayYPTE9qZYdLh/NdPhMe0wSrTvHD/Lk8q5EwhUs0aw==}
+
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
 
@@ -1031,6 +1040,24 @@ packages:
 
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
+
+  zustand@5.0.15:
+    resolution: {integrity: sha512-MpSEjRiBkA9crSYeOUH32rJC7SVqAbm0Fqcqge/bUi2PPoLcBWKOsG+C8mevmpr8TwXHBVkChbbJiyvkE+i/3A==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
 
 snapshots:
 
@@ -1438,6 +1465,8 @@ snapshots:
     dependencies:
       '@types/node': 16.9.1
 
+  immer@11.1.21: {}
+
   is-potential-custom-element-name@1.0.1: {}
 
   ismobilejs@1.1.1: {}
@@ -1737,3 +1766,9 @@ snapshots:
   xml-name-validator@5.0.0: {}
 
   xmlchars@2.2.0: {}
+
+  zustand@5.0.15(@types/react@19.3.0)(immer@11.1.21)(react@19.3.0):
+    optionalDependencies:
+      '@types/react': 19.3.0
+      immer: 11.1.21
+      react: 19.3.0

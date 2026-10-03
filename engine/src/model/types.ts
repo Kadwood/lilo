@@ -187,6 +187,28 @@ interface ObjectBase {
   /** Where sewing of this object should start / end (mm). Optional; the generator picks the nearest vertex. */
   startPoint?: Pt;
   endPoint?: Pt;
+  /** Id of the `Design.mapGroups` entry this object was mapped to a path by, until it is detached. */
+  mapGroup?: string;
+}
+
+/** How a selection is repeated along a path (the "map to path" action). */
+export interface MapToPathOptions {
+  /** "count": exactly `count` copies spread over the path. "spacing": as many as fit, `spacingMm` apart. */
+  mode: "count" | "spacing";
+  count: number;
+  spacingMm: number;
+  /** Turn each copy to follow the path's direction. */
+  rotate: boolean;
+  /** Start from the far end of the path. */
+  reverse: boolean;
+}
+
+/** A live "map to path": the originals and the path, kept so the mapping can be edited until detached. */
+export interface MapGroup {
+  sources: DesignObject[];
+  path: Pt[];
+  closed: boolean;
+  options: MapToPathOptions;
 }
 
 export interface FillObject extends ObjectBase {
@@ -218,4 +240,6 @@ export interface Design {
   threads: Thread[];
   /** Stitch order. */
   objects: DesignObject[];
+  /** Live map-to-path groups by id. Objects point at one through `mapGroup`. */
+  mapGroups?: Record<string, MapGroup>;
 }
