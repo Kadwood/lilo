@@ -62,7 +62,10 @@ export function EditorProvider({ children, initialDesign }: { children: ReactNod
   const core = useMemo(() => createEditorStore(engine), [engine]);
   const player = useMemo(() => new PlayerController(), []);
 
-  useEffect(() => () => core.dispose(), [core]);
+  useEffect(() => {
+    core.activate();
+    return () => core.dispose();
+  }, [core]);
 
   // Seed (tests, opening a project).
   useEffect(() => {

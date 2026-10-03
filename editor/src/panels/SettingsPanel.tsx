@@ -345,7 +345,8 @@ function FillSettings({ fills, editFills, done }: { fills: FillObject[]; editFil
       )}
 
       <Section title="Underlay" help="Light stitches sewn first, under the pattern, to hold the fabric flat. Add several passes at different angles for heavy fills." open={false} id="underlay">
-        {!hasUnderlays && <Toggle label="Underlay" checked={p.underlay} onChange={(v) => editFills("Underlay", "underlay", (q) => void (q.underlay = v))} help="One light pass at right angles to the fill." />}
+        {!hasUnderlays && info.underlay && <Toggle label="Underlay" checked={p.underlay} onChange={(v) => editFills("Underlay", "underlay", (q) => void (q.underlay = v))} help="One light pass at right angles to the fill." />}
+        {!hasUnderlays && !info.underlay && <p className="muted small">Open patterns skip the automatic underlay, which would show through the gaps. Add passes below if you want one.</p>}
         {!hasUnderlays && (
           <button onClick={() => editFills("Custom underlays", "ulist", (q) => void (q.underlays = [{ angleDeg: q.angleDeg + 90, spacingMm: 2.5, stitchLengthMm: 3.5, insetMm: 0.5 }]))}>Customise underlays…</button>
         )}

@@ -50,6 +50,16 @@ describe("pattern fills in the plan", () => {
     expect(two).toBeGreaterThan(one);
   });
 
+  it("open patterns skip the automatic underlay (it would show through the gaps) but keep hand-made passes", () => {
+    const withAuto = needle(plan(fill({ pattern: "hearts-m", underlay: true }))).length;
+    const without = needle(plan(fill({ pattern: "hearts-m", underlay: false }))).length;
+    expect(withAuto).toBe(without);
+    const custom = needle(plan(fill({ pattern: "hearts-m", underlays: [{ angleDeg: 0, spacingMm: 3, stitchLengthMm: 3.5, insetMm: 0.5 }] }))).length;
+    expect(custom).toBeGreaterThan(without);
+    // dense patterns still get it
+    expect(needle(plan(fill({ pattern: "waves", underlay: true }))).length).toBeGreaterThan(needle(plan(fill({ pattern: "waves", underlay: false }))).length);
+  });
+
   it("hand stitch and gradient route through our own fill engine and stay deterministic", () => {
     const a = plan(fill({ handStitch: 3 }));
     const b = plan(fill({ handStitch: 3 }));

@@ -1,7 +1,7 @@
 import { Core, Math as StitchMath } from "@stitchables/stitchjs";
 import { bufferGeom, polygonFromRings, polygonsOf, ringsOf } from "../geom";
 import type { Design, DesignObject, FillObject, FillUnderlay, Pt, SatinObject } from "../model";
-import { DEFAULT_FILL_PATTERN } from "../model";
+import { DEFAULT_FILL_PATTERN, patternInfo } from "../model";
 import { generateFill, hashString } from "./fills";
 import type { PlanStitch, PlanWarning, StitchPlan, StitchType } from "./plan";
 import { PX, STITCHJS_JUMP, closedV, polylineRun, reversedStrip, runObjectRuns, satinOptions, toV, widenStrip, type IRun } from "./runs";
@@ -87,8 +87,11 @@ function fillRuns(o: FillObject, from: Pt, next: Pt): IRun[] {
   const hand = p.handStitch ?? 0;
   // Plain tatami keeps stitchjs's router; anything else (patterns, gradient, hand stitch) is ours.
   const usePatternEngine = pattern !== DEFAULT_FILL_PATTERN || !!p.gradient || hand > 0;
+  // Open patterns (motifs, crosshatch...) would show a plain underlay through their gaps, so only
+  // hand-made underlay passes apply to them.
+  const autoUnderlay = p.underlay && patternInfo(pattern).underlay;
   const underlays: FillUnderlay[] =
-    p.underlays ?? (p.underlay ? [{ angleDeg: p.angleDeg + 90, spacingMm: UNDERLAY_ROW_SPACING_MM, stitchLengthMm: UNDERLAY_STITCH_MM, insetMm: UNDERLAY_INSET_MM }] : []);
+    p.underlays ?? (autoUnderlay ? [{ angleDeg: p.angleDeg + 90, spacingMm: UNDERLAY_ROW_SPACING_MM, stitchLengthMm: UNDERLAY_STITCH_MM, insetMm: UNDERLAY_INSET_MM }] : []);
 
   for (const part of polygonsOf(grown)) {
     if (part.getArea() < 0.05) continue;

@@ -17,7 +17,7 @@ export function CommandPalette({ openImage, fit }: Pick<CommandHost, "openImage"
     if (open) {
       setQuery("");
       setIndex(0);
-      requestAnimationFrame(() => input.current?.focus());
+      input.current?.focus();
     }
   }, [open]);
   useEffect(() => setIndex(0), [query]);
@@ -42,6 +42,7 @@ export function CommandPalette({ openImage, fit }: Pick<CommandHost, "openImage"
           aria-controls="palette-list"
           aria-activedescendant={shown[index] ? `cmd-${shown[index].id}` : undefined}
           placeholder="Type a command or tool…"
+          autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {

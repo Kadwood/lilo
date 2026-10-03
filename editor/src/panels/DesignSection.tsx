@@ -9,7 +9,7 @@ import { ThreadPicker } from "./ThreadPicker";
 const CUSTOM = "custom";
 
 /** The hoop selector (with an outline on the canvas) and the colour new shapes are drawn in. */
-export function HoopSelect({ compact = false }: { compact?: boolean }) {
+export function HoopSelect({ compact = false }: { compact?: boolean } = {}) {
   const { state, actions } = useEditor();
   const hoop = state.design?.hoop ?? emptyDesign().hoop;
   const preset = HOOPS.find((h) => h.widthMm === hoop.widthMm && h.heightMm === hoop.heightMm && h.name === hoop.name);
@@ -19,7 +19,6 @@ export function HoopSelect({ compact = false }: { compact?: boolean }) {
   return (
     <div className={`hoop-select${compact ? " compact" : ""}`}>
       <label>
-        {!compact && <span className="field-label">Hoop</span>}
         <select
           aria-label="Hoop"
           value={value}

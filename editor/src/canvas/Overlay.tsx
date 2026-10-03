@@ -59,7 +59,7 @@ export function Overlay({ controller, view }: Props) {
   const nodes: ReactNode[] = [];
 
   // ---- selection ----------------------------------------------------------------------------
-  const outlines = shown.map((o) => <path key={`sel-${o.id}`} className="ov-outline" d={outlineD(o)} {...stroke} />);
+  const outlines = shown.map((o) => <path key={`sel-${o.id}`} className={o.kind === "run" ? "ov-outline open" : "ov-outline"} d={outlineD(o)} {...stroke} />);
 
   const showHandles = tool === "select" && mode === "none" && box && sel.length > 0;
   const locked = sel.length > 0 && sel.every((o) => o.locked);

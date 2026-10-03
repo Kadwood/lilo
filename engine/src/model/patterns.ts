@@ -37,11 +37,16 @@ export interface PatternInfo {
   guided?: boolean;
   /** Stitch angle the picker applies when this pattern is chosen (motifs look best upright). */
   defaultAngleDeg: number;
+  /**
+   * Does the automatic underlay suit this pattern? Open patterns (motifs, crosshatch...) would show
+   * it through the gaps, so they get none unless the user adds underlay passes by hand.
+   */
+  underlay: boolean;
 }
 
-const size = (def: number): PatternSetting => ({
+const size = (def: number, label = "Size"): PatternSetting => ({
   key: "size",
-  label: "Size",
+  label,
   min: 2,
   max: 20,
   step: 0.5,
@@ -49,7 +54,7 @@ const size = (def: number): PatternSetting => ({
   help: "Width of each repeated shape in millimetres.",
 });
 
-const rows = (id: string, label: string, help: string, settings: PatternSetting[] = [], origin: PatternInfo["origin"] = "ember"): PatternInfo => ({
+const rows = (id: string, label: string, help: string, settings: PatternSetting[] = [], origin: PatternInfo["origin"] = "ember", underlay = true): PatternInfo => ({
   id,
   label,
   family: "rows",
@@ -58,6 +63,7 @@ const rows = (id: string, label: string, help: string, settings: PatternSetting[
   settings,
   gradient: true,
   defaultAngleDeg: 45,
+  underlay,
 });
 const motif = (id: string, label: string, help: string, def: number, origin: PatternInfo["origin"] = "ember", extra: PatternSetting[] = []): PatternInfo => ({
   id,
@@ -65,9 +71,10 @@ const motif = (id: string, label: string, help: string, def: number, origin: Pat
   family: "motif",
   origin,
   help,
-  settings: [size(def), ...extra],
+  settings: [size(def, id === "hexweave" ? "Cell size" : "Size"), ...extra],
   gradient: false,
   defaultAngleDeg: 0,
+  underlay: false,
 });
 const path = (id: string, label: string, help: string, settings: PatternSetting[], extra: Partial<PatternInfo> = {}, origin: PatternInfo["origin"] = "ember"): PatternInfo => ({
   id,
@@ -78,6 +85,7 @@ const path = (id: string, label: string, help: string, settings: PatternSetting[
   settings,
   gradient: false,
   defaultAngleDeg: 45,
+  underlay: true,
   ...extra,
 });
 
@@ -139,20 +147,20 @@ export const FILL_PATTERNS: readonly PatternInfo[] = [
   motif("chevrons", "Chevrons", "Stacked V shapes that join into zig-zag lines.", 4, "lilo"),
   rows("crosshatch", "Crosshatch", "Two sets of thin lines crossing at right angles.", [
     { key: "pitch", label: "Line pitch", min: 0.6, max: 6, step: 0.1, default: 1.4, help: "Distance between the lines in each direction." },
-  ], "lilo"),
+  ], "lilo", false),
   path("sunburst", "Sunburst", "Straight rays fanning out from the centre.", [
     { key: "pitch", label: "Ray pitch", min: 0.4, max: 5, step: 0.1, default: 1.2, help: "Distance between neighbouring rays at the outer edge." },
-  ], { centred: true }, "lilo"),
+  ], { centred: true, underlay: false }, "lilo"),
   path("contour", "Contour", "Echoes of the shape's outline, stepping inward to the middle.", [
     { key: "pitch", label: "Ring pitch", min: 0.3, max: 4, step: 0.1, default: 0.6, help: "Distance between each ring and the next." },
   ], {}, "lilo"),
   path("stipple", "Stipple", "A random scribble of short stitches joined into a mesh.", [
     { key: "pitch", label: "Dot spacing", min: 0.8, max: 5, step: 0.1, default: 1.8, help: "Average distance between dots." },
-  ], {}, "lilo"),
+  ], { underlay: false }, "lilo"),
   motif("honeycomb", "Honeycomb", "Hexagon outlines sharing their edges.", 5, "lilo"),
   rows("plaid", "Plaid", "Bands of three tight lines, crossing at right angles with open gaps.", [
     { key: "pitch", label: "Band pitch", min: 2, max: 12, step: 0.5, default: 4, help: "Distance from one band to the next." },
-  ], "lilo"),
+  ], "lilo", false),
 ];
 
 export const FILL_PATTERN_IDS: readonly string[] = FILL_PATTERNS.map((p) => p.id);

@@ -82,7 +82,7 @@ export function Field({ label, value, min, max, step, onChange, onDone, help, un
 export function Toggle({ label, checked, onChange, help }: { label: string; checked: boolean; onChange: (v: boolean) => void; help?: string }) {
   return (
     <label className="toggle-line">
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <input type="checkbox" aria-label={label} checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span>{label}</span>
       {help && <HelpTip text={help} />}
     </label>

@@ -199,6 +199,8 @@ describe("drawing tools", () => {
     const o = t.objs()[0] as FillObject;
     expect(o.kind).toBe("fill");
     expect(o.geometry.shell).toHaveLength(3);
+    expect(t.st().tool).toBe("select"); // a finished shape returns to Select
+    t.core.actions.setTool("closed");
     t.click(30, 0);
     t.click(40, 0);
     t.click(40, 10);
@@ -246,6 +248,7 @@ describe("drawing tools", () => {
     const t = setup([], "rect");
     t.drag(0, 0, 20, 10);
     expect(objectBox(t.objs()[0])).toEqual({ minX: 0, minY: 0, maxX: 20, maxY: 10 });
+    t.core.actions.setTool("rect");
     t.drag(30, 0, 50, 10, { ctrl: true });
     expect(objectBox(t.objs()[1])).toEqual({ minX: 30, minY: 0, maxX: 50, maxY: 20 });
   });
@@ -256,9 +259,11 @@ describe("drawing tools", () => {
     const e = objectBox(t.objs()[0])!;
     expect(e.maxX - e.minX).toBeCloseTo(20, 0);
     expect(e.maxY - e.minY).toBeCloseTo(10, 0);
+    t.core.actions.setTool("circle");
     t.drag(40, 0, 60, 10, { ctrl: true });
     const c = objectBox(t.objs()[1])!;
     expect(c.maxX - c.minX).toBeCloseTo(c.maxY - c.minY, 0);
+    t.core.actions.setTool("circle");
     t.drag(0, 0, 0.01, 0.01);
     expect(t.objs()).toHaveLength(2);
   });
@@ -272,6 +277,7 @@ describe("drawing tools", () => {
     expect(run.kind).toBe("run");
     expect(run.geometry.nodes!.length).toBeLessThan(25);
     // a closed loop
+    t.core.actions.setTool("pen");
     t.c.pointerDown(t.ev(10, 20));
     for (let k = 1; k <= 40; k++) {
       const a = (k / 40) * Math.PI * 2;

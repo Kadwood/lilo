@@ -547,6 +547,10 @@ export class CanvasController {
   private newId(): string {
     return makeIdGen(this.s.design ?? { version: 1, unitsMm: 1, hoop: { name: "", widthMm: 0, heightMm: 0 }, threads: [], objects: [] })();
   }
+  /** A finished shape returns to the Select tool, so its handles and shape actions are right there. */
+  private created(): void {
+    this.a.setTool("select");
+  }
   private ensureDefaultThread() {
     // a brand-new design starts with no threads; the active thread is added by addObjects
     if (!this.s.threadId) this.a.setThread(this.threadId());
@@ -587,16 +591,24 @@ export class CanvasController {
     if (d.kind === "satin") {
       const pts = d.nodes.map((n) => n.p);
       const even = pts.length - (pts.length % 2);
-      if (even >= 4) this.a.addObjects([makeSatin(id, this.nextName("Satin"), t, pts.slice(0, even))], "Draw satin");
+      if (even >= 4) {
+        this.a.addObjects([makeSatin(id, this.nextName("Satin"), t, pts.slice(0, even))], "Draw satin");
+        this.created();
+      }
     } else if (d.kind === "manual") {
       if (d.nodes.length >= 2) {
         const o = makeRun(id, this.nextName("Stitches"), t, d.nodes, false, { ...DEFAULT_RUN_PARAMS, type: "manual" });
         this.a.addObjects([o], "Place stitches");
+        this.created();
       }
     } else if (d.closed) {
-      if (d.nodes.length >= 3) this.a.addObjects([makeFill(id, this.nextName("Shape"), t, d.nodes)], "Draw shape");
+      if (d.nodes.length >= 3) {
+        this.a.addObjects([makeFill(id, this.nextName("Shape"), t, d.nodes)], "Draw shape");
+        this.created();
+      }
     } else if (d.nodes.length >= 2) {
       this.a.addObjects([makeRun(id, this.nextName("Path"), t, d.nodes, false)], "Draw path");
+      this.created();
     }
   }
 
@@ -608,9 +620,11 @@ export class CanvasController {
     const t = this.threadId();
     if (d.shape === "rect") {
       this.a.addObjects([makeFill(id, this.nextName("Rectangle"), t, rectNodes(b.minX, b.minY, b.maxX, b.maxY))], "Draw rectangle");
+      this.created();
     } else {
       const nodes = ellipseNodes((b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2, (b.maxX - b.minX) / 2, (b.maxY - b.minY) / 2);
       this.a.addObjects([makeFill(id, this.nextName("Circle"), t, nodes)], "Draw circle");
+      this.created();
     }
   }
 
@@ -625,9 +639,13 @@ export class CanvasController {
     const closed = d.pts.length >= 8 && dist(d.pts[0], d.pts[d.pts.length - 1]) < Math.max(3, pathLen * 0.08);
     if (closed) {
       const nodes = smoothStroke(d.pts.slice(0, -1), 0.3).map((n) => ({ ...n, curve: true }));
-      if (nodes.length >= 3) this.a.addObjects([makeFill(id, this.nextName("Freehand"), t, nodes)], "Draw freehand shape");
+      if (nodes.length >= 3) {
+        this.a.addObjects([makeFill(id, this.nextName("Freehand"), t, nodes)], "Draw freehand shape");
+        this.created();
+      }
     } else {
       this.a.addObjects([makeRun(id, this.nextName("Freehand"), t, smoothStroke(d.pts, 0.3), false)], "Draw freehand line");
+      this.created();
     }
   }
 
@@ -790,6 +808,7 @@ export class CanvasController {
     this.draft = null;
     this.drag = null;
     this.nodeSel = null;
+    this.measureLine = null;
     this.changed();
   }
 

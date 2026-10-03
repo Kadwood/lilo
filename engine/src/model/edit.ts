@@ -234,7 +234,7 @@ export function mapToPath(sources: readonly DesignObject[], path: readonly Pt[],
     const m: Affine = compose(compose(translation(-centre[0], -centre[1]), rotation(turn)), translation(s.p[0], s.p[1]));
     for (const src of sources) {
       const copy = transformObject(src, m);
-      out.push({ ...copy, id: newId(), name: `${src.name} ${i + 1}` });
+      out.push({ ...copy, id: newId(), name: `${src.name} (${i + 1})` });
     }
   });
   return out;

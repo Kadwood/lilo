@@ -309,7 +309,9 @@ export interface EditorActions {
 export interface EditorStore {
   store: StoreApi<EditorState>;
   actions: EditorActions;
+  /** Stop timers and ignore in-flight engine results. Reversible with `activate` (React StrictMode mounts effects twice). */
   dispose(): void;
+  activate(): void;
 }
 
 /** The default thread for new shapes: Brother black, else the catalogue's first colour. */
@@ -853,6 +855,11 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       disposed = true;
       if (planTimer) clearTimeout(planTimer);
       if (digitizeTimer) clearTimeout(digitizeTimer);
+    },
+    activate() {
+      disposed = false;
+      // a re-stitch that was cancelled by dispose is still owed
+      if (get().planning) schedulePlan();
     },
   };
 }
