@@ -173,6 +173,7 @@ function setupDemo() {
   const stagesEl = $("stages");
   const toggle = $<HTMLButtonElement>("demo-toggle");
   const h = data.hero;
+  const v = canvas.dataset.v ?? "";
   const W = canvas.width;
   const H = canvas.height;
 
@@ -331,11 +332,11 @@ function setupDemo() {
         res();
       };
       i.onerror = rej;
-      i.src = `/demo/${name}.webp`;
+      i.src = `/demo/${name}.webp?v=${v}`;
     });
 
   async function load() {
-    const [d] = await Promise.all([fetch("/demo/demo.json").then((r) => r.json() as Promise<Demo>), ...["fabric", "final", "source", "trace"].map(loadImg)]);
+    const [d] = await Promise.all([fetch(`/demo/demo.json?v=${v}`).then((r) => r.json() as Promise<Demo>), ...["fabric", "final", "source", "trace"].map(loadImg)]);
     prepare(d);
     loaded = true;
     if (reduce) {
@@ -352,7 +353,8 @@ function setupDemo() {
   });
 
   // lazy: nothing is fetched (~190 KB) until the card is near the screen
-  const start = () => void load().catch(() => undefined);
+  // on any failure the canvas stays clear and its CSS background shows the finished piece
+  const start = () => void load().catch(() => { if (toggle) toggle.hidden = true; });
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
       (es) => {

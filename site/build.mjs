@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 // Static site build: locales + docs/compat.json + latest-release downloads -> site/dist.
 //   node build.mjs          build once
 //   node build.mjs --dev    build, serve on :4321 and rebuild on change
@@ -69,7 +70,12 @@ async function buildOnce() {
 
   const compat = readJson(join(here, "../docs/compat.json"));
   const demo = readJson(join(here, "public/demo/demo.json"));
-  const demoInfo = { stitches: demo.stats.stitches, width: demo.width, height: demo.height };
+  // Version stamp for /demo/* so a cached older demo can never be mixed with a newer page.
+  const demoV = createHash("sha256")
+    .update(["demo.json", "fabric.webp", "final.webp", "source.webp", "trace.webp"].map((f) => readFileSync(join(here, "public/demo", f))).reduce((a, x) => Buffer.concat([a, x]), Buffer.alloc(0)))
+    .digest("hex")
+    .slice(0, 10);
+  const demoInfo = { stitches: demo.stats.stitches, width: demo.width, height: demo.height, v: demoV };
 
   const locales = loadLocales();
   // the manual: docs/guide at the repo root (absent on branches that predate it: the build then makes a stub)
