@@ -33,7 +33,7 @@ import {
   type RunObject,
   type Thread,
 } from "@lilo/engine/light";
-import type { AutoDigitizeOptions, ImageDataLike, PaletteChip, StageEvent, UnitsToMm } from "@lilo/engine";
+import type { AutoDigitizeOptions, FabricId, ImageDataLike, PaletteChip, Quality, StageEvent, ThreadWeight, UnitsToMm } from "@lilo/engine";
 import type { EngineClient, DigitizeResponse, PlanResult } from "../engine/client";
 import { decodeFile, type DecodedImport } from "../io/decode";
 import type { ToolId } from "../tools/registry";
@@ -54,6 +54,10 @@ export interface DigitizeUiOptions {
   aspectLock: boolean;
   minRegionMm2: number;
   removeBackground: boolean;
+  /** Sewing setup (see the engine's `resolveSewingSetup`): Premium follows what a professional digitizer would do. */
+  quality: Quality;
+  threadWeight: ThreadWeight;
+  fabric: FabricId;
 }
 
 export const DEFAULT_UI_OPTIONS: DigitizeUiOptions = {
@@ -64,6 +68,9 @@ export const DEFAULT_UI_OPTIONS: DigitizeUiOptions = {
   aspectLock: true,
   minRegionMm2: 2,
   removeBackground: true,
+  quality: "standard",
+  threadWeight: 40,
+  fabric: "suiting",
 };
 
 export type Status = { kind: "idle" } | { kind: "working"; stage: string } | { kind: "error"; message: string };
@@ -209,6 +216,7 @@ export function toEngineOptions(o: DigitizeUiOptions): Partial<AutoDigitizeOptio
     heightMm: o.heightMm ?? undefined,
     minRegionMm2: o.minRegionMm2,
     removeBackground: o.removeBackground,
+    setup: { quality: o.quality, threadWeight: o.threadWeight, fabric: o.fabric },
   };
 }
 

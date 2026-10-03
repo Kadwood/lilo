@@ -36,6 +36,7 @@ const UNDERLAYS: { id: SatinUnderlay; label: string }[] = [
   { id: "center", label: "Center run" },
   { id: "contour", label: "Contour" },
   { id: "zigzag", label: "Zig-zag" },
+  { id: "contour-zigzag", label: "Contour + zig-zag" },
 ];
 
 const runTypeOf = (o: RunObject): RunType => o.params.type ?? (o.params.repeats === 3 ? "triple" : "single");

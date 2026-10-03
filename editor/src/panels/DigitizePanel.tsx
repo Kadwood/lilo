@@ -1,5 +1,6 @@
 import { useMemo, type ReactNode } from "react";
-import { CATALOGUES, designBounds } from "@lilo/engine/light";
+import type { FabricId, Quality, ThreadWeight } from "@lilo/engine/light";
+import { CATALOGUES, FABRICS, FABRIC_IDS, QUALITIES, QUALITY_IDS, THREAD_WEIGHTS, THREAD_WEIGHT_IDS, designBounds, resolveSewingSetup } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
@@ -124,6 +125,40 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
           ))}
         </select>
       </label>
+
+      <label className="field">
+        Quality
+        <select value={options.quality} aria-label="Quality" onChange={(e) => actions.setOptions({ quality: e.target.value as Quality })}>
+          {QUALITY_IDS.map((q) => (
+            <option key={q} value={q}>
+              {QUALITIES[q].label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        Thread weight
+        <select value={options.threadWeight} aria-label="Thread weight" onChange={(e) => actions.setOptions({ threadWeight: Number(e.target.value) as ThreadWeight })}>
+          {THREAD_WEIGHT_IDS.map((w) => (
+            <option key={w} value={w}>
+              {THREAD_WEIGHTS[w].label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="field">
+        Fabric
+        <select value={options.fabric} aria-label="Fabric" onChange={(e) => actions.setOptions({ fabric: e.target.value as FabricId })}>
+          {FABRIC_IDS.map((f) => (
+            <option key={f} value={f}>
+              {FABRICS[f].label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="muted small" aria-label="Sewing setup summary">
+        {resolveSewingSetup({ quality: options.quality, threadWeight: options.threadWeight, fabric: options.fabric }).summary}
+      </p>
 
       <button className="primary wide" onClick={() => void actions.digitize()} disabled={!source || working}>
         {working ? "Digitizing…" : "Digitize"}

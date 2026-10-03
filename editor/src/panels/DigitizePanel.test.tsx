@@ -50,6 +50,19 @@ describe("DigitizePanel", () => {
     expect(lastEditor!.state.options.minRegionMm2).toBe(5);
   });
 
+  it("has Quality, Thread weight and Fabric selects that feed the engine options", () => {
+    renderEditor(<DigitizePanel onOpen={() => {}} />);
+    const q = screen.getByLabelText("Quality") as HTMLSelectElement;
+    expect(q.value).toBe("standard");
+    fireEvent.change(q, { target: { value: "premium" } });
+    expect(lastEditor!.state.options.quality).toBe("premium");
+    fireEvent.change(screen.getByLabelText("Thread weight"), { target: { value: "60" } });
+    expect(lastEditor!.state.options.threadWeight).toBe(60);
+    fireEvent.change(screen.getByLabelText("Fabric"), { target: { value: "knit" } });
+    expect(lastEditor!.state.options.fabric).toBe("knit");
+    expect(screen.getByLabelText("Sewing setup summary").textContent).toMatch(/Premium on knit/i);
+  });
+
   it("disables Digitize until an image is loaded, and calls onOpen", () => {
     let opened = 0;
     renderEditor(<DigitizePanel onOpen={() => opened++} />);
