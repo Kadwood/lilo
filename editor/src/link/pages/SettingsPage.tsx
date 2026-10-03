@@ -65,9 +65,8 @@ export function SettingsPage() {
 
       <Section title="Local transfers">
         <p>
-          Use Machines to find a supported Brother Wi-Fi machine or an Ember
-          Link dongle, then open Send to send a design from
-          this computer. No Ember account or web app is required.
+          Use Machines to find a supported Brother Wi-Fi machine, then open
+          Send to send a design from this computer. No account is required.
         </p>
         <dl className="kv">
           <dt>Local service</dt>

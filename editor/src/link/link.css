@@ -1,21 +1,16 @@
-/* Lilo Link (from Ember Bridge, MIT) — styles scoped under .link-root so they cannot leak into the editor. */
+/* Lilo Link: styles scoped under .link-root so they cannot leak into the editor.
+   Colours come from the app's glass tokens (src/glass.css), so the view follows light/dark like every other screen. */
 
 .link-root {
-  --bg: #16161c;
-  --bg-raised: #1e1e26;
-  --bg-hover: #26262f;
-  --border: #32323e;
-  --text: #e8e6e3;
-  --text-dim: #9a97a3;
-  --accent: #f0803c; /* ember */
-  --accent-soft: rgba(240, 128, 60, 0.15);
-  --ok: #5cbf7c;
-  --warn: #d9a441;
-  --err: #e06060;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bg-raised: var(--glass-bg);
+  --bg-hover: var(--hover-tint);
+  --text-dim: var(--muted);
+  --accent-soft: color-mix(in srgb, var(--accent) 16%, transparent);
+  --ok: var(--guide);
+  --warn: var(--warn-text);
+  --err: var(--danger);
+  font-family: var(--font-sans);
   font-size: 14px;
-  color-scheme: dark;
 }
 
 .link-root, .link-root * {
@@ -24,7 +19,7 @@
 
 .link-root {
   margin: 0;
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   user-select: none;
@@ -49,7 +44,8 @@
   gap: 2px;
   padding: 14px 10px;
   background: var(--bg-raised);
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--glass-line);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
 }
 
 .link-root .brand {
@@ -93,47 +89,11 @@
 .link-root .badge {
   margin-left: auto;
   background: var(--accent);
-  color: #1a1208;
+  color: var(--accent-text);
   border-radius: 99px;
   font-size: 11px;
   font-weight: 700;
   padding: 1px 7px;
-}
-
-/* "Set up dongle": appears only while a dongle is plugged into this
-   computer, pinned just above the footer, pulsing gently until visited. */
-
-.link-root .setup-cta {
-  margin-top: auto;
-  margin-bottom: 8px;
-  color: var(--accent);
-}
-
-/* The footer also claims margin-top:auto (its anchor when no dongle is
-   plugged in); with both set, flexbox splits the slack and the button
-   floats mid-sidebar. When the button is present, it owns the slack. */
-
-.link-root .setup-cta ~ .sidebar-footer {
-  margin-top: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-.link-root .setup-cta:not(.active) {
-    animation: setup-pulse 1.8s ease-in-out infinite;
-  }
-
-}
-
-@keyframes setup-pulse {
-  0%,
-  100% {
-    background: none;
-    box-shadow: none;
-  }
-  50% {
-    background: var(--accent-soft);
-    box-shadow: 0 0 14px rgba(240, 128, 60, 0.35);
-  }
 }
 
 .link-root .sidebar-footer {
@@ -259,7 +219,7 @@
 .link-root button.primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #1a1208;
+  color: var(--accent-text);
   font-weight: 600;
 }
 
@@ -272,7 +232,7 @@
 .link-root select,
 .link-root textarea {
   font: inherit;
-  background: var(--bg);
+  background: var(--control-bg);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
@@ -396,11 +356,6 @@
   margin-bottom: 6px;
 }
 
-.link-root .file-list {
-  margin: 8px 0 0;
-  overflow-wrap: anywhere;
-}
-
 .link-root .send-controls {
   display: flex;
   flex-wrap: wrap;
@@ -444,7 +399,7 @@
 .link-root .progress {
   height: 6px;
   border-radius: 3px;
-  background: var(--bg);
+  background: var(--control-bg);
   overflow: hidden;
   margin-top: 8px;
 }
@@ -466,17 +421,17 @@
 }
 
 .link-root .pill-ok {
-  background: rgba(92, 191, 124, 0.15);
+  background: color-mix(in srgb, var(--ok) 16%, transparent);
   color: var(--ok);
 }
 
 .link-root .pill-warn {
-  background: rgba(217, 164, 65, 0.15);
+  background: color-mix(in srgb, var(--warn) 16%, transparent);
   color: var(--warn);
 }
 
 .link-root .pill-err {
-  background: rgba(224, 96, 96, 0.15);
+  background: color-mix(in srgb, var(--err) 16%, transparent);
   color: var(--err);
 }
 
@@ -495,8 +450,8 @@
 }
 
 .link-root .error-note {
-  background: rgba(224, 96, 96, 0.12);
-  border: 1px solid rgba(224, 96, 96, 0.4);
+  background: color-mix(in srgb, var(--err) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--err) 40%, transparent);
   color: var(--err);
   border-radius: 8px;
   padding: 10px 12px;
@@ -527,7 +482,7 @@
 }
 
 .link-root .token {
-  background: var(--bg);
+  background: var(--control-bg);
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 7px 10px;
@@ -715,14 +670,14 @@
 .link-root .markdown code {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.88em;
-  background: var(--bg);
+  background: var(--control-bg);
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 1px 5px;
 }
 
 .link-root .markdown pre {
-  background: var(--bg);
+  background: var(--control-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 14px;
@@ -797,160 +752,4 @@
   padding: 12px 0;
 }
 
-/* Ember Link: a settings overview and a separate Wi-Fi configuration page. */
-
-.link-root .link-page { max-width: 900px; margin-inline: auto; }
-
-.link-root .link-page-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 2px 0 24px; }
-
-.link-root .link-page-header h1 { font-size: 25px; letter-spacing: -0.025em; margin: 0 0 6px; }
-
-.link-root .link-page-header p { color: var(--text-dim); margin: 0; }
-
-.link-root .link-page .section { padding: 20px; }
-
-.link-root .link-page .section-header h2 { color: var(--text); font-size: 15px; letter-spacing: 0; text-transform: none; }
-
-.link-root .link-wifi-summary,
-.link-root .link-wifi-status { display: flex; align-items: center; gap: 14px; }
-
-.link-root .link-wifi-summary { justify-content: space-between; }
-
-.link-root .link-wifi-status { min-width: 0; }
-
-.link-root .link-wifi-status p { margin: 4px 0 0; overflow-wrap: anywhere; }
-
-.link-root .link-wifi-summary > button { flex-shrink: 0; padding: 9px 13px; }
-
-.link-root .link-wifi-status .dot { flex-shrink: 0; }
-
-.link-root .dot-warn { background: var(--warn); }
-
-.link-root .link-preferences { min-width: 0; border: 0; margin: 0; padding: 0; }
-
-.link-root .link-setting-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border); }
-
-.link-root .link-setting-copy { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-
-.link-root .link-setting-copy strong { font-size: 14px; font-weight: 500; }
-
-.link-root .link-setting-copy > span { font-size: 12px; line-height: 1.5; color: var(--text-dim); }
-
-.link-root .link-switch { appearance: none; position: relative; flex: 0 0 42px; width: 42px; height: 24px; border-radius: 999px; padding: 0; margin: 0; background: var(--border); border: 1px solid transparent; cursor: pointer; transition: background .15s; }
-
-.link-root .link-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--text); transition: transform .15s; }
-
-.link-root .link-switch:checked { background: var(--accent); }
-
-.link-root .link-switch:checked::after { transform: translateX(18px); background: #1a1208; }
-
-.link-root .link-switch:disabled { opacity: .45; cursor: default; }
-
-.link-root .link-switch:focus-visible,
-.link-root .link-orientation:focus-visible,
-.link-root .link-page button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-.link-root .link-orientation {
-  appearance: none;
-  flex: 0 0 195px;
-  width: 195px;
-  min-height: 40px;
-  padding: 10px 32px 10px 12px;
-  border-radius: 8px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%239a97a3' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-}
-
-.link-root .link-orientation:disabled { opacity: .45; }
-
-.link-root .link-settings-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 18px; }
-
-.link-root .link-settings-footer .dim { font-size: 12px; }
-
-.link-root .link-settings-footer button { padding: 9px 16px; }
-
-.link-root .link-saved { color: var(--ok); font-size: 12px; margin-bottom: 0; }
-
-.link-root .link-device-meta { color: var(--text-dim); font-size: 12px; padding-inline: 4px; }
-
-.link-root .link-back { background: none; border: none; color: var(--text-dim); padding: 0; margin-bottom: 20px; }
-
-.link-root .link-network-list { max-height: 250px; overflow-y: auto; }
-
-.link-root .link-wifi-form { display: grid; gap: 18px; max-width: 500px; }
-
-.link-root .link-wifi-form > label { display: grid; gap: 8px; font-size: 13px; }
-
-.link-root .link-wifi-form input { width: 100%; padding: 10px 12px; }
-
-.link-root .link-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
-
-@media (max-width: 820px) {
-.link-root .link-setting-row { gap: 14px; }
-
-.link-root .link-orientation { flex-basis: 170px; width: 170px; }
-
-.link-root .link-wifi-summary { align-items: flex-start; }
-
-}
-
-@media (prefers-reduced-motion: reduce) {
-.link-root .link-switch,
-.link-root .link-switch::after { transition: none; }
-
-}
-
-.link-root .firmware-overlay { position: fixed; inset: 0; z-index: 100; background: #0009; display: grid; place-items: center; padding: 24px; }
-
-.link-root .firmware-dialog { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: min(580px, 100%); max-height: 90vh; overflow-y: auto; box-shadow: 0 16px 60px #0008; }
-
-.link-root .firmware-dialog h2 { margin-top: 0; }
-
-.link-root .firmware-consent { display: flex; align-items: flex-start; gap: 10px; margin: 18px 0; line-height: 1.5; }
-
-.link-root .firmware-consent input { margin-top: 4px; }
-
-.link-root .firmware-dialog .link-actions { margin-top: 18px; }
-
 .link-root .machine-actions { flex-wrap: wrap; justify-content: flex-end; }
-
-/* Local Link file browser */
-
-.link-root .files-safety { padding: 1rem 1.2rem; background: var(--surface-raised, #202126); border: 1px solid var(--border, #383940); border-radius: 10px; margin-bottom: 1.5rem; }
-
-.link-root .files-safety p { margin-top: 0; max-width: 76ch; }
-
-.link-root .files-check { display: flex; align-items: center; gap: .65rem; }
-
-.link-root .files-check input { width: auto; margin: 0; flex-shrink: 0; }
-
-.link-root .files-toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1.25rem 0; }
-
-.link-root .files-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
-
-.link-root .files-breadcrumbs { overflow-wrap: anywhere; }
-
-.link-root .files-breadcrumbs button { padding: .3rem .5rem; }
-
-.link-root .files-table-wrap { overflow-x: auto; }
-
-.link-root .files-table { width: 100%; border-collapse: collapse; text-align: left; }
-
-.link-root .files-table th,
-.link-root .files-table td { padding: .85rem .65rem; border-bottom: 1px solid var(--border, #383940); }
-
-.link-root .files-table td:first-child { overflow-wrap: anywhere; min-width: 150px; }
-
-.link-root .files-table td:last-child { min-width: 220px; }
-
-.link-root .files-kind { display: block; font-size: .8rem; margin-top: .3rem; }
-
-.link-root .files-editor { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--border, #383940); border-radius: 10px; }
-
-.link-root .files-editor h3 { margin-top: 0; }
-
-.link-root .files-editor > label:not(.files-check) { display: grid; gap: .5rem; }
-
-.link-root .files-editor > .files-actions { margin-top: 1.2rem; }
-

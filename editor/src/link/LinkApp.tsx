@@ -11,19 +11,16 @@ import type { BridgeClient } from "./api/client";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { MachinesPage } from "./pages/MachinesPage";
-import { SetupPage } from "./pages/SetupPage";
-import { FilesPage } from "./pages/FilesPage";
 import { SendPage } from "./pages/SendPage";
 import { LogsPage } from "./pages/LogsPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import "./link.css";
 
-type Page = "machines" | "setup" | "files" | "send" | "logs" | "settings";
+type Page = "machines" | "send" | "logs" | "settings";
 
 const PAGES: { id: Page; label: string }[] = [
   { id: "machines", label: "Machines" },
   { id: "send", label: "Send" },
-  { id: "files", label: "Files" },
   { id: "logs", label: "Logs" },
   { id: "settings", label: "Settings" },
 ];
@@ -100,7 +97,7 @@ function Shell() {
       } catch {
         return; // not running inside Tauri (browser dev): nothing to navigate to
       }
-      if (!stopped && next && ["machines", "settings", "setup"].includes(next))
+      if (!stopped && next && ["machines", "settings"].includes(next))
         setPage(next as Page);
     };
     void listen("lilo-navigation", () => {
@@ -146,14 +143,6 @@ function Shell() {
             )}
           </button>
         ))}
-        {
-          <button
-            className={`nav-item setup-cta ${page === "setup" ? "active" : ""}`}
-            onClick={() => setPage("setup")}
-          >
-            Ember Link
-          </button>
-        }
         <div className="sidebar-footer">
           <div
             className={`dot ${status.data?.server.running ? "dot-ok" : "dot-err"}`}
@@ -171,9 +160,7 @@ function Shell() {
             onSend={() => setPage("send")}
           />
         )}
-        {page === "setup" && <SetupPage onReady={() => setPage("machines")} />}
         {page === "send" && <SendPage />}
-        {page === "files" && <FilesPage onSend={() => setPage("send")} />}
         {page === "logs" && <LogsPage />}
         {page === "settings" && <SettingsPage />}
       </main>

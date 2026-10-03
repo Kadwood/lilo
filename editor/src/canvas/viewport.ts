@@ -32,6 +32,19 @@ export interface Rect {
   maxY: number;
 }
 
+/**
+ * What "Fit" should frame. With a hoop chosen it is the whole hoop (centred on the origin), widened to
+ * take in any stitches that hang outside it; without one it is the design alone, or the default hoop
+ * when the design is empty.
+ */
+export function fitRect(designRect: Rect | null, hoop: { widthMm: number; heightMm: number } | undefined, fallbackHoop: { widthMm: number; heightMm: number }): Rect {
+  const around = (h: { widthMm: number; heightMm: number }): Rect => ({ minX: -h.widthMm / 2, minY: -h.heightMm / 2, maxX: h.widthMm / 2, maxY: h.heightMm / 2 });
+  if (!hoop) return designRect ?? around(fallbackHoop);
+  const r = around(hoop);
+  if (!designRect) return r;
+  return { minX: Math.min(r.minX, designRect.minX), minY: Math.min(r.minY, designRect.minY), maxX: Math.max(r.maxX, designRect.maxX), maxY: Math.max(r.maxY, designRect.maxY) };
+}
+
 /** A view that centres `rect` (mm) in a `width` x `height` px canvas with `margin` (fraction) spare. */
 export function fitView(width: number, height: number, rect: Rect, margin = 0.15): View {
   const w = Math.max(rect.maxX - rect.minX, 1);

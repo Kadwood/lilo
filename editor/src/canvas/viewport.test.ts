@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MAX_ZOOM, MIN_ZOOM, classifyWheel, fitView, panBy, screenToWorld, visibleRect, wheelZoomFactor, zoomAt } from "./viewport";
+import { MAX_ZOOM, MIN_ZOOM, classifyWheel, fitRect, fitView, panBy, screenToWorld, visibleRect, wheelZoomFactor, zoomAt } from "./viewport";
 
 describe("viewport", () => {
   it("zooms about the cursor: the world point under it does not move", () => {
@@ -44,5 +44,22 @@ describe("viewport", () => {
     expect(wheelZoomFactor({ ctrlKey: false, deltaY: -100, deltaMode: 0 })).toBeGreaterThan(1);
     expect(wheelZoomFactor({ ctrlKey: false, deltaY: 100, deltaMode: 0 })).toBeLessThan(1);
     expect(wheelZoomFactor({ ctrlKey: true, deltaY: -5, deltaMode: 0 })).toBeGreaterThan(1);
+  });
+});
+
+describe("fitRect", () => {
+  const small = { minX: -10, minY: -5, maxX: 10, maxY: 5 };
+  const hoop = { widthMm: 100, heightMm: 100 };
+  const fallback = { widthMm: 130, heightMm: 180 };
+  it("frames the whole hoop when one is chosen, not just the design", () => {
+    expect(fitRect(small, hoop, fallback)).toEqual({ minX: -50, minY: -50, maxX: 50, maxY: 50 });
+    expect(fitRect(null, hoop, fallback)).toEqual({ minX: -50, minY: -50, maxX: 50, maxY: 50 });
+  });
+  it("still takes in stitches that hang outside the hoop", () => {
+    expect(fitRect({ minX: -20, minY: -5, maxX: 80, maxY: 5 }, hoop, fallback)).toEqual({ minX: -50, minY: -50, maxX: 80, maxY: 50 });
+  });
+  it("with no hoop chosen it frames the design, or the default hoop when empty", () => {
+    expect(fitRect(small, undefined, fallback)).toBe(small);
+    expect(fitRect(null, undefined, fallback)).toEqual({ minX: -65, minY: -90, maxX: 65, maxY: 90 });
   });
 });

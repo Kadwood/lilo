@@ -1,8 +1,8 @@
 /**
  * Typed client for the localhost bridge API.
  *
- * The React UI deliberately consumes the same REST API that Ember uses from
- * the browser (rather than private Tauri commands), so the Ember-facing
+ * The React UI deliberately consumes the same REST API that paired web apps use from
+ * the browser (rather than private Tauri commands), so the public
  * contract is exercised by every screen of the app. The only Tauri command
  * involved is `local_api_info`, which hands the UI the port + token.
  */
@@ -10,8 +10,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
   ApiErrorBody,
-  LinkFolder,
-  LinkFileOperation,
   BridgeStatus,
   JobRecord,
   LogsResponse,
@@ -164,13 +162,6 @@ export class BridgeClient {
       `/api/files?${new URLSearchParams({ ip, filename, manufacturer, serial, confirmed: "true" })}`,
       { method: "DELETE" },
     );
-  }
-  filesystem(ip: string, serial: string, operation: LinkFileOperation): Promise<LinkFolder | { ok: true }> {
-    return this.request(`/api/link/filesystem?${new URLSearchParams({ip, serial, manufacturer: "emberconnect"})}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...operation, confirmedIdle: true }),
-    });
   }
 
   cancelJob(id: string): Promise<{ job: JobRecord }> {

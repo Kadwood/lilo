@@ -2,7 +2,7 @@
 //!
 //! Every failure leaves the API as
 //! `{"error": {"code": "<stable_snake_case>", "message": "<human text>"}}`
-//! with an appropriate HTTP status, so Ember can branch on `code` without
+//! with an appropriate HTTP status, so callers can branch on `code` without
 //! parsing prose.
 
 use crate::machine::MachineError;

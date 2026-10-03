@@ -9,7 +9,7 @@ use thiserror::Error;
 
 #[derive(Debug, Error)]
 pub enum MachineError {
-    #[error("Ember Link is busy with another transfer or firmware update")]
+    #[error("The machine is busy with another transfer")]
     Busy,
     #[error("Delivery could not be confirmed. Check the file on the device before sending again.")]
     DeliveryUnknown,

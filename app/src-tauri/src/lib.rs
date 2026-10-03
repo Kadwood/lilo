@@ -1,4 +1,4 @@
-//! Lilo — desktop shell. Forked from Ember Bridge (MIT, see NOTICE.md); this
+//! Lilo — desktop shell. Third-party notices are in NOTICE.md; this
 //! crate is "Lilo Link": discovery and Wi-Fi send to embroidery machines.
 //!
 //! ```text
@@ -18,8 +18,6 @@
 pub mod brother;
 pub mod config;
 mod desktop;
-pub mod dongle_setup;
-pub mod emberconnect;
 pub mod fsutil;
 mod glass;
 pub mod hoops;
@@ -189,7 +187,7 @@ pub fn run() {
             tray.build(app)?;
 
             // Lilo is an editor, not a background service: closing the window
-            // quits (Ember Bridge hid to the tray; that behaviour is dropped).
+            // quits (it does not hide to the tray).
             if let Some(window) = app.get_webview_window("main") {
                 // Started at login (`--minimized`): begin hidden in the tray.
                 if !std::env::args().any(|arg| arg == "--minimized") {
@@ -217,12 +215,6 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             local_api_info,
             desktop::take_navigation,
-            dongle_setup::dongle_list,
-            dongle_setup::dongle_info,
-            dongle_setup::dongle_set_display,
-            dongle_setup::dongle_scan,
-            dongle_setup::dongle_provision,
-            dongle_setup::dongle_update_firmware,
             ocr::ocr_image,
             projects::list_recent_projects,
             projects::projects_folder,

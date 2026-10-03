@@ -189,7 +189,7 @@ describe("command palette", () => {
     expect(lastEditor!.state.mode).toBe("none");
   });
 
-  it("every Ember tool, run type, fill pattern and shape action is a command", () => {
+  it("every tool, run type, fill pattern and shape action is a command", () => {
     renderEditor(<div />, { design: testDesign() });
     const cmds = buildCommands({ state: lastEditor!.state, actions: lastEditor!.actions, openImage: () => {}, fit: () => {} });
     const labels = cmds.map((c) => c.label);

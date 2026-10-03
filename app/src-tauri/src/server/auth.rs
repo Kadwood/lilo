@@ -3,7 +3,7 @@
 //! Threat model: the server only listens on 127.0.0.1, so the attackers that
 //! remain are (a) arbitrary web pages running in the user's browser, which
 //! can *send* requests to localhost, and (b) other local processes. Both are
-//! handled by requiring a bearer token that only Ember (and our own UI) has;
+//! handled by requiring a bearer token that only paired apps (and our own UI) has;
 //! CORS is defense in depth that additionally stops browsers from *reading*
 //! responses for non-allowlisted origins.
 //!
@@ -21,7 +21,7 @@ use axum::response::{IntoResponse, Response};
 use std::sync::Arc;
 
 /// Paths that are both token-free and origin-agnostic. `/api/health` exists
-/// so Ember can detect that the bridge is installed and running before it
+/// so a web app can detect that Lilo is installed and running before it
 /// has been paired; it exposes nothing but the app name and version.
 const PUBLIC_PATHS: &[&str] = &["/api/health"];
 
@@ -112,7 +112,7 @@ pub async fn cors(
 
     let allowed = match &origin {
         Some(origin) => {
-            // Health is origin-agnostic so Ember can detect the bridge
+            // Health is origin-agnostic so a web app can detect Lilo
             // pre-pairing; everything else consults the allowlist.
             PUBLIC_PATHS.contains(&path.as_str())
                 || origin_allowed(origin, &state.config.get().await.allowed_origins)
@@ -234,10 +234,10 @@ mod tests {
 
     #[test]
     fn origin_allowlist_rules() {
-        let list = vec!["https://ember.example".to_string()];
-        assert!(origin_allowed("https://ember.example", &list));
+        let list = vec!["https://app.example".to_string()];
+        assert!(origin_allowed("https://app.example", &list));
         assert!(!origin_allowed("https://evil.example", &list));
-        assert!(!origin_allowed("https://ember.example.evil.com", &list));
+        assert!(!origin_allowed("https://app.example.evil.com", &list));
         // The Tauri webview and the Vite dev server are always allowed, and
         // only at their exact origin.
         assert!(origin_allowed("http://localhost:5173", &[]));
@@ -246,8 +246,8 @@ mod tests {
         assert!(!origin_allowed("http://localhost:1420", &[]));
         assert!(!origin_allowed("http://127.0.0.1:8080", &[]));
         assert!(!origin_allowed("http://localhost:5173.evil.com", &[]));
-        // Ember's own origins are no longer special.
-        assert!(!origin_allowed("https://emberdesign.net", &[]));
+        // Unlisted origins are never special.
+        assert!(!origin_allowed("https://other.example", &[]));
         // Wildcard.
         assert!(origin_allowed("https://anything.example", &["*".to_string()]));
     }

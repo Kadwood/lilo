@@ -8,7 +8,7 @@ import { createStore, type StoreApi } from "zustand/vanilla";
  * - check on launch, at most once a day, only if "Automatically check for updates" is on (default on)
  * - a failed or offline check is silent; only "Check for updates now" shows errors
  * - installing goes through the unsaved-changes question first (`guard`)
- * - Lilo only ever asks GitHub Releases for `latest.json` (endpoint in tauri.conf.json), never Ember
+ * - Lilo only ever asks GitHub Releases for `latest.json` (endpoint in tauri.conf.json), nothing else
  */
 
 export const AUTO_KEY = "lilo.updates.auto";

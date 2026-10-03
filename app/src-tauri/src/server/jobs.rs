@@ -314,7 +314,7 @@ async fn run_upload(state: &Arc<AppState>, job: &QueuedUpload) -> Result<(), Api
                 "Check and resolve the earlier uncertain transfer on this device first.",
             ));
         }
-        // Explicit busy means the dongle accepted no write. Reads can be busy too.
+        // Explicit busy means the machine accepted no write. Reads can be busy too.
         if info.capabilities.overwrites_by_name && !job.overwrite {
             match machine.storage().await {
                 Ok(storage)
@@ -441,7 +441,7 @@ mod tests {
             "192.168.1.4".parse().unwrap(),
             "design.pes".into(),
             bytes::Bytes::from_static(b"design bytes"),
-            Some(("emberconnect".into(), "serial-a".into())),
+            Some(("brother".into(), "serial-a".into())),
             false,
         )
         .unwrap()
