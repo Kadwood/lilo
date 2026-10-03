@@ -4,3 +4,5 @@ export * from "./color";
 export * from "./threads";
 export * from "./stitch";
 export * from "./pes";
+export * from "./export";
+export * from "./autodigitize";

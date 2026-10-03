@@ -1,6 +1,7 @@
 import { Coordinate, GeometryFactory } from "jsts/org/locationtech/jts/geom";
 import BufferOp from "jsts/org/locationtech/jts/operation/buffer/BufferOp";
 import BufferParameters from "jsts/org/locationtech/jts/operation/buffer/BufferParameters";
+import UnaryUnionOp from "jsts/org/locationtech/jts/operation/union/UnaryUnionOp";
 import TopologyPreservingSimplifier from "jsts/org/locationtech/jts/simplify/TopologyPreservingSimplifier";
 import type { Pt } from "./model";
 
@@ -69,3 +70,8 @@ export function simplifyGeom(g: Geom, tolerance: number): Geom {
   return TopologyPreservingSimplifier.simplify(g, tolerance);
 }
 
+
+/** Union of many geometries (cascaded, robust for lists of adjacent polygons). */
+export function unionAll(geoms: Geom[]): Geom {
+  return UnaryUnionOp.union(factory.createGeometryCollection(geoms));
+}
