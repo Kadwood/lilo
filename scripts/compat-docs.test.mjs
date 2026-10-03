@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { applyReadme, build, liloExtensions, renderDocs } from "./build-compat-docs.mjs";
+import { applyReadme, build, liloExtensions, liloWriteOnly, renderDocs } from "./build-compat-docs.mjs";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const read = (p) => readFileSync(`${ROOT}${p}`, "utf8");
@@ -13,11 +13,26 @@ const inputs = () => ({
   threads: JSON.parse(read("data/threads/index.json")),
   hoops: JSON.parse(read("engine/src/hoops/library.json")),
   liloExts: liloExtensions(read("engine/src/formats/types.ts")),
+  writeOnly: liloWriteOnly(read("engine/src/formats/types.ts")),
 });
 
 test("reads the engine's format list", () => {
   assert.deepEqual(liloExtensions('export const FORMAT_EXTENSIONS = ["pes", "dst"] as const;'), ["dst", "pes"]);
   assert.throws(() => liloExtensions("nothing here"));
+});
+
+test("reads which formats the engine can only write", () => {
+  assert.deepEqual(liloWriteOnly(read("engine/src/formats/types.ts")), ["gcode"]);
+  assert.deepEqual(
+    liloWriteOnly('{ ext: "a", label: "A", hasColors: true, canRead: true },\n  { ext: "z", label: "Z", hasColors: false, canRead: false },'),
+    ["z"],
+  );
+});
+
+test("a format marked write-only in formats.json but readable in the engine is rejected", () => {
+  const i = inputs();
+  i.writeOnly = [];
+  assert.throws(() => build(i), /write-only/);
 });
 
 test("output is deterministic", () => {

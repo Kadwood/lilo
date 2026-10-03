@@ -19,7 +19,7 @@ Lilo never uploads your designs anywhere. Wi-Fi send only goes to a machine on y
 
 ## Supported file formats
 
-Lilo reads and writes 8 formats. File-format round trips are checked against pyembroidery (MIT) by an opt-in test (engine/test/formats-crosscheck.test.ts).
+Lilo reads and writes 11 formats and writes 1 more. File-format round trips are checked against pyembroidery (MIT) by an opt-in test (engine/test/formats-crosscheck.test.ts).
 
 | Ext | Name | Brands | Colour info kept? | Lilo | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -27,11 +27,12 @@ Lilo reads and writes 8 formats. File-format round trips are checked against pye
 | .pec | Brother PEC | Brother, Baby Lock | yes | read + write | The stitch block inside a PES, also used alone by older Brother machines. |
 | .dst | Tajima DST | Tajima, Barudan, Ricoma, Melco, SWF, Happy, ZSK, Toyota, Janome MB-7, Brother, Baby Lock | no | read + write | The commercial standard. Colour changes are kept as stops, thread colours are not. |
 | .exp | Melco EXP | Melco, Bernina | no | read + write | No thread colours. Bernina machines read it when ART is not available. |
-| .jef | Janome JEF | Janome, Elna (some) | yes | read + write | Janome native. Newer machines also accept JEF+, which Lilo does not write. |
+| .jef | Janome JEF | Janome, Elna (some) | yes | read + write | Janome native. Newer machines also accept JEF+ and JPX, which Lilo does not read or write (see JEF+ below). |
+| .jef+ | Janome JEF+ / JPX | Janome | yes | not supported | Newer Janome files (MB-7, MC550E, MC9850) in a JEF-like container with a different header flag. Janome has not published the layout, pyembroidery only reads JPX stitches and drops the colours, and no sample files or maker docs were found, so Lilo does not guess at it. Use JEF. |
 | .vp3 | Pfaff / Husqvarna Viking VP3 | Pfaff, Husqvarna Viking | yes | read + write | Current Pfaff and Viking format. |
 | .xxx | Singer XXX | Singer, Compucon | yes | read + write | Singer native. |
 | .u01 | Barudan U01 | Barudan | no | read + write | Needle numbers, not thread colours. |
-| .hus | Husqvarna HUS | Husqvarna Viking | yes | not supported | Older Viking format (VP3 replaced it). A candidate to add. |
+| .hus | Husqvarna HUS | Husqvarna Viking | yes | read + write | Older Viking format (VP3 replaced it). Colours become the nearest of Husqvarna's 29 thread colours. Written with the format's own compression wrapper around the raw data, which any reader accepts but is bigger than a real compressor would make it. Checked against pyembroidery's reader; not yet tried on a machine. |
 | .shv | Husqvarna SHV | Husqvarna Viking | yes | not supported | Older Viking format. Low priority. |
 | .sew | Janome / Elna SEW | Janome, Elna | yes | not supported | Older Janome/Elna format. Low priority. |
 | .phc | Brother PHC | Brother, Baby Lock | yes | not supported | Brother file with a thumbnail. Machines that take PHC also take PES, which Lilo writes. |
@@ -40,12 +41,12 @@ Lilo reads and writes 8 formats. File-format round trips are checked against pye
 | .emd | Elna EMD | Elna | yes | not supported | Elna native. Closed; no maker docs found. |
 | .dsb | Barudan DSB | Barudan | no | not supported | Older Barudan format. DST or U01 cover it. |
 | .dat | Barudan / Sunstar DAT | Barudan, Sunstar | no | not supported | Older Barudan and Sunstar format. |
-| .tbf | Tajima TBF | Tajima | yes | not supported | Tajima's colour-aware format. DST covers the machine. |
+| .tbf | Tajima TBF | Tajima | yes | read + write | Tajima's colour-aware format. Written byte for byte as pyembroidery writes it. Colours are matched to colour blocks in order, and needles are numbered 1 to 5 round and round. Not yet tried on a machine; DST also covers the machine. |
 | .tap | Happy TAP | Happy | no | not supported | Happy's own format. DST covers the machine. |
 | .100 | Toyota 100 / 10o | Toyota | no | not supported | Toyota native. DST covers the machine. |
 | .zxy | ZSK ZXY / DSZ | ZSK | no | not supported | ZSK's own formats. DST covers the machine. |
-| .vip | Husqvarna / Pfaff VIP | Husqvarna Viking, Pfaff | yes | not supported | Legacy Husqvarna/Pfaff format. Planned. |
-| .gcode | G-code | CNC and plotter tools | no | not supported | Not a machine format; for stitch-path export to other tools. Planned. |
+| .vip | Husqvarna / Pfaff VIP | Husqvarna Viking, Pfaff | yes | read + write | Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader or real VIP file was available to check it, so treat it as untested on machines. |
+| .gcode | G-code | CNC and plotter tools | no | write only | Not a machine format: a stitch path for CNC, plotter and DIY tools, written as pyembroidery writes it (G00 moves, M00 pause at each colour change, M30 end). Write only: there is nothing to open. |
 
 ## Machines by brand
 
@@ -558,13 +559,10 @@ Lilo ships 75 thread lines from 44 brands, 20,784 colours in total. Palettes are
 
 ## Planned formats
 
-- **.hus** (Husqvarna HUS): Older Viking format (VP3 replaced it). A candidate to add.
-- **.tbf** (Tajima TBF): Tajima's colour-aware format. DST covers the machine.
-- **.vip** (Husqvarna / Pfaff VIP): Legacy Husqvarna/Pfaff format. Planned.
-- **.gcode** (G-code): Not a machine format; for stitch-path export to other tools. Planned.
 
 ## Not supported, and why
 
+- **.jef+** (Janome JEF+ / JPX): Newer Janome files (MB-7, MC550E, MC9850) in a JEF-like container with a different header flag. Janome has not published the layout, pyembroidery only reads JPX stitches and drops the colours, and no sample files or maker docs were found, so Lilo does not guess at it. Use JEF.
 - **.shv** (Husqvarna SHV): Older Viking format. Low priority.
 - **.sew** (Janome / Elna SEW): Older Janome/Elna format. Low priority.
 - **.phc** (Brother PHC): Brother file with a thumbnail. Machines that take PHC also take PES, which Lilo writes.

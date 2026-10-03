@@ -103,7 +103,7 @@ Nav tabs: **Home**, **Editor**, **Pixel art**, **Converter**, **Lilo Link** (`ed
   (manual-stitch objects, one undo step) and Export. State in `state/pixelStore.ts`.
 - **Converter**: drop embroidery files or pictures, tick formats, convert, save one or all. Pictures
   use the editor's Auto digitize settings; PNG/JPG can also be saved as the traced SVG.
-- **Export**: PES (default), DST, JEF, VP3, EXP, XXX, U01, PEC, or a PNG picture.
+- **Export**: PES (default), DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF, G-code (a stitch path for CNC and plotter tools), or a PNG picture.
 - **Projects**: Save / Save As / Open / Revert (⌘S, ⇧⌘S, ⌘O) read and write `.lilo` through the
   engine's project API. Autosave goes to the version history every 30 s and when the window loses
   focus; the file's last explicit save is never overwritten by an autosave. Version history lists
@@ -149,7 +149,7 @@ object, stitch and colour-change counts.
 | Toyota | .100 .10o .dst | No |
 | ZSK | .dst .dsz .zxy | No |
 
-17 brands, 66 machines, 75 thread lines (20,784 colours), 52 hoops. Lilo reads and writes DST, EXP, JEF, PEC, PES, U01, VP3, XXX.
+17 brands, 66 machines, 75 thread lines (20,784 colours), 52 hoops. Lilo reads and writes DST, EXP, HUS, JEF, PEC, PES, TBF, U01, VIP, VP3, XXX, and writes GCODE only.
 
 **Status: Wi-Fi send tested on: none yet. Brother NV2700 test pending.** Wi-Fi-capable models (Baby Lock, Brother) look compatible but none has been run with Lilo yet. 27 of 66 machine entries were checked against a maker page; the rest say UNVERIFIED.
 

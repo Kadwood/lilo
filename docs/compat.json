@@ -13,8 +13,9 @@
   "threadColours": 20784,
   "hoops": 52,
   "hoopsVerified": 34,
-  "formatsReadWrite": 8,
-  "formatsListed": 23
+  "formatsReadWrite": 11,
+  "formatsWriteOnly": 1,
+  "formatsListed": 24
  },
  "liloTestStatus": {
   "wifiTestedOn": [],
@@ -86,7 +87,17 @@
    ],
    "colours": true,
    "lilo": "read+write",
-   "note": "Janome native. Newer machines also accept JEF+, which Lilo does not write."
+   "note": "Janome native. Newer machines also accept JEF+ and JPX, which Lilo does not read or write (see JEF+ below)."
+  },
+  {
+   "ext": "jef+",
+   "name": "Janome JEF+ / JPX",
+   "brands": [
+    "Janome"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Newer Janome files (MB-7, MC550E, MC9850) in a JEF-like container with a different header flag. Janome has not published the layout, pyembroidery only reads JPX stitches and drops the colours, and no sample files or maker docs were found, so Lilo does not guess at it. Use JEF."
   },
   {
    "ext": "vp3",
@@ -127,9 +138,8 @@
     "Husqvarna Viking"
    ],
    "colours": true,
-   "lilo": "none",
-   "note": "Older Viking format (VP3 replaced it). A candidate to add.",
-   "planned": true
+   "lilo": "read+write",
+   "note": "Older Viking format (VP3 replaced it). Colours become the nearest of Husqvarna's 29 thread colours. Written with the format's own compression wrapper around the raw data, which any reader accepts but is bigger than a real compressor would make it. Checked against pyembroidery's reader; not yet tried on a machine."
   },
   {
    "ext": "shv",
@@ -222,9 +232,8 @@
     "Tajima"
    ],
    "colours": true,
-   "lilo": "none",
-   "note": "Tajima's colour-aware format. DST covers the machine.",
-   "planned": true
+   "lilo": "read+write",
+   "note": "Tajima's colour-aware format. Written byte for byte as pyembroidery writes it. Colours are matched to colour blocks in order, and needles are numbered 1 to 5 round and round. Not yet tried on a machine; DST also covers the machine."
   },
   {
    "ext": "tap",
@@ -264,9 +273,8 @@
     "Pfaff"
    ],
    "colours": true,
-   "lilo": "none",
-   "planned": true,
-   "note": "Legacy Husqvarna/Pfaff format. Planned."
+   "lilo": "read+write",
+   "note": "Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader or real VIP file was available to check it, so treat it as untested on machines."
   },
   {
    "ext": "gcode",
@@ -275,9 +283,8 @@
     "CNC and plotter tools"
    ],
    "colours": false,
-   "lilo": "none",
-   "planned": true,
-   "note": "Not a machine format; for stitch-path export to other tools. Planned."
+   "lilo": "write",
+   "note": "Not a machine format: a stitch path for CNC, plotter and DIY tools, written as pyembroidery writes it (G00 moves, M00 pause at each colour change, M30 end). Write only: there is nothing to open."
   }
  ],
  "brands": [
