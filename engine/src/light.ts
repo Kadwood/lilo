@@ -13,3 +13,27 @@ export * from "./threads/shelf";
 export * from "./threads/label";
 export * from "./pixelart/grid";
 export * from "./presets";
+export * from "./pixelart/import";
+export * from "./clickstitch";
+export * from "./project/types";
+export {
+  createProject,
+  addHistorySnapshot,
+  historyDoc,
+  restoreHistory,
+  addImage,
+  addFont,
+  MAX_FONT_BYTES,
+  removeImage,
+  saveProject,
+  loadProject,
+  readProjectInfo,
+  recoverHistory,
+  contentHash,
+  hashString,
+  type NewProjectOptions,
+  type ProjectInfo,
+} from "./project/file";
+export { migrateProjectDoc } from "./project/migrate";
+export { encodePngRgba, planThumbnailPng, type ThumbnailOptions } from "./project/png";
+export * from "./formats/types";

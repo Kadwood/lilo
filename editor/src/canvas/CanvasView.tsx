@@ -60,6 +60,8 @@ function hintFor(tool: string, mode: string, drafting: boolean): string | null {
       return "Click where the text should go, then type it in the panel. Click a word to edit it.";
     case "measure":
       return "Drag to measure.";
+    case "clickstitch":
+      return "Click a region to stitch it · Shift-click to collect several, Enter to stitch them · Esc to leave";
     default:
       return null;
   }
@@ -386,7 +388,7 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   const phase = anim?.phase ?? "done";
   const hint = hintFor(state.tool, state.mode, model.draft !== null);
   const dragKind = model.drag?.kind;
-  const cursor = dragKind === "pan" ? "grabbing" : model.spaceDown || state.tool === "pan" ? "grab" : drawing || state.tool === "measure" || state.mode === "knife" ? "crosshair" : "default";
+  const cursor = dragKind === "pan" ? "grabbing" : model.spaceDown || state.tool === "pan" ? "grab" : state.tool === "clickstitch" ? (model.hoverRegion ? "pointer" : "crosshair") : drawing || state.tool === "measure" || state.mode === "knife" ? "crosshair" : "default";
 
   return (
     <div

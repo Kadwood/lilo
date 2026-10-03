@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import {
+  applyAffine,
   designBounds,
   ensureThread,
   getCatalogue,
@@ -15,7 +16,7 @@ import {
   type Thread,
 } from "@lilo/engine/light";
 import { useEditor } from "../state/store";
-import { nextTextGroup, singleTextGroup } from "../state/textGroups";
+import { nextTextGroup, relayoutAffine, singleTextGroup } from "../state/textGroups";
 import type { LayoutResponse } from "./fonts";
 
 export { nextTextGroup };
@@ -50,30 +51,43 @@ export function placeText(d: Design, layout: LayoutResponse, block: Omit<TextBlo
   ensureThread(d, thread);
   const objs = shifted(layout.objects, dx, dy);
   d.objects.push(...objs);
-  d.textBlocks = [...(d.textBlocks ?? []), { ...block, origin: [dx, dy] }];
+  d.textBlocks = [...(d.textBlocks ?? []), { ...block, origin: [dx, dy], centre: target }];
   return objs.map((o) => o.id);
 }
 
 /**
- * Re-lay out an existing block in place (mutates): the new letters are centred where the old ones
- * were (so moves survive), take the old position in the sewing order and keep the old thread.
- * Returns the new object ids.
+ * Re-lay out an existing block in place (mutates): the new letters take over the old word's position,
+ * rotation, scale and flip (the block remembers them, see `transformTextBlocks`), its place in the
+ * sewing order and its thread. Blocks without that record (older files, text on a path) are centred
+ * on where the old letters were instead. Returns the new object ids.
  */
 export function replaceText(d: Design, group: string, layout: LayoutResponse, block: Omit<TextBlock, "origin">): string[] {
   const old = d.objects.filter((o) => o.sourceText?.group === group);
-  const box = unionBox(old.map(objectBox));
-  const at: Pt = box ? [(box.minX + box.maxX) / 2, (box.minY + box.maxY) / 2] : layout.centre;
-  const dx = at[0] - layout.centre[0];
-  const dy = at[1] - layout.centre[1];
+  const oldBlock = d.textBlocks?.find((b) => b.id === group);
+  const kept = relayoutAffine(d, oldBlock, block, layout.centre);
+  let placed: DesignObject[];
+  let origin: Pt;
+  let extra: Pick<TextBlock, "centre" | "linear">;
+  if (kept) {
+    placed = layout.objects.map((o) => transformObject(o, kept));
+    origin = [kept[4], kept[5]];
+    extra = { centre: oldBlock?.centre ?? applyAffine(kept, layout.centre), ...(oldBlock?.linear ? { linear: oldBlock.linear } : {}) };
+  } else {
+    const box = unionBox(old.map(objectBox));
+    const at: Pt = box ? [(box.minX + box.maxX) / 2, (box.minY + box.maxY) / 2] : layout.centre;
+    origin = [at[0] - layout.centre[0], at[1] - layout.centre[1]];
+    placed = shifted(layout.objects, origin[0], origin[1]);
+    extra = { centre: at };
+  }
   const threadId = old[0]?.threadId;
-  const objs = shifted(layout.objects, dx, dy).map((o) => (threadId ? { ...o, threadId } : o));
+  const objs = placed.map((o) => (threadId ? { ...o, threadId } : o));
   const first = d.objects.findIndex((o) => o.sourceText?.group === group);
   const rest = d.objects.filter((o) => o.sourceText?.group !== group);
   rest.splice(first < 0 ? rest.length : first, 0, ...objs);
   d.objects = rest;
   const blocks = d.textBlocks ?? [];
   const i = blocks.findIndex((b) => b.id === group);
-  const next = { ...block, origin: [dx, dy] as Pt };
+  const next: TextBlock = { ...block, origin, ...extra };
   d.textBlocks = i >= 0 ? blocks.map((b, k) => (k === i ? next : b)) : [...blocks, next];
   return objs.map((o) => o.id);
 }

@@ -20,10 +20,13 @@ pub mod config;
 mod desktop;
 pub mod dongle_setup;
 pub mod emberconnect;
+pub mod fsutil;
 pub mod logging;
 pub mod machine;
+pub mod my_threads;
 pub mod ocr;
 pub mod projects;
+pub mod quit;
 pub mod server;
 
 use serde::Serialize;
@@ -138,7 +141,8 @@ pub fn run() {
                 .show_menu_on_left_click(false)
                 .on_menu_event(move |app, event| match event.id().as_ref() {
                     "show" => show_main_window(app),
-                    "quit" => app.exit(0),
+                    // through the unsaved-changes guard, like every other way out
+                    "quit" => quit::request_quit(app),
                     "autostart" => {
                         let manager = app.autolaunch();
                         let was_enabled = manager.is_enabled().unwrap_or(false);
@@ -197,6 +201,7 @@ pub fn run() {
             });
 
             app.manage(state);
+            app.manage(quit::QuitState::default());
             desktop::setup(app)?;
             projects::setup(app);
             Ok(())
@@ -216,6 +221,12 @@ pub fn run() {
             projects::take_open_files,
             projects::read_project_file,
             projects::write_project_file,
+            projects::allow_project_path,
+            projects::read_project_backup,
+            my_threads::read_my_threads,
+            my_threads::write_my_threads,
+            quit::set_dirty,
+            quit::quit_now,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
@@ -226,6 +237,14 @@ pub fn run() {
                 projects::announce(app, projects::paths_from_urls(urls));
             }
             #[cfg(not(any(target_os = "macos", target_os = "ios")))]
-            let _ = (app, event);
+            let _ = &app;
+            // Cmd-Q, the app menu, the Dock and closing the last window all arrive here: hold the exit
+            // back while the editor has unsaved changes and ask it first.
+            if let tauri::RunEvent::ExitRequested { api, .. } = &event {
+                if app.state::<quit::QuitState>().decision() == quit::Decision::Ask {
+                    api.prevent_exit();
+                    quit::ask(app);
+                }
+            }
         });
 }

@@ -4,8 +4,10 @@ import {
   CATALOGUES,
   DEFAULT_CATALOGUE_ID,
   DEFAULT_MAP_OPTIONS,
+  DEFAULT_REGION_SETTINGS,
   applyMapGroup,
   autoRedwork,
+  designBounds,
   detachMapGroup,
   duplicateObjects,
   emptyDesign,
@@ -18,7 +20,9 @@ import {
   objectBox,
   outlineToFill,
   resizeAbout,
+  regionToObjects,
   rotation,
+  shelfPalette,
   toDesignThread,
   transformObject,
   translation,
@@ -26,19 +30,24 @@ import {
   type Affine,
   type Box,
   type Design,
+  type DesignImage,
   type DesignObject,
   type Hoop,
   type MapToPathOptions,
   type Pt,
+  type RegionStitchSettings,
   type RunObject,
+  type Shelf,
   type Thread,
+  type TraceRegion,
 } from "@lilo/engine/light";
 import type { AutoDigitizeOptions, FabricId, ImageDataLike, PaletteChip, Quality, StageEvent, ThreadWeight, UnitsToMm } from "@lilo/engine";
 import type { EngineClient, DigitizeResponse, PlanResult } from "../engine/client";
 import { decodeFile, type DecodedImport } from "../io/decode";
 import type { ToolId } from "../tools/registry";
 import { moveGroup, moveObject, setGroupVisible, setObjectVisible } from "./reorder";
-import { expandTextGroups, nextTextGroup, pruneTextBlocks } from "./textGroups";
+import { getShelf } from "./shelfStore";
+import { expandTextGroups, nextTextGroup, pruneTextBlocks, transformTextBlocks } from "./textGroups";
 
 enablePatches();
 // Designs are passed to the engine worker and to stitchjs/jsts; nothing should mutate them, but
@@ -58,6 +67,8 @@ export interface DigitizeUiOptions {
   quality: Quality;
   threadWeight: ThreadWeight;
   fabric: FabricId;
+  /** Snap colours to My Threads first (the brand above is the fallback when the shelf is empty). */
+  useMyThreads: boolean;
 }
 
 export const DEFAULT_UI_OPTIONS: DigitizeUiOptions = {
@@ -71,6 +82,7 @@ export const DEFAULT_UI_OPTIONS: DigitizeUiOptions = {
   quality: "standard",
   threadWeight: 40,
   fabric: "suiting",
+  useMyThreads: false,
 };
 
 export type Status = { kind: "idle" } | { kind: "working"; stage: string } | { kind: "error"; message: string };
@@ -131,7 +143,9 @@ export interface MapDraft {
   options: MapToPathOptions;
 }
 
-export type SeqTab = "shapes" | "colours" | "images";
+export type Dialog = "export" | "send" | "history" | null;
+
+export type SeqTab = "shapes" | "colours" | "images" | "threads";
 
 export interface EditorState {
   projectName: string;
@@ -166,12 +180,28 @@ export interface EditorState {
   seqTab: SeqTab;
   paletteOpen: boolean;
   /** Which top-level dialog is open (opened from the top bar or the command palette). */
-  dialog: "export" | "send" | null;
+  dialog: Dialog;
   mapDraft: MapDraft | null;
   /** Where the Text tool was last clicked: new text is placed centred here. */
   textAnchor: Pt | null;
   /** True while a re-stitch is pending or running. */
   planning: boolean;
+  /** The last trace, kept for click-to-stitch (shared with the automatic result: no second trace). */
+  trace: TraceState | null;
+  /** How click-to-stitch sews the regions it is given. */
+  stitchSettings: RegionStitchSettings;
+  /** Region id -> ids of the objects click-to-stitch made from it. Valid while those objects exist. */
+  regionObjects: Record<string, string[]>;
+  /** Regions shift-clicked and waiting for Enter. */
+  pendingRegions: string[];
+}
+
+export interface TraceState {
+  regions: TraceRegion[];
+  /** The raw traced SVG (pixel units), for saving as SVG. */
+  svg: string;
+  /** Name of the picture it came from. */
+  source: string;
 }
 
 export const initialState: EditorState = {
@@ -205,11 +235,16 @@ export const initialState: EditorState = {
   mapDraft: null,
   textAnchor: null,
   planning: false,
+  trace: null,
+  stitchSettings: DEFAULT_REGION_SETTINGS,
+  regionObjects: {},
+  pendingRegions: [],
 };
 
-/** Turn UI options into engine options. */
-export function toEngineOptions(o: DigitizeUiOptions): Partial<AutoDigitizeOptions> {
+/** Turn UI options into engine options. `shelf` feeds "Use my threads" (an empty shelf means the brand is used). */
+export function toEngineOptions(o: DigitizeUiOptions, shelf: Shelf = getShelf()): Partial<AutoDigitizeOptions> {
   return {
+    ...(o.useMyThreads && shelf.entries.length > 0 ? { threads: shelfPalette(shelf) } : {}),
     colors: o.colors,
     catalogueId: o.catalogueId,
     widthMm: o.widthMm ?? undefined,
@@ -237,6 +272,8 @@ export interface CommitOptions {
   mergeWithinMs?: number;
   /** Selection after the edit (default: keep, minus anything that no longer exists). */
   select?: string[] | (() => string[]);
+  /** The edit doesn't change the stitches (reference images): skip the re-stitch. */
+  noPlan?: boolean;
 }
 
 const MAX_HISTORY = 200;
@@ -257,8 +294,13 @@ export interface EditorActions {
   reorderGroup(group: number, before: number): void;
   toggleObject(id: string, visible: boolean): void;
   toggleGroup(group: number, visible: boolean): void;
-  /** Replace the design directly (opening a project, tests). */
-  loadDesign(design: Design): Promise<void>;
+  /**
+   * Replace the design directly (opening a project, tests), clearing undo history. `images` are the
+   * bytes of the design's reference images by id; `name` becomes the project name.
+   */
+  loadDesign(design: Design, opts?: { name?: string; images?: Record<string, { bytes: Uint8Array; mime: string }> }): Promise<void>;
+  /** Bytes of the reference images the design uses, for saving into the project file. */
+  imageAssets(): { id: string; name: string; mime: string; bytes: Uint8Array }[];
 
   // ---- editing --------------------------------------------------------------------------------
   /** Edit the design through an Immer recipe; one undo step (or merged, see `CommitOptions`). */
@@ -274,10 +316,16 @@ export interface EditorActions {
   setUnits(u: "mm" | "in"): void;
   setAspectLock(on: boolean): void;
   setPaletteOpen(open: boolean): void;
-  setDialog(dialog: "export" | "send" | null): void;
+  setDialog(dialog: Dialog): void;
   setSeqTab(tab: SeqTab): void;
 
   addObjects(objects: DesignObject[], label: string): void;
+  /**
+   * Drop objects made elsewhere (an imported embroidery file, the pixel-art editor) into the design as
+   * one undo step. They get fresh ids, their threads are added, and with `centreOnDesign` they are
+   * centred on what is already there (on 0,0 for an empty design).
+   */
+  placeObjects(objects: readonly DesignObject[], threads: readonly Thread[], label: string, opts?: { centreOnDesign?: boolean }): void;
   /** Change objects by id through a recipe on each; one undo step. */
   updateObjects(ids: readonly string[], label: string, recipe: (o: DesignObject) => void, opts?: CommitOptions): void;
   replaceObject(id: string, pieces: DesignObject[], label: string): void;
@@ -311,7 +359,19 @@ export interface EditorActions {
   applyMapDraft(): void;
   detachMap(groupId: string): void;
 
-  // ---- reference images -----------------------------------------------------------------------
+  // ---- click-to-stitch ------------------------------------------------------------------------
+  setStitchSettings(patch: Partial<RegionStitchSettings>): void;
+  /** Stitch these traced regions with the current settings: one undo step. */
+  stitchRegions(ids: readonly string[]): void;
+  /** Shift-click: add or remove a region from the batch waiting for Enter. */
+  togglePendingRegion(id: string): void;
+  clearPendingRegions(): void;
+  /** Stitch the batch in one undo step. */
+  stitchPending(): void;
+  /** Remove every object (the automatic result) so click-to-stitch can start from the bare trace: one undo step. */
+  clearStitches(): void;
+
+  // ---- reference images (part of the design: saved in the project, undoable) -------------------
   addRefImage(file: { name: string; bytes: Uint8Array; type?: string }): Promise<void>;
   updateRefImage(id: string, patch: Partial<Omit<RefImage, "id" | "src">>): void;
   moveRefImage(id: string, dir: -1 | 1): void;
@@ -334,16 +394,32 @@ export function defaultThread(): Thread {
 }
 
 let threadIndex: Map<string, Thread> | null = null;
-/** Look a thread up by id across every bundled catalogue. */
-export function findThread(id: string): Thread | null {
+const index = (): Map<string, Thread> => {
   if (!threadIndex) {
     threadIndex = new Map();
     for (const c of CATALOGUES) for (const t of c.threads) threadIndex.set(toDesignThread(t).id, toDesignThread(t));
   }
-  return threadIndex.get(id) ?? null;
+  return threadIndex;
+};
+/** Look a thread up by id: the eager catalogues, plus anything the picker has loaded or registered since. */
+export function findThread(id: string): Thread | null {
+  return index().get(id) ?? null;
+}
+/** Make a thread from a lazily loaded line (or My Threads) findable by id, e.g. as the drawing colour. */
+export function registerThread(t: Thread): void {
+  index().set(t.id, t);
 }
 
 const errMsg = (e: unknown) => (e instanceof Error ? e.message : String(e));
+
+/** The picture of a reference image, or null when it can't be decoded (the placement is kept anyway). */
+async function decodeAsset(bytes: Uint8Array, mime: string, name: string): Promise<HTMLCanvasElement | HTMLImageElement | null> {
+  try {
+    return (await decodeFile({ name, bytes, type: mime })).reference;
+  } catch {
+    return null;
+  }
+}
 
 /** Selection box of the given objects in `design`. */
 export function selectionBox(design: Design | null, ids: readonly string[]): Box | null {
@@ -379,6 +455,36 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     redoStack = [];
     openKey = null;
     syncHistory();
+  };
+
+  // ---- reference images: placements live in the design, pixels in `assets` -----------------------
+  interface ImageAsset {
+    bytes: Uint8Array;
+    mime: string;
+    src: HTMLCanvasElement | HTMLImageElement;
+  }
+  const assets = new Map<string, ImageAsset>();
+  let refsFor: DesignImage[] | undefined;
+  let refsMemo: RefImage[] = [];
+  let refsAssets = -1;
+  let assetVersion = 0;
+  /** `state.refImages` for a design: the same array while neither the placements nor the pixels change. */
+  const refsOf = (design: Design | null): RefImage[] => {
+    const list = design?.images;
+    if (list === refsFor && refsAssets === assetVersion) return refsMemo;
+    refsFor = list;
+    refsAssets = assetVersion;
+    refsMemo = (list ?? []).flatMap((m) => {
+      const a = assets.get(m.id);
+      return a ? [{ id: m.id, name: m.name, src: a.src, w: m.w, h: m.h, x: m.x, y: m.y, widthMm: m.widthMm, opacity: m.opacity, locked: m.locked, visible: m.visible }] : [];
+    });
+    return refsMemo;
+  };
+  /** Everything that follows from a new design value, to be spread into `set`. */
+  const designState = (design: Design | null): Pick<EditorState, "design" | "refImages" | "selectedImageId"> => {
+    const refImages = refsOf(design);
+    const sel = get().selectedImageId;
+    return { design, refImages, selectedImageId: sel && refImages.some((r) => r.id === sel) ? sel : null };
   };
 
   // ---- planning (live re-stitch) -------------------------------------------------------------
@@ -452,10 +558,10 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     }
     openKey = opts.merge ?? null;
     redoStack = [];
-    set({ design: next });
+    set(designState(next));
     setSel(selAfter);
     syncHistory();
-    schedulePlan();
+    if (!opts.noPlan) schedulePlan();
     return true;
   };
 
@@ -466,7 +572,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     const next = applyPatches(d, e.inverse);
     redoStack.push(e);
     openKey = null;
-    set({ design: next });
+    set(designState(next));
     setSel(existing(next, e.selBefore));
     syncHistory();
     schedulePlan();
@@ -478,7 +584,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     const next = applyPatches(d, e.patches);
     undoStack.push(e);
     openKey = null;
-    set({ design: next });
+    set(designState(next));
     setSel(existing(next, e.selAfter));
     syncHistory();
     schedulePlan();
@@ -505,14 +611,19 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       if (id !== runId) return;
       resetHistory();
       planId++; // a pending re-stitch of the previous design is now moot
+      // a fresh result replaces the stitches, not the pictures the user placed behind them
+      const images = get().design?.images;
       set((s) => ({
         status: { kind: "idle" },
-        design: result.design,
+        ...designState(images?.length ? { ...result.design, images } : result.design),
         planResult: { plan: result.plan, stats: result.stats, warnings: result.warnings },
         palette: result.palette,
         placement: { imageToMm: result.imageToMm, origin: result.imageOrigin, width: result.imageWidth, height: result.imageHeight },
         animationKey: s.animationKey + 1,
         mapDraft: null,
+        trace: { regions: result.traceRegions, svg: result.svg, source: s.source?.name ?? "" },
+        regionObjects: {},
+        pendingRegions: [],
       }));
       setSel([]);
     } catch (e) {
@@ -579,12 +690,45 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const d = get().design;
       if (d) commit(visible ? "Show colour block" : "Hide colour block", (draft) => void (draft.objects = setGroupVisible(d, group, visible).objects));
     },
-    async loadDesign(design) {
+    async loadDesign(design, opts = {}) {
       const planResult = await engine.plan(design);
+      // a new document: the old one's picture to digitize and reference pixels don't carry over
+      decoded = null;
+      if (digitizeTimer) clearTimeout(digitizeTimer);
+      runId++;
+      assets.clear();
+      assetVersion++;
+      if (opts.images) {
+        for (const [id, a] of Object.entries(opts.images)) {
+          const src = await decodeAsset(a.bytes, a.mime, design.images?.find((m) => m.id === id)?.name ?? id);
+          if (src) assets.set(id, { bytes: a.bytes, mime: a.mime, src });
+        }
+        assetVersion++;
+      }
       resetHistory();
       planId++;
-      set({ design, planResult, status: { kind: "idle" }, mapDraft: null, planning: false });
+      set({
+        ...designState(design),
+        planResult,
+        status: { kind: "idle" },
+        source: null,
+        stages: { quantized: null, palette: [], imageToMm: null },
+        palette: [],
+        placement: null,
+        mapDraft: null,
+        planning: false,
+        trace: null,
+        regionObjects: {},
+        pendingRegions: [],
+        ...(opts.name !== undefined ? { projectName: opts.name } : {}),
+      });
       setSel([]);
+    },
+    imageAssets() {
+      return (get().design?.images ?? []).flatMap((m) => {
+        const a = assets.get(m.id);
+        return a ? [{ id: m.id, name: m.name, mime: a.mime, bytes: a.bytes }] : [];
+      });
     },
 
     commit,
@@ -618,6 +762,31 @@ export function createEditorStore(engine: EngineClient): EditorStore {
         { select: objects.map((o) => o.id) },
       );
     },
+    placeObjects(objects, threads, label, opts = {}) {
+      if (objects.length === 0) return;
+      const d0 = get().design;
+      const nextId = makeIdGen(d0 ?? emptyDesign());
+      let dx = 0;
+      let dy = 0;
+      if (opts.centreOnDesign) {
+        const ob = unionBox(objects.map(objectBox));
+        const b = d0 && d0.objects.length ? designBounds(d0) : null;
+        if (ob) {
+          const [tx, ty] = b ? [(b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2] : [0, 0];
+          dx = tx - (ob.minX + ob.maxX) / 2;
+          dy = ty - (ob.minY + ob.maxY) / 2;
+        }
+      }
+      const placed = objects.map((o) => ({ ...(dx || dy ? transformObject(o, translation(dx, dy)) : o), id: nextId() }));
+      commit(
+        label,
+        (d) => {
+          for (const t of threads) ensureThread(d, t);
+          d.objects.push(...placed);
+        },
+        { select: placed.map((o) => o.id) },
+      );
+    },
     updateObjects(ids, label, recipe, opts) {
       const set = new Set(ids);
       commit(
@@ -643,6 +812,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       commit(
         label,
         (d) => {
+          transformTextBlocks(d, set, m);
           d.objects = d.objects.map((o) => (set.has(o.id) && !o.locked ? transformObject(o, m) : o));
         },
         opts,
@@ -686,7 +856,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
               const ng = nextTextGroup(draft, remap.values());
               remap.set(g, ng);
               const block = draft.textBlocks?.find((x) => x.id === g);
-              if (block) draft.textBlocks!.push({ ...block, id: ng, origin: [block.origin[0] + 3, block.origin[1] + 3] });
+              if (block) draft.textBlocks!.push({ ...block, id: ng, origin: [block.origin[0] + 3, block.origin[1] + 3], ...(block.centre ? { centre: [block.centre[0] + 3, block.centre[1] + 3] as const } : {}) });
             }
             c.sourceText = { ...c.sourceText!, group: remap.get(g)! };
           }
@@ -867,21 +1037,116 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const h = "naturalHeight" in src ? src.naturalHeight || src.height : src.height;
       const widthMm = 60;
       const heightMm = (widthMm * h) / Math.max(1, w);
-      const img: RefImage = { id: `img${++imageSeq}`, name: file.name, src, w, h, x: -widthMm / 2, y: -heightMm / 2, widthMm, opacity: 0.6, locked: false, visible: true };
-      set((s) => ({ refImages: [...s.refImages, img], selectedImageId: img.id }));
+      const used = new Set((get().design?.images ?? []).map((m) => m.id));
+      let id = `img${++imageSeq}`;
+      while (used.has(id) || assets.has(id)) id = `img${++imageSeq}`;
+      const mime = file.type || (d.kind === "svg" ? "image/svg+xml" : /\.jpe?g$/i.test(file.name) ? "image/jpeg" : /\.webp$/i.test(file.name) ? "image/webp" : "image/png");
+      assets.set(id, { bytes: file.bytes, mime, src });
+      assetVersion++;
+      const meta: DesignImage = { id, name: file.name, mime, w, h, x: -widthMm / 2, y: -heightMm / 2, widthMm, opacity: 0.6, locked: false, visible: true };
+      commit("Add reference image", (dd) => void (dd.images = [...(dd.images ?? []), meta]), { noPlan: true });
+      set({ selectedImageId: id });
     },
-    updateRefImage: (id, patch) => set((s) => ({ refImages: s.refImages.map((r) => (r.id === id ? { ...r, ...patch } : r)) })),
+    updateRefImage(id, patch) {
+      const keys = Object.keys(patch);
+      const label = keys.includes("opacity")
+        ? "Image opacity"
+        : keys.includes("widthMm")
+          ? "Resize image"
+          : keys.includes("x") || keys.includes("y")
+            ? "Move image"
+            : keys.includes("visible")
+              ? patch.visible
+                ? "Show image"
+                : "Hide image"
+              : keys.includes("locked")
+                ? patch.locked
+                  ? "Lock image"
+                  : "Unlock image"
+                : "Edit image";
+      // `src` and `id` aren't placement; everything else is
+      const { name, w, h, x, y, widthMm, opacity, locked, visible } = patch;
+      const changes = { name, w, h, x, y, widthMm, opacity, locked, visible };
+      commit(
+        label,
+        (d) => {
+          const m = d.images?.find((i) => i.id === id);
+          if (!m) return;
+          for (const [k, v] of Object.entries(changes)) if (v !== undefined) (m as unknown as Record<string, unknown>)[k] = v;
+        },
+        { merge: `img:${id}:${label}`, noPlan: true },
+      );
+    },
     moveRefImage(id, dir) {
-      set((s) => {
-        const i = s.refImages.findIndex((r) => r.id === id);
-        const j = i + dir;
-        if (i < 0 || j < 0 || j >= s.refImages.length) return {};
-        const list = [...s.refImages];
-        [list[i], list[j]] = [list[j], list[i]];
-        return { refImages: list };
-      });
+      commit(
+        dir > 0 ? "Bring image forward" : "Send image back",
+        (d) => {
+          const list = d.images;
+          if (!list) return;
+          const i = list.findIndex((r) => r.id === id);
+          const j = i + dir;
+          if (i < 0 || j < 0 || j >= list.length) return;
+          [list[i], list[j]] = [list[j], list[i]];
+        },
+        { noPlan: true },
+      );
     },
-    removeRefImage: (id) => set((s) => ({ refImages: s.refImages.filter((r) => r.id !== id), selectedImageId: s.selectedImageId === id ? null : s.selectedImageId })),
+    removeRefImage(id) {
+      commit("Remove reference image", (d) => void (d.images = (d.images ?? []).filter((r) => r.id !== id)), { noPlan: true });
+    },
+    setStitchSettings: (patch) => set((s) => ({ stitchSettings: { ...s.stitchSettings, ...patch } })),
+    stitchRegions(ids) {
+      const s = get();
+      const regions = s.trace?.regions;
+      if (!regions) return;
+      const byId = new Map(regions.map((r) => [r.id, r]));
+      const wanted = [...new Set(ids)].flatMap((id) => (byId.has(id) ? [byId.get(id)!] : []));
+      if (wanted.length === 0) return;
+      const nextId = makeIdGen(s.design ?? emptyDesign());
+      const made = wanted.map((r) => ({ regionId: r.id, ...regionToObjects(r, s.stitchSettings, nextId) }));
+      const all = made.flatMap((m) => m.objects.map((o) => o.id));
+      // a region you already stitched is re-stitched with the new settings, in its place, not doubled
+      const have = new Set((s.design?.objects ?? []).map((o) => o.id));
+      const olds = made.map((m) => (s.regionObjects[m.regionId] ?? []).filter((id) => have.has(id)));
+      const redo = olds.some((o) => o.length > 0);
+      commit(
+        redo ? (wanted.length === 1 ? "Restitch region" : `Restitch ${wanted.length} regions`) : wanted.length === 1 ? "Stitch region" : `Stitch ${wanted.length} regions`,
+        (d) => {
+          made.forEach((m, i) => {
+            ensureThread(d, m.thread);
+            const old = new Set(olds[i]);
+            let at = d.objects.length;
+            if (old.size > 0) {
+              at = d.objects.findIndex((o) => old.has(o.id));
+              d.objects = d.objects.filter((o) => !old.has(o.id));
+            }
+            d.objects.splice(Math.max(0, Math.min(at, d.objects.length)), 0, ...m.objects);
+          });
+        },
+        { select: all },
+      );
+      set((st) => ({
+        regionObjects: { ...st.regionObjects, ...Object.fromEntries(made.map((m) => [m.regionId, m.objects.map((o) => o.id)])) },
+        pendingRegions: st.pendingRegions.filter((id) => !byId.has(id) || !wanted.some((w) => w.id === id)),
+      }));
+    },
+    togglePendingRegion: (id) => set((s) => ({ pendingRegions: s.pendingRegions.includes(id) ? s.pendingRegions.filter((x) => x !== id) : [...s.pendingRegions, id] })),
+    clearPendingRegions: () => set({ pendingRegions: [] }),
+    stitchPending: () => actions.stitchRegions(get().pendingRegions),
+    clearStitches() {
+      if ((get().design?.objects.length ?? 0) === 0) return;
+      commit(
+        "Clear all stitches",
+        (d) => {
+          d.objects = [];
+          delete d.textBlocks;
+          delete d.mapGroups;
+        },
+        { select: [] },
+      );
+      set({ regionObjects: {} });
+    },
+
     selectRefImage: (id) => set({ selectedImageId: id }),
   };
 

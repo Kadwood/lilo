@@ -57,3 +57,20 @@ export interface ConvertWarning {
     | "empty";
   message: string;
 }
+
+export const FORMATS: readonly FormatInfo[] = [
+  { ext: "pes", label: "Brother PES", hasColors: true },
+  { ext: "pec", label: "Brother PEC", hasColors: true },
+  { ext: "dst", label: "Tajima DST", hasColors: false },
+  { ext: "exp", label: "Melco EXP", hasColors: false },
+  { ext: "jef", label: "Janome JEF", hasColors: true },
+  { ext: "vp3", label: "Pfaff/Viking VP3", hasColors: true },
+  { ext: "xxx", label: "Singer XXX", hasColors: true },
+  { ext: "u01", label: "Barudan U01", hasColors: false },
+];
+
+/** "design.DST" or ".dst" to "dst", or null if Lilo doesn't know the format. */
+export function formatFromName(nameOrExt: string): FormatExt | null {
+  const ext = (nameOrExt.includes(".") ? nameOrExt.slice(nameOrExt.lastIndexOf(".") + 1) : nameOrExt).toLowerCase();
+  return (FORMAT_EXTENSIONS as readonly string[]).includes(ext) ? (ext as FormatExt) : null;
+}

@@ -11,7 +11,9 @@ import {
   PROJECT_VERSION,
   ProjectError,
   addHistorySnapshot,
+  addFont,
   addImage,
+  MAX_FONT_BYTES,
   createProject,
   designThumbnailPng,
   historyDoc,
@@ -128,6 +130,36 @@ describe(".lilo project files", () => {
     const info = readProjectInfo(saveProject(fullProject(), T(3)));
     expect(info).toMatchObject({ title: "Crest", savedAt: T(3).toISOString(), version: 1 });
     expect(info.thumbnail!.length).toBeGreaterThan(50);
+  });
+});
+
+describe("embedded custom fonts", () => {
+  it("addFont puts the bytes in fonts/ and they come back through save and load", () => {
+    const bytes = new Uint8Array([0, 1, 0, 0, 9, 8, 7]);
+    let p = createProject({ design: sampleDesign() });
+    p = addFont(p, { id: "Brand.ttf#0", name: "Brand Sans", bytes, ext: "TTF" });
+    p = addFont(p, { id: "Other.otf#0", name: "Other", bytes: new Uint8Array([1, 2]), ext: "otf" });
+    expect(new Set(p.doc.fonts.map((f) => f.file)).size).toBe(2);
+    const zip = unzipSync(saveProject(p, T(1)));
+    expect(Object.keys(zip).filter((k) => k.startsWith("fonts/")).length).toBe(2);
+    const back = loadProject(saveProject(p, T(1))).project;
+    expect(back.doc.fonts.map((f) => [f.id, f.name, f.source])).toEqual([["Brand.ttf#0", "Brand Sans", "custom"], ["Other.otf#0", "Other", "custom"]]);
+    expect(Array.from(back.fonts["Brand.ttf#0"])).toEqual(Array.from(bytes));
+  });
+
+  it("re-adding an id replaces it instead of duplicating", () => {
+    let p = createProject({});
+    p = addFont(p, { id: "a#0", name: "A", bytes: new Uint8Array([1]) });
+    p = addFont(p, { id: "a#0", name: "A", bytes: new Uint8Array([2]) });
+    expect(p.doc.fonts).toHaveLength(1);
+    expect(Array.from(p.fonts["a#0"])).toEqual([2]);
+  });
+
+  it("refuses a font over 20 MB and an odd extension becomes ttf", () => {
+    const p = createProject({});
+    expect(() => addFont(p, { id: "big#0", name: "Big", bytes: new Uint8Array(MAX_FONT_BYTES + 1) })).toThrow(/over 20 MB/);
+    expect(addFont(p, { id: "x#0", name: "X", bytes: new Uint8Array([1]), ext: "../../etc" }).doc.fonts[0].file).toMatch(/^fonts\/font-\d+\.ttf$/);
+    expect(addFont(p, { id: "y#0", name: "Y", bytes: new Uint8Array(MAX_FONT_BYTES) }).doc.fonts).toHaveLength(1); // exactly 20 MB is fine
   });
 });
 

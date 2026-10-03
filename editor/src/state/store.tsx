@@ -10,6 +10,7 @@ export {
   initialState,
   toEngineOptions,
   type DigitizeUiOptions,
+  type Dialog,
   type EditorActions,
   type EditorState,
   type MapDraft,

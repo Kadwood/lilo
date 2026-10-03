@@ -1,3 +1,4 @@
+import type { TraceRegion } from "../clickstitch";
 import type { Design, FillParams, Hoop } from "../model";
 import type { ThreadEntry } from "../threads";
 import type { FabricInput, Quality, SewingSetupInput, ThreadWeight } from "../presets";
@@ -98,4 +99,9 @@ export interface AutoDigitizeResult {
   imageToMm: UnitsToMm;
   /** Image-space coordinates of the image's top-left corner: (0, 0) for rasters, the viewBox origin for SVG. */
   imageOrigin: [number, number];
+  /**
+   * The trace's connected same-colour areas in design mm, for click-to-stitch. Built from the same
+   * trace as `design`, so clicking a region never re-traces.
+   */
+  traceRegions: TraceRegion[];
 }

@@ -219,6 +219,17 @@ export interface TextBlock {
   origin: Pt;
   /** Text-on-path guide, if any (`PathGuide` in engine/src/lettering). */
   path?: unknown;
+  /**
+   * Where the block's layout centre sits now, mm. Kept in step with every move, rotate, scale and
+   * flip of the word, so editing the text re-lays it out where it is, not where it was typed.
+   * Absent in older files (re-layout then centres on the letters' bounding box).
+   */
+  centre?: Pt;
+  /**
+   * The linear part `[a, b, c, d]` of the transforms the user applied to the word (rotation, scale,
+   * flip), as in `Affine`. Absent means none. Re-layout applies it to the fresh letters.
+   */
+  linear?: readonly [number, number, number, number];
 }
 
 interface ObjectBase {
@@ -280,6 +291,29 @@ export interface RunObject extends ObjectBase {
 
 export type DesignObject = FillObject | SatinObject | RunObject;
 
+/**
+ * A reference picture placed behind the stitches to trace over. The pixels live in the project file
+ * (`images/`), not in the design: this is only where and how it is shown, so moving, fading,
+ * reordering and removing images are ordinary undoable design edits.
+ */
+export interface DesignImage {
+  /** Unique within the design; also the key of the bytes in the project file. */
+  id: string;
+  name: string;
+  mime: string;
+  /** Natural size in px (aspect ratio). */
+  w: number;
+  h: number;
+  /** Top-left corner, mm. */
+  x: number;
+  y: number;
+  widthMm: number;
+  /** 0..1. */
+  opacity: number;
+  locked: boolean;
+  visible: boolean;
+}
+
 export interface Design {
   version: typeof DESIGN_VERSION;
   /** Millimetres per coordinate unit. Always 1 in v1 (geometry is already in mm); reserved for imports. */
@@ -293,4 +327,6 @@ export interface Design {
   mapGroups?: Record<string, MapGroup>;
   /** Text blocks behind `objects[].sourceText` (optional; absent in designs without lettering). */
   textBlocks?: TextBlock[];
+  /** Reference images, bottom first (optional). Not stitched. */
+  images?: DesignImage[];
 }

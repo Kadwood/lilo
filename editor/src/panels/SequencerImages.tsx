@@ -90,12 +90,12 @@ export function SequencerImages() {
               </div>
               <label className="image-opacity">
                 <span className="muted small">Opacity</span>
-                <input type="range" min={0.05} max={1} step={0.05} value={img.opacity} aria-label={`${img.name} opacity`} onChange={(e) => actions.updateRefImage(img.id, { opacity: Number(e.target.value) })} />
+                <input type="range" min={0.05} max={1} step={0.05} value={img.opacity} aria-label={`${img.name} opacity`} onChange={(e) => actions.updateRefImage(img.id, { opacity: Number(e.target.value) })} onPointerUp={actions.endGroup} onKeyUp={actions.endGroup} onBlur={actions.endGroup} />
                 <output>{Math.round(img.opacity * 100)}%</output>
               </label>
               <label className="image-opacity">
                 <span className="muted small">Width</span>
-                <input type="range" min={10} max={260} step={1} value={img.widthMm} aria-label={`${img.name} width`} disabled={img.locked} onChange={(e) => actions.updateRefImage(img.id, { widthMm: Number(e.target.value) })} />
+                <input type="range" min={10} max={260} step={1} value={img.widthMm} aria-label={`${img.name} width`} disabled={img.locked} onChange={(e) => actions.updateRefImage(img.id, { widthMm: Number(e.target.value) })} onPointerUp={actions.endGroup} onKeyUp={actions.endGroup} onBlur={actions.endGroup} />
                 <output>{Math.round(img.widthMm)} mm</output>
               </label>
             </li>
