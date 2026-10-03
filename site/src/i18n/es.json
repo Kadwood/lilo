@@ -19,7 +19,8 @@
     "language": "Idioma",
     "home": "Lilo de Kadwood, inicio",
     "primary": "Principal",
-    "skip": "Saltar al contenido"
+    "skip": "Saltar al contenido",
+    "manual": "Manual"
   },
   "hero": {
     "title": "Bordado para todos",
@@ -333,7 +334,8 @@
     "kadwood": "Kadwood",
     "kadwoodAria": "Kadwood, abre kadwood.com",
     "trademark": "El nombre y el logo de Kadwood, y el nombre Lilo y el logo del hibisco, son marcas de Kadwood. Todos los demás nombres de marcas y máquinas pertenecen a sus dueños. Lilo no está afiliado con ellos.",
-    "rights": "Hecho con cariño por Kadwood."
+    "rights": "Hecho con cariño por Kadwood.",
+    "manual": "Manual"
   },
   "langBanner": {
     "text": "Esta página también está en {language}.",
@@ -366,5 +368,13 @@
     "checked": "{n} comprobadas en la página del fabricante",
     "wifiLine": "Lilo Link (Wi-Fi) busca máquinas por sí solo. Aún no se ha probado con equipos reales.",
     "disclaimer": "Los nombres de marcas y productos pertenecen a sus dueños. Lilo no está afiliado con ellos."
+  },
+  "manual": {
+    "englishNote": "El manual está en inglés.",
+    "read": "Leer el manual",
+    "threads": "Leer sobre hilos",
+    "hoops": "Leer sobre bastidores",
+    "pixel": "Leer sobre pixel art",
+    "converter": "Leer sobre el conversor"
   }
 }

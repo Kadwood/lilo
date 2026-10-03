@@ -371,6 +371,39 @@ function setupDemo() {
   } else start();
 }
 
+/* ---------------------------------------------------------------- manual search */
+// Every guide card is already on the page with its words in data-search, so searching is just filtering.
+function setupManualSearch() {
+  const input = $<HTMLInputElement>("m-q");
+  const list = $("m-list");
+  if (!input || !list) return;
+  const none = $("m-none");
+  const status = $("m-status");
+  $("m-form")?.addEventListener("submit", (e) => e.preventDefault());
+  const cards = Array.from(list.querySelectorAll<HTMLElement>(".m-card"));
+  const sections = Array.from(list.querySelectorAll<HTMLElement>("[data-section]"));
+  function run() {
+    const words = input!.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const c of cards) {
+      const hay = c.dataset.search || "";
+      const hit = words.every((w) => hay.includes(w));
+      c.hidden = !hit;
+      if (hit) shown++;
+    }
+    for (const s of sections) s.hidden = !s.querySelector(".m-card:not([hidden])");
+    if (none) none.hidden = shown > 0;
+    if (status) status.textContent = words.length ? `${shown} ${shown === 1 ? "guide" : "guides"} found` : "";
+  }
+  input.addEventListener("input", run);
+  const q = new URLSearchParams(location.search).get("q");
+  if (q) {
+    input.value = q;
+    run();
+  }
+}
+
 setupDownload();
 setupLanguage();
 setupDemo();
+setupManualSearch();

@@ -19,7 +19,8 @@
     "language": "语言",
     "home": "Lilo by Kadwood，首页",
     "primary": "主导航",
-    "skip": "跳到正文"
+    "skip": "跳到正文",
+    "manual": "手册"
   },
   "hero": {
     "title": "人人都能刺绣",
@@ -333,7 +334,8 @@
     "kadwood": "Kadwood",
     "kadwoodAria": "Kadwood，打开 kadwood.com",
     "trademark": "Kadwood 的名称和标志，以及 Lilo 的名称和木槿花标志，是 Kadwood 的商标。其他品牌和机器名称归其所有者所有。Lilo 与它们没有关联。",
-    "rights": "Kadwood 用心制作。"
+    "rights": "Kadwood 用心制作。",
+    "manual": "手册"
   },
   "langBanner": {
     "text": "本页也有{language}版。",
@@ -366,5 +368,13 @@
     "checked": "{n} 台已在厂商网页核对",
     "wifiLine": "Lilo Link（Wi-Fi）会自己查找机器。还没有在真实设备上试过。",
     "disclaimer": "品牌和产品名称归其所有者所有。Lilo 与它们没有关联。"
+  },
+  "manual": {
+    "englishNote": "手册目前只有英文版。",
+    "read": "阅读手册",
+    "threads": "了解线",
+    "hoops": "了解绣框",
+    "pixel": "了解像素画",
+    "converter": "了解格式转换"
   }
 }

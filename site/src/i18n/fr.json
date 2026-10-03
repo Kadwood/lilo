@@ -19,7 +19,8 @@
     "language": "Langue",
     "home": "Lilo par Kadwood, accueil",
     "primary": "Principal",
-    "skip": "Aller au contenu"
+    "skip": "Aller au contenu",
+    "manual": "Manuel"
   },
   "hero": {
     "title": "La broderie pour tous",
@@ -333,7 +334,8 @@
     "kadwood": "Kadwood",
     "kadwoodAria": "Kadwood, ouvre kadwood.com",
     "trademark": "Le nom et le logo Kadwood, ainsi que le nom Lilo et le logo hibiscus, sont des marques de Kadwood. Tous les autres noms de marques et de machines appartiennent à leurs propriétaires. Lilo n'est pas affilié à eux.",
-    "rights": "Fait avec soin par Kadwood."
+    "rights": "Fait avec soin par Kadwood.",
+    "manual": "Manuel"
   },
   "langBanner": {
     "text": "Cette page existe aussi en {language}.",
@@ -366,5 +368,13 @@
     "checked": "{n} vérifiées sur la page du fabricant",
     "wifiLine": "Lilo Link (Wi-Fi) cherche les machines tout seul. Il n'a pas encore été essayé sur du vrai matériel.",
     "disclaimer": "Les noms de marques et de produits appartiennent à leurs propriétaires. Lilo n'est pas affilié à eux."
+  },
+  "manual": {
+    "englishNote": "Le manuel est en anglais.",
+    "read": "Lire le manuel",
+    "threads": "Lire sur les fils",
+    "hoops": "Lire sur les cerceaux",
+    "pixel": "Lire sur le pixel art",
+    "converter": "Lire sur le convertisseur"
   }
 }

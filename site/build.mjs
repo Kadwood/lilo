@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { renderHome, renderCompat, urlFor, SITE } from "./src/render.mjs";
 import { makeDownloads } from "./scripts/make-downloads.mjs";
+import { loadGuide, renderManual, writePages } from "./src/manual.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const DIST = join(here, "dist");
@@ -71,6 +72,9 @@ async function buildOnce() {
   const demoInfo = { stitches: demo.stats.stitches, width: demo.width, height: demo.height };
 
   const locales = loadLocales();
+  // the manual: docs/guide at the repo root (absent on branches that predate it: the build then makes a stub)
+  const guide = loadGuide(process.env.LILO_GUIDE_DIR ?? join(here, "../docs/guide"));
+  console.log(guide.pages.length ? `manual: ${guide.pages.length} pages in ${guide.sections.length} sections` : "manual: no docs/guide yet, building a coming-soon page");
   const pages = [];
   for (const loc of locales) {
     const nf = new Intl.NumberFormat(loc.meta.lang === "ar" ? "ar-u-nu-latn" : loc.meta.lang);
@@ -79,6 +83,7 @@ async function buildOnce() {
       downloads,
       nf,
       demo: demoInfo,
+      guide,
       compat: { ...compat, compiled: compat.compiled },
       vars: {
         threadColours: nf.format(c.threadColours),
@@ -98,6 +103,13 @@ async function buildOnce() {
     }
   }
 
+  // manual pages (English only, so no language alternates)
+  const manualPages = renderManual(locales[0], locales, { downloads, nf: new Intl.NumberFormat("en"), guide }, guide, DIST).map((p) => ({
+    ...p,
+    html: p.html.replaceAll("/assets/main.js", `/assets/${js}`).replaceAll("/assets/site.css", `/assets/${css}`),
+  }));
+  writePages(manualPages, DIST);
+
   // sitemap (every page lists all its language alternates)
   const alt = (path) =>
     locales.map((l) => `    <xhtml:link rel="alternate" hreflang="${l.meta.lang}" href="${SITE}${urlFor(l, path)}"/>`).join("\n") +
@@ -107,6 +119,8 @@ async function buildOnce() {
     join(DIST, "sitemap.xml"),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
       pages.map(({ loc, path }) => `  <url>\n    <loc>${SITE}${urlFor(loc, path)}</loc>\n    <lastmod>${today}</lastmod>\n${alt(path)}\n  </url>`).join("\n") +
+      "\n" +
+      manualPages.map((p) => `  <url>\n    <loc>${SITE}/${p.path}/</loc>\n    <lastmod>${today}</lastmod>\n  </url>`).join("\n") +
       `\n</urlset>\n`,
   );
   writeFileSync(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);

@@ -18,7 +18,8 @@
     "language": "Language",
     "home": "Lilo by Kadwood, home",
     "primary": "Main",
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "manual": "Manual"
   },
   "hero": {
     "title": "Embroidery for everyone",
@@ -332,7 +333,8 @@
     "kadwood": "Kadwood",
     "kadwoodAria": "Kadwood, opens kadwood.com",
     "trademark": "The Kadwood name and logo, and the Lilo name and hibiscus logo, are trademarks of Kadwood. All other brand and machine names belong to their owners. Lilo is not affiliated with them.",
-    "rights": "Made with care by Kadwood."
+    "rights": "Made with care by Kadwood.",
+    "manual": "Manual"
   },
   "langBanner": {
     "text": "This page is also in {language}.",
@@ -365,5 +367,13 @@
     "checked": "{n} checked on the maker's page",
     "wifiLine": "Lilo Link (Wi-Fi) looks for machines by itself. It has not been tried on real hardware yet.",
     "disclaimer": "Brand and product names belong to their owners. Lilo is not affiliated with them."
+  },
+  "manual": {
+    "englishNote": "The manual is in English.",
+    "read": "Read the manual",
+    "threads": "Read about threads",
+    "hoops": "Read about hoops",
+    "pixel": "Read about pixel art",
+    "converter": "Read about the converter"
   }
 }

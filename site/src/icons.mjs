@@ -31,6 +31,7 @@ const P = {
   menu: '<path d="M4.5 7h15M4.5 12h15M4.5 17h15"/>',
   chevron: '<path d="m6 9 6 6 6-6"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
 };
 const FLIP = new Set(["arrow", "send"]);
 

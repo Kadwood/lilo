@@ -20,12 +20,13 @@ const fontsHref = (code) =>
 export const urlFor = (loc, path = "") => `/${[loc.meta.path, path].filter(Boolean).join("/")}${loc.meta.path || path ? "/" : ""}`;
 const absUrl = (loc, path) => SITE + urlFor(loc, path);
 
-function head(loc, locales, { title, description, path, jsonLd }) {
+export function head(loc, locales, { title, description, path, jsonLd, alts: withAlts = true }) {
   const m = loc.meta;
-  const alts = locales
-    .map((l) => `<link rel="alternate" hreflang="${l.meta.lang}" href="${absUrl(l, path)}">`)
-    .join("\n    ");
-  const en = locales.find((l) => l.meta.path === "");
+  // the manual is English only, so its pages carry no language alternates
+  const alts = withAlts
+    ? locales.map((l) => `<link rel="alternate" hreflang="${l.meta.lang}" href="${absUrl(l, path)}">`).join("\n    ") +
+      `\n    <link rel="alternate" hreflang="x-default" href="${absUrl(locales.find((l) => l.meta.path === ""), path)}">`
+    : "";
   return `<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${esc(title)}</title>
@@ -35,7 +36,6 @@ function head(loc, locales, { title, description, path, jsonLd }) {
     <meta name="theme-color" content="#0e0c0c" media="(prefers-color-scheme: dark)">
     <link rel="canonical" href="${absUrl(loc, path)}">
     ${alts}
-    <link rel="alternate" hreflang="x-default" href="${absUrl(en, path)}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Lilo by Kadwood">
     <meta property="og:title" content="${esc(title)}">
@@ -53,15 +53,18 @@ function head(loc, locales, { title, description, path, jsonLd }) {
     <noscript><link rel="stylesheet" href="${fontsHref(m.path)}"></noscript>${jsonLd ? `\n    <script type="application/ld+json">${jsonLd}</script>` : ""}`;
 }
 
-function header(loc, locales, path) {
+export function header(loc, locales, path, away = false) {
   const n = loc.nav;
+  // `away`: not on the home page (compatibility, manual), so the in-page anchors must point home
+  const home = path || away ? urlFor(loc) : "";
   const links = [
-    ["#features", n.features],
-    ["#works", n.works],
-    ["#how", n.how],
-    ["#faq", n.faq],
+    [`${home}#features`, n.features],
+    [`${home}#works`, n.works],
+    [`${home}#how`, n.how],
+    ["/manual/", n.manual],
+    [`${home}#faq`, n.faq],
   ]
-    .map(([h, t]) => `<a href="${path ? urlFor(loc) : ""}${h}">${esc(t)}</a>`)
+    .map(([h, t]) => `<a href="${h}">${esc(t)}</a>`)
     .join("");
   const langs = locales
     .map(
@@ -83,7 +86,7 @@ function header(loc, locales, path) {
             <summary aria-label="${esc(n.language)}">${icon("globe", { size: 20 })}<span class="lang-cur" lang="${loc.meta.lang}">${esc(loc.meta.name)}</span>${icon("chevron", { size: 16, cls: "caret" })}</summary>
             <ul class="menu-list">${langs}</ul>
           </details>
-          <a class="btn btn-dark btn-sm bar-dl" href="${path ? urlFor(loc) : ""}#download">${esc(n.download)}</a>
+          <a class="btn btn-dark btn-sm bar-dl" href="${home}#download">${esc(n.download)}</a>
           <details class="menu burger">
             <summary aria-label="${esc(n.menu)}">${icon("menu", { size: 22 })}</summary>
             <div class="menu-list menu-links">${links}</div>
@@ -93,8 +96,9 @@ function header(loc, locales, path) {
     </header>`;
 }
 
-function footer(loc, locales, path) {
+export function footer(loc, locales, path) {
   const f = loc.footer;
+  const note = loc.meta.path ? `<li class="foot-note">${esc(loc.manual.englishNote)}</li>` : "";
   return `<footer class="site-footer">
       <div class="wrap">
         <div class="foot-top">
@@ -113,6 +117,8 @@ function footer(loc, locales, path) {
             <li><a href="${REPO}/releases">${esc(f.releases)}</a></li>
             <li><a href="${REPO}/blob/main/CHANGELOG.md">${esc(f.changelog)}</a></li>
             <li><a href="${urlFor(loc, "compatibility")}">${esc(f.compat)}</a></li>
+            <li><a href="/manual/" ${loc.meta.path ? 'hreflang="en"' : ""}>${esc(f.manual)}</a></li>
+            ${note}
             <li><a href="https://kadwood.com" rel="noopener" aria-label="${esc(f.kadwoodAria)}">${esc(f.kadwood)}</a></li>
           </ul>
         </div>
@@ -129,6 +135,27 @@ function picture(card, alt, i) {
             <source media="(prefers-color-scheme: dark)" srcset="${set("dark")}" sizes="${sizes}" type="image/webp">
             <img src="/img/${card.img}-light-1024.webp" srcset="${set("light")}" sizes="${sizes}" width="1920" height="1200" alt="${esc(alt)}" ${i === 0 ? 'fetchpriority="high"' : 'loading="lazy" decoding="async"'}>
           </picture>`;
+}
+
+// "Read the manual" links under each card: card -> [label key, guide page id]. The manual is English only.
+const CARD_GUIDE = {
+  digitize: [["read", "auto-digitize"]],
+  letters: [["read", "lettering-fonts"]],
+  send: [["read", "send-a-design"]],
+  threads: [["threads", "thread-brands-matching"], ["hoops", "sizing-and-hoops"]],
+  pixel: [["pixel", "pixel-art"], ["converter", "converter"]],
+  free: [["read", "welcome"]],
+};
+function manualLinks(loc, build, cardId) {
+  const links = (CARD_GUIDE[cardId] ?? [])
+    // with no guide content yet every link goes to the manual's front page
+    .map(([k, id]) => (build.guide.ids.has(id) ? [k, `/manual/${id}/`] : build.guide.ids.size ? null : [k, "/manual/"]))
+    .filter(Boolean);
+  const unique = build.guide.ids.size ? links : links.slice(0, 1);
+  if (!unique.length) return "";
+  return `<p class="card-links">${unique
+    .map(([k, href]) => `<a class="link" href="${href}"${loc.meta.path ? ' hreflang="en"' : ""}>${icon("arrow", { size: 14 })}<span>${esc(loc.manual[k])}</span></a>`)
+    .join("")}</p>`;
 }
 
 function featureCards(loc, build, path) {
@@ -162,6 +189,7 @@ function featureCards(loc, build, path) {
             </div>
           </div>
           <ul class="feats">${items}</ul>
+          ${manualLinks(loc, build, c.id)}
         </article>`;
     })
     .join("\n");
@@ -261,7 +289,7 @@ function faq(loc) {
       </section>`;
 }
 
-function clientData(loc, locales, build) {
+export function clientData(loc, locales, build) {
   const data = {
     lang: loc.meta.path || "en",
     langs: locales.map((l) => ({
