@@ -348,14 +348,14 @@ export function parseColor(v: string | undefined | null, current = "#000000"): s
   return null;
 }
 
-interface Node {
+export interface Node {
   name: string;
   attrs: Record<string, string>;
   children: Node[];
   text: string;
 }
 
-function parseXml(text: string): Node {
+export function parseXml(text: string): Node {
   const root: Node = { name: "#root", attrs: {}, children: [], text: "" };
   const stack: Node[] = [root];
   const cleaned = text

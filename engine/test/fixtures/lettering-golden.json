@@ -1,0 +1,22 @@
+{
+  "jk-10mm-builtin": {
+    "hash": "0c2b91fcb9c1df0bb7620261908ef0aebf47e6fe7fe8b5f207d2599d64e91d11",
+    "stitches": 300
+  },
+  "jk-10mm-custom": {
+    "hash": "f4aa1482f29cfb30b423b87071f67ce09408e34fb0c5152046e1645d8c622c66",
+    "stitches": 279
+  },
+  "kadwood-15mm-script": {
+    "hash": "c12d291ec7f2921facf6a3deb33b7c802de56245d34cffba500f8b55bc91ee0d",
+    "stitches": 1944
+  },
+  "monogram-3-lines": {
+    "hash": "7c5942e74a50d80408c65c2d21a6e14a4a9d8a0270f14375303e9e1381a9150a",
+    "stitches": 2562
+  },
+  "arc-text": {
+    "hash": "5f2466cba1c620dee4c7569596c75d2c1413560c15d3da1d04f13fd15abd30a3",
+    "stitches": 2618
+  }
+}

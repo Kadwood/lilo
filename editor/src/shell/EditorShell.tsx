@@ -1,5 +1,6 @@
 import { CanvasView } from "../canvas/CanvasView";
 import { IMPORT_EXTENSIONS } from "../io/decode";
+import { TextDock } from "../lettering/TextPanel";
 import { DigitizePanel } from "../panels/DigitizePanel";
 import { Sequencer } from "../panels/Sequencer";
 import { StitchPlayer } from "../panels/StitchPlayer";
@@ -28,6 +29,7 @@ export function EditorShell() {
 
         <main className="canvas" aria-label="Canvas">
           <CanvasView onOpen={open} />
+          <TextDock />
           <StitchPlayer />
           <div className="toolbar" role="toolbar" aria-label="Tools">
             <span className="muted">Tools</span>
