@@ -94,6 +94,10 @@ export function weightAndMaterial(...names) {
   return out;
 }
 
+/** "Madeira Rayon"; "Brothread 40" (not "Brother Brothread 40"); just the brand when the line is "Standard". */
+const label = (brand, line) =>
+  line === "Standard" ? brand : /^Brothread/.test(line) ? line : `${brand} ${line}`;
+
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const hex = ([r, g, b]) => "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
 
@@ -144,7 +148,7 @@ async function main() {
       threads.push({ code, name, hex: hex(rgb), lab: rgbToLab(...rgb) });
     }
     await writeFile(join(outDir, `${id}.json`), compactLab(JSON.stringify(threads, null, 2)) + "\n");
-    index.push({ id, brand, line, label: `${brand} ${line === "Standard" ? "" : line}`.trim(), count: threads.length, ...extra, source, licence: LICENCE });
+    index.push({ id, brand, line, label: label(brand, line), count: threads.length, ...extra, source, licence: LICENCE });
   }
   index.sort((a, b) => a.brand.localeCompare(b.brand) || a.line.localeCompare(b.line));
   const ids = new Set(index.map((i) => i.id));
