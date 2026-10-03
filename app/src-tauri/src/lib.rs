@@ -12,6 +12,8 @@
 //! * [`server`] — the localhost REST API consumed by the editor UI and local tools.
 //! * [`config`] — persisted settings (API token, saved machines, origins).
 //! * [`logging`] — in-memory app log.
+//! * [`ocr`] — text recognition for spool-label photos (Apple Vision on macOS).
+//! * [`projects`] — the `.lilo` default folder, recent list and double-click open.
 
 pub mod brother;
 pub mod config;
@@ -20,6 +22,8 @@ pub mod dongle_setup;
 pub mod emberconnect;
 pub mod logging;
 pub mod machine;
+pub mod ocr;
+pub mod projects;
 pub mod server;
 
 use serde::Serialize;
@@ -77,8 +81,10 @@ pub fn run() {
         .init();
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            show_main_window(app)
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            show_main_window(app);
+            // A second launch with a .lilo path (Windows/Linux double-click) opens it here.
+            projects::announce(app, projects::paths_from_args(&args));
         }))
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_opener::init())
@@ -192,6 +198,7 @@ pub fn run() {
 
             app.manage(state);
             desktop::setup(app)?;
+            projects::setup(app);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -203,7 +210,22 @@ pub fn run() {
             dongle_setup::dongle_scan,
             dongle_setup::dongle_provision,
             dongle_setup::dongle_update_firmware,
+            ocr::ocr_image,
+            projects::list_recent_projects,
+            projects::projects_folder,
+            projects::take_open_files,
+            projects::read_project_file,
+            projects::write_project_file,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(|app, event| {
+            // macOS delivers Finder double-clicks and "Open With" as an event, not as arguments.
+            #[cfg(any(target_os = "macos", target_os = "ios"))]
+            if let tauri::RunEvent::Opened { urls } = &event {
+                projects::announce(app, projects::paths_from_urls(urls));
+            }
+            #[cfg(not(any(target_os = "macos", target_os = "ios")))]
+            let _ = (app, event);
+        });
 }

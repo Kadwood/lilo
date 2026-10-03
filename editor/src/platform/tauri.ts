@@ -1,9 +1,11 @@
+import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { readFile, writeFile } from "@tauri-apps/plugin-fs";
 import { BridgeClient } from "../link/api/client";
 import type { SavedMachine } from "../link/api/types";
 import type { JobRecord } from "../link/api/types";
-import type { Platform, PlatformMachine, SendResult } from "./types";
+import type { OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, SendResult } from "./types";
 
 const TERMINAL = new Set(["done", "failed", "cancelled", "needs_reconciliation"]);
 const POLL_MS = 500;
@@ -99,5 +101,54 @@ export const tauriPlatform: Platform = {
     if (!picked) return null;
     const bytes = await readFile(picked);
     return { name: picked.split(/[\\/]/).pop() ?? picked, bytes };
+  },
+
+  ocrImage(bytes) {
+    // a Uint8Array goes to Rust as the raw request body (no JSON round trip for megabytes)
+    return invoke<OcrLine[]>("ocr_image", bytes);
+  },
+
+  listRecentProjects(limit) {
+    return invoke<RecentProject[]>("list_recent_projects", { limit });
+  },
+
+  onOpenFile(callback) {
+    let active = true;
+    let unlisten: (() => void) | null = null;
+    const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p;
+    const drain = async () => {
+      const paths = await invoke<string[]>("take_open_files");
+      for (const path of paths) {
+        if (!active) return;
+        try {
+          const file: OpenedPath = { path, name: nameOf(path), bytes: await tauriPlatform.readProjectFile(path) };
+          callback(file);
+        } catch (e) {
+          console.error(`Could not open ${path}`, e);
+        }
+      }
+    };
+    void listen("lilo-open-file", () => void drain()).then((u) => {
+      if (active) unlisten = u;
+      else u();
+    });
+    void drain();
+    return () => {
+      active = false;
+      unlisten?.();
+    };
+  },
+
+  async readProjectFile(path) {
+    const data = await invoke<ArrayBuffer | number[]>("read_project_file", { path });
+    return data instanceof ArrayBuffer ? new Uint8Array(data) : Uint8Array.from(data);
+  },
+
+  async writeProjectFile(path, bytes) {
+    await invoke("write_project_file", bytes, { headers: { path: encodeURIComponent(path) } });
+  },
+
+  projectsFolder() {
+    return invoke<string>("projects_folder");
   },
 };

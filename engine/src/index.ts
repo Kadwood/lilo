@@ -10,3 +10,4 @@ export * from "./threads/shelf";
 export * from "./formats";
 export * from "./pixelart";
 export * from "./project";
+export * from "./threads/label";

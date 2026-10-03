@@ -35,6 +35,20 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "fileAssociations": [
+      {
+        "ext": ["lilo"],
+        "name": "Lilo Project",
+        "description": "Lilo embroidery project",
+        "mimeType": "application/x-lilo-project",
+        "role": "Editor",
+        "rank": "Owner",
+        "exportedType": {
+          "identifier": "com.kadwood.lilo.project",
+          "conformsTo": ["public.data", "public.archive"]
+        }
+      }
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

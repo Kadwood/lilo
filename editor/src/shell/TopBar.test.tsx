@@ -3,11 +3,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { readPes } from "@lilo/engine";
 import { setPlatform, type Platform } from "../platform";
+import { browserPlatform } from "../platform/browser";
 import { renderEditor, testDesign } from "../test/helpers";
 import { EditorShell } from "./EditorShell";
 
 function fakePlatform(overrides: Partial<Platform> = {}): Platform {
   return {
+    ...browserPlatform,
     kind: "tauri",
     discoverMachines: vi.fn(async () => []),
     savedMachines: vi.fn(async () => [
