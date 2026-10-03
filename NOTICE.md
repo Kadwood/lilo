@@ -85,7 +85,7 @@ to each, with these copyright holders:
 | `vtracer-wasm` 0.1.0 (https://github.com/jsscheller/vtracer-wasm) | WASM build of the vtracer web-app crate, raster to vector tracing | (c) 2025 jsscheller |
 | vtracer / visioncortex (https://github.com/visioncortex/vtracer) | the tracing algorithm inside `vtracer-wasm` (dual MIT or Apache-2.0) | (c) 2024 TSANG, Hao Fung |
 | `image-q` 4.0.0 (https://github.com/ibezkrovny/image-quantization) | colour quantisation (Wu) | (c) 2015 Igor Bezkrovny |
-| pyembroidery (https://github.com/EmbroidePy/pyembroidery) | the 64-colour Brother PEC palette in `engine/src/pes/pec-palette.ts` and the PES/PEC byte layout in `engine/src/pes/` were ported from its `EmbThreadPec.py`, `PecWriter.py` and `PesWriter.py` | (c) 2018 pyembroidery authors |
+| pyembroidery (https://github.com/EmbroidePy/pyembroidery) | the 64-colour Brother PEC palette in `engine/src/pes/pec-palette.ts` and the PES/PEC byte layout in `engine/src/pes/` were ported from its `EmbThreadPec.py`, `PecWriter.py` and `PesWriter.py`; the DST, EXP, JEF (incl. the 78-colour Janome table), VP3, XXX and U01 readers and writers in `engine/src/formats/`, the move transcoder (`EmbEncoder.py`) and the trim interpolation (`EmbPattern.interpolate_trims`) were ported from `DstReader/Writer.py`, `ExpReader/Writer.py`, `JefReader/Writer.py`, `EmbThreadJef.py`, `Vp3Reader/Writer.py`, `XxxReader/Writer.py`, `U01Reader/Writer.py`, `EmbEncoder.py` and `EmbPattern.py` | (c) 2018 pyembroidery authors |
 
 ## jsts (EDL-1.0 OR EPL-1.0)
 
