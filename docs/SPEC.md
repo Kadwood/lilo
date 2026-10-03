@@ -157,7 +157,7 @@ Pipeline, each step visible and animated:
 - Editor builds.
 
 **Manual sew-outs on NV2700**. All 5 must sew clean and be client-worthy:
-1. Kadwood logo, auto-digitized, ~60 mm, suit fabric
+1. Kadwood logo, auto-digitized, 80–100 mm wide, suit fabric (below ~80 mm the serif hairlines drop out)
 2. "JK" monogram, 10 mm, custom font, suit lining
 3. Garment-bag crest, ~120 mm, fills + satin, canvas
 4. Round hat patch, ~50 mm, satin border, twill
