@@ -21,12 +21,15 @@ mod desktop;
 pub mod dongle_setup;
 pub mod emberconnect;
 pub mod fsutil;
+mod glass;
+pub mod hoops;
 pub mod logging;
 pub mod machine;
 pub mod my_threads;
 pub mod ocr;
 pub mod projects;
 pub mod quit;
+pub mod screen;
 pub mod server;
 
 use serde::Serialize;
@@ -204,6 +207,7 @@ pub fn run() {
             app.manage(quit::QuitState::default());
             desktop::setup(app)?;
             projects::setup(app);
+            glass::setup(app);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -225,6 +229,10 @@ pub fn run() {
             projects::read_project_backup,
             my_threads::read_my_threads,
             my_threads::write_my_threads,
+            hoops::read_hoops_file,
+            hoops::write_hoops_file,
+            screen::screen_info,
+            glass::window_material,
             quit::set_dirty,
             quit::quit_now,
         ])

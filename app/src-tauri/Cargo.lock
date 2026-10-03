@@ -2144,6 +2144,7 @@ dependencies = [
  "if-addrs",
  "mdns-sd",
  "objc2",
+ "objc2-app-kit",
  "objc2-foundation",
  "objc2-vision",
  "rand",
@@ -2164,6 +2165,7 @@ dependencies = [
  "tower",
  "tracing",
  "tracing-subscriber",
+ "window-vibrancy 0.8.1",
 ]
 
 [[package]]
@@ -2431,6 +2433,7 @@ dependencies = [
  "objc2",
  "objc2-core-foundation",
  "objc2-foundation",
+ "objc2-quartz-core",
 ]
 
 [[package]]
@@ -4043,7 +4046,7 @@ dependencies = [
  "url",
  "webkit2gtk",
  "webview2-com",
- "window-vibrancy",
+ "window-vibrancy 0.6.0",
  "windows",
 ]
 
@@ -5213,6 +5216,22 @@ dependencies = [
  "objc2-foundation",
  "raw-window-handle",
  "windows-sys 0.59.0",
+ "windows-version",
+]
+
+[[package]]
+name = "window-vibrancy"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "111e51caca442cafd9bab396628ac4d814880eaea4e63dfd76a12e9f342b5580"
+dependencies = [
+ "objc2",
+ "objc2-app-kit",
+ "objc2-core-foundation",
+ "objc2-foundation",
+ "objc2-quartz-core",
+ "raw-window-handle",
+ "windows-sys 0.61.2",
  "windows-version",
 ]
 
