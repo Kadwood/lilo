@@ -180,6 +180,10 @@ The app serves a local API on `127.0.0.1:17841`.
 Lilo never contacts anyone else's servers. Its only update check goes to this repo's GitHub Releases.
 Maintainers: see [docs/RELEASING.md](docs/RELEASING.md).
 
+### End-to-end journeys and performance
+
+`pnpm --filter editor e2e` drives the editor in headless Chromium (`?mock` mode) through eight user journeys and fails on any console error; screenshots land in `editor/e2e/.shots` (or `LILO_SHOTS`). It needs a Chromium: `pnpm --filter editor exec playwright-core install chromium-headless-shell`. Close any other `vite` dev server first (two servers share one dependency cache and stall). In CI it runs only on manual dispatch or with `[e2e]` in a commit message. Performance numbers: `LILO_PERF=1 pnpm --filter @lilo/engine exec vitest run test/perf.test.ts` (engine) and `editor/e2e/perf.e2e.ts` (browser, production build).
+
 ## Licence
 
 GPL-3.0. See [LICENSE](LICENSE). Third-party notices: [NOTICE.md](NOTICE.md).

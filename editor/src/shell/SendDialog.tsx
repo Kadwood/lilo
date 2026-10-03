@@ -3,6 +3,7 @@ import { usePreparedPes, WarningList } from "./ExportDialog";
 import { BeforeYouSew } from "../sewing/BeforeYouSew";
 import { useEditor } from "../state/store";
 import { getPlatform, type PlatformMachine, type SendProgress } from "../platform";
+import type { Origin } from "@lilo/engine/light";
 
 type Phase =
   | { kind: "idle" }
@@ -10,13 +11,16 @@ type Phase =
   | { kind: "done"; storedAs: string | null }
   | { kind: "error"; message: string };
 
+/** One object for good: a new `{ h, v }` on every render would make the PES be made again after each render, forever. */
+const CENTRE: Origin = { h: "center", v: "center" };
+
 const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
 /** Pick a saved machine and send the current design (as PES, centred) to it. */
 export function SendDialog({ onClose }: { onClose: () => void }) {
   const { state } = useEditor();
   const label = (state.projectName.trim() || "design").replace(/[\\/:*?"<>|]+/g, "_").replace(/\.pes$/i, "");
-  const { prepared, error: prepError } = usePreparedPes({ h: "center", v: "center" }, label);
+  const { prepared, error: prepError } = usePreparedPes(CENTRE, label);
   const [machines, setMachines] = useState<PlatformMachine[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [selected, setSelected] = useState("");

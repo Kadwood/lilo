@@ -16,3 +16,6 @@ data/fonts/*
 
 # local-only test designs and brand assets (never published)
 private/
+
+# Playwright journey screenshots (editor/e2e)
+editor/e2e/.shots/

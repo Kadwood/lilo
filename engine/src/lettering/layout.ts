@@ -6,6 +6,7 @@ import { type SatinUnderlay,
   type DesignObject,
   type Pt,
 } from "../model";
+import { customMinColumnFor } from "../presets/sewing";
 import { railsToStrip, stripWidths, toPts } from "./satin";
 import type { Glyph, LetterCase, LiloFont } from "./types";
 
@@ -46,6 +47,8 @@ export interface LayoutOptions {
   onPath?: PathGuide;
   /** Where the baseline's left end (or, for centre/right alignment, the anchor) goes. Default [0, 0]. */
   origin?: Pt;
+  /** The design's sewing quality and thread weight: custom-font columns and the small-letter warning follow them. */
+  sewing?: LetteringSewing;
   /** Object id prefix; ids are `<prefix>-1`, `<prefix>-2`... Default "txt". */
   idPrefix?: string;
 }
@@ -74,6 +77,14 @@ export interface ShapeContext {
   heightMm: number;
   letterSpacingMm: number;
   wordSpacingMm: number;
+  /** Custom fonts: the narrowest satin column (mm); thinner strokes run. Default: Standard. */
+  minColumnMm?: number;
+}
+
+/** The Sewing setup facts lettering follows. */
+export interface LetteringSewing {
+  quality?: "standard" | "premium";
+  threadWeight?: 40 | 60;
 }
 
 export interface Typeface {
@@ -93,7 +104,7 @@ export interface Typeface {
   /** Shape one line (no newlines). `indexBase` is the offset of the line's first char in the text. */
   shapeLine(line: string, indexBase: number, ctx: ShapeContext): { glyphs: PlacedGlyph[]; missing: string[] };
   /** Font-specific warnings for a height. */
-  heightWarnings?(heightMm: number): LetteringWarning[];
+  heightWarnings?(heightMm: number, sewing?: LetteringSewing): LetteringWarning[];
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -404,11 +415,11 @@ export function layoutText(text: string, fontOrTypeface: LiloFont | Typeface, op
   const warnings: LetteringWarning[] = [];
   const h = opts.heightMm;
   if (!(h > 0)) throw new Error("heightMm must be positive");
-  const ctx: ShapeContext = { heightMm: h, letterSpacingMm: opts.letterSpacingMm ?? 0, wordSpacingMm: opts.wordSpacingMm ?? 0 };
+  const ctx: ShapeContext = { heightMm: h, letterSpacingMm: opts.letterSpacingMm ?? 0, wordSpacingMm: opts.wordSpacingMm ?? 0, minColumnMm: customMinColumnFor(opts.sewing?.quality) };
   const align: TextAlign = opts.align ?? "left";
   const origin: Pt = opts.origin ?? [0, 0];
   const lineGap = face.leadingMm(h) * (opts.lineSpacing ?? 1);
-  warnings.push(...(face.heightWarnings?.(h) ?? []));
+  warnings.push(...(face.heightWarnings?.(h, opts.sewing) ?? []));
 
   // 1. Shape every line (glyphs positioned along an x axis starting at 0).
   const normalized = text.normalize("NFC");

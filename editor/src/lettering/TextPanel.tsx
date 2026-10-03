@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FontIndexEntry, TextAlign } from "@lilo/engine/lettering";
+import { letterHeightWarning, minLetterHeightFor } from "@lilo/engine/light";
+import { useSewing } from "../sewing/useSewing";
 import { DimensionsSection } from "../panels/DimensionsSection";
 import { ThreadPicker } from "../panels/ThreadPicker";
 import { nextTextGroup, textThread, useTextTarget } from "./adapter";
@@ -7,12 +9,14 @@ import { defaultServices, type CustomFontInfo, type FontRef, type LetteringServi
 import "./lettering.css";
 
 const PRESETS = [6, 10, 15, 25];
-const CUSTOM_MIN_MM = 6;
 const fmt = (n: number) => String(Math.round(n * 10) / 10);
 
 /** Warning text for a font at a height, or null. Mirrors the engine's own guard. */
-export function heightWarning(font: { kind: "builtin"; entry: FontIndexEntry } | { kind: "custom"; name: string }, heightMm: number): string | null {
-  if (font.kind === "custom") return heightMm < CUSTOM_MIN_MM ? "Custom fonts sew best above 6 mm. Try a built-in font." : null;
+export function heightWarning(font: { kind: "builtin"; entry: FontIndexEntry } | { kind: "custom"; name: string }, heightMm: number, threadWeight: 40 | 60 = 40): string | null {
+  if (font.kind === "custom") {
+    const min = minLetterHeightFor(threadWeight);
+    return heightMm < min ? `Custom fonts sew best above ${min} mm. Try a built-in font.` : null;
+  }
   const { minHeightMm, maxHeightMm, name } = font.entry;
   if (heightMm < minHeightMm) return `${name} is designed for ${fmt(minHeightMm)}-${fmt(maxHeightMm)} mm letters. At ${fmt(heightMm)} mm it will sew poorly. Try a smaller font.`;
   if (heightMm > maxHeightMm) return `${name} is designed for ${fmt(minHeightMm)}-${fmt(maxHeightMm)} mm letters. At ${fmt(heightMm)} mm it will look sparse.`;
@@ -26,6 +30,7 @@ export function heightWarning(font: { kind: "builtin"; entry: FontIndexEntry } |
  */
 export function TextPanel({ services = defaultServices }: { services?: LetteringServices }) {
   const { design, insert, replace, editing, anchor, threadId, startNew, actions } = useTextTarget();
+  const sewing = useSewing();
   const [pickColour, setPickColour] = useState(false);
   const [index, setIndex] = useState<FontIndexEntry[]>([]);
   const [custom, setCustom] = useState<CustomFontInfo[]>([]);
@@ -78,7 +83,9 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
     return c ? ({ kind: "custom", name: c.name } as const) : null;
   }, [font, index, custom]);
 
-  const warning = selected ? heightWarning(selected, height) : null;
+  const warning = selected ? heightWarning(selected, height, sewing.threadWeight) : null;
+  // too small for the thread in the Sewing setup (any font); a custom font's own warning already says so
+  const smallWarning = selected?.kind === "custom" ? null : letterHeightWarning(height, sewing.threadWeight);
   const shown = fitOnly ? index.filter((f) => height >= f.minHeightMm && height <= f.maxHeightMm) : index;
 
   const upload = async (f: File | undefined) => {
@@ -103,7 +110,7 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
       const thread = textThread(design, threadId);
       const group = editing ? editing.id : nextTextGroup(design);
       const fontId = font.kind === "builtin" ? font.id : `custom:${font.key}`;
-      const r = await services.layout({ text, font, heightMm: height, letterSpacingMm: spacing, lineSpacing, align, threadId: thread.id, idPrefix: group });
+      const r = await services.layout({ text, font, heightMm: height, letterSpacingMm: spacing, lineSpacing, align, threadId: thread.id, idPrefix: group, sewing: { quality: sewing.quality, threadWeight: sewing.threadWeight } });
       if (r.objects.length === 0) {
         setMessage({ kind: "error", text: r.warnings[0]?.message ?? "Nothing to stitch." });
         return;
@@ -162,6 +169,11 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
         {warning && (
           <span className="badge warn" role="status">
             {warning}
+          </span>
+        )}
+        {smallWarning && (
+          <span className="badge warn" role="status" data-testid="small-letters-warning">
+            {smallWarning}
           </span>
         )}
       </div>
@@ -254,7 +266,7 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
       </ul>
       <input ref={file} type="file" accept=".ttf,.otf,.ttc,font/ttf,font/otf,font/collection" hidden aria-label="Upload a font file" onChange={(e) => void upload(e.target.files?.[0])} />
       <button onClick={() => file.current?.click()}>Upload font (TTF, OTF, TTC)...</button>
-      <span className="muted small">Custom fonts are auto-converted to satin columns and sew best above 6 mm.</span>
+      <span className="muted small">Custom fonts are auto-converted to satin columns and sew best above {minLetterHeightFor(sewing.threadWeight)} mm.</span>
     </aside>
   );
 }
