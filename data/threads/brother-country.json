@@ -1,0 +1,612 @@
+[
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "100",
+    "name": "Black",
+    "hex": "#000000",
+    "lab": [0, 0, 0],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "000",
+    "name": "White",
+    "hex": "#f0f0f0",
+    "lab": [94.8, 0, 0],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "149",
+    "name": "Red",
+    "hex": "#e70268",
+    "lab": [49.54, 77.5, 10.38],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "155",
+    "name": "Pink",
+    "hex": "#fd566e",
+    "lab": [60.49, 64.72, 22.47],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "024",
+    "name": "Deep Rose",
+    "hex": "#cc2838",
+    "lab": [45.14, 62.59, 32.96],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "152",
+    "name": "Flesh Pink",
+    "hex": "#fc8daf",
+    "lab": [71.45, 45.72, 0.93],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "126",
+    "name": "Dark Fuchsia",
+    "hex": "#a0074e",
+    "lab": [34.35, 58.76, 3.24],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "148",
+    "name": "Vermilion",
+    "hex": "#ff4209",
+    "lab": [57.25, 68.81, 66.97],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "158",
+    "name": "Carmine",
+    "hex": "#e50033",
+    "lab": [48.14, 74.67, 40.62],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "636",
+    "name": "Royal Purple",
+    "hex": "#450451",
+    "lab": [15.2, 39.17, -29.79],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "625",
+    "name": "Magenta",
+    "hex": "#670070",
+    "lab": [23.85, 51.99, -36.08],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "122",
+    "name": "Salmon Pink",
+    "hex": "#f19fbc",
+    "lab": [74.27, 34.38, -2.3],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "212",
+    "name": "Amber Red",
+    "hex": "#e94c64",
+    "lab": [55.5, 61.74, 21.03],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "342",
+    "name": "Lemon Yellow",
+    "hex": "#fefe7b",
+    "lab": [97.38, -16.85, 61.76],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "043",
+    "name": "Yellow",
+    "hex": "#fbfb20",
+    "lab": [95.83, -20.95, 90.13],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "334",
+    "name": "Harvest Gold",
+    "hex": "#fbe96a",
+    "lab": [91.61, -9.04, 62.62],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "335",
+    "name": "Orange",
+    "hex": "#fab600",
+    "lab": [78.34, 12.94, 80.94],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "322",
+    "name": "Pumpkin",
+    "hex": "#faad4e",
+    "lab": [76.54, 19.67, 58.44],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "336",
+    "name": "Tangerine",
+    "hex": "#fab700",
+    "lab": [78.58, 12.41, 81.11],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "331",
+    "name": "Cream Brown",
+    "hex": "#ffefa8",
+    "lab": [94.24, -4.7, 36.35],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "370",
+    "name": "Cream Yellow",
+    "hex": "#ffeb84",
+    "lab": [92.73, -6.38, 52.09],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "242",
+    "name": "Khaki",
+    "hex": "#e4983b",
+    "lab": [68.95, 20.69, 58.07],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "354",
+    "name": "Deep Gold",
+    "hex": "#f2990e",
+    "lab": [70.66, 24.89, 73.6],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "404",
+    "name": "Brass",
+    "hex": "#eecc0c",
+    "lab": [82.59, -3.5, 82.22],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "025",
+    "name": "Linen",
+    "hex": "#fcdba1",
+    "lab": [88.89, 3.49, 32.77],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "717",
+    "name": "Dark Brown",
+    "hex": "#1d1803",
+    "lab": [8.32, -1.03, 11.2],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "264",
+    "name": "Reddish Brown",
+    "hex": "#fe470c",
+    "lab": [57.67, 66.9, 66.49],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "224",
+    "name": "Clay Brown",
+    "hex": "#b87432",
+    "lab": [54.98, 21.05, 46.11],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "012",
+    "name": "Beige",
+    "hex": "#f0d5b3",
+    "lab": [86.69, 4.28, 20.26],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "706",
+    "name": "Warm Gray",
+    "hex": "#ac9a61",
+    "lab": [63.95, -1.47, 32.29],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "414",
+    "name": "Russet Brown",
+    "hex": "#baa308",
+    "lab": [67.02, -5.02, 69],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "255",
+    "name": "Light Brown",
+    "hex": "#682408",
+    "lab": [24.4, 29.13, 31.93],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "505",
+    "name": "Seacrest",
+    "hex": "#74c6b1",
+    "lab": [74.36, -30, 2.69],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "461",
+    "name": "Mint Green",
+    "hex": "#c8dcc8",
+    "lab": [85.82, -10.37, 7.56],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "463",
+    "name": "Leaf Green",
+    "hex": "#77c487",
+    "lab": [72.99, -36.76, 23.35],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "476",
+    "name": "Olive Green",
+    "hex": "#0d2a07",
+    "lab": [14.16, -19.25, 17.46],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "473",
+    "name": "Dark Olive",
+    "hex": "#b0cf78",
+    "lab": [79.16, -24.55, 39.8],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "483",
+    "name": "Teal Green",
+    "hex": "#78c79f",
+    "lab": [74.41, -33.28, 12.49],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "485",
+    "name": "Emerald Green",
+    "hex": "#005127",
+    "lab": [29.49, -32.83, 18.64],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "467",
+    "name": "Deep Green",
+    "hex": "#00301e",
+    "lab": [16.54, -20.96, 7.26],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "442",
+    "name": "Fresh Green",
+    "hex": "#cbe9a2",
+    "lab": [88.72, -21.8, 31.36],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "444",
+    "name": "Lime Green",
+    "hex": "#b6dd11",
+    "lab": [82.75, -35.24, 79.86],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "446",
+    "name": "Moss Green",
+    "hex": "#518921",
+    "lab": [51.55, -36.14, 46.88],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "586",
+    "name": "Blue",
+    "hex": "#006390",
+    "lab": [39.47, -7.11, -31.53],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "575",
+    "name": "Ultramarine",
+    "hex": "#0a59a3",
+    "lab": [37.58, 7.49, -45.93],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "150",
+    "name": "Light Blue",
+    "hex": "#d5eceb",
+    "lab": [91.74, -7.72, -2.09],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "512",
+    "name": "Sky Blue",
+    "hex": "#b1e2df",
+    "lab": [86.54, -16.31, -3.71],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "564",
+    "name": "Electric Blue",
+    "hex": "#085a6f",
+    "lab": [35.02, -14.17, -18.29],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "057",
+    "name": "Peacock Blue",
+    "hex": "#056060",
+    "lab": [36.45, -23.11, -6.81],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "588",
+    "name": "Prussian Blue",
+    "hex": "#062934",
+    "lab": [14.8, -7.7, -10.67],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "015",
+    "name": "Corn Flower Blue",
+    "hex": "#557fba",
+    "lab": [52.57, 2.81, -35.43],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "133",
+    "name": "Light Lilac",
+    "hex": "#f36fb1",
+    "lab": [64.65, 57.58, -10.38],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "623",
+    "name": "Lilac",
+    "hex": "#c4a0cf",
+    "lab": [70.44, 21.65, -18.97],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "624",
+    "name": "Violet",
+    "hex": "#b480c4",
+    "lab": [60.89, 32, -27.58],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "635",
+    "name": "Purple",
+    "hex": "#691588",
+    "lab": [27.62, 52.17, -45.2],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "604",
+    "name": "Lavender",
+    "hex": "#9285c3",
+    "lab": [58.81, 18.3, -30.5],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "003",
+    "name": "Wistaria Violet",
+    "hex": "#9cbedb",
+    "lab": [75.46, -4.78, -18.24],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "745",
+    "name": "Pewter",
+    "hex": "#a8abad",
+    "lab": [69.8, -0.68, -1.4],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "747",
+    "name": "Dark Gray",
+    "hex": "#10140c",
+    "lab": [5.75, -3.08, 3.59],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "020",
+    "name": "Silver",
+    "hex": "#e0cac6",
+    "lab": [83, 7.02, 4.79],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  },
+  {
+    "brand": "Brother",
+    "line": "Country",
+    "code": "734",
+    "name": "Gray",
+    "hex": "#6e6452",
+    "lab": [42.82, 0.8, 11.67],
+    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+    "licence": "GPL-3.0"
+  }
+]

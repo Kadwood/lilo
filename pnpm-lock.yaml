@@ -72,7 +72,16 @@ importers:
       '@stitchables/stitchjs':
         specifier: ^1.0.37
         version: 1.0.37
+      image-q:
+        specifier: 4.0.0
+        version: 4.0.0
+      vtracer-wasm:
+        specifier: 0.1.0
+        version: 0.1.0
     devDependencies:
+      '@types/node':
+        specifier: ^26.6.4
+        version: 26.6.4
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
@@ -388,6 +397,9 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
+  '@types/node@16.9.1':
+    resolution: {integrity: sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==}
+
   '@types/node@26.6.4':
     resolution: {integrity: sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg==}
 
@@ -636,6 +648,9 @@ packages:
   html-encoding-sniffer@7.0.0:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
     engines: {node: ^22.13.0 || >=24.0.0}
+
+  image-q@4.0.0:
+    resolution: {integrity: sha512-PfJGVgIfKQJuq3s0tTDOKtztksibuUEbJQIYT3by6wctQo+Rdlh7ef4evJ5NCdxY4CfMbvFkocEwbl4BF8RlJw==}
 
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
@@ -935,6 +950,9 @@ packages:
   voron8@3.4.2:
     resolution: {integrity: sha512-/by4Bng67pIhL/ZTBLh2gQqp+eBIi1AgAFDhmVh526ao+DCpMxDlBGpDlEfX5auVsbI+gKAuER8ngIdUYhs+Xg==}
 
+  vtracer-wasm@0.1.0:
+    resolution: {integrity: sha512-q0A/z1NIuzROEJ9Z4NJirsl+PIH47sU5XKqLv/m7Nrf5MVDPcwogT1YfMBwfekncEeep8VLj6y60hpomwJJH6g==}
+
   w3c-xmlserializer@6.0.0:
     resolution: {integrity: sha512-4Nsy8K5Tr6SPDH9jhKJOHf7ChDrc1zufZTVSF7x72hwuEXBqxqk9G6cK+K2NRUtB3iELRJqjXb4JPDMBjMTl2Q==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
@@ -1194,6 +1212,8 @@ snapshots:
 
   '@types/estree@1.0.9': {}
 
+  '@types/node@16.9.1': {}
+
   '@types/node@26.6.4':
     dependencies:
       undici-types: 8.9.0
@@ -1350,6 +1370,10 @@ snapshots:
       '@exodus/bytes': 1.16.0
     transitivePeerDependencies:
       - '@noble/hashes'
+
+  image-q@4.0.0:
+    dependencies:
+      '@types/node': 16.9.1
 
   is-potential-custom-element-name@1.0.1: {}
 
@@ -1597,6 +1621,8 @@ snapshots:
       - msw
 
   voron8@3.4.2: {}
+
+  vtracer-wasm@0.1.0: {}
 
   w3c-xmlserializer@6.0.0:
     dependencies:
