@@ -34,13 +34,13 @@ describe("Export dialog", () => {
   it("lists every format with PES first and selected, then the PNG", async () => {
     const { dlg } = await open();
     const radios = within(dlg).getAllByRole("radio").filter((r) => r.closest(".format-list"));
-    expect(radios.map((r) => r.textContent!.slice(0, 3))).toEqual(["PES", "DST", "JEF", "VP3", "EXP", "XXX", "U01", "PEC", "PNG"]);
+    expect(radios.map((r) => r.textContent!.slice(0, 3))).toEqual(["PES", "DST", "JEF", "VP3", "EXP", "XXX", "U01", "PEC", "HUS", "VIP", "TBF", "GCO", "PNG"]);
     expect(radios[0].getAttribute("aria-checked")).toBe("true");
     expect(within(dlg).getByRole("button", { name: "Save PES" })).toBeTruthy();
     expect(new Set(EXPORT_CHOICES.map((c) => c.id))).toEqual(new Set([...FORMAT_EXTENSIONS, "png"]));
   });
 
-  it.each(["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec"] as const)("saves %s: the file has the right extension and reads back with stitches", async (ext) => {
+  it.each(["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec", "hus", "vip", "tbf"] as const)("saves %s: the file has the right extension and reads back with stitches", async (ext) => {
     const { dlg, onClose, onSaved } = await open();
     if (ext !== "pes") choose(dlg, new RegExp(`^${ext.toUpperCase()}`));
     await ready(dlg, `Save ${ext.toUpperCase()}`);
@@ -50,6 +50,20 @@ describe("Export dialog", () => {
     expect(readEmbroidery(mock.saved[0].bytes, ext).plan.stitches.filter((s) => s.type === "stitch").length).toBeGreaterThan(100);
     expect(onSaved).toHaveBeenCalledWith(expect.stringContaining(`.${ext}`));
     expect(onClose).toHaveBeenCalled();
+  }, 30_000);
+
+  it("saves G-code as a stitch path, and says it is not a sewing machine file", async () => {
+    const { dlg } = await open();
+    choose(dlg, /^GCODE/);
+    expect(within(dlg).getByRole("note").textContent).toMatch(/Not a sewing machine file/);
+    await ready(dlg, "Save GCODE");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Save GCODE" }));
+    await waitFor(() => expect(mock.saved).toHaveLength(1), T);
+    expect(mock.saved[0].name).toBe("Untitled design.gcode");
+    const text = new TextDecoder().decode(mock.saved[0].bytes);
+    expect(text).toMatch(/^\(STITCH_COUNT: \d+\)/);
+    expect(text.trimEnd().endsWith("M30")).toBe(true);
+    expect(text.match(/^G00 X/gm)!.length).toBeGreaterThan(100);
   }, 30_000);
 
   it("says when a format does not keep thread colours", async () => {

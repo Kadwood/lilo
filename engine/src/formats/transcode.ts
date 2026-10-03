@@ -23,6 +23,8 @@ export interface TranscodeSettings {
   needleCount?: number;
   /** Also write a trim before every colour change. Default false. */
   explicitTrim?: boolean;
+  /** Snap positions to the 0.1 mm grid (every machine format needs this). Default true; G-code keeps fractions. */
+  round?: boolean;
 }
 
 export function transcode(src: EmbPattern, s: TranscodeSettings): EmbPattern {
@@ -92,8 +94,8 @@ export function transcode(src: EmbPattern, s: TranscodeSettings): EmbPattern {
 
   let last: EmbStitch["cmd"] | null = null;
   for (const st of src.stitches) {
-    const x = pyRound(st.x);
-    const y = pyRound(st.y);
+    const x = s.round === false ? st.x : pyRound(st.x);
+    const y = s.round === false ? st.y : pyRound(st.y);
     last = st.cmd;
     if (st.cmd === "stitch") {
       if (trimmed) {

@@ -28,7 +28,7 @@ export function designToPes(design: Design, options: ExportOptions = {}): Export
   return { plan: placed, warnings, stats: planStats(placed), pes: writePes(placed, { label: options.label }) };
 }
 
-/** Same as `designToPes` for any format Lilo writes (PES, DST, JEF, VP3, EXP, XXX, U01, PEC). */
+/** Same as `designToPes` for any format Lilo writes (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF, G-code). */
 export function designToEmbroidery(
   design: Design,
   ext: FormatExt,

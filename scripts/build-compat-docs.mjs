@@ -26,6 +26,11 @@ export function liloExtensions(typesSource) {
   return [...m[1].matchAll(/"([a-z0-9]+)"/g)].map((x) => x[1]).sort();
 }
 
+/** Extensions the engine can write but not read (`canRead: false` in FORMATS), such as G-code. */
+export function liloWriteOnly(typesSource) {
+  return [...typesSource.matchAll(/\{\s*ext:\s*"([a-z0-9]+)"[^}]*canRead:\s*false/g)].map((x) => x[1]).sort();
+}
+
 const inch = (mm) => {
   const v = Math.round((mm / 25.4) * 100) / 100;
   return String(v);
@@ -48,12 +53,18 @@ function table(head, rows) {
 }
 
 /** Everything the docs need, from the raw files. Pure: no I/O. */
-export function build({ machines, formats, threads, hoops, liloExts }) {
+export function build({ machines, formats, threads, hoops, liloExts, writeOnly = [] }) {
   // 1. Consistency: the formats file must agree with the engine.
-  const writable = formats.formats.filter((f) => f.lilo === "read+write").map((f) => f.ext).sort();
+  const writable = formats.formats.filter((f) => f.lilo === "read+write" || f.lilo === "write").map((f) => f.ext).sort();
   if (JSON.stringify(writable) !== JSON.stringify(liloExts)) {
     throw new Error(
       `data/compat/formats.json says Lilo handles [${writable}] but the engine handles [${liloExts}]. Update formats.json.`,
+    );
+  }
+  const jsonWriteOnly = formats.formats.filter((f) => f.lilo === "write").map((f) => f.ext).sort();
+  if (JSON.stringify(jsonWriteOnly) !== JSON.stringify([...writeOnly].sort())) {
+    throw new Error(
+      `data/compat/formats.json says [${jsonWriteOnly}] are write-only but the engine says [${writeOnly}]. Update formats.json.`,
     );
   }
   const lilo = new Set(liloExts);
@@ -87,7 +98,8 @@ export function build({ machines, formats, threads, hoops, liloExts }) {
     threadColours: totalColours,
     hoops: hoopList.length,
     hoopsVerified: hoopList.filter((h) => h.verified).length,
-    formatsReadWrite: liloExts.length,
+    formatsReadWrite: liloExts.length - writeOnly.length,
+    formatsWriteOnly: writeOnly.length,
     formatsListed: formats.formats.length,
   };
 
@@ -116,7 +128,7 @@ function formatsSection(formats) {
     f.name,
     f.brands.join(", "),
     yesNo(f.colours),
-    f.lilo === "read+write" ? "read + write" : "not supported",
+    f.lilo === "read+write" ? "read + write" : f.lilo === "write" ? "write only" : "not supported",
     f.note,
   ]);
   return table(["Ext", "Name", "Brands", "Colour info kept?", "Lilo", "Notes"], rows);
@@ -232,7 +244,7 @@ export function renderDocs(inputs) {
     "",
     "## Supported file formats",
     "",
-    `Lilo reads and writes ${counts.formatsReadWrite} formats. File-format round trips are checked against pyembroidery (MIT) by an opt-in test (engine/test/formats-crosscheck.test.ts).`,
+    `Lilo reads and writes ${counts.formatsReadWrite} formats${counts.formatsWriteOnly ? ` and writes ${counts.formatsWriteOnly} more` : ""}. File-format round trips are checked against pyembroidery (MIT) by an opt-in test (engine/test/formats-crosscheck.test.ts).`,
     "",
     formatsSection(formats),
     "",
@@ -280,7 +292,7 @@ export function renderDocs(inputs) {
       }),
     ),
     "",
-    `${counts.brands} brands, ${counts.machines} machines, ${counts.threadLines} thread lines (${counts.threadColours.toLocaleString("en-US")} colours), ${counts.hoops} hoops. Lilo reads and writes ${liloListText(inputs.liloExts)}.`,
+    `${counts.brands} brands, ${counts.machines} machines, ${counts.threadLines} thread lines (${counts.threadColours.toLocaleString("en-US")} colours), ${counts.hoops} hoops. Lilo reads and writes ${liloListText(inputs.liloExts.filter((e) => !(inputs.writeOnly ?? []).includes(e)))}${(inputs.writeOnly ?? []).length ? `, and writes ${liloListText(inputs.writeOnly)} only` : ""}.`,
     "",
     `**Status: ${WIFI_PENDING}** Wi-Fi-capable models (${wifiBrands.join(", ")}) look compatible but none has been run with Lilo yet. ${counts.machinesVerified} of ${counts.machines} machine entries were checked against a maker page; the rest say UNVERIFIED.`,
     "",
@@ -314,6 +326,7 @@ function loadInputs() {
     threads: json("data/threads/index.json"),
     hoops: json("engine/src/hoops/library.json"),
     liloExts: liloExtensions(read("engine/src/formats/types.ts")),
+    writeOnly: liloWriteOnly(read("engine/src/formats/types.ts")),
   };
 }
 
