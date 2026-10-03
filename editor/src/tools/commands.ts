@@ -114,6 +114,11 @@ export function buildCommands({ state, actions, openImage, fit }: CommandHost): 
     });
   }
 
+  const hasTrace = state.trace !== null;
+  add({ id: "stitch.click", group: "Stitch", label: "Click to stitch: pick regions of the trace", keywords: "trace regions hit manual image", enabled: hasTrace, run: () => actions.setTool("clickstitch") });
+  add({ id: "stitch.clickPending", group: "Stitch", label: `Click to stitch: stitch the ${state.pendingRegions.length} selected region${state.pendingRegions.length === 1 ? "" : "s"}`, keywords: "enter batch", enabled: state.pendingRegions.length > 0, run: actions.stitchPending });
+  add({ id: "stitch.clear", group: "Stitch", label: "Clear all stitches (start from the trace)", keywords: "click to stitch automatic empty", enabled: (state.design?.objects.length ?? 0) > 0, run: actions.clearStitches });
+
   add({ id: "view.realistic", group: "View", label: `${state.view.realistic ? "Hide" : "Show"} realistic view`, keywords: "thread shading", run: () => actions.setView({ realistic: !state.view.realistic }) });
   add({ id: "view.grid", group: "View", label: `${state.view.grid ? "Hide" : "Show"} grid`, run: () => actions.setView({ grid: !state.view.grid }) });
   add({ id: "view.reference", group: "View", label: `${state.view.reference ? "Hide" : "Show"} reference images`, run: () => actions.setView({ reference: !state.view.reference }) });

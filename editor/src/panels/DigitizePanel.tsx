@@ -1,6 +1,8 @@
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { CATALOGUES, designBounds } from "@lilo/engine/light";
+import { loadShelf, useShelf } from "../state/shelfStore";
 import { useEditor } from "../state/store";
+import { Toggle } from "./controls";
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -9,6 +11,8 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
   const { state, actions } = useEditor();
   const { options, source, design, palette, status } = state;
   const working = status.kind === "working";
+  const { shelf } = useShelf();
+  useEffect(() => void loadShelf(), []);
 
   // Current artwork size: the finished design if there is one, else the source image's shape.
   const size = useMemo(() => {
@@ -125,8 +129,23 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
         </select>
       </label>
 
+      <div className="field">
+        <Toggle
+          label="Use my threads"
+          checked={options.useMyThreads}
+          onChange={(v) => actions.setOptions({ useMyThreads: v })}
+          help="Match the picture's colours to the spools on My Threads first. If the shelf is empty, the brand above is used."
+        />
+        {options.useMyThreads && (
+          <span className="muted small">{shelf.entries.length > 0 ? `Matching to ${shelf.entries.length} spool${shelf.entries.length === 1 ? "" : "s"} on your shelf.` : "Your shelf is empty, so the brand above is used."}</span>
+        )}
+      </div>
+
       <button className="primary wide" onClick={() => void actions.digitize()} disabled={!source || working}>
         {working ? "Digitizing…" : "Digitize"}
+      </button>
+      <button className="wide" onClick={() => actions.setTool("clickstitch")} disabled={!state.trace || working} title={state.trace ? "Pick the regions of the trace to stitch yourself" : "Open an image first"}>
+        Click to stitch…
       </button>
 
       <h2 className="spaced">Threads used</h2>

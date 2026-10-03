@@ -1,4 +1,4 @@
-import { useSyncExternalStore, type ReactNode } from "react";
+import { memo, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import {
   editRings,
   flattenNodes,
@@ -10,6 +10,7 @@ import {
   type Box,
   type DesignObject,
   type Pt,
+  type TraceRegion,
 } from "@lilo/engine/light";
 import { useEditorSelector } from "../state/store";
 import { selectionBox } from "../state/editorStore";
@@ -31,6 +32,19 @@ function outlineD(o: DesignObject): string {
       return d(o.geometry.path, o.geometry.closed);
   }
 }
+
+const regionD = (r: TraceRegion): string => [d(r.shell, true), ...r.holes.map((h) => d(h, true))].join(" ");
+
+/** Every traced region as a faint outline, so you can see what is clickable. Memoised: there can be hundreds. */
+const RegionOutlines = memo(function RegionOutlines({ regions, done }: { regions: readonly TraceRegion[]; done: ReadonlySet<string> }) {
+  return (
+    <g className="ov-regions" data-testid="trace-regions">
+      {regions.map((r) => (
+        <path key={r.id} className={done.has(r.id) ? "ov-region done" : "ov-region"} d={regionD(r)} fillRule="evenodd" vectorEffect="non-scaling-stroke" />
+      ))}
+    </g>
+  );
+});
 
 const HANDLE_PX = 9;
 const ROTATE_OFFSET_PX = 26;
@@ -160,6 +174,15 @@ export function Overlay({ controller, view }: Props) {
     );
   }
 
+  // ---- click-to-stitch: the trace, what is stitched, the batch and the region under the pointer ----
+  const regionsOn = tool === "clickstitch" && s.trace !== null;
+  const doneSet = useMemo(() => {
+    const have = new Set(design?.objects.map((o) => o.id));
+    return new Set(Object.entries(s.regionObjects).filter(([, ids]) => ids.length > 0 && ids.every((i) => have.has(i))).map(([rid]) => rid));
+  }, [design?.objects, s.regionObjects]);
+  const regionList = regionsOn ? s.trace!.regions : null;
+  const byId = useMemo(() => new Map((regionList ?? []).map((r) => [r.id, r])), [regionList]);
+
   // ---- draft, drags --------------------------------------------------------------------------
   const draft: Draft | null = model.draft;
   if (draft) nodes.push(<DraftView key="draft" draft={draft} cursor={model.cursor} zoom={z} />);
@@ -198,9 +221,17 @@ export function Overlay({ controller, view }: Props) {
     }
   }
 
+  const pending = s.pendingRegions.map((id) => byId.get(id)).filter((r): r is TraceRegion => !!r);
+  const hover = model.hoverRegion ? byId.get(model.hoverRegion) : undefined;
+
   return (
     <svg className="tool-overlay" aria-hidden="true" data-testid="tool-overlay">
       <g transform={`translate(${view.x} ${view.y}) scale(${view.zoom})`}>
+        {regionList && <RegionOutlines regions={regionList} done={doneSet} />}
+        {pending.map((r) => (
+          <path key={`pend-${r.id}`} className="ov-region pending" data-testid="region-pending" d={regionD(r)} fillRule="evenodd" vectorEffect="non-scaling-stroke" />
+        ))}
+        {hover && <path className="ov-region hover" data-testid="region-hover" data-region={hover.id} d={regionD(hover)} fillRule="evenodd" vectorEffect="non-scaling-stroke" />}
         {outlines}
         {nodes}
       </g>
