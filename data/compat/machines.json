@@ -1,7 +1,7 @@
 {
  "version": 1,
  "compiled": "2026-10-03",
- "note": "Compatibility research for Lilo. 'verified: true' means the page in 'source' stated the facts on the compile date; everything else is UNVERIFIED. liloWifi: true = tested working, \"untested\" = machine looks compatible but Lilo has not been run against it, false = no Wi-Fi path with Lilo. No machine has been tested with Lilo on real hardware yet (Brother NV2700 test pending). Brand and product names belong to their owners; Lilo is not affiliated.",
+ "note": "Compatibility research for Lilo. 'verified: true' means the page in 'source' stated the facts on the compile date; everything else is UNVERIFIED. liloWifi: true = tested working, \"untested (pedxml capability-detected)\" = machine looks compatible but Lilo has not been run against it, false = no Wi-Fi path with Lilo. No machine has been tested with Lilo on real hardware yet (Brother NV2700 test pending). Brand and product names belong to their owners; Lilo is not affiliated.",
  "brands": [
   {
    "name": "Baby Lock",
@@ -48,7 +48,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.babylock.com/altair",
      "verified": true,
      "note": "9.5x14 in field. In the Baby Lock DDT compatible list. Same app as Brother, so Lilo Link may work; untested.",
@@ -68,7 +68,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
      "verified": true,
      "note": "Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested.",
@@ -128,7 +128,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
      "verified": true,
      "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
@@ -150,7 +150,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
      "verified": true,
      "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
@@ -172,7 +172,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
      "verified": true,
      "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
@@ -192,7 +192,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
      "verified": true,
      "note": "Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested.",
@@ -214,7 +214,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
      "verified": true,
      "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
@@ -242,8 +242,8 @@
    "officialApp": "none confirmed",
    "sources": [
     {
-     "url": "https://inkstitch.org/docs/file-formats/",
-     "claim": "DAT, DSB, U01 listed as readable formats; DAT is Barudan/Sunstar (pyembroidery)"
+     "url": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "claim": "DAT, DSB, U01 listed as readable formats in pyembroidery; DAT is Barudan/Sunstar"
     }
    ],
    "models": [
@@ -484,10 +484,10 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery/NQ1700E",
      "verified": true,
-     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. 6x10 in field.",
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. 6x10 in field.",
      "liloSupport": "Wi-Fi + file",
      "testStatus": "file format verified (pyembroidery round-trip)"
     },
@@ -526,10 +526,10 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/NQ3700D",
      "verified": true,
-     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. Sewing + embroidery combo.",
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. Sewing + embroidery combo.",
      "liloSupport": "Wi-Fi + file",
      "testStatus": "file format verified (pyembroidery round-trip)"
     },
@@ -546,7 +546,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://github.com/Kadwood/lilo/blob/main/docs/SPEC.md",
      "verified": false,
      "note": "Kadwood's own machine and the first Wi-Fi test target. Wi-Fi support not confirmed against a Brother page; send test pending.",
@@ -587,7 +587,7 @@
       "usb",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/XE1",
      "verified": true,
      "note": "Wireless enabled; Brother says XE1 connects to PE-Design wirelessly. Whether it also answers the Design Database Transfer API is unknown.",
@@ -608,7 +608,7 @@
       "usb",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://help.brother-usa.com/app/answers/detail/a_id/158016/~/wirelessly-transfer-a-design-to-the-machine",
      "verified": true,
      "note": "Connects to PE-Design wirelessly per Brother. Design Database Transfer API unknown.",
@@ -670,10 +670,10 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery/PE900",
      "verified": true,
-     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet.",
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet.",
      "liloSupport": "Wi-Fi + file",
      "testStatus": "file format verified (pyembroidery round-trip)"
     },
@@ -708,7 +708,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery/PR1055X",
      "verified": true,
      "note": "10-needle, wireless LAN.",
@@ -746,7 +746,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery/PR680W",
      "verified": true,
      "note": "6-needle, wireless enabled.",
@@ -766,7 +766,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery/PRS100",
      "verified": true,
      "note": "Page says wireless enabled.",
@@ -788,7 +788,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE1900",
      "verified": true,
      "note": "Page says wireless enabled; Design Database Transfer not named on the page.",
@@ -810,10 +810,10 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE2000",
      "verified": true,
-     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet.",
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet.",
      "liloSupport": "Wi-Fi + file",
      "testStatus": "file format verified (pyembroidery round-trip)"
     },
@@ -832,7 +832,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE600",
      "verified": true,
      "note": "Page says wireless enabled; Design Database Transfer not named on the page.",
@@ -854,7 +854,7 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE700",
      "verified": true,
      "note": "Page lists Wireless LAN and the Artspira app; Design Database Transfer not named on the page.",
@@ -876,10 +876,10 @@
       "wifi-lilo",
       "wifi-official-app"
      ],
-     "liloWifi": "untested",
+     "liloWifi": "untested (pedxml capability-detected)",
      "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE725",
      "verified": true,
-     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet.",
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet.",
      "liloSupport": "Wi-Fi + file",
      "testStatus": "file format verified (pyembroidery round-trip)"
     }
@@ -900,8 +900,8 @@
    "officialApp": "none confirmed",
    "sources": [
     {
-     "url": "https://inkstitch.org/docs/file-formats/",
-     "claim": "EMD is a read-only format in Ink/Stitch (pyembroidery); Elna's own format"
+     "url": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "claim": "EMD is a read-only format in pyembroidery; Elna's own format"
     }
    ],
    "models": [
@@ -1665,8 +1665,8 @@
    "officialApp": "none confirmed",
    "sources": [
     {
-     "url": "https://inkstitch.org/docs/file-formats/",
-     "claim": "10o and 100 appear in the readable list (Toyota)"
+     "url": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "claim": "10o and 100 appear in pyembroidery's readable list (Toyota)"
     }
    ],
    "models": [
@@ -1681,7 +1681,7 @@
       "usb"
      ],
      "liloWifi": false,
-     "source": "https://inkstitch.org/docs/file-formats/",
+     "source": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
      "verified": false,
      "note": "UNVERIFIED model name; DST from common practice.",
      "liloSupport": "file",
