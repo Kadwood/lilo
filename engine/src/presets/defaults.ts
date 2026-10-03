@@ -104,6 +104,8 @@ export const DEFAULTS = {
     stitchLengthMm: 3,
   },
   lettering: {
+    /** Narrowest satin column in custom-font lettering, by quality. [CAL] Standard 1.5 (thinner strokes run), Premium 1.0. */
+    customMinColumnMm: { standard: 1.5, premium: 1.0 },
     /** Custom-font fills. LEGACY. */
     fillPullCompMm: 0.15,
     fillUnderlayMinAreaMm2: 6,
@@ -118,8 +120,9 @@ export const DEFAULTS = {
     maxJumpMm: 200,
     /** Needle drops per 1 mm^2 cell above which a density warning is raised. LEGACY. */
     densityWarnPerMm2: 10,
-    /** Shorter needle drops within one object are merged away. [CAL] 0.5 floor (Premium 0.6: not plumbed). */
+    /** Shorter needle drops within one object are merged away. [CAL] 0.5 floor; Premium 0.6 (`minStitchPremiumMm`). */
     minStitchMm: 0.5,
+    minStitchPremiumMm: 0.6,
     /** Tie-in / tie-off: 3 small stitches of this length. [CAL] */
     lockStitchMm: 0.4,
     /** Moves shorter than this are not worth a jump. */

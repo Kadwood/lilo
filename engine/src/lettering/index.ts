@@ -18,6 +18,7 @@ export {
   layoutText,
   builtinTypeface,
   type LayoutOptions,
+  type LetteringSewing,
   type LayoutResult,
   type LetteringWarning,
   type PathGuide,

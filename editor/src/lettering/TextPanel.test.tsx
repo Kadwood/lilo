@@ -50,6 +50,26 @@ describe("heightWarning", () => {
     expect(heightWarning({ kind: "custom", name: "X" }, 5)).toMatch(/6 mm.*built-in font/);
     expect(heightWarning({ kind: "custom", name: "X" }, 6)).toBeNull();
   });
+  it("a custom font's threshold follows the thread weight: 6 mm at 40 wt, 4 mm at 60 wt", () => {
+    expect(heightWarning({ kind: "custom", name: "X" }, 5, 60)).toBeNull();
+    expect(heightWarning({ kind: "custom", name: "X" }, 3, 60)).toMatch(/4 mm/);
+  });
+});
+
+describe("small letters warning (Sewing setup thread weight)", () => {
+  const setHeight = (v: string) => fireEvent.change(screen.getByLabelText("Letter height in millimetres"), { target: { value: v } });
+  it("shows below 6 mm on 40 wt, and moves to 4 mm when the setup is 60 wt", async () => {
+    renderEditor(<TextPanel services={diskServices()} />, { design: { ...testDesign(), sewing: { fabric: "suiting", threadWeight: 40, quality: "standard" } } });
+    await waitFor(() => expect(lastEditor?.state.design).not.toBeNull(), T);
+    await waitFor(() => expect(screen.getAllByRole("img").length).toBeGreaterThan(50), T);
+    expect(screen.queryByTestId("small-letters-warning")).toBeNull();
+    setHeight("5");
+    expect(screen.getByTestId("small-letters-warning").textContent).toMatch(/under 6 mm/);
+    act(() => void lastEditor!.actions.setSewing({ threadWeight: 60 }));
+    await waitFor(() => expect(screen.queryByTestId("small-letters-warning")).toBeNull());
+    setHeight("3.5");
+    expect(screen.getByTestId("small-letters-warning").textContent).toMatch(/under 4 mm/);
+  }, 30_000);
 });
 
 /** A laid-out word, the way the panel gets it from the services. */

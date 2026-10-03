@@ -39,6 +39,8 @@ interface Case {
 const CASES: Case[] = [
   { name: "jk-10mm-builtin", text: "JK", face: () => loadBuiltin("geneva_simple"), opts: { heightMm: 10 }, minStitches: 150 },
   { name: "jk-10mm-custom", text: "JK", face: lato, opts: { heightMm: 10 }, minStitches: 150 },
+  // Premium keeps columns down to 1.0 mm (the pre-quality behaviour); Standard turns strokes under 1.5 mm into runs.
+  { name: "jk-10mm-custom-premium", text: "JK", face: lato, opts: { heightMm: 10, sewing: { quality: "premium", threadWeight: 40 } }, minStitches: 150 },
   { name: "kadwood-15mm-script", text: "Kadwood", face: () => loadBuiltin("pacificlo"), opts: { heightMm: 15 }, minStitches: 800 },
   { name: "monogram-3-lines", text: "JK\nKADWOOD\nSTUDIO", face: () => loadBuiltin("geneva_simple"), opts: { heightMm: 10, align: "center", lineSpacing: 1.1 }, minStitches: 900 },
   {

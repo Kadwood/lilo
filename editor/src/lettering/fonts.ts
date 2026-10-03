@@ -32,6 +32,8 @@ export interface LayoutRequest {
   threadId: string;
   idPrefix: string;
   onPath?: PathGuide;
+  /** The design's quality and thread weight: custom-font columns and the small-letter warning follow them. */
+  sewing?: { quality: "standard" | "premium"; threadWeight: 40 | 60 };
 }
 
 export interface LayoutResponse {
@@ -256,6 +258,7 @@ export const defaultServices: LetteringServices = {
       threadId: req.threadId,
       idPrefix: req.idPrefix,
       onPath: req.onPath,
+      sewing: req.sewing,
     });
     return { objects: r.objects, warnings: r.warnings, centre: r.bounds ? [(r.bounds.minX + r.bounds.maxX) / 2, (r.bounds.minY + r.bounds.maxY) / 2] : [0, 0] };
   },
