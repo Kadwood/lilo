@@ -20,6 +20,7 @@ const stitchEsm = join(
 export default defineConfig({
   build: { chunkSizeWarningLimit: 4000 }, // the engine chunk carries stitchjs + inlined WASM
   plugins: [react()],
+  worker: { format: "es" },
   resolve: { alias: { "@stitchables/stitchjs": stitchEsm } },
 
   // Tauri: don't hide Rust errors, fixed port (also an allowed origin of the local API).
