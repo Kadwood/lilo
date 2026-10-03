@@ -702,3 +702,8 @@ kbd {
 .palette .cmd-label {
   flex: 1;
 }
+
+button.primary:hover:not(:disabled) {
+  background: var(--accent);
+  filter: brightness(1.12);
+}
