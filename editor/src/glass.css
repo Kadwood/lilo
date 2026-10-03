@@ -486,6 +486,11 @@ kbd {
   border-top: 1px solid var(--glass-line);
 }
 
+/* the colour-change card sits above the player, in the same spot as the floating dock: it must win (it holds Continue) */
+.swap-card {
+  z-index: 20;
+}
+
 /* the tool dock floats over the bottom of the canvas */
 .toolbar {
   position: absolute;

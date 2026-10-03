@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { getPlatform } from "../platform";
 import { whenLabel } from "../project/HistoryPanel";
 import type { RecentCard } from "../project/manager";
@@ -10,9 +10,19 @@ import iconUrl from "../assets/brand/lilo-icon.svg";
 import { KadwoodWordmark } from "../shell/BrandMark";
 
 /** One card: the thumbnail from inside the file, its title and when it was last saved. */
-function Card({ card, onOpen }: { card: RecentCard; onOpen: () => void }) {
-  const url = useMemo(() => (card.thumbnail ? URL.createObjectURL(new Blob([card.thumbnail as BlobPart], { type: "image/png" })) : null), [card.thumbnail]);
-  useEffect(() => () => (url ? URL.revokeObjectURL(url) : undefined), [url]);
+export function Card({ card, onOpen }: { card: RecentCard; onOpen: () => void }) {
+  // Made and revoked in one effect: a URL made during render and revoked by a cleanup is dead after React
+  // re-runs the effect (StrictMode in development), and the image then fails to load.
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!card.thumbnail) {
+      setUrl(null);
+      return;
+    }
+    const made = URL.createObjectURL(new Blob([card.thumbnail as BlobPart], { type: "image/png" }));
+    setUrl(made);
+    return () => URL.revokeObjectURL(made);
+  }, [card.thumbnail]);
   const title = card.title || card.name;
   return (
     <li>
