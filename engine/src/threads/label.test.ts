@@ -63,6 +63,16 @@ describe("spool label parsing", () => {
     expect(found.filter((c) => c.brand === "Madeira" || c.brand === "").map((c) => c.code)).toEqual([]);
   });
 
+  it("treats years next to Since / Est. / (c) as dates, not colour codes", async () => {
+    for (const line of ["Since 1923", "Est. 1898", "© 2024 Madeira", "ESTABLISHED 1875", "Founded 2001", "(c) 1999"]) {
+      const found = await identifySpool(["MADEIRA", "POLYNEON", line, "1747"]);
+      expect(found[0].code, line).toBe("1747");
+      expect(found.some((c) => /^(1923|1898|2024|1875|2001|1999)$/.test(c.code)), line).toBe(false);
+    }
+    // a bare 4-digit number that happens to look like a year is still a candidate
+    expect((await identifySpool(["MADEIRA RAYON", "1900"]))[0].code).toBe("1900");
+  });
+
   it("offers a brand-named guess even when the code is not in the catalogue", () => {
     const found = parseSpoolLabel(["GUNOLD", "Poly 40", "99999"], []);
     expect(found[0]).toMatchObject({ brand: "Gunold", code: "99999" });

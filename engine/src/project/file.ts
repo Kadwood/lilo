@@ -1,4 +1,4 @@
-import { unzipSync, zipSync, strFromU8, strToU8, type Unzipped, type Zippable } from "fflate";
+import { Unzip, UnzipInflate, UnzipPassThrough, unzipSync, zipSync, strFromU8, strToU8, type Unzipped, type Zippable } from "fflate";
 import { emptyDesign, type Design } from "../model";
 import { emptyShelf, type Shelf } from "../threads/shelf";
 import { migrateProjectDoc, SAFE_PATH } from "./migrate";
@@ -174,26 +174,65 @@ export function saveProject(project: LiloProject, now: Date = new Date()): Uint8
   return zipSync(files);
 }
 
-function unpack(bytes: Uint8Array, only?: (name: string) => boolean): Unzipped {
+export interface UnpackLimits {
+  maxFileBytes: number;
+  maxTotalBytes: number;
+  maxEntries: number;
+}
+const DEFAULT_LIMITS: UnpackLimits = { maxFileBytes: MAX_FILE_BYTES, maxTotalBytes: MAX_TOTAL_BYTES, maxEntries: MAX_ENTRIES };
+
+class TooBig extends Error {}
+
+/**
+ * Unzip with caps on what actually comes out. The sizes in zip headers are attacker-controlled, so
+ * they are not trusted: entries are inflated as a stream and counted, and the run aborts the moment a
+ * cap is passed. `unzipSync` first (names only) validates the zip's structure and entry count.
+ */
+function unpack(bytes: Uint8Array, only?: (name: string) => boolean, limits: UnpackLimits = DEFAULT_LIMITS): Unzipped {
   if (bytes.length < 22) throw new ProjectError("not-a-project", "This isn't a Lilo project (the file is too small).");
-  let total = 0;
+  const damaged = () => new ProjectError("not-a-project", "This isn't a Lilo project, or the file is damaged (it can't be unzipped).");
+  const big = () => new ProjectError("not-a-project", "This project file is unreasonably large and was not opened.");
   let entries = 0;
-  let tooBig = false;
-  let out: Unzipped;
   try {
-    out = unzipSync(bytes, {
-      filter: (f) => {
-        if (only && !only(f.name)) return false;
-        entries++;
-        total += f.originalSize;
-        if (f.originalSize > MAX_FILE_BYTES || total > MAX_TOTAL_BYTES || entries > MAX_ENTRIES) tooBig = true;
-        return !tooBig;
-      },
-    });
+    unzipSync(bytes, { filter: () => (++entries, false) });
   } catch {
-    throw new ProjectError("not-a-project", "This isn't a Lilo project, or the file is damaged (it can't be unzipped).");
+    throw damaged();
   }
-  if (tooBig) throw new ProjectError("not-a-project", "This project file is unreasonably large and was not opened.");
+  if (entries > limits.maxEntries) throw big();
+
+  const out: Unzipped = {};
+  let total = 0;
+  try {
+    const u = new Unzip();
+    u.register(UnzipInflate);
+    u.register(UnzipPassThrough);
+    u.onfile = (f) => {
+      if (only && !only(f.name)) return;
+      const chunks: Uint8Array[] = [];
+      let size = 0;
+      f.ondata = (err, chunk, final) => {
+        if (err) throw err;
+        size += chunk.length;
+        total += chunk.length;
+        if (size > limits.maxFileBytes || total > limits.maxTotalBytes) throw new TooBig();
+        chunks.push(chunk);
+        if (final) {
+          const data = new Uint8Array(size);
+          let at = 0;
+          for (const c of chunks) {
+            data.set(c, at);
+            at += c.length;
+          }
+          out[f.name] = data;
+        }
+      };
+      f.start();
+    };
+    u.push(bytes, true);
+  } catch (e) {
+    if (e instanceof TooBig) throw big();
+    throw damaged();
+  }
   return out;
 }
 
@@ -219,8 +258,8 @@ function parseHistory(files: Unzipped, warnings: string[]): HistoryEntry[] {
 }
 
 /** Open `.lilo` bytes. Throws `ProjectError` (with a message for the user) if it can't be opened. */
-export function loadProject(bytes: Uint8Array): LoadResult {
-  const files = unpack(bytes);
+export function loadProject(bytes: Uint8Array, limits?: Partial<UnpackLimits>): LoadResult {
+  const files = unpack(bytes, undefined, { ...DEFAULT_LIMITS, ...limits });
   const main = files[PROJECT_JSON];
   if (!main) throw new ProjectError("missing-project-json", "This isn't a Lilo project (project.json is missing).");
   let raw: unknown;

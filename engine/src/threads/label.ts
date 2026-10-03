@@ -69,6 +69,8 @@ const LINE_WORDS: [RegExp, RegExp][] = [
 
 const KEYWORD = /\b(COLOR|COLOUR|COL|COULEUR|FARBE|COLORE|SHADE|NO|NR|NUM|NUMBER|ART|#)\b|NO\.|NR\.|№/;
 const UNIT_AFTER = /^(M|MT|MTR|MTRS|METER|METERS|METRES|YD|YDS|YARD|YARDS|FT|G|GR|GRAM|GRAMS|WT|DEN|TEX|NM|PLY|CM|MM|PCS|COLORS|COLOURS)$/;
+/** Words that make a 1800-2099 number a year, not a colour ("Since 1923", "Est. 1898"). */
+const YEAR_CONTEXT = /\b(SINCE|EST|ESTD|ESTABLISHED|FOUNDED|COPYRIGHT|COPY|LOT|EXP|DATE|C)\b|©|\(C\)/;
 const NOISE_LINE = /COPYRIGHT|©|\(C\)|\bLOT\b|\bBATCH\b|\bEXP\b|\bDATE\b|MADE IN|\bTEL\b|WWW\.|HTTP|@/;
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -125,7 +127,7 @@ function extractCodes(lines: readonly OcrLine[]): RawCode[] {
       const next = tokens[ti + 1];
       if (next && UNIT_AFTER.test(next)) return; // "5000 m", "40 wt"
       // "40/2" style weights split into short tokens and never reach here; 4-digit years do
-      if (!m[1] && /^(19[89]\d|20[0-3]\d)$/.test(tok) && /\b(C|COPY|EXP|LOT|DATE)\b/.test(upper)) return;
+      if (!m[1] && /^(18|19|20)\d\d$/.test(tok) && YEAR_CONTEXT.test(upper)) return;
       const shape = m[1] ? 0.85 : m[2].length === 4 ? 1 : m[2].length === 3 ? 0.9 : 0.6;
       const reasons = [m[1] ? "letter prefix" : `${m[2].length}-digit number`];
       if (nearKeyword) reasons.push("near a colour/No. keyword");

@@ -311,4 +311,26 @@ describe("corrupt and hostile files", () => {
     many["project.json"] = strToU8("{}");
     expect(code(() => loadProject(zipSync(many)))).toBe("not-a-project");
   });
+
+  it("caps real decompressed size even when the zip header lies about it", () => {
+    const real = new Uint8Array(3 * 1024 * 1024); // 3 MB of zeros, a few KB deflated
+    const doc = strToU8(JSON.stringify({ format: "lilo-project", version: 1 }));
+    const zip = zipSync({ "project.json": doc, "images/bomb.png": real });
+    // rewrite the claimed uncompressed size (local header @22, central directory @24) to 10 bytes
+    const dv = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
+    let patched = 0;
+    for (let i = 0; i + 46 < zip.length; i++) {
+      const sig = dv.getUint32(i, true);
+      if (sig !== 0x04034b50 && sig !== 0x02014b50) continue;
+      const local = sig === 0x04034b50;
+      const nameLen = dv.getUint16(i + (local ? 26 : 28), true);
+      const nameAt = i + (local ? 30 : 46);
+      if (strFromU8(zip.subarray(nameAt, nameAt + nameLen)) !== "images/bomb.png") continue;
+      dv.setUint32(i + (local ? 22 : 24), 10, true);
+      patched++;
+    }
+    expect(patched).toBe(2);
+    expect(code(() => loadProject(zip, { maxFileBytes: 1024 * 1024 }))).toBe("not-a-project");
+    expect(code(() => loadProject(zip, { maxTotalBytes: 1024 * 1024 }))).toBe("not-a-project");
+  });
 });
