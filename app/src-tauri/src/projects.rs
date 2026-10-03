@@ -138,15 +138,29 @@ pub fn announce(app: &tauri::AppHandle, paths: Vec<PathBuf>) {
     let _ = app.emit(OPEN_EVENT, ());
 }
 
-/// May the editor touch `path`? Only `.lilo` files in the default folder or ones the OS opened for us.
-fn allowed(app: &tauri::AppHandle, path: &Path) -> Result<PathBuf, String> {
+/// A `.lilo` path with its folder resolved. The file may not exist yet (first save).
+fn resolve(path: &Path) -> Result<PathBuf, String> {
     if !is_project_path(path) {
         return Err("Only .lilo project files can be opened here.".into());
     }
-    // The file may not exist yet (first save), so resolve its folder instead.
     let parent = path.parent().filter(|p| !p.as_os_str().is_empty()).ok_or("The path has no folder.")?;
     let parent = parent.canonicalize().map_err(|_| "The folder does not exist.".to_string())?;
-    let resolved = parent.join(path.file_name().ok_or("The path has no file name.")?);
+    Ok(parent.join(path.file_name().ok_or("The path has no file name.")?))
+}
+
+/// The user picked this `.lilo` file in a native Open or Save dialog (possibly outside the default
+/// folder): remember it, so Save and autosave can write to it later. Only `.lilo` paths whose folder
+/// exists are accepted, so this can't be used to reach any other kind of file.
+#[tauri::command]
+pub fn allow_project_path(app: tauri::AppHandle, path: String) -> Result<(), String> {
+    let resolved = resolve(Path::new(&path))?;
+    app.state::<OpenFiles>().announced.lock().unwrap().insert(resolved);
+    Ok(())
+}
+
+/// May the editor touch `path`? Only `.lilo` files in the default folder or ones the OS opened for us.
+fn allowed(app: &tauri::AppHandle, path: &Path) -> Result<PathBuf, String> {
+    let resolved = resolve(path)?;
     let in_default = projects_dir(app)
         .ok()
         .and_then(|d| d.canonicalize().ok())
@@ -304,6 +318,21 @@ mod tests {
         assert!(list[0].path.ends_with("new.lilo"));
         assert_eq!(scan_projects(&dir, 2).len(), 2);
         assert!(scan_projects(&dir.join("missing"), 5).is_empty());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn resolves_chosen_paths_only_for_lilo_files_in_real_folders() {
+        let dir = scratch("resolve");
+        let canonical = dir.canonicalize().unwrap();
+        // a file that does not exist yet is fine (first save)
+        assert_eq!(resolve(&dir.join("New.lilo")).unwrap(), canonical.join("New.lilo"));
+        assert!(resolve(&dir.join("notes.txt")).is_err());
+        assert!(resolve(&dir.join("missing-folder").join("a.lilo")).is_err());
+        assert!(resolve(Path::new("a.lilo")).is_err());
+        // the folder part is canonicalised, so "sub/../x.lilo" lands where it really is
+        std::fs::create_dir_all(dir.join("sub")).unwrap();
+        assert_eq!(resolve(&dir.join("sub").join("..").join("x.lilo")).unwrap(), canonical.join("x.lilo"));
         std::fs::remove_dir_all(dir).unwrap();
     }
 

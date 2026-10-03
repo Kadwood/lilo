@@ -1,5 +1,6 @@
 import type { Design, Hoop } from "./model";
 import { applyOrigin, CENTER_ORIGIN, writePes, type Origin } from "./pes";
+import { writeEmbroidery, type FormatExt } from "./formats";
 import { designToStitchPlan, planStats, validatePlan, type PlanStats, type PlanWarning, type StitchPlan } from "./stitch";
 
 export interface ExportOptions {
@@ -25,4 +26,15 @@ export function designToPes(design: Design, options: ExportOptions = {}): Export
   const { plan, warnings } = validatePlan(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm });
   const placed = applyOrigin(plan, options.origin ?? CENTER_ORIGIN);
   return { plan: placed, warnings, stats: planStats(placed), pes: writePes(placed, { label: options.label }) };
+}
+
+/** Same as `designToPes` for any format Lilo writes (PES, DST, JEF, VP3, EXP, XXX, U01, PEC). */
+export function designToEmbroidery(
+  design: Design,
+  ext: FormatExt,
+  options: ExportOptions = {},
+): { bytes: Uint8Array; plan: StitchPlan; warnings: PlanWarning[]; stats: PlanStats } {
+  const { plan, warnings } = validatePlan(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm });
+  const placed = applyOrigin(plan, options.origin ?? CENTER_ORIGIN);
+  return { plan: placed, warnings, stats: planStats(placed), bytes: writeEmbroidery(placed, ext, { label: options.label }) };
 }

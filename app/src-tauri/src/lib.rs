@@ -22,6 +22,7 @@ pub mod dongle_setup;
 pub mod emberconnect;
 pub mod logging;
 pub mod machine;
+pub mod my_threads;
 pub mod ocr;
 pub mod projects;
 pub mod server;
@@ -216,6 +217,9 @@ pub fn run() {
             projects::take_open_files,
             projects::read_project_file,
             projects::write_project_file,
+            projects::allow_project_path,
+            my_threads::read_my_threads,
+            my_threads::write_my_threads,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

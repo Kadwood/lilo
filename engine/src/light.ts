@@ -12,3 +12,24 @@ export type { Origin } from "./pes/write";
 export * from "./threads/shelf";
 export * from "./threads/label";
 export * from "./pixelart/grid";
+export * from "./pixelart/import";
+export * from "./clickstitch";
+export * from "./project/types";
+export {
+  createProject,
+  addHistorySnapshot,
+  historyDoc,
+  restoreHistory,
+  addImage,
+  removeImage,
+  saveProject,
+  loadProject,
+  readProjectInfo,
+  recoverHistory,
+  contentHash,
+  hashString,
+  type NewProjectOptions,
+  type ProjectInfo,
+} from "./project/file";
+export { migrateProjectDoc } from "./project/migrate";
+export { encodePngRgba, planThumbnailPng, type ThumbnailOptions } from "./project/png";
