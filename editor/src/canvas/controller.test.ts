@@ -1,4 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+
+// no canvas in node: hand the store a stand-in for the decoded picture
+vi.mock("../io/decode", async (orig) => ({
+  ...(await orig<typeof import("../io/decode")>()),
+  decodeFile: vi.fn(async () => ({ kind: "raster", image: { width: 100, height: 50, data: new Uint8ClampedArray(100 * 50 * 4) }, reference: { width: 100, height: 50 } })),
+}));
 import { emptyDesign, makeFill, objectBox, rectNodes, type DesignObject, type FillObject, type RunObject, type SatinObject } from "@lilo/engine/light";
 import { createInlineEngine } from "../engine/client";
 import { createEditorStore, defaultThread, type EditorStore } from "../state/editorStore";
@@ -408,12 +414,18 @@ describe("shape actions", () => {
     expect((t.objs()[0] as FillObject).params.angleDeg).toBe(45);
   });
 
-  it("a reference image can be dragged when it is unlocked", () => {
+  it("a reference image can be dragged when it is unlocked, and a drag is one undo step", async () => {
     const t = setup([]);
-    t.core.store.setState({ refImages: [{ id: "i1", name: "i", src: {} as HTMLCanvasElement, w: 100, h: 50, x: 0, y: 0, widthMm: 40, opacity: 0.5, locked: false, visible: true }] });
+    await t.core.actions.addRefImage({ name: "i.png", bytes: new Uint8Array(4) });
+    const { id } = t.st().refImages[0];
+    t.core.actions.updateRefImage(id, { x: 0, y: 0, widthMm: 40 });
+    t.core.actions.endGroup();
     t.drag(10, 10, 15, 12);
     expect(t.st().refImages[0]).toMatchObject({ x: 5, y: 2 });
-    t.core.actions.updateRefImage("i1", { locked: true });
+    t.core.actions.undo();
+    expect(t.st().refImages[0]).toMatchObject({ x: 0, y: 0 }); // the whole drag, not one pointer move
+    t.core.actions.redo();
+    t.core.actions.updateRefImage(id, { locked: true });
     t.drag(10, 10, 15, 12);
     expect(t.st().refImages[0]).toMatchObject({ x: 5, y: 2 });
   });

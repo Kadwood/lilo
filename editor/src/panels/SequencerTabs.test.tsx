@@ -113,6 +113,7 @@ describe("Sequencer: colours tab", () => {
 describe("Sequencer: images tab", () => {
   it("adds reference images, reorders, fades, locks and removes them", async () => {
     renderEditor(<Sequencer />, { design: testDesign() });
+    await loaded(); // images belong to the design: wait for it to load or it replaces them
     fireEvent.click(screen.getByRole("tab", { name: "Images" }));
     expect(screen.getByText("No images yet.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Add image…" }));
