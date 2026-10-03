@@ -63,6 +63,11 @@ describe.skipIf(!on)("perf", () => {
     expect(load.value.project.history.length).toBe(50);
   }, 300_000);
 
+  it("writes the stress project (no history) for the browser run: LILO_STRESS_OUT=<file>", () => {
+    if (!process.env.LILO_STRESS_OUT) return;
+    writeFileSync(process.env.LILO_STRESS_OUT, saveProject(createProject({ title: "Stress", design: stressDesign(300) })));
+  });
+
   it("writes the numbers", () => {
     console.log(JSON.stringify(out, null, 2));
     if (process.env.LILO_PERF_OUT) writeFileSync(process.env.LILO_PERF_OUT, JSON.stringify(out, null, 2));

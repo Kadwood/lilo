@@ -1,6 +1,5 @@
 import { afterAll, describe, expect, it } from "vitest";
 import { readEmbroidery } from "@lilo/engine";
-import type { Page } from "playwright-core";
 import { fixture, openApp, savedFiles, stopStack } from "./harness";
 
 afterAll(stopStack);

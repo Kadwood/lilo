@@ -1,7 +1,8 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createServer, type ViteDevServer } from "vite";
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright-core";
+import { chromiumPath } from "./chromium";
 
 /**
  * Shared setup for the journey suite (`pnpm --filter editor e2e`): a Vite dev server on a free port, one
@@ -19,26 +20,6 @@ export const SHOTS = process.env.LILO_SHOTS ?? join(EDITOR, "e2e", ".shots");
 export const fixture = (name: string): Buffer => readFileSync(join(REPO, "engine", "test", "fixtures", name));
 export const fontFixture = (name: string): Buffer => readFileSync(join(REPO, "engine", "test", "fixtures", "fonts", name));
 
-function findChromium(): string | undefined {
-  if (process.env.LILO_CHROMIUM) return process.env.LILO_CHROMIUM;
-  const cache = process.env.PLAYWRIGHT_BROWSERS_PATH ?? join(process.env.HOME ?? "", "Library", "Caches", "ms-playwright");
-  const alt = join(process.env.HOME ?? "", ".cache", "ms-playwright");
-  for (const root of [cache, alt]) {
-    if (!existsSync(root)) continue;
-    const dirs = readdirSync(root)
-      .filter((d) => d.startsWith("chromium_headless_shell"))
-      .sort()
-      .reverse();
-    for (const d of dirs) {
-      for (const sub of readdirSync(join(root, d))) {
-        const exe = join(root, d, sub, process.platform === "win32" ? "chrome-headless-shell.exe" : "chrome-headless-shell");
-        if (existsSync(exe)) return exe;
-      }
-    }
-  }
-  return undefined;
-}
-
 let server: ViteDevServer | null = null;
 let browser: Browser | null = null;
 export let baseUrl = "";
@@ -50,7 +31,7 @@ export async function startStack(): Promise<void> {
   const addr = server.httpServer?.address();
   baseUrl = `http://127.0.0.1:${typeof addr === "object" && addr ? addr.port : 5173}`;
   browser = await chromium.launch({
-    executablePath: findChromium(),
+    executablePath: chromiumPath(),
     // software GL so Pixi's WebGL canvas draws in a headless box
     args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--enable-precise-memory-info"],
   });
