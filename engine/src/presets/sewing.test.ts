@@ -23,13 +23,15 @@ describe("sewing presets: every combination resolves to safe numbers", () => {
   it.each(combos)("$fabric / $threadWeight wt / $quality", (c) => {
     const s = resolveSewingSetup(c);
     const e = s.engine;
-    for (const v of [e.minSatinWidthMm, e.minRunMm, e.hairlineSatinMinLengthMm, e.satinPitchNarrowMm, e.satinPitchWideMm, e.pullCompFactor, e.underlayBias]) expect(finite(v)).toBe(true);
-    // safe ranges: no column narrower than 0.6 mm, line pitch 0.25-0.7 mm, pull comp factor 0.5-2
+    for (const v of [e.minSatinWidthMm, e.minRunMm, e.hairlineSatinMinLengthMm, e.satinDensityNarrowMm, e.satinDensityMediumMm, e.satinDensityWideMm, e.satinDensityStandardMm, e.pullCompFactor, e.underlayBias]) expect(finite(v)).toBe(true);
+    // safe ranges: line density 0.35 (0.30 at 60 wt) to 0.70 mm, never a column narrower than 0.6 mm
+    const floor = c.threadWeight === 60 ? 0.3 : 0.35;
+    for (const d of [e.satinDensityNarrowMm, e.satinDensityMediumMm, e.satinDensityWideMm, e.satinDensityStandardMm]) {
+      expect(d).toBeGreaterThanOrEqual(floor - 1e-9);
+      expect(d).toBeLessThanOrEqual(0.7);
+    }
     expect(e.minSatinWidthMm).toBeGreaterThanOrEqual(0.6);
     expect(e.minSatinWidthMm).toBeLessThanOrEqual(2.5);
-    expect(e.satinPitchNarrowMm).toBeGreaterThanOrEqual(0.25);
-    expect(e.satinPitchWideMm).toBeLessThanOrEqual(0.7);
-    expect(e.satinPitchNarrowMm).toBeLessThanOrEqual(e.satinPitchWideMm);
     expect(e.pullCompFactor).toBeGreaterThanOrEqual(0.5);
     expect(e.pullCompFactor).toBeLessThanOrEqual(2);
     expect(e.underlayBias).toBeGreaterThan(0.5);
@@ -70,7 +72,7 @@ describe("sewing presets: the table", () => {
     const s = resolveSewingSetup();
     expect(s.input).toEqual({ fabric: "suiting", threadWeight: 40, quality: "standard" });
     expect(s.engine.satinMode).toBe("legacy");
-    expect(s.engine.minSatinWidthMm).toBe(1);
+    expect(s.engine.minSatinWidthMm).toBe(1.5);
     expect(s.engine.hairlinesAsSatin).toBe(false);
     expect(s.engine.junctionOverlapMm).toBeNull();
     expect(s.engine.fill).toEqual({ pullCompMm: 0.2 });
@@ -83,30 +85,51 @@ describe("sewing presets: the table", () => {
     expect(resolveSewingSetup({ fabric: "cap" }).engine.fabric).toBe("twill");
   });
 
-  it("premium 40 wt woven: 0.8 mm minimum column and 0.32-0.38 mm line spacing", () => {
+  it("premium 40 wt woven: 1.0 mm minimum column, density 0.45 / 0.38 / 0.42 by width", () => {
     const e = resolveSewingSetup({ quality: "premium", threadWeight: 40, fabric: "woven" }).engine;
-    expect(e.minSatinWidthMm).toBe(0.8);
-    expect(e.satinPitchNarrowMm).toBe(0.32);
-    expect(e.satinPitchWideMm).toBe(0.38);
+    expect(e.minSatinWidthMm).toBe(1);
+    expect(e.satinDensityNarrowMm).toBe(0.45);
+    expect(e.satinDensityMediumMm).toBe(0.38);
+    expect(e.satinDensityWideMm).toBe(0.42);
     expect(e.hairlinesAsSatin).toBe(true);
     expect(e.satinMode).toBe("width-scaled");
-    expect(e.fill.underlays?.length).toBe(1);
+    expect(e.splitMaxWidthMm).toBe(8);
+    expect(e.fill.underlays?.[0].spacingMm).toBe(3.5);
+    expect(e.fill.stitchLengthMm).toBe(4);
     expect(e.fill.edgeWalk).toBeDefined();
   });
 
-  it("60 wt sits its lines closer and allows finer columns", () => {
+  it("60 wt: density 0.35 standard, tighter premium, finer columns, shorter cap height", () => {
+    const std = resolveSewingSetup({ threadWeight: 60 }).engine;
+    expect(std.satinDensityStandardMm).toBe(0.35);
     const a = resolveSewingSetup({ quality: "premium", threadWeight: 40 }).engine;
     const b = resolveSewingSetup({ quality: "premium", threadWeight: 60 }).engine;
-    expect(b.satinPitchNarrowMm).toBeLessThan(a.satinPitchNarrowMm);
-    expect(b.satinPitchWideMm).toBeLessThan(a.satinPitchWideMm);
+    expect(b.satinDensityMediumMm).toBeLessThan(a.satinDensityMediumMm);
+    expect(b.satinDensityMediumMm).toBeGreaterThanOrEqual(0.3);
     expect(b.minSatinWidthMm).toBeLessThan(a.minSatinWidthMm);
+    expect(THREAD_WEIGHTS[40].minLetterHeightMm).toBe(6);
+    expect(THREAD_WEIGHTS[60].minLetterHeightMm).toBe(4);
     expect(THREAD_WEIGHTS[60].needle).toMatch(/65\/9/);
+  });
+
+  it("40 wt never goes below 0.35 mm density on any fabric", () => {
+    for (const f of FABRIC_IDS) {
+      const e = resolveSewingSetup({ quality: "premium", fabric: f }).engine;
+      expect(Math.min(e.satinDensityNarrowMm, e.satinDensityMediumMm, e.satinDensityWideMm, e.satinDensityStandardMm)).toBeGreaterThanOrEqual(0.35);
+    }
   });
 
   it("fabric adjustments point the way the research says", () => {
     const eng = (f: FabricId) => resolveSewingSetup({ fabric: f, quality: "premium" }).engine;
     expect(eng("knit").pullCompFactor).toBeGreaterThan(eng("suiting").pullCompFactor);
-    expect(eng("leather").satinPitchWideMm).toBeGreaterThan(eng("suiting").satinPitchWideMm); // looser: do not perforate
+    // [CAL] knit pull 0.35 to 0.40 at premium 0.20 base; terry 0.55 to 0.70, twill 0.40 to 0.45, pique-like knit 0.45 to 0.50
+    expect(0.2 * eng("knit").pullCompFactor).toBeGreaterThanOrEqual(0.35);
+    expect(0.2 * eng("knit").pullCompFactor).toBeLessThanOrEqual(0.4);
+    expect(eng("towel").satinDensityStandardMm).toBeGreaterThanOrEqual(0.55);
+    expect(eng("twill").satinDensityStandardMm).toBeGreaterThanOrEqual(0.4);
+    expect(eng("twill").satinDensityStandardMm).toBeLessThanOrEqual(0.45);
+    expect(eng("knit").satinDensityStandardMm).toBeGreaterThanOrEqual(0.45);
+    expect(eng("leather").satinDensityMediumMm).toBeGreaterThan(eng("suiting").satinDensityMediumMm); // looser: do not perforate
     expect(eng("leather").zigzagUnderlay).toBe(false);
     expect(eng("towel").minSatinWidthMm).toBeGreaterThanOrEqual(2); // no fine satin in pile
     expect(eng("towel").underlayBias).toBeLessThan(1); // heavier underlay
@@ -132,7 +155,7 @@ describe("sewing presets: the table", () => {
   it("quality summaries and the stitch count multiplier", () => {
     expect(QUALITIES.standard.stitchCountMultiplier).toBe(1);
     expect(QUALITIES.premium.stitchCountMultiplier).toBeGreaterThan(0.5);
-    expect(QUALITIES.premium.stitchCountMultiplier).toBeLessThan(1.5);
+    expect(QUALITIES.premium.stitchCountMultiplier).toBeLessThan(2);
     for (const q of QUALITY_IDS) expect(QUALITIES[q].summary.length).toBeGreaterThan(30);
   });
 

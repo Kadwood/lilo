@@ -23,6 +23,18 @@ export function Section({ title, help, open = true, children, id }: { title: str
   );
 }
 
+/** Hint for a satin density (same-side spacing): a leg every density / 2 mm, so 20 / density legs per cm. */
+export function satinHint(densityMm: number): string {
+  if (!(densityMm > 0)) return "";
+  return `≈ ${Math.round(20 / densityMm)} stitches/cm along the column`;
+}
+
+/** Hint for a fill row spacing: 10 / spacing rows per cm. */
+export function rowsHint(rowSpacingMm: number): string {
+  if (!(rowSpacingMm > 0)) return "";
+  return `≈ ${Math.round(10 / rowSpacingMm)} rows/cm`;
+}
+
 interface FieldProps {
   label: string;
   value: number;
@@ -34,12 +46,14 @@ interface FieldProps {
   onDone?: () => void;
   help?: string;
   unit?: string;
+  /** A short extra note after the unit, e.g. "≈ 2.5 stitches/mm". */
+  hint?: string;
   /** Show the number, but let the range go further than the slider (typed values). */
   digits?: number;
 }
 
 /** A labelled slider with a number box beside it. */
-export function Field({ label, value, min, max, step, onChange, onDone, help, unit, digits }: FieldProps) {
+export function Field({ label, value, min, max, step, onChange, onDone, help, unit, hint, digits }: FieldProps) {
   const id = useId();
   const shown = digits !== undefined ? Number(value.toFixed(digits)) : value;
   return (
@@ -75,6 +89,11 @@ export function Field({ label, value, min, max, step, onChange, onDone, help, un
         onBlur={onDone}
       />
       {unit && <span className="muted small unit">{unit}</span>}
+      {hint && (
+        <span className="muted small field-hint" aria-label={`${label} hint`}>
+          {hint}
+        </span>
+      )}
     </div>
   );
 }

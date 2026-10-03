@@ -105,7 +105,7 @@ export function satinOptions(p: SatinParams): Record<string, unknown> {
   const contour = withOpts("CONTOUR", { ...stitchLen, ...inset });
   const zigzag = withOpts("ZIGZAG", { ...inset, ...zig });
   const underlays: U[] =
-    p.underlay === "center" ? [center] : p.underlay === "contour" ? [contour] : p.underlay === "zigzag" ? [zigzag] : p.underlay === "contour-zigzag" ? [contour, zigzag] : [];
+    p.underlay === "center" ? [center] : p.underlay === "contour" ? [contour] : p.underlay === "zigzag" ? [zigzag] : p.underlay === "contour-zigzag" ? [contour, zigzag] : p.underlay === "center-contour" ? [center, contour] : p.underlay === "double-zigzag" ? [zigzag, withOpts("ZIGZAG", { ...inset, densityMm: Math.max(0.5, (p.underlayZigzagMm ?? 3) / 2) })] : [];
   const opts: Record<string, unknown> = { densityMm: Math.max(0.1, p.densityMm), underlays };
   if (p.splitMaxWidthMm && p.splitMaxWidthMm > 0) {
     opts.split = {

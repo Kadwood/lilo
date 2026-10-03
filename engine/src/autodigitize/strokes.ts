@@ -1,7 +1,10 @@
 import { Coordinate } from "jsts/org/locationtech/jts/geom";
+import type { SatinUnderlay } from "../model";
 import { factory, intersectionArea, unionAll, type Poly } from "../geom";
 import type { Pt } from "../model";
 import { stripWidths } from "../lettering/satin";
+import { DEFAULTS } from "../presets/defaults";
+import { underlayTypeFor } from "./underlay";
 import { trimJunctions } from "./junction";
 import { branchToStrip, edgesOf, skeletonBranches, stripPolygon, subdivide, type Branch } from "./spine";
 
@@ -64,11 +67,11 @@ export const LETTERING_STROKES: StrokeOptions = {
 
 /** Defaults for auto-digitizing artwork. */
 export const AUTODIGITIZE_STROKES: StrokeOptions = {
-  minSatinMm: 1,
+  minSatinMm: DEFAULTS.satin.minWidthMm.standard,
   peakMaxMm: 9,
   minElongation: 2,
   minCoverage: 0.8,
-  minRunMm: 1.5,
+  minRunMm: DEFAULTS.run.minRunMm,
   splitByWidth: true,
   minPieceMm: 1,
   skipCoverageForRunsOnly: true,
@@ -153,9 +156,9 @@ export function hairlineStrip(path: readonly Pt[], widthMm: number, closed: bool
   return strip;
 }
 
-/** Pull compensation and underlay for a satin column of width `w` (the original, Standard rules). */
-export function satinTraits(w: number): { pull: number; underlay: "none" | "center" | "contour" } {
-  return { pull: w < 1.2 ? 0.1 : 0.15, underlay: w < 1.2 ? "none" : w < 4 ? "center" : "contour" };
+/** Pull compensation and underlay type for a satin column of width `w` (Standard rules; Premium refines both in profile.ts). */
+export function satinTraits(w: number): { pull: number; underlay: SatinUnderlay } {
+  return { pull: DEFAULTS.satin.pullCompMm, underlay: underlayTypeFor(w, 1, true, 0) };
 }
 
 // ---------------------------------------------------------------------------------------------

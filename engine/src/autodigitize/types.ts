@@ -1,6 +1,7 @@
 import type { TraceRegion } from "../clickstitch";
 import type { Design, FillParams, Hoop } from "../model";
 import type { ThreadEntry } from "../threads";
+import { DEFAULTS } from "../presets/defaults";
 import type { FabricInput, Quality, SewingSetupInput, ThreadWeight } from "../presets";
 import type { UnitsToMm } from "./cleanup";
 
@@ -36,7 +37,7 @@ export interface AutoDigitizeOptions {
   hoop?: Hoop;
   /**
    * Narrowest satin column (mm). Strokes thinner than this (serif and Didone hairlines) are sewn as a
-   * running stitch along their centre; thicker stems of the same letter stay satin. Default 1; a
+   * running stitch along their centre; thicker stems of the same letter stay satin. Default 1.5; a
    * machine that sews clean 0.8 mm columns can go lower.
    */
   minSatinWidthMm?: number;
@@ -62,7 +63,7 @@ export interface AutoDigitizeOptions {
 export const DEFAULT_AUTODIGITIZE_OPTIONS: AutoDigitizeOptions = {
   colors: 6,
   catalogueId: "brother-embroidery",
-  minRegionMm2: 2,
+  minRegionMm2: DEFAULTS.fill.minRegionMm2,
   simplifyMm: 0.1,
   removeBackground: true,
   maxImageSide: 1200,

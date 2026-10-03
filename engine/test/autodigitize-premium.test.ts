@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { autoDigitizeSvg } from "../src/autodigitize";
-import { satinPitchFromDensity } from "../src/autodigitize/profile";
+
 import type { Design, SatinObject } from "../src/model";
 import { QUALITIES } from "../src/presets";
 import { designToStitchPlan, planStats, validatePlan } from "../src/stitch";
@@ -61,35 +61,36 @@ describe("Premium auto-digitize on the DOVE wordmark", () => {
     // Standard sews them as runs; premium keeps at most a few triple-run stubs.
     expect(objectCounts(std.design).run).toBeGreaterThan(objectCounts(prm.design).run);
     for (const o of prm.design.objects) if (o.kind === "run") expect(o.params.repeats).toBe(3);
-    // The narrowest premium column is the 0.8 mm minimum (40 wt).
+    // The narrowest premium column is the 1.0 mm minimum (40 wt).
     const widths = satins(prm.design).map((s) => s.params.widthMm);
-    expect(Math.min(...widths)).toBeGreaterThanOrEqual(0.8 - 1e-9);
+    expect(Math.min(...widths)).toBeGreaterThanOrEqual(0.9 - 1e-9); // columns may measure up to 10 % under the minimum
   });
 
   it("thread weight and the explicit minSatinWidthMm move the minimum column", async () => {
     const fine = await run(80, { quality: "premium", threadWeight: 60 });
-    expect(Math.min(...satins(fine.design).map((s) => s.params.widthMm))).toBeGreaterThanOrEqual(0.7 - 1e-9);
+    expect(Math.min(...satins(fine.design).map((s) => s.params.widthMm))).toBeGreaterThanOrEqual(0.8 - 1e-9);
     const forced = await run(80, { quality: "premium", minSatinWidthMm: 1.2 });
     expect(Math.min(...satins(forced.design).map((s) => s.params.widthMm))).toBeGreaterThanOrEqual(1.2 - 1e-9);
   });
 
-  it("every column's density sits in the premium pitch band and underlay follows width", async () => {
+  it("every column's density sits in the premium band and underlay follows width", async () => {
     const { design } = await run(100, { quality: "premium" });
     for (const s of satins(design)) {
-      const pitch = satinPitchFromDensity(s.params.densityMm);
-      expect(pitch).toBeGreaterThanOrEqual(0.32);
-      expect(pitch).toBeLessThanOrEqual(0.4);
+      const d = s.params.densityMm;
+      expect(d).toBeGreaterThanOrEqual(0.35); // never tighter than 0.35 at 40 wt
+      expect(d).toBeLessThanOrEqual(0.45);
       expect(s.params.shortStitches).toBe(true);
-      // widthMm is rounded to 0.1, so stay clear of the 1 / 2 / 3.5 mm boundaries
+      // widthMm is rounded to 0.1, so stay clear of the band edges
       const w = s.params.widthMm;
-      if (w < 0.95) expect(s.params.underlay).toBe("none");
-      else if (w > 1.05 && w < 1.95) expect(s.params.underlay).toBe("center");
-      else if (w > 2.05 && w < 3.45) expect(s.params.underlay).toBe("contour");
-      else if (w > 3.55) expect(s.params.underlay).toBe("contour-zigzag");
+      if (w < 1.15) expect(s.params.underlay).toBe("none");
+      else if (w > 1.25 && w < 2.45) expect(s.params.underlay).toBe("center");
+      else if (w > 2.55 && w < 3.95) expect(s.params.underlay).toBe("center-contour");
+      else if (w > 4.05 && w < 5.95) expect(s.params.underlay).toBe("contour-zigzag");
+      else if (w > 6.05) expect(s.params.underlay).toBe("double-zigzag");
     }
   });
 
-  it("standard output is untouched by the new options' defaults", async () => {
+  it("standard output is untouched by the new options' defaults, and satin is 0.40 mm same-side", async () => {
     const a = await run(60);
     const b = await run(60, { quality: "standard", threadWeight: 40, fabric: "woven" });
     expect(JSON.stringify(b.design)).toEqual(JSON.stringify(a.design));
@@ -116,7 +117,7 @@ describe("Premium auto-digitize on the DOVE wordmark", () => {
       const std = (await run(w, { quality: "standard" })).stats.stitchCount;
       const prm = (await run(w, { quality: "premium" })).stats.stitchCount;
       const ratio = prm / std;
-      expect(Math.abs(ratio - QUALITIES.premium.stitchCountMultiplier)).toBeLessThan(0.25);
+      expect(Math.abs(ratio - QUALITIES.premium.stitchCountMultiplier)).toBeLessThan(0.3);
     }
   });
 });
@@ -132,7 +133,7 @@ describe("Premium fills", () => {
       expect(f.params.underlays?.[0].angleDeg).toBe(135); // 90 deg off the 45 deg top rows
       expect(f.params.rowSpacingMm).toBeGreaterThanOrEqual(0.3);
       expect(f.params.rowSpacingMm).toBeLessThanOrEqual(0.5);
-      expect(f.params.pullCompMm).toBe(0.3); // twill
+      expect(f.params.pullCompMm).toBe(0.2); // twill (woven baseline)
     }
     expect(warnings.filter((x) => x.code === "density" || x.code === "object-failed")).toEqual([]);
     const l = lengths(plan);

@@ -1,4 +1,5 @@
 import type { FillParams } from "../model";
+import { DEFAULTS } from "./defaults";
 
 /**
  * Sewing presets: fabric x thread weight x quality, the single source for every number that depends
@@ -38,9 +39,9 @@ import type { FillParams } from "../model";
  *  [NAA]       naandesigns.com, 40 vs 60 wt: swapping the cone without changing the file loses coverage.
  *
  * IMPORTANT unit note: satin "spacing" here is the commercial one, the distance between neighbouring
- * stitch LINES (Wilcom/Hatch "density 0.40 mm"). stitchjs satins zig-zag in ladder form, two stitch
- * lines per row, so its `densityMm` is twice this. `satinDensityFromPitch` in autodigitize/profile.ts
- * does the conversion; the legacy default 0.4 there is a 0.2 mm line pitch (twice as dense as the norm).
+ * stitch LINES (Wilcom/Hatch "density 0.40 mm"), and that is what `SatinParams.densityMm` stores.
+ * stitchjs satins zig-zag in ladder form, two stitch lines per row, so the stitch layer doubles it for
+ * stitchjs (`satinDensityFromPitch` in model/index.ts). Standard uses 0.40 mm; Premium 0.32 to 0.38 mm by width.
  */
 
 export type Quality = "standard" | "premium";
@@ -110,8 +111,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "cut-away", weight: "medium, about 1.5-2 oz (50-60 g/m2)", note: "Cut-away keeps fine serifs from distorting as the garment is worn; trim close to the stitching." },
     topping: "none",
     hooping: ["Hoop the fabric together with the stabiliser, drum-tight but not stretched.", "Do not clamp on a finished jacket front: float it on sticky stabiliser instead to avoid hoop marks."],
-    engine: { pullCompFactor: 1, densityFactor: 1, underlayBias: 1, zigzagUnderlay: true, fillPullCompMm: 0.25, minSatinFloorMm: 0 },
-    sources: ["EH-WILCOM", "TD-PULL"],
+    engine: { pullCompFactor: 1, densityFactor: 1, underlayBias: 1, zigzagUnderlay: true, fillPullCompMm: 0.2, minSatinFloorMm: 0 },
+    sources: ["CAL woven baseline 0.40 / pull 0.15-0.20", "EXTRAPOLATED from woven for suiting"],
   },
   shirting: {
     id: "shirting",
@@ -121,8 +122,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "no-show mesh", weight: "light, about 1 oz (30 g/m2)", note: "Soft mesh cut-away that will not show through or scratch; tear-away leaves holes along the stitching." },
     topping: "none",
     hooping: ["Hoop lightly: the fabric should lie flat, not be pulled.", "Keep lining smooth, no ripples in the hoop."],
-    engine: { pullCompFactor: 0.9, densityFactor: 1.1, underlayBias: 1.25, zigzagUnderlay: true, fillPullCompMm: 0.2, minSatinFloorMm: 0 },
-    sources: ["MF-60WT", "UNVERIFIED (factors)"],
+    engine: { pullCompFactor: 1, densityFactor: 1, underlayBias: 1.25, zigzagUnderlay: true, fillPullCompMm: 0.2, minSatinFloorMm: 0 },
+    sources: ["CAL woven baseline", "EXTRAPOLATED from woven for shirting; UNVERIFIED underlay bias 1.25"],
   },
   twill: {
     id: "twill",
@@ -132,8 +133,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "cut-away", weight: "medium, 2 oz (60 g/m2)", note: "For caps use a firm tear-away or cap backing and a cap frame." },
     topping: "none",
     hooping: ["Hoop twill drum-tight.", "Caps: use the cap frame and make sure the seam is centred."],
-    engine: { pullCompFactor: 1.15, densityFactor: 1, underlayBias: 0.85, zigzagUnderlay: true, fillPullCompMm: 0.3, minSatinFloorMm: 0 },
-    sources: ["EH-WILCOM", "TD-PULL", "UNVERIFIED (cap factors)"],
+    engine: { pullCompFactor: 1, densityFactor: 1.06, underlayBias: 0.85, zigzagUnderlay: true, fillPullCompMm: 0.2, minSatinFloorMm: 0 },
+    sources: ["CAL twill density 0.40-0.45 (0.425 used)", "UNVERIFIED underlay bias 0.85"],
   },
   knit: {
     id: "knit",
@@ -143,8 +144,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "cut-away", weight: "medium-heavy, 2.5 oz (75 g/m2)", note: "Always cut-away on knits; tear-away lets the design stretch out of shape in the wash." },
     topping: "none",
     hooping: ["Taut but never stretched: stretched knit springs back and puckers around the design.", "A magnetic hoop holds knits without pulling them."],
-    engine: { pullCompFactor: 1.5, densityFactor: 1.1, underlayBias: 0.8, zigzagUnderlay: true, fillPullCompMm: 0.4, minSatinFloorMm: 1 },
-    sources: ["EH-THEORY", "TD-PULL"],
+    engine: { pullCompFactor: 1.8, densityFactor: 1.19, underlayBias: 0.8, zigzagUnderlay: true, fillPullCompMm: 0.4, minSatinFloorMm: 1.5 },
+    sources: ["CAL knit pull 0.35-0.40 (0.36 = 0.20 x 1.8)", "CAL pique density 0.45-0.50 (0.475 used)", "EH-THEORY"],
   },
   denim: {
     id: "denim",
@@ -154,8 +155,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "cut-away", weight: "medium, 2 oz (60 g/m2)", note: "Tear-away is acceptable for heavy denim that does not stretch." },
     topping: "none",
     hooping: ["Hoop drum-tight; thick seams should not sit under the design."],
-    engine: { pullCompFactor: 1.1, densityFactor: 1, underlayBias: 0.85, zigzagUnderlay: true, fillPullCompMm: 0.3, minSatinFloorMm: 0 },
-    sources: ["UNVERIFIED (denim needle and factors)"],
+    engine: { pullCompFactor: 1, densityFactor: 1, underlayBias: 0.85, zigzagUnderlay: true, fillPullCompMm: 0.2, minSatinFloorMm: 0 },
+    sources: ["CAL denim density 0.35-0.45 (0.40 used)", "UNVERIFIED denim needle and underlay bias"],
   },
   towel: {
     id: "towel",
@@ -165,8 +166,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "tear-away", weight: "medium", note: "Plus a layer of wash-away topping on top so the thread sits above the pile." },
     topping: "water-soluble",
     hooping: ["Hoop the stabiliser and fabric together without crushing the pile.", "Lay the water-soluble topping over the area before sewing and tear it away after."],
-    engine: { pullCompFactor: 1.4, densityFactor: 1.15, underlayBias: 0.75, zigzagUnderlay: true, fillPullCompMm: 0.35, minSatinFloorMm: 2 },
-    sources: ["EH-THEORY"],
+    engine: { pullCompFactor: 1.5, densityFactor: 1.6, underlayBias: 0.75, zigzagUnderlay: true, fillPullCompMm: 0.35, minSatinFloorMm: 2 },
+    sources: ["CAL terry density 0.55-0.70 (0.64 used), heavy zig-zag + topping", "EH-THEORY", "UNVERIFIED pull factor 1.5"],
   },
   leather: {
     id: "leather",
@@ -176,8 +177,8 @@ export const FABRICS: Readonly<Record<FabricId, FabricPreset>> = {
     stabiliser: { type: "tear-away", weight: "medium", note: "Tear-away only: cut-away backing makes the piece stiff and the cut edge can show." },
     topping: "none",
     hooping: ["Do not hoop leather, the hoop leaves a permanent ring: float it on sticky stabiliser and hold with clips or tape.", "Test on an offcut: you cannot unpick without leaving holes."],
-    engine: { pullCompFactor: 0.8, densityFactor: 1.4, underlayBias: 1.3, zigzagUnderlay: false, fillPullCompMm: 0.15, minSatinFloorMm: 1.5 },
-    sources: ["EH-THEORY (spacing about 0.60 mm vs 0.40 mm)", "UNVERIFIED (other factors)"],
+    engine: { pullCompFactor: 0.8, densityFactor: 1.3, underlayBias: 1.3, zigzagUnderlay: false, fillPullCompMm: 0.15, minSatinFloorMm: 1.5 },
+    sources: ["CAL leather density 0.45-0.60 (0.52 used)", "UNVERIFIED pull factor and underlay bias"],
   },
 };
 
@@ -199,22 +200,22 @@ export const THREAD_WEIGHTS: Readonly<Record<ThreadWeight, ThreadPreset>> = {
   40: {
     weight: 40,
     label: "40 wt (standard)",
-    description: "The normal embroidery thread. Good cover on columns and fills; letters from about 6 mm tall.",
+    description: "The normal embroidery thread. Good cover on columns and fills; letters from about 6 mm tall; 60 wt from about 4 mm.",
     needle: "75/11 for most cloth (70/10 on lining)",
     densityFactor: 1,
-    premiumMinSatinMm: 0.8,
-    minLetterHeightMm: 6,
+    premiumMinSatinMm: DEFAULTS.satin.minWidthMm.premium40,
+    minLetterHeightMm: DEFAULTS.satin.minCapHeightMm.w40,
     sources: ["EH-WILCOM", "MF-60WT"],
   },
   60: {
     weight: 60,
     label: "60 wt (fine)",
-    description: "Thinner thread for small, crisp detail. Stitch lines sit about 12 % closer and finer columns are allowed. Do not swap it into a 40 wt file without redigitizing: coverage drops.",
+    description: "Thinner thread for small, crisp detail. Satin density 0.35 mm instead of 0.40 (about 12 % closer) and finer columns are allowed. Do not swap it into a 40 wt file without redigitizing: coverage drops.",
     needle: "65/9 or 70/10 (75/11 on tougher cloth)",
-    densityFactor: 0.88,
-    premiumMinSatinMm: 0.7,
-    minLetterHeightMm: 3,
-    sources: ["MF-60WT", "NAA", "UNVERIFIED (0.88 factor)"],
+    densityFactor: 0.875,
+    premiumMinSatinMm: DEFAULTS.satin.minWidthMm.premium60,
+    minLetterHeightMm: DEFAULTS.satin.minCapHeightMm.w60,
+    sources: ["MF-60WT", "NAA", "CAL 60 wt density 0.35 (= 0.40 x 0.875)"],
   },
 };
 
@@ -224,7 +225,7 @@ export interface QualityPreset {
   /** Plain-English "what changes". */
   summary: string;
   /**
-   * Typical stitch count relative to Standard on logo-style artwork. Measured on a high-contrast serif
+   * Typical stitch count relative to Standard on logo-style artwork. Measured (about 1.2x to 1.6x) on a high-contrast serif
    * wordmark and on the DOVE fixture (see engine/src/autodigitize/premium.test.ts); it varies by design.
    */
   stitchCountMultiplier: number;
@@ -234,7 +235,7 @@ export const QUALITIES: Readonly<Record<Quality, QualityPreset>> = {
   standard: {
     quality: "standard",
     label: "Standard",
-    summary: "The original auto-digitize settings: fixed density and underlay, thin strokes sewn as a single running line. Quick and predictable.",
+    summary: "The basic auto-digitize settings: a fixed 0.40 mm density and underlay by column width, thin strokes sewn as a single running line. Quick and predictable.",
     stitchCountMultiplier: 1,
   },
   premium: {
@@ -242,7 +243,7 @@ export const QUALITIES: Readonly<Record<Quality, QualityPreset>> = {
     label: "Premium",
     summary:
       "Settings a professional digitizer would use: spacing and pull compensation follow each column's width, underlay is chosen by width, fine strokes become narrow satin instead of a faint line, fills get edge-walk and cross underlay, and columns that meet are trimmed so they overlap a hair instead of stacking.",
-    stitchCountMultiplier: 0.9,
+    stitchCountMultiplier: 1.3,
   },
 };
 
@@ -261,10 +262,14 @@ export interface SewingEngineParams {
   hairlineSatinMinLengthMm: number;
   /** `legacy`: fixed density and the original underlay/pull rules. `width-scaled`: per column width. */
   satinMode: "legacy" | "width-scaled";
-  /** Satin line spacing (distance between stitch lines) for columns up to 1 mm wide, mm. */
-  satinPitchNarrowMm: number;
-  /** Same, for columns 5 mm and wider (linear in between), mm. */
-  satinPitchWideMm: number;
+  /** Premium satin density (mm between needle penetrations on the same side) for columns up to 1.5 mm wide (small text), mm. */
+  satinDensityNarrowMm: number;
+  /** Same, for columns 2.5 to 5 mm wide. */
+  satinDensityMediumMm: number;
+  /** Standard (fixed-density) quality: the one density for every column, mm. */
+  satinDensityStandardMm: number;
+  /** Same, for columns 8 mm and wider (eases in between), mm. */
+  satinDensityWideMm: number;
   /** Multiplies the satin pull compensation. */
   pullCompFactor: number;
   /** Underlay thresholds scale (see `FabricEngine.underlayBias`). */
@@ -297,15 +302,13 @@ export const DEFAULT_SEWING_SETUP: Required<SewingSetupInput> = { fabric: "suiti
 const round = (v: number, d = 3): number => Math.round(v * 10 ** d) / 10 ** d;
 
 /**
- * Premium base line pitch (mm between stitch lines) for 40 wt: 0.32 on columns up to 1 mm, easing to
- * 0.38 from 5 mm up (0.335-0.365 in the 2-4 mm band that most logo stems fall in). [EH-WILCOM] 0.38-0.40
- * is the plain starting point for cotton/twill; a touch tighter on narrow columns gives cover where a
- * single stitch pair decides the look. [MF-60WT] 0.35-0.40 for 60 wt.
+ * Premium satin density, 40 wt, same-side spacing: 0.45 on columns up to 1.5 mm (small text), 0.38 from
+ * 2.5 to 5 mm, 0.42 from 8 mm [CAL]. Never tighter than 0.35 (scaled with the thread), never looser than 0.70.
  */
-const PREMIUM_PITCH_NARROW_MM = 0.32;
-const PREMIUM_PITCH_WIDE_MM = 0.38;
-const PITCH_FLOOR_MM = 0.25;
-const PITCH_CEIL_MM = 0.7;
+const DENSITY_NARROW_MM = DEFAULTS.satin.premiumDensityNarrowMm;
+const DENSITY_MEDIUM_MM = DEFAULTS.satin.premiumDensityMediumMm;
+const DENSITY_WIDE_MM = DEFAULTS.satin.premiumDensityWideMm;
+const DENSITY_CEIL_MM = DEFAULTS.satin.densityCeilMm;
 
 /** Resolve a setup (any field optional) into engine parameters, a checklist and a summary. Pure. */
 export function resolveSewingSetup(input: SewingSetupInput = {}): SewingSetup {
@@ -319,43 +322,45 @@ export function resolveSewingSetup(input: SewingSetupInput = {}): SewingSetup {
   const premium = quality === "premium";
 
   const spacingFactor = fe.densityFactor * thread.densityFactor;
-  const clampPitch = (v: number) => round(Math.min(PITCH_CEIL_MM, Math.max(PITCH_FLOOR_MM, v)));
-  const fillRow = round(Math.min(0.6, Math.max(0.3, 0.4 * spacingFactor)));
+  const densityFloor = DEFAULTS.satin.densityFloorMm * Math.min(1, thread.densityFactor);
+  const clampDensity = (v: number) => round(Math.min(DENSITY_CEIL_MM, Math.max(densityFloor, v)));
+  const fillRow = round(Math.min(DEFAULTS.fill.rowSpacingMaxMm, Math.max(DEFAULTS.fill.rowSpacingMinMm, DEFAULTS.fill.rowSpacingMm * spacingFactor)));
 
   const fill: Partial<FillParams> = premium
     ? {
         rowSpacingMm: fillRow,
-        // [IS-SRC] fill stitch length default 4 mm; [EH-THEORY] 3-4 mm. 3.5 keeps rows from lying loose on curves.
-        stitchLengthMm: 3.5,
+        // [CAL][IS-SRC] fill stitch length 4 mm (3 to 4.5).
+        stitchLengthMm: DEFAULTS.fill.stitchLengthMm,
         pullCompMm: fe.fillPullCompMm,
         underlay: true,
-        // [IS-FILL][IS-SRC] perpendicular underlay at about 5x the top spacing, inset so it hides under it.
-        underlays: [{ angleDeg: 135, spacingMm: round(Math.max(1.6, fillRow * 5)), stitchLengthMm: 3, insetMm: 0.4 }],
-        edgeWalk: { insetMm: 0.4, stitchLengthMm: 2 },
+        // [CAL][IS-FILL] perpendicular underlay 3 to 4 mm apart, inset 0.4 so it hides under the top.
+        underlays: [{ angleDeg: 135, spacingMm: DEFAULTS.fill.underlayRowSpacingMm, stitchLengthMm: DEFAULTS.fill.underlayStitchMm, insetMm: DEFAULTS.fill.underlayInsetMm }],
+        edgeWalk: { insetMm: DEFAULTS.fill.premiumEdgeWalkInsetMm, stitchLengthMm: DEFAULTS.fill.premiumEdgeWalkStitchMm },
         edgeRun: true,
       }
-    : { pullCompMm: round(0.2 * fe.pullCompFactor) };
+    : { pullCompMm: round(DEFAULTS.fill.pullCompMm * fe.pullCompFactor) };
 
-  const minSatin = Math.max(premium ? thread.premiumMinSatinMm : 1, fe.minSatinFloorMm);
+  const minSatin = Math.max(premium ? thread.premiumMinSatinMm : DEFAULTS.satin.minWidthMm.standard, fe.minSatinFloorMm);
   const engine: SewingEngineParams = {
     quality,
     fabric: fabricId,
     threadWeight: weight,
     minSatinWidthMm: minSatin,
-    minRunMm: 1.5,
+    minRunMm: DEFAULTS.run.minRunMm,
     hairlinesAsSatin: premium,
-    hairlineSatinMinLengthMm: 1.6,
+    hairlineSatinMinLengthMm: DEFAULTS.satin.hairlineSatinMinLengthMm,
     satinMode: premium ? "width-scaled" : "legacy",
-    satinPitchNarrowMm: clampPitch(PREMIUM_PITCH_NARROW_MM * spacingFactor),
-    satinPitchWideMm: clampPitch(PREMIUM_PITCH_WIDE_MM * spacingFactor),
+    satinDensityNarrowMm: clampDensity(DENSITY_NARROW_MM * spacingFactor),
+    satinDensityMediumMm: clampDensity(DENSITY_MEDIUM_MM * spacingFactor),
+    satinDensityWideMm: clampDensity(DENSITY_WIDE_MM * spacingFactor),
+    satinDensityStandardMm: clampDensity(DEFAULTS.satin.densityMm * spacingFactor),
     pullCompFactor: fe.pullCompFactor,
     underlayBias: fe.underlayBias,
     zigzagUnderlay: fe.zigzagUnderlay,
-    // [HS-CHEAT] sweet spot 2-9 mm; [EH-WILCOM] 7 mm+ wants double zig-zag. Split from 5 mm so stitches stay
-    // short enough to lie flat and not snag.
-    splitMaxWidthMm: premium ? 5 : null,
+    // [CAL] split above 8 mm (hard cap 12.1); [HS-CHEAT] sweet spot 2-9 mm.
+    splitMaxWidthMm: premium ? DEFAULTS.satin.splitMm : null,
     shortStitches: premium,
-    junctionOverlapMm: premium ? 0.3 : null,
+    junctionOverlapMm: premium ? DEFAULTS.satin.junctionOverlapMm : null,
     fill,
   };
 
@@ -372,8 +377,8 @@ export function resolveSewingSetup(input: SewingSetupInput = {}): SewingSetup {
 
   const summary = `${q.label} on ${fabric.label.toLowerCase()} with ${thread.label}: ${
     premium
-      ? `satin lines ${engine.satinPitchNarrowMm}-${engine.satinPitchWideMm} mm apart, narrowest column ${engine.minSatinWidthMm} mm, underlay chosen by width.`
-      : "the original fixed settings" + (fe.pullCompFactor !== 1 ? ` with ${Math.round(fe.pullCompFactor * 100)} % pull compensation.` : ".")
+      ? `satin density ${engine.satinDensityMediumMm}-${engine.satinDensityNarrowMm} mm by width, narrowest column ${engine.minSatinWidthMm} mm, underlay chosen by width.`
+      : `a fixed ${engine.satinDensityStandardMm} mm satin density` + (fe.pullCompFactor !== 1 ? ` with ${Math.round(fe.pullCompFactor * 100)} % pull compensation.` : ".")
   }`;
 
   return { input: { fabric: fabricId, threadWeight: weight, quality }, fabric, thread, quality: q, engine, checklist, summary };

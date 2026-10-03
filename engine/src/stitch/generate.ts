@@ -2,6 +2,7 @@ import { Core, Math as StitchMath } from "@stitchables/stitchjs";
 import { bufferGeom, polygonFromRings, polygonsOf, ringsOf } from "../geom";
 import type { Design, DesignObject, FillObject, FillUnderlay, Pt, SatinObject } from "../model";
 import { DEFAULT_FILL_PATTERN, patternInfo } from "../model";
+import { DEFAULTS } from "../presets/defaults";
 import { generateFill, hashString } from "./fills";
 import type { PlanStitch, PlanWarning, StitchPlan, StitchType } from "./plan";
 import { PX, STITCHJS_JUMP, closedV, polylineRun, reversedStrip, runObjectRuns, satinOptions, toV, widenStrip, type IRun } from "./runs";
@@ -9,13 +10,13 @@ import { PX, STITCHJS_JUMP, closedV, polylineRun, reversedStrip, runObjectRuns, 
 const { Polyline } = StitchMath;
 
 /** Moves shorter than this (mm) are not worth a jump. */
-const SAME_SPOT_MM = 0.05;
-const UNDERLAY_INSET_MM = 0.5;
-const EDGE_RUN_STITCH_MM = 2;
-const UNDERLAY_ROW_SPACING_MM = 2.5;
-const UNDERLAY_STITCH_MM = 3.5;
+const SAME_SPOT_MM = DEFAULTS.limits.sameSpotMm;
+const UNDERLAY_INSET_MM = DEFAULTS.fill.underlayInsetMm;
+const EDGE_RUN_STITCH_MM = DEFAULTS.fill.edgeRunStitchMm;
+const UNDERLAY_ROW_SPACING_MM = DEFAULTS.fill.underlayRowSpacingMm;
+const UNDERLAY_STITCH_MM = DEFAULTS.fill.underlayStitchMm;
 /** Fills smaller than this (mm^2) get no underlay: it would be all edge. */
-const UNDERLAY_MIN_AREA_MM2 = 6;
+const UNDERLAY_MIN_AREA_MM2 = DEFAULTS.fill.underlayMinAreaMm2;
 
 /**
  * Stitch generation for object kinds this file doesn't know. Lettering (M4) registers `"text"`

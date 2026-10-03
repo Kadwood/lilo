@@ -37,7 +37,7 @@ describe("regionsToDesign", () => {
     expect(kinds).toEqual(["fill", "run", "satin"]);
     expect(RUN_MAX_WIDTH_MM).toBeLessThan(SATIN_MAX_WIDTH_MM);
     const fill = d.objects.find((o) => o.kind === "fill")!;
-    expect(fill.kind === "fill" && fill.params).toMatchObject({ angleDeg: 45, rowSpacingMm: 0.4, stitchLengthMm: 3, underlay: true });
+    expect(fill.kind === "fill" && fill.params).toMatchObject({ angleDeg: 45, rowSpacingMm: 0.4, stitchLengthMm: 4, underlay: true });
   });
 
   it("merges a speck into its neighbour and drops an isolated one", () => {

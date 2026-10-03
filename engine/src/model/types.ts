@@ -142,13 +142,18 @@ export interface FillGradient {
 export type FillPatternId = string;
 
 /**
- * `contour-zigzag` is the "German" underlay: an edge walk up both sides and a loose zig-zag back,
- * for wide columns (Ink/Stitch: contour + zig-zag together).
+ * `center-contour`: centre walk plus edge walk (2.5 to 4 mm). `contour-zigzag` is the "German" underlay:
+ * an edge walk up both sides and a loose zig-zag back (4 to 6 mm). `double-zigzag`: two zig-zag passes
+ * at different spacing (over 6 mm). [IS-SATIN] "For wide columns or challenging fabrics, use all three."
  */
-export type SatinUnderlay = "none" | "center" | "contour" | "zigzag" | "contour-zigzag";
+export type SatinUnderlay = "none" | "center" | "contour" | "zigzag" | "contour-zigzag" | "center-contour" | "double-zigzag";
 
 export interface SatinParams {
-  /** Distance between satin stitches along the column. */
+  /**
+   * Satin density: mm between two needle penetrations on the SAME side of the column, the commercial
+   * number (Hatch "stitch spacing", Wilcom "density 0.40"). Smaller = denser. Because every leg crosses
+   * the column, 0.40 mm is a leg every 0.2 mm: 2 / densityMm legs per mm, 50 per cm. stitchjs takes it as is.
+   */
   densityMm: number;
   /** Nominal column width, informational (the strip carries the real widths). */
   widthMm: number;

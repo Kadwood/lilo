@@ -17,6 +17,7 @@ import { nearestThread, toDesignThread, type ThreadEntry } from "../threads";
 import type { Region } from "./regions";
 import { AUTODIGITIZE_STROKES, smoothPath, strokePlan, type StrokeOptions } from "./strokes";
 import { satinParamsFor } from "./profile";
+import { DEFAULTS } from "../presets/defaults";
 import { resolveSewingSetup, type SewingEngineParams } from "../presets";
 
 const STANDARD_SEWING = resolveSewingSetup().engine;
@@ -281,7 +282,7 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
           kind: "run",
           threadId,
           geometry: { path: reversed ? [...path].reverse() : path, closed: r.closed },
-          params: { ...DEFAULT_RUN_PARAMS, stitchLengthMm: 1.8, repeats: r.widthMm >= 0.6 || sew?.hairlinesAsSatin ? 3 : 1 },
+          params: { ...DEFAULT_RUN_PARAMS, stitchLengthMm: DEFAULTS.run.autoStitchLengthMm, repeats: r.widthMm >= DEFAULTS.run.tripleAtWidthMm || sew?.hairlinesAsSatin ? 3 : 1 },
         }),
       });
     }

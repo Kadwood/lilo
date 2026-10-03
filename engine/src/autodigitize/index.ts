@@ -20,7 +20,7 @@ export * from "./types";
 export { initVtracer, isVtracerInitialised } from "./trace";
 export { regionsToDesign, regionsTransform, RUN_MAX_WIDTH_MM, SATIN_MAX_WIDTH_MM, type UnitsToMm } from "./cleanup";
 export { parseSvgDocument } from "./svg";
-export { satinParamsFor, satinPitchMm, satinPullCompMm, satinUnderlayFor, satinDensityFromPitch, satinPitchFromDensity } from "./profile";
+export { satinParamsFor, satinDensityMm, satinPullCompMm, satinUnderlayFor } from "./profile";
 export { trimJunctions, trimStripEnds, resampleStrip } from "./junction";
 
 function resolve(options: Partial<AutoDigitizeOptions>) {
