@@ -1,5 +1,6 @@
 import type { Design, FillParams, Hoop } from "../model";
 import type { ThreadEntry } from "../threads";
+import type { FabricInput, Quality, SewingSetupInput, ThreadWeight } from "../presets";
 import type { UnitsToMm } from "./cleanup";
 
 /** The subset of the DOM `ImageData` the engine needs, so it runs in Node, Workers and the page. */
@@ -42,6 +43,19 @@ export interface AutoDigitizeOptions {
   minRunMm?: number;
   /** Overrides for the fill stitch settings of generated fills. */
   fill?: Partial<FillParams>;
+  /**
+   * "standard" (default) keeps the original fixed settings. "premium" digitizes the way a professional
+   * would: width-scaled satin spacing, pull compensation and underlay, narrow satin instead of faint
+   * runs for fine strokes (min column 0.8 mm at 40 wt), fills with edge-walk + cross underlay, and
+   * columns trimmed to overlap by about 0.4 mm where they meet. See `presets/sewing.ts` for the sources.
+   */
+  quality?: Quality;
+  /** Top thread: 40 (default) or 60. A finer thread sits its stitch lines closer and allows finer columns. */
+  threadWeight?: ThreadWeight;
+  /** What it is sewn on. "woven" is suiting and "cap" is twill; the full list is `FabricId`. Default suiting. */
+  fabric?: FabricInput;
+  /** The three settings above as one object (what the UI passes). Wins over the individual fields. */
+  setup?: SewingSetupInput;
 }
 
 export const DEFAULT_AUTODIGITIZE_OPTIONS: AutoDigitizeOptions = {

@@ -4,18 +4,22 @@ import {
   DEFAULT_FILL_PARAMS,
   DEFAULT_HOOP,
   DEFAULT_RUN_PARAMS,
-  DEFAULT_SATIN_PARAMS,
   DESIGN_VERSION,
   type Design,
   type DesignObject,
   type FillParams,
   type Hoop,
   type Pt,
+  type SatinParams,
   type Thread,
 } from "../model";
 import { nearestThread, toDesignThread, type ThreadEntry } from "../threads";
 import type { Region } from "./regions";
-import { AUTODIGITIZE_STROKES, satinTraits, strokePlan, type StrokeOptions } from "./strokes";
+import { AUTODIGITIZE_STROKES, smoothPath, strokePlan, type StrokeOptions } from "./strokes";
+import { satinParamsFor } from "./profile";
+import { resolveSewingSetup, type SewingEngineParams } from "../presets";
+
+const STANDARD_SEWING = resolveSewingSetup().engine;
 
 export interface CleanupOptions {
   minRegionMm2: number;
@@ -28,6 +32,8 @@ export interface CleanupOptions {
   minSatinWidthMm?: number;
   /** Centre-line pieces shorter than this (mm) are dropped. Default 1.5. */
   minRunMm?: number;
+  /** Resolved sewing setup (see `resolveSewingSetup`). Unset = the original Standard behaviour. */
+  sewing?: SewingEngineParams;
 }
 
 /** Strokes narrower than this (mm) are a line along their centre (default `minSatinWidthMm`). */
@@ -174,11 +180,15 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
   if (live.length === 0) throw new Error("Nothing left after removing small regions; try a lower minimum region size.");
 
   // 5. Classify into objects.
-  const fillParams: FillParams = { ...DEFAULT_FILL_PARAMS, ...opts.fill };
+  const sew = opts.sewing;
+  const fillParams: FillParams = { ...DEFAULT_FILL_PARAMS, ...sew?.fill, ...opts.fill };
+  const minSatinMm = opts.minSatinWidthMm ?? sew?.minSatinWidthMm ?? AUTODIGITIZE_STROKES.minSatinMm;
   const strokeOpts: StrokeOptions = {
     ...AUTODIGITIZE_STROKES,
-    minSatinMm: opts.minSatinWidthMm ?? AUTODIGITIZE_STROKES.minSatinMm,
-    minRunMm: opts.minRunMm ?? AUTODIGITIZE_STROKES.minRunMm,
+    minSatinMm,
+    minRunMm: opts.minRunMm ?? sew?.minRunMm ?? AUTODIGITIZE_STROKES.minRunMm,
+    ...(sew?.hairlinesAsSatin ? { hairlineSatinMm: minSatinMm, hairlineMinMm: sew.hairlineSatinMinLengthMm } : {}),
+    ...(sew?.junctionOverlapMm != null ? { junctionOverlapMm: sew.junctionOverlapMm } : {}),
   };
   interface Draft {
     threadIdx: number;
@@ -209,22 +219,6 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
     for (let i = strip.length - 2; i >= 0; i -= 2) out.push(strip[i], strip[i + 1]);
     return out;
   };
-  /** Round the facets of a skeleton centre line (corner cutting; end points stay put). */
-  const smoothRun = (path: Pt[], closed: boolean): Pt[] => {
-    let pts = path;
-    for (let it = 0; it < 2 && pts.length >= 3; it++) {
-      const out: Pt[] = closed ? [] : [pts[0]];
-      const m = pts.length;
-      for (let i = 0; i < (closed ? m : m - 1); i++) {
-        const p0 = pts[i];
-        const p1 = pts[(i + 1) % m];
-        out.push([0.75 * p0[0] + 0.25 * p1[0], 0.75 * p0[1] + 0.25 * p1[1]], [0.25 * p0[0] + 0.75 * p1[0], 0.25 * p0[1] + 0.75 * p1[1]]);
-      }
-      if (!closed) out.push(pts[m - 1]);
-      pts = out;
-    }
-    return pts;
-  };
   const mid = (l: Pt, r: Pt): Pt => [(l[0] + r[0]) / 2, (l[1] + r[1]) / 2];
   live.forEach((p, group) => {
     const area = p.geom.getArea();
@@ -249,8 +243,7 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
     if (!plan) return asFill();
     const n = plan.satins.length + plan.runs.length;
     for (const s of plan.satins) {
-      const w = Math.round(s.widthMm * 10) / 10;
-      const { pull, underlay } = satinTraits(s.widthMm);
+      const satinParams: SatinParams = satinParamsFor(s.widthMm, sew ?? STANDARD_SEWING);
       const first = mid(s.strip[0], s.strip[1]);
       const last = mid(s.strip[s.strip.length - 2], s.strip[s.strip.length - 1]);
       drafts.push({
@@ -267,12 +260,12 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
           kind: "satin",
           threadId,
           geometry: { strip: reversed ? flipStrip(s.strip) : s.strip },
-          params: { ...DEFAULT_SATIN_PARAMS, widthMm: w, pullCompMm: pull, underlay },
+          params: satinParams,
         }),
       });
     }
     for (const r of plan.runs) {
-      const path = smoothRun(r.closed ? r.path.slice(0, -1) : r.path, r.closed);
+      const path = smoothPath(r.closed ? r.path.slice(0, -1) : r.path, r.closed);
       const c = centre(path);
       drafts.push({
         threadIdx: p.threadIdx,
@@ -288,7 +281,7 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
           kind: "run",
           threadId,
           geometry: { path: reversed ? [...path].reverse() : path, closed: r.closed },
-          params: { ...DEFAULT_RUN_PARAMS, stitchLengthMm: 1.8, repeats: r.widthMm >= 0.6 ? 3 : 1 },
+          params: { ...DEFAULT_RUN_PARAMS, stitchLengthMm: 1.8, repeats: r.widthMm >= 0.6 || sew?.hairlinesAsSatin ? 3 : 1 },
         }),
       });
     }
