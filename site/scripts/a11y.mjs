@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
 const axeSrc = readFileSync(createRequire(import.meta.url).resolve("axe-core/axe.min.js"), "utf8");
-const paths = ["/", "/fr/", "/es/", "/zh/", "/ar/", "/compatibility/", "/ar/compatibility/"];
+const paths = ["/", "/fr/", "/es/", "/zh/", "/ar/", "/compatibility/", "/ar/compatibility/", "/manual/", "/manual/auto-digitize/", "/manual/first-design/", "/manual/fill-patterns/"];
 const b = await chromium.launch({ executablePath: process.env.CHROME || undefined });
 let bad = 0;
 for (const scheme of ["light", "dark"]) {

@@ -49,11 +49,31 @@ All imagery is real Lilo.
 - `scripts/make-images.mjs` crops them, rounds the corners and floats them on a soft studio gradient, in
   a light and a dark variant, at 640 / 1024 / 1920 px (WebP). Cards use `<picture>` with
   `prefers-color-scheme`.
-- The hero drop zone replays **real engine output**: `scripts/make-demo-data.mjs` runs Lilo's
-  auto-digitize engine in Node on the hibiscus mark and stores the stitches as `public/demo/demo.json`
-  (130 KB, about 30 KB gzipped). The browser only draws them. We do not run the engine in the browser:
-  it bundles to about 2 MB gzipped (the straight-skeleton WASM), too heavy for a landing page. A picture a
-  visitor drops is shown back to them with a "Download Lilo to sew it" button; nothing is uploaded.
+- The hero showcase replays **real engine output**: `scripts/make-demo-data.mjs` runs Lilo's own engine in
+  Node (the word "Lilo" in the built-in `montecarlo` script font, premium satin), renders the stitches with
+  the engine's realistic thread renderer (`engine/test/render-realistic.ts`) and saves `public/demo/final.webp`
+  (the sewn result), `fabric.webp`, `source.webp` (the flat picture), `trace.webp` (its outline) and
+  `demo.json` (needle order), about 200 KB in all. In the browser the card plays picture, outline, then
+  reveals `final.webp` through a mask painted along the real stitch order, so every frame is the realistic
+  render. Static under reduced motion; lazy-loaded. Run `pnpm fonts` once first (the font comes from
+  `data/fonts`). We do not run the engine in the browser: it bundles to about 2 MB gzipped (the
+  straight-skeleton WASM).
+
+## The manual
+
+`src/manual.mjs` builds `/manual/` and `/manual/<id>/` from `../docs/guide/*.md` at build time (frontmatter
+`id`, `title`, `summary`, `section`, `order`, `keywords`, `status`; sections from `sections.json`). Nothing is
+copied into `site/`. Markdown is escaped first and rendered by a small converter; diagrams and screenshots
+that exist are copied to `/manual/img/`, missing ones show a "Screenshot coming soon" box. Pages marked
+`draft` are skipped. With no `docs/guide` the build makes a "coming soon" front page. English only: the
+other languages link to `/manual/` with a "the manual is in English" note. Search is client-side filtering of
+the cards on `/manual/`. To build against a guide somewhere else: `LILO_GUIDE_DIR=/path/to/docs/guide`.
+
+## Downloads and stable names
+
+Buttons point at `releases/latest/download/Lilo-mac.dmg`, `Lilo-windows-setup.exe`, `Lilo-linux.AppImage`,
+`Lilo-linux.deb` (stable copies added by the release workflow) and fall back to the versioned name read from
+the GitHub API when the latest release has no stable copies yet. See `docs/RELEASING.md`.
 
 ## Checks
 

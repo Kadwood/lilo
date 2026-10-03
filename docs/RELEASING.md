@@ -72,6 +72,13 @@ files as workflow artifacts only. No tag, no release. Download the Mac artifact 
 6. **Review the draft**: Releases page, the new draft. Check it has the DMG, setup `.exe`,
    `.AppImage`, `.deb`, `SHA256SUMS`, the `.app.tar.gz` / `.sig` files and `latest.json`, and the notes
    read well. Download the DMG and run the notarization checks below.
+
+   The draft also has four **stable-named copies**: `Lilo-mac.dmg`, `Lilo-windows-setup.exe`,
+   `Lilo-linux.AppImage` and `Lilo-linux.deb`. They are the same files as the versioned installers
+   (and are listed in `SHA256SUMS`), added after `latest.json` is built so the updater never sees them.
+   The website's download buttons use `https://github.com/Kadwood/lilo/releases/latest/download/<stable name>`,
+   so they point at the newest release without a site rebuild. Until a release has them (v1.0.0 does
+   not), the site falls back to the versioned file name it reads from the GitHub API at build time.
 7. **Publish.** Edit the draft, make sure "Set as the latest release" is ticked, **Publish**.
    Installed copies see the update the next time they check (launch, at most daily).
 

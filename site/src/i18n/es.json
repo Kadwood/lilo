@@ -6,8 +6,8 @@
     "name": "Español",
     "path": "es",
     "ogLocale": "es_ES",
-    "title": "Lilo de Kadwood: convierte cualquier cosa en bordado",
-    "description": "Lilo es una app gratuita y de código abierto que convierte imágenes, dibujos y letras en archivos de bordado y los envía a tu máquina. Mac, Windows y Linux."
+    "title": "Lilo de Kadwood: bordado libre y gratuito para todos",
+    "description": "Lilo es una app de bordado gratuita y de código abierto para todos, de principiantes a profesionales. Convierte imágenes, dibujos y nombres en archivos de puntadas y los envía a tu máquina. Mac, Windows y Linux."
   },
   "nav": {
     "features": "Qué hace",
@@ -19,34 +19,27 @@
     "language": "Idioma",
     "home": "Lilo de Kadwood, inicio",
     "primary": "Principal",
-    "skip": "Saltar al contenido"
+    "skip": "Saltar al contenido",
+    "manual": "Manual"
   },
   "hero": {
-    "title": "Convierte cualquier cosa en bordado",
-    "sub": "Suelta una imagen, un dibujo o un nombre. Lilo crea las puntadas y las envía a tu máquina.",
+    "title": "Bordado para todos",
+    "sub": "Lilo es una app gratuita y de código abierto que convierte imágenes, dibujos y nombres en bordado. Para Mac, Windows y Linux.",
     "price": "Gratis. Para siempre. Código abierto.",
     "cta": "Descargar Lilo",
-    "cta2": "Mira cómo funciona",
-    "dropTitle": "Suelta una imagen aquí",
-    "dropHint": "o pulsa para elegir una",
-    "dropAria": "Suelta una imagen aquí, o pulsa para elegir una",
-    "demoCaption": "Un ejemplo real. El motor de Lilo convirtió esta flor en {stitches} puntadas con {colours} colores.",
+    "demoCaption": "Un ejemplo real: la palabra «Lilo» en una fuente cursiva incluida, bordada con {stitches} puntadas creadas por el motor de Lilo.",
     "stageLook": "Mirando la imagen",
     "stageTrace": "Trazando las formas",
     "stageSew": "Bordando las puntadas",
     "replay": "Ver otra vez",
     "pause": "Pausa",
     "play": "Reproducir",
-    "droppedTitle": "¡Qué bonita imagen!",
-    "droppedText": "Lilo la convierte en puntadas en tu propio ordenador. Tu imagen nunca sale de él.",
-    "droppedCta": "Descarga Lilo para bordarla",
-    "droppedAlt": "La imagen que elegiste",
-    "droppedOther": "Probar otra imagen",
-    "notImage": "Eso no es una imagen. Prueba con PNG, JPG, WEBP o SVG."
+    "github": "Ver en GitHub",
+    "demoAlt": "Animación: la palabra Lilo se traza y luego se borda con hilo rosa"
   },
   "download": {
     "title": "Consigue Lilo",
-    "sub": "Una app pequeña. Sin cuenta. Funciona sin internet.",
+    "sub": "Una app pequeña. Gratis para todos. Sin cuenta. Funciona sin internet.",
     "button": "Descargar para {os}",
     "version": "Versión {version}",
     "versionNone": "La primera versión llegará pronto.",
@@ -67,7 +60,7 @@
     "mobile": "Lilo es una app de ordenador. Abre esta página en tu Mac, Windows o Linux para descargarla."
   },
   "features": {
-    "title": "Todo lo que necesitas, de la idea a la puntada",
+    "title": "Gratis, sencillo y hecho para todos",
     "cards": [
       {
         "id": "digitize",
@@ -77,10 +70,26 @@
         "sub": "Suelta una imagen. Lilo la traza y elige tus hilos.",
         "cta": "Probar la digitalización",
         "items": [
-          { "icon": "image", "title": "Cualquier imagen", "text": "PNG, JPG, WEBP o SVG" },
-          { "icon": "palette", "title": "Elige colores", "text": "Se ajusta a colores de hilo reales" },
-          { "icon": "scan", "title": "Trazado en vivo", "text": "Mira cómo aparecen las formas" },
-          { "icon": "wand", "title": "Todo se edita", "text": "Cada puntada se puede cambiar" }
+          {
+            "icon": "image",
+            "title": "Cualquier imagen",
+            "text": "PNG, JPG, WEBP o SVG"
+          },
+          {
+            "icon": "palette",
+            "title": "Elige colores",
+            "text": "Se ajusta a colores de hilo reales"
+          },
+          {
+            "icon": "scan",
+            "title": "Trazado en vivo",
+            "text": "Mira cómo aparecen las formas"
+          },
+          {
+            "icon": "wand",
+            "title": "Todo se edita",
+            "text": "Cada puntada se puede cambiar"
+          }
         ]
       },
       {
@@ -91,10 +100,26 @@
         "sub": "Escribe un nombre. Elige un estilo. O usa tu propia fuente.",
         "cta": "Crear un monograma",
         "items": [
-          { "icon": "type", "title": "Unas 100 fuentes", "text": "Hechas para bordar" },
-          { "icon": "upload", "title": "Tus propias fuentes", "text": "Añade cualquier TTF u OTF" },
-          { "icon": "text", "title": "Ajustes fáciles", "text": "Tamaño, espacio y líneas" },
-          { "icon": "check", "title": "Consejos de tamaño", "text": "Avisa si las letras son muy pequeñas" }
+          {
+            "icon": "type",
+            "title": "Unas 100 fuentes",
+            "text": "Hechas para bordar"
+          },
+          {
+            "icon": "upload",
+            "title": "Tus propias fuentes",
+            "text": "Añade cualquier TTF u OTF"
+          },
+          {
+            "icon": "text",
+            "title": "Ajustes fáciles",
+            "text": "Tamaño, espacio y líneas"
+          },
+          {
+            "icon": "check",
+            "title": "Consejos de tamaño",
+            "text": "Avisa si las letras son muy pequeñas"
+          }
         ]
       },
       {
@@ -105,10 +130,26 @@
         "sub": "Por Wi-Fi o con una memoria USB. Tú eliges.",
         "cta": "Mira cómo se envía",
         "items": [
-          { "icon": "wifi", "title": "Wi-Fi de Brother", "text": "Funciona con máquinas Brother con Wi-Fi (detección automática)" },
-          { "icon": "usb", "title": "Memoria USB", "text": "Guarda el archivo y conéctala" },
-          { "icon": "list", "title": "Antes de coser", "text": "Una lista para no olvidar nada" },
-          { "icon": "files", "title": "12 tipos de archivo", "text": "PES, DST, JEF, EXP y más" }
+          {
+            "icon": "wifi",
+            "title": "Wi-Fi de Brother",
+            "text": "Funciona con máquinas Brother con Wi-Fi (detección automática)"
+          },
+          {
+            "icon": "usb",
+            "title": "Memoria USB",
+            "text": "Guarda el archivo y conéctala"
+          },
+          {
+            "icon": "list",
+            "title": "Antes de coser",
+            "text": "Una lista para no olvidar nada"
+          },
+          {
+            "icon": "files",
+            "title": "12 tipos de archivo",
+            "text": "PES, DST, JEF, EXP y más"
+          }
         ]
       },
       {
@@ -119,10 +160,26 @@
         "sub": "Colores de hilo reales. Tamaños de bastidor reales. Sin adivinar.",
         "cta": "Ver hilos y bastidores",
         "items": [
-          { "icon": "spool", "title": "{threadColours} colores", "text": "De {threadLines} líneas de hilo" },
-          { "icon": "shelf", "title": "Mis hilos", "text": "Añade las bobinas que tienes" },
-          { "icon": "hoop", "title": "{hoops} bastidores", "text": "Elige el tuyo o crea uno" },
-          { "icon": "ruler", "title": "Reglas y cuadrícula", "text": "Mira el tamaño real en mm" }
+          {
+            "icon": "spool",
+            "title": "{threadColours} colores",
+            "text": "De {threadLines} líneas de hilo"
+          },
+          {
+            "icon": "shelf",
+            "title": "Mis hilos",
+            "text": "Añade las bobinas que tienes"
+          },
+          {
+            "icon": "hoop",
+            "title": "{hoops} bastidores",
+            "text": "Elige el tuyo o crea uno"
+          },
+          {
+            "icon": "ruler",
+            "title": "Reglas y cuadrícula",
+            "text": "Mira el tamaño real en mm"
+          }
         ]
       },
       {
@@ -133,10 +190,26 @@
         "sub": "Pinta cuadro a cuadro. O cambia un archivo de un tipo a otro.",
         "cta": "Abrir pixel art",
         "items": [
-          { "icon": "grid", "title": "Cuadro a cuadro", "text": "Como el punto de cruz, en pantalla" },
-          { "icon": "cross", "title": "Tres estilos de puntada", "text": "Tatami, cruz o satén" },
-          { "icon": "swap", "title": "Conversor de archivos", "text": "Cambia un DST a PES" },
-          { "icon": "play", "title": "Reproductor de puntadas", "text": "Míralo bordar, puntada a puntada" }
+          {
+            "icon": "grid",
+            "title": "Cuadro a cuadro",
+            "text": "Como el punto de cruz, en pantalla"
+          },
+          {
+            "icon": "cross",
+            "title": "Tres estilos de puntada",
+            "text": "Tatami, cruz o satén"
+          },
+          {
+            "icon": "swap",
+            "title": "Conversor de archivos",
+            "text": "Cambia un DST a PES"
+          },
+          {
+            "icon": "play",
+            "title": "Reproductor de puntadas",
+            "text": "Míralo bordar, puntada a puntada"
+          }
         ]
       },
       {
@@ -144,13 +217,29 @@
         "img": "home",
         "alt": "La pantalla de inicio de Lilo con una bienvenida y diseños recientes",
         "title": "Gratis y de código abierto",
-        "sub": "Sin cuenta. Sin facturas. Funciona sin conexión, y el código está abierto para todos.",
+        "sub": "Gratis para todos, de principiantes a profesionales. Sin cuenta. Funciona sin conexión, y el código está abierto para todos.",
         "cta": "Ver el código",
         "items": [
-          { "icon": "heart", "title": "Gratis. Para siempre.", "text": "Nada que desbloquear" },
-          { "icon": "code", "title": "Licencia GPL-3", "text": "Léelo, compártelo, mejóralo" },
-          { "icon": "user", "title": "Sin cuenta", "text": "Sin registro ni rastreo" },
-          { "icon": "offline", "title": "Sin conexión", "text": "Tus diseños se quedan en tu ordenador" }
+          {
+            "icon": "heart",
+            "title": "Gratis. Para siempre.",
+            "text": "Nada que desbloquear"
+          },
+          {
+            "icon": "code",
+            "title": "Licencia GPL-3",
+            "text": "Léelo, compártelo, mejóralo"
+          },
+          {
+            "icon": "user",
+            "title": "Sin cuenta",
+            "text": "Sin registro ni rastreo"
+          },
+          {
+            "icon": "offline",
+            "title": "Sin conexión",
+            "text": "Tus diseños se quedan en tu ordenador"
+          }
         ]
       }
     ]
@@ -172,31 +261,71 @@
   "how": {
     "title": "Cómo funciona",
     "steps": [
-      { "icon": "image", "title": "Añade una imagen", "text": "Suelta una foto, un dibujo, un logo o un nombre." },
-      { "icon": "wand", "title": "Lilo crea las puntadas", "text": "Elige los colores de hilo y el tamaño. Mira primero cómo borda en pantalla." },
-      { "icon": "send", "title": "Envíalo a tu máquina", "text": "Por Wi-Fi, o guárdalo en una memoria USB. Luego pulsa empezar." }
+      {
+        "icon": "image",
+        "title": "Añade una imagen",
+        "text": "Suelta una foto, un dibujo, un logo o un nombre."
+      },
+      {
+        "icon": "wand",
+        "title": "Lilo crea las puntadas",
+        "text": "Elige los colores de hilo y el tamaño. Mira primero cómo borda en pantalla."
+      },
+      {
+        "icon": "send",
+        "title": "Envíalo a tu máquina",
+        "text": "Por Wi-Fi, o guárdalo en una memoria USB. Luego pulsa empezar."
+      }
     ]
   },
   "faq": {
     "title": "Preguntas",
     "items": [
-      { "q": "¿Lilo es gratis de verdad?", "a": "Sí. Es gratis ahora y seguirá siéndolo. No hay prueba, ni cuenta, ni parte de pago escondida." },
-      { "q": "¿Qué significa código abierto?", "a": "Cualquiera puede leer cómo está hecho Lilo. Cualquiera puede compartirlo o mejorarlo. Lilo usa la licencia GPL-3." },
-      { "q": "¿Qué es digitalizar un bordado?", "a": "Una máquina de coser no lee una imagen. Lee una lista de puntadas, como un mapa para la aguja. Digitalizar convierte tu imagen en ese mapa. Lilo lo hace por ti." },
-      { "q": "¿Funcionará con mi máquina?", "a": "Lilo guarda 12 tipos de archivo, así que encaja con la mayoría de máquinas. Abre la lista completa y busca tu marca. Mira también el manual de tu máquina y haz una prueba en un trozo de tela." },
-      { "q": "¿Cómo funciona el envío por Wi-Fi?", "a": "Si tu máquina Brother o Baby Lock tiene Wi-Fi, Lilo la busca en tu red de casa y la encuentra sola. ¿Sin Wi-Fi? Guarda el archivo en una memoria USB." },
-      { "q": "¿Necesito internet?", "a": "No. Lilo funciona sin conexión. Solo comprueba si hay una versión nueva, y puedes desactivarlo." },
-      { "q": "¿Adónde van mis diseños?", "a": "A ninguna parte. Se quedan en tu ordenador. Lilo nunca sube tus imágenes ni tus diseños." },
-      { "q": "¿Por qué Windows muestra un cuadro azul?", "a": "El instalador de Windows aún no está firmado, así que Windows te pide cuidado. Pulsa Más información y luego Ejecutar de todas formas. La versión de Mac está firmada y comprobada por Apple." }
+      {
+        "q": "¿Lilo es gratis de verdad?",
+        "a": "Sí. Lilo es gratis ahora y seguirá siéndolo, para todos. No hay prueba, ni cuenta, ni parte de pago escondida."
+      },
+      {
+        "q": "¿Lilo es para mí?",
+        "a": "Sí. Lilo es para todos: niños, abuelos, aficionados a la costura y profesionales. Si sabes soltar una imagen, sabes hacer bordado."
+      },
+      {
+        "q": "¿Qué significa código abierto?",
+        "a": "Cualquiera puede leer cómo está hecho Lilo. Cualquiera puede compartirlo o mejorarlo. Lilo usa la licencia GPL-3."
+      },
+      {
+        "q": "¿Qué es digitalizar un bordado?",
+        "a": "Una máquina de coser no lee una imagen. Lee una lista de puntadas, como un mapa para la aguja. Digitalizar convierte tu imagen en ese mapa. Lilo lo hace por ti."
+      },
+      {
+        "q": "¿Funcionará con mi máquina?",
+        "a": "Lilo guarda 12 tipos de archivo, así que encaja con la mayoría de máquinas. Abre la lista completa y busca tu marca. Mira también el manual de tu máquina y haz una prueba en un trozo de tela."
+      },
+      {
+        "q": "¿Cómo funciona el envío por Wi-Fi?",
+        "a": "Si tu máquina Brother o Baby Lock tiene Wi-Fi, Lilo la busca en tu red de casa y la encuentra sola. ¿Sin Wi-Fi? Guarda el archivo en una memoria USB."
+      },
+      {
+        "q": "¿Necesito internet?",
+        "a": "No. Lilo funciona sin conexión. Solo comprueba si hay una versión nueva, y puedes desactivarlo."
+      },
+      {
+        "q": "¿Adónde van mis diseños?",
+        "a": "A ninguna parte. Se quedan en tu ordenador. Lilo nunca sube tus imágenes ni tus diseños."
+      },
+      {
+        "q": "¿Por qué Windows muestra un cuadro azul?",
+        "a": "El instalador de Windows aún no está firmado, así que Windows te pide cuidado. Pulsa Más información y luego Ejecutar de todas formas. La versión de Mac está firmada y comprobada por Apple."
+      }
     ]
   },
   "cta": {
-    "title": "¿Listo para bordar?",
+    "title": "El bordado es para todos",
     "sub": "Gratis. Para siempre. Código abierto."
   },
   "footer": {
     "by": "de",
-    "tagline": "Software de bordado libre y gratuito.",
+    "tagline": "Software de bordado libre y gratuito para todos.",
     "github": "Código en GitHub",
     "licence": "Licencia GPL-3.0",
     "releases": "Descargas",
@@ -205,7 +334,8 @@
     "kadwood": "Kadwood",
     "kadwoodAria": "Kadwood, abre kadwood.com",
     "trademark": "El nombre y el logo de Kadwood, y el nombre Lilo y el logo del hibisco, son marcas de Kadwood. Todos los demás nombres de marcas y máquinas pertenecen a sus dueños. Lilo no está afiliado con ellos.",
-    "rights": "Hecho con cariño por Kadwood."
+    "rights": "Hecho con cariño por Kadwood.",
+    "manual": "Manual"
   },
   "langBanner": {
     "text": "Esta página también está en {language}.",
@@ -238,5 +368,13 @@
     "checked": "{n} comprobadas en la página del fabricante",
     "wifiLine": "Lilo Link (Wi-Fi) busca máquinas por sí solo. Aún no se ha probado con equipos reales.",
     "disclaimer": "Los nombres de marcas y productos pertenecen a sus dueños. Lilo no está afiliado con ellos."
+  },
+  "manual": {
+    "englishNote": "El manual está en inglés.",
+    "read": "Leer el manual",
+    "threads": "Leer sobre hilos",
+    "hoops": "Leer sobre bastidores",
+    "pixel": "Leer sobre pixel art",
+    "converter": "Leer sobre el conversor"
   }
 }

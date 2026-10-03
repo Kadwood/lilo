@@ -24,14 +24,23 @@ export async function makeDownloads({ quiet = false } = {}) {
     out.version = String(rel.tag_name).replace(/^v/, "");
     out.publishedAt = rel.published_at;
     const url = (name) => `${RELEASES}/latest/download/${encodeURIComponent(name)}`;
+    // The release workflow adds stable-named copies of the installers (see docs/RELEASING.md). Buttons
+    // prefer them (the link never goes stale); a release that predates them falls back to the versioned name.
+    const STABLE = { mac: "Lilo-mac.dmg", windows: "Lilo-windows-setup.exe", linuxAppImage: "Lilo-linux.AppImage", linuxDeb: "Lilo-linux.deb" };
+    const keyOf = (n) =>
+      /\.dmg$/i.test(n) ? "mac" : /-setup\.exe$/i.test(n) ? "windows" : /\.AppImage$/i.test(n) ? "linuxAppImage" : /\.deb$/i.test(n) ? "linuxDeb" : null;
+    const versioned = {};
+    const stable = {};
     for (const a of rel.assets ?? []) {
-      const n = a.name;
-      const entry = { name: n, url: url(n), size: a.size };
-      if (/\.dmg$/i.test(n)) out.assets.mac = entry;
-      else if (/-setup\.exe$/i.test(n)) out.assets.windows = entry;
-      else if (/\.AppImage$/i.test(n)) out.assets.linuxAppImage = entry;
-      else if (/\.deb$/i.test(n)) out.assets.linuxDeb = entry;
-      else if (n === "SHA256SUMS") out.assets.checksums = entry;
+      const k = keyOf(a.name);
+      if (k) (a.name === STABLE[k] ? stable : versioned)[k] = a;
+      else if (a.name === "SHA256SUMS") out.assets.checksums = { name: a.name, url: url(a.name), size: a.size };
+    }
+    for (const k of Object.keys(STABLE)) {
+      const a = stable[k] ?? versioned[k];
+      if (!a) continue;
+      // size and version come from the versioned file when there is one (the copies are identical)
+      out.assets[k] = { name: a.name, url: url(a.name), size: (versioned[k] ?? a).size, stable: Boolean(stable[k]), versionedName: versioned[k]?.name ?? null };
     }
     return finish(out, `latest is ${rel.tag_name}`, quiet);
   } catch (e) {
