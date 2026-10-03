@@ -27,5 +27,5 @@ export function machineLabel(opts: {
 
 /** Display branding separately from persisted/API manufacturer identifiers. */
 export function manufacturerLabel(manufacturer: string): string {
-  return manufacturer === "emberconnect" ? "Ember Link" : manufacturer;
+  return manufacturer === "brother" ? "Brother" : manufacturer;
 }

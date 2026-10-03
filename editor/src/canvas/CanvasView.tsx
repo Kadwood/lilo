@@ -19,7 +19,7 @@ import { readTheme } from "./theme";
 import { buildTimeline, phaseAt, prefersReducedMotion, type AnimPhase, type Timeline } from "./timeline";
 import { TraceOutlines } from "./TraceOutlines";
 import { useShortcuts } from "./useShortcuts";
-import { classifyWheel, fitView, wheelZoomFactor, zoomAt, panBy, type View } from "./viewport";
+import { classifyWheel, fitRect, fitView, wheelZoomFactor, zoomAt, panBy, type View } from "./viewport";
 
 const STAGE_LABEL: Record<AnimPhase, string> = {
   quantize: "Matching thread colours",
@@ -157,8 +157,7 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
     const host = hostRef.current;
     if (!host) return;
     const b = state.design && state.design.objects.length ? designBounds(state.design) : null;
-    const hoop = state.design?.hoop ?? DEFAULT_HOOP;
-    const rect = b ?? { minX: -hoop.widthMm / 2, minY: -hoop.heightMm / 2, maxX: hoop.widthMm / 2, maxY: hoop.heightMm / 2 };
+    const rect = fitRect(b, state.design?.hoop, DEFAULT_HOOP);
     applyView(fitView(host.clientWidth, host.clientHeight, rect, 0.2));
   }, [applyView, state.design]);
   const fitRef = useRef(fit);

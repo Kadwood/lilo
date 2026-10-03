@@ -28,7 +28,7 @@ function maxEdge(chains: Pt[][]): number {
 describe("fill patterns", () => {
   it("ships at least 34 patterns: the 24 documented ones plus our own", () => {
     expect(FILL_PATTERNS.length).toBeGreaterThanOrEqual(34);
-    expect(FILL_PATTERNS.filter((p) => p.origin === "ember").length).toBe(24);
+    expect(FILL_PATTERNS.filter((p) => p.origin === "standard").length).toBe(24);
     expect(FILL_PATTERNS.filter((p) => p.origin === "lilo").length).toBeGreaterThanOrEqual(11);
     expect(new Set(FILL_PATTERNS.map((p) => p.id)).size).toBe(FILL_PATTERNS.length);
   });

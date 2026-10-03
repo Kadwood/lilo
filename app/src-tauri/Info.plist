@@ -3,11 +3,6 @@
 <plist version="1.0">
 <dict>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>Lilo finds and connects to your embroidery machine and Ember Link dongle on your local network.</string>
-    <key>NSBonjourServices</key>
-    <array>
-        <string>_ember-connect._tcp</string>
-        <string>_ember-link._tcp</string>
-    </array>
+    <string>Lilo finds and connects to your embroidery machine on your local network.</string>
 </dict>
 </plist>

@@ -15,7 +15,7 @@ import { EditorProvider, useEditor } from "./state/store";
 import { UpdateBanner } from "./updates/UpdateBanner";
 import { UpdatesProvider } from "./updates/UpdatesProvider";
 
-// The Link view carries Ember Bridge's whole UI + its (dark) stylesheet; load it on demand.
+// The Link view carries its own UI and stylesheet; load it on demand.
 const LinkApp = lazy(() => import("./link/LinkApp"));
 
 export type { View } from "./app/AppContext";

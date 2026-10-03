@@ -49,10 +49,7 @@ self-update.
 
 ## Built on
 
-- [stitchjs](https://github.com/stitchables/stitchjs) (MIT): stitch engine
-- [Ember Bridge](https://github.com/EmberSoftwareInc/ember-bridge) (MIT): Wi-Fi transfer, forked as Lilo Link
-- [Ink/Stitch](https://github.com/inkstitch/inkstitch) (GPL-3.0): thread palettes, lettering fonts
-- [vtracer](https://github.com/visioncortex/vtracer) (MIT): image tracing
+Lilo builds on open-source software. Credits and licences for third-party code are in [NOTICE.md](NOTICE.md).
 
 ## Auto digitize, in short
 
@@ -147,12 +144,12 @@ pnpm tauri build --debug    # bundles Lilo.app under app/src-tauri/target/debug/
 Layout: `app/src-tauri` (Rust shell), `editor/` (React UI, Lilo Link under `editor/src/link`),
 `engine/` (stitch generation, no UI), `data/`, `scripts/`, `docs/`.
 
-The app serves a local API on `127.0.0.1:17841` (Ember Bridge used 17831, so both can be installed).
-Lilo never contacts Ember's servers. Its only update check goes to this repo's GitHub Releases.
+The app serves a local API on `127.0.0.1:17841`.
+Lilo never contacts anyone else's servers. Its only update check goes to this repo's GitHub Releases.
 Maintainers: see [docs/RELEASING.md](docs/RELEASING.md).
 
 ## Licence
 
-GPL-3.0. See [LICENSE](LICENSE). Third-party notices (including Ember Bridge, MIT): [NOTICE.md](NOTICE.md).
+GPL-3.0. See [LICENSE](LICENSE). Third-party notices: [NOTICE.md](NOTICE.md).
 
 The Kadwood name and logo, and the Lilo name and hibiscus logo, are trademarks of Kadwood. They are not licensed under the GPL-3.0; you may not use them to identify modified versions without permission.

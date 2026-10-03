@@ -154,8 +154,7 @@ export function SendPage() {
       <Section title="Target machine">
         {targets.length === 0 && !selectedIp ? (
           <EmptyState>
-            No machines known yet — scan on the Machines page, or set up a
-            dongle.
+            No machines known yet — scan on the Machines page.
           </EmptyState>
         ) : (
           <select

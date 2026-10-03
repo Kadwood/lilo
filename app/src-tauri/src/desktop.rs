@@ -19,7 +19,6 @@ fn destination(url: &reqwest::Url) -> Option<&'static str> {
     match url.host_str()? {
         "open" => Some("machines"),
         "connect" => Some("settings"),
-        "setup" => Some("setup"),
         _ => None,
     }
 }
@@ -60,7 +59,6 @@ mod tests {
         for (url, page) in [
             ("lilo://open", "machines"),
             ("lilo://connect/", "settings"),
-            ("lilo://setup", "setup"),
         ] {
             assert_eq!(destination(&url.parse().unwrap()), Some(page));
         }

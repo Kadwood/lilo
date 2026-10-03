@@ -25,8 +25,8 @@ export interface PatternInfo {
    * - path: rings, spirals, rays or flow lines that follow the shape
    */
   family: "rows" | "motif" | "path";
-  /** Who defined it: the 24 Ember-documented fills or Lilo's own additions. */
-  origin: "ember" | "lilo";
+  /** Who defined it: the 24 standard fills or Lilo's own additions. */
+  origin: "standard" | "lilo";
   help: string;
   settings: PatternSetting[];
   /** The gradient setting only applies to row patterns. */
@@ -54,7 +54,7 @@ const size = (def: number, label = "Size"): PatternSetting => ({
   help: "Width of each repeated shape in millimetres.",
 });
 
-const rows = (id: string, label: string, help: string, settings: PatternSetting[] = [], origin: PatternInfo["origin"] = "ember", underlay = true): PatternInfo => ({
+const rows = (id: string, label: string, help: string, settings: PatternSetting[] = [], origin: PatternInfo["origin"] = "standard", underlay = true): PatternInfo => ({
   id,
   label,
   family: "rows",
@@ -65,7 +65,7 @@ const rows = (id: string, label: string, help: string, settings: PatternSetting[
   defaultAngleDeg: 45,
   underlay,
 });
-const motif = (id: string, label: string, help: string, def: number, origin: PatternInfo["origin"] = "ember", extra: PatternSetting[] = []): PatternInfo => ({
+const motif = (id: string, label: string, help: string, def: number, origin: PatternInfo["origin"] = "standard", extra: PatternSetting[] = []): PatternInfo => ({
   id,
   label,
   family: "motif",
@@ -76,7 +76,7 @@ const motif = (id: string, label: string, help: string, def: number, origin: Pat
   defaultAngleDeg: 0,
   underlay: false,
 });
-const path = (id: string, label: string, help: string, settings: PatternSetting[], extra: Partial<PatternInfo> = {}, origin: PatternInfo["origin"] = "ember"): PatternInfo => ({
+const path = (id: string, label: string, help: string, settings: PatternSetting[], extra: Partial<PatternInfo> = {}, origin: PatternInfo["origin"] = "standard"): PatternInfo => ({
   id,
   label,
   family: "path",
@@ -91,7 +91,7 @@ const path = (id: string, label: string, help: string, settings: PatternSetting[
 
 const tightness: PatternSetting = { key: "tightness", label: "Tightness", min: 0.5, max: 4, step: 0.1, default: 1, help: "Higher packs the lines closer together." };
 
-/** Every pattern the picker offers, in picker order. 24 from Ember's manual, 12 of our own. */
+/** Every pattern the picker offers, in picker order. 24 standard, 12 of our own. */
 export const FILL_PATTERNS: readonly PatternInfo[] = [
   rows("tatami", "Tatami", "The classic fill: parallel rows with each row's stitches offset from its neighbours."),
   rows("original", "Original", "Parallel rows with a four-step stagger, giving a softer, less regular texture than tatami."),

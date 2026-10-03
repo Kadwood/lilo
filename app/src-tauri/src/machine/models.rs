@@ -1,7 +1,7 @@
 //! Manufacturer-neutral data models.
 //!
 //! These are the only machine-related types the localhost API (and therefore
-//! Ember and the React UI) ever sees. Backends translate their native wire
+//! the localhost API and the React UI) ever sees. Backends translate their native wire
 //! formats into these structs.
 
 use serde::{Deserialize, Serialize};

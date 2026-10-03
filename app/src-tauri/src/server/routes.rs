@@ -86,7 +86,7 @@ pub async fn health(State(state): State<Arc<AppState>>) -> impl IntoResponse {
 }
 
 /// Without `?ip=`: bridge status. With `?ip=`: live status of that machine
-/// (storage + file list), matching the Ember-facing API contract.
+/// (storage + file list), matching the localhost API contract.
 pub async fn status(
     State(state): State<Arc<AppState>>,
     Query(params): Query<HashMap<String, String>>,
@@ -320,7 +320,7 @@ async fn vetted_pairing_origin(state: &AppState, headers: &HeaderMap) -> Result<
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PairBody {
-    /// Display name shown in the approval prompt, e.g. "Ember".
+    /// Display name shown in the approval prompt, e.g. "Web app".
     #[serde(default)]
     pub app_name: Option<String>,
 }
@@ -616,61 +616,6 @@ pub async fn delete_file(
     machine.delete_file(filename).await?;
     Ok(Json(json!({"ok": true})))
 }
-/// Local Link-only filesystem operations; existing origin/token middleware applies.
-pub async fn filesystem(
-    State(state): State<Arc<AppState>>,
-    Query(params): Query<HashMap<String, String>>,
-    Json(body): Json<serde_json::Value>,
-) -> Result<impl IntoResponse, ApiError> {
-    let ip = required_ip(&params)?;
-    let serial = params
-        .get("serial")
-        .filter(|s| !s.is_empty())
-        .ok_or_else(|| {
-            ApiError::bad_request(
-                "identity_required",
-                "Select an identified Ember Link first.",
-            )
-        })?;
-    if params.get("manufacturer").map(String::as_str) != Some(crate::emberconnect::MANUFACTURER) {
-        return Err(ApiError::bad_request(
-            "unsupported_device",
-            "File browsing requires an Ember Link dongle.",
-        ));
-    }
-    if body.to_string().len() > 1024
-        || body.get("confirmedIdle").and_then(|v| v.as_bool()) != Some(true)
-    {
-        return Err(ApiError::bad_request(
-            "confirmation_required",
-            "Confirm the machine is idle first.",
-        ));
-    }
-    let _lifecycle = state
-        .lifecycle
-        .try_read()
-        .map_err(|_| ApiError::conflict("updating", "Bridge is updating"))?;
-    let _operation = state
-        .operation
-        .try_lock()
-        .map_err(|_| ApiError::from(crate::machine::MachineError::Busy))?;
-    if state.jobs.pending_count() > 0 {
-        return Err(ApiError::conflict(
-            "busy",
-            "Finish or cancel queued transfers before browsing files.",
-        ));
-    }
-    let (_, info) = super::identity::resolve(
-        &state,
-        ip,
-        Some((crate::emberconnect::MANUFACTURER, serial)),
-    )
-    .await?;
-    let dongle =
-        crate::emberconnect::EmberConnectClient::new(info.identity.ip, state.dongle_tokens.clone());
-    Ok(Json(dongle.filesystem(serial, &body).await?))
-}
-
 pub async fn cancel_job(
     State(state): State<Arc<AppState>>,
     Path(id): Path<String>,

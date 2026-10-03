@@ -1,10 +1,10 @@
 # Lilo v1 — Spec
 
-Status: approved via grill, 2026-10-03. Research backing every claim: [research/ember-features.md](research/ember-features.md).
+Status: approved via grill, 2026-10-03. Research backing every claim: [research/feature-inventory.md](research/feature-inventory.md).
 
 ## 1. What Lilo is
 
-A free, open-source (GPL-3.0) desktop embroidery digitizer. It matches every feature of Ember (emberdesign.net) Pro, free, and sends designs to Brother Wi-Fi embroidery machines.
+A free, open-source (GPL-3.0) desktop embroidery digitizer. It matches every feature of the leading commercial embroidery digitizers, free, and sends designs to Brother Wi-Fi embroidery machines.
 
 - First user: Kadwood, on a Brother Innov-is NV2700. Jobs: monograms on suit linings, garment-bag crests, hat patches.
 - Built so a public hosted version (phase 2) can follow without a rewrite.
@@ -22,7 +22,7 @@ One Tauri 2 desktop app (macOS first, Windows/Linux supported). Repo `Kadwood/li
 
 ```
 lilo/
-  app/          Tauri shell. Forked from EmberSoftwareInc/ember-bridge (MIT; keep its notice).
+  app/          Tauri shell (partly derived from an MIT-licensed Wi-Fi bridge; keep its notice in NOTICE.md).
     src-tauri/  Rust: machine discovery + Brother "pedxml" Wi-Fi send, project file I/O,
                 OCR (Apple Vision), localhost API (kept for parity, editor uses Tauri commands).
   editor/       Vite + React + TypeScript UI. Builds standalone (web) and as the Tauri frontend.
@@ -46,7 +46,7 @@ lilo/
 | Colour quantise | `image-q` | MIT |
 | Font parsing | `opentype.js` | MIT |
 | Geometry | `jsts` (via stitchjs) | EPL/EDL |
-| Wi-Fi send | Ember Bridge Rust (`brother/`, `machine/`) | MIT |
+| Wi-Fi send | MIT-licensed Wi-Fi bridge Rust (`brother/`, `machine/`) | MIT |
 | Lettering + palettes reference | Ink/Stitch | GPL-3 |
 | Canvas | PixiJS (WebGL) for stitch render; SVG overlay for handles | MIT |
 | State | Zustand + Immer (undo/redo via patches) | MIT |
@@ -63,7 +63,7 @@ lilo/
 ### 4.2 Stitch types
 - **Run types (7):** Single, Triple, Satin, E-stitch, Double rope, Triple rope, Manual.
 - **Satin settings:** width, density, pull compensation, split satin (max width), stagger, short stitches on curves, underlays (center, contour, zig-zag).
-- **Fills:** at least the 23 documented Ember fills: Tatami, Original, Triangle, Waves, Columns, Offset Columns, Hearts S/M/L, Diamonds S/M/L, Zig-Zag, Circles S/M/L, Heartbeat, Spiral, Staircase, Rainfall, Hexweave, Tornado, Streamlines, Circular. Add more to reach ≥34.
+- **Fills:** at least the 23 standard fills: Tatami, Original, Triangle, Waves, Columns, Offset Columns, Hearts S/M/L, Diamonds S/M/L, Zig-Zag, Circles S/M/L, Heartbeat, Spiral, Staircase, Rainfall, Hexweave, Tornado, Streamlines, Circular. Add more to reach ≥34.
 - **Fill settings:** angle, row spacing, stitch length, pull comp, hand-stitch 0–5, underpath, gradient (ramp/plateau), multiple underlays (angle, spacing, length, inset). Pattern-specific settings as per research notes.
 - Auto redwork (single-line outline digitize).
 
@@ -134,7 +134,7 @@ Pipeline, each step visible and animated:
 
 ### 4.10 UI / design
 - macOS 26+ Liquid Glass via `window-vibrancy` `apply_liquid_glass` (fallback NSVisualEffectView). Windows: mica. Linux: solid.
-- Layout like Ember:
+- Layout:
   - floating glass toolbar at the bottom
   - left contextual settings panel
   - right sequencer
@@ -163,11 +163,11 @@ Pipeline, each step visible and animated:
 4. Round hat patch, ~50 mm, satin border, twill
 5. 32×32 pixel art
 
-Stitch count within ~15% of Ember for the same design.
+Stitch count within ~15% of a commercial digitizer for the same design.
 
 ## 6. Build order (one v1 release)
 
-1. **M1 Foundation:** monorepo, Ember Bridge imported + renamed (Lilo), editor shell inside Tauri, engine package with stitchjs, CI. Send an existing PES to the NV2700 over Wi-Fi (manual test).
+1. **M1 Foundation:** monorepo, Wi-Fi bridge code imported + renamed (Lilo), editor shell inside Tauri, engine package with stitchjs, CI. Send an existing PES to the NV2700 over Wi-Fi (manual test).
 2. **M2 Auto digitize + stitch player:** full pipeline, tracing + sequence animations, PES export, send.
 3. **M3 Editor:** all drawing tools, run types, fills, settings, sequencer, realistic view.
 4. **M4 Lettering:** built-in fonts + custom-font pipeline.
@@ -175,7 +175,7 @@ Stitch count within ~15% of Ember for the same design.
 6. **M6 Polish:** Liquid Glass, tutorial, `.lilo` versions, installers (signed + notarized DMG), docs, GitHub release.
 
 7. **M7 Guides, tour + hints** (last, built from the finished app):
-   - **Ember-style manual:** original wording; Ember's structure studied, never copied. It lives in `docs/guide/` and in the app's searchable Help panel, with "?" deep links.
+   - **Manual:** original wording, never copied from another product's manual. It lives in `docs/guide/` and in the app's searchable Help panel, with "?" deep links.
    - **First-launch tour:** mascot host, four paths (picture / draw / monogram / open a file), replayable.
    - **Workflow stepper:** Get a design → Size & hoop → Stitches → Preview → Send. Steps tick themselves off, and each has a tip card.
    - **Hints on every control:** what it does, when to change it, a typical value.
@@ -187,5 +187,5 @@ Each milestone goes through builder → refuter before it's reported done.
 ## 7. Licensing
 
 - Lilo is GPL-3.0.
-- Keep MIT notices for Ember Bridge, stitchjs and vtracer.
+- Keep MIT notices (NOTICE.md) for the Wi-Fi bridge, stitchjs and vtracer.
 - Per-font licence files ship with the fonts. An `NOTICE.md` lists all third-party sources.

@@ -25,7 +25,7 @@ vi.mock("../hooks/useBridge", () => ({
           identity: {
             ip: "192.168.1.4",
             name: "Sewing room",
-            manufacturer: "emberconnect",
+            manufacturer: "brother",
             serial: "device-a",
           },
           capabilities: {

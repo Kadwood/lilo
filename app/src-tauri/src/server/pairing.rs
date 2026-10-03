@@ -182,12 +182,12 @@ fn random_id() -> String {
 mod tests {
     use super::*;
 
-    const ORIGIN: &str = "https://ember.example";
+    const ORIGIN: &str = "https://app.example";
 
     #[tokio::test]
     async fn approve_releases_once() {
         let pairing = Pairing::default();
-        let req = pairing.begin(ORIGIN.into(), "Ember".into()).await.unwrap();
+        let req = pairing.begin(ORIGIN.into(), "Web app".into()).await.unwrap();
 
         assert_eq!(pairing.poll(&req.id, ORIGIN).await, PollOutcome::Pending);
         assert_eq!(pairing.respond(&req.id, true).await.as_deref(), Some(ORIGIN));
@@ -200,7 +200,7 @@ mod tests {
     #[tokio::test]
     async fn deny_is_terminal() {
         let pairing = Pairing::default();
-        let req = pairing.begin(ORIGIN.into(), "Ember".into()).await.unwrap();
+        let req = pairing.begin(ORIGIN.into(), "Web app".into()).await.unwrap();
         assert_eq!(pairing.respond(&req.id, false).await.as_deref(), Some(ORIGIN));
         assert_eq!(pairing.poll(&req.id, ORIGIN).await, PollOutcome::Denied);
         assert_eq!(pairing.poll(&req.id, ORIGIN).await, PollOutcome::Unknown);
@@ -211,19 +211,19 @@ mod tests {
     #[tokio::test]
     async fn origin_is_checked_and_second_request_conflicts() {
         let pairing = Pairing::default();
-        let req = pairing.begin(ORIGIN.into(), "Ember".into()).await.unwrap();
+        let req = pairing.begin(ORIGIN.into(), "Web app".into()).await.unwrap();
         assert_eq!(
             pairing.poll(&req.id, "https://other.example").await,
             PollOutcome::WrongOrigin
         );
         assert_eq!(pairing.poll("0000", ORIGIN).await, PollOutcome::Unknown);
-        assert!(pairing.begin(ORIGIN.into(), "Ember".into()).await.is_err());
+        assert!(pairing.begin(ORIGIN.into(), "Web app".into()).await.is_err());
     }
 
     #[tokio::test]
     async fn expiry_clears_the_slot() {
         let pairing = Pairing::default();
-        let req = pairing.begin(ORIGIN.into(), "Ember".into()).await.unwrap();
+        let req = pairing.begin(ORIGIN.into(), "Web app".into()).await.unwrap();
         // Backdate the request past its TTL.
         {
             let mut slot = pairing.slot.write().await;
@@ -234,6 +234,6 @@ mod tests {
         assert_eq!(pairing.respond(&req.id, true).await, None);
         assert_eq!(pairing.poll(&req.id, ORIGIN).await, PollOutcome::Unknown);
         // The slot is free again for a new request.
-        assert!(pairing.begin(ORIGIN.into(), "Ember".into()).await.is_ok());
+        assert!(pairing.begin(ORIGIN.into(), "Web app".into()).await.is_ok());
     }
 }

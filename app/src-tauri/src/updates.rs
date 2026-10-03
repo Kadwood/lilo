@@ -1,6 +1,6 @@
 //! In-app updates. Lilo asks GitHub Releases for `latest.json` (endpoint in `tauri.conf.json`) and
 //! only installs a bundle whose minisign signature matches [`pubkey`]. It never contacts any other
-//! server (and never Ember's).
+//! server .
 //!
 //! The public key lives in `updater.pub` next to `Cargo.toml` (the contents of the file
 //! `tauri signer generate` writes), so it is a plain committed file rather than a long string

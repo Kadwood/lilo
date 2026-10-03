@@ -357,7 +357,7 @@ async fn settings_roundtrip_updates_allowed_origins() {
                 .header(header::AUTHORIZATION, &auth)
                 .header(header::CONTENT_TYPE, "application/json")
                 .body(Body::from(
-                    r#"{"allowedOrigins":["https://ember.example/"]}"#,
+                    r#"{"allowedOrigins":["https://app.example/"]}"#,
                 ))
                 .unwrap(),
         )
@@ -378,7 +378,7 @@ async fn settings_roundtrip_updates_allowed_origins() {
         .unwrap();
     let json = body_json(response).await;
     // Trailing slash is normalized away.
-    assert_eq!(json["allowedOrigins"][0], "https://ember.example");
+    assert_eq!(json["allowedOrigins"][0], "https://app.example");
     assert_eq!(json["apiToken"], app.token);
 
     // Garbage origins are refused.
@@ -389,7 +389,7 @@ async fn settings_roundtrip_updates_allowed_origins() {
             Request::put("/api/settings")
                 .header(header::AUTHORIZATION, &auth)
                 .header(header::CONTENT_TYPE, "application/json")
-                .body(Body::from(r#"{"allowedOrigins":["ember.example"]}"#))
+                .body(Body::from(r#"{"allowedOrigins":["app.example"]}"#))
                 .unwrap(),
         )
         .await
@@ -415,7 +415,7 @@ async fn pairing_approve_flow() {
             Request::post("/api/pair")
                 .header(header::ORIGIN, origin)
                 .header(header::CONTENT_TYPE, "application/json")
-                .body(Body::from(r#"{"appName":"Ember"}"#))
+                .body(Body::from(r#"{"appName":"Web app"}"#))
                 .unwrap(),
         )
         .await
@@ -424,7 +424,7 @@ async fn pairing_approve_flow() {
     let json = body_json(response).await;
     let id = json["request"]["id"].as_str().unwrap().to_string();
     assert_eq!(json["request"]["origin"], origin);
-    assert_eq!(json["request"]["appName"], "Ember");
+    assert_eq!(json["request"]["appName"], "Web app");
 
     // While pending, the browser polls…
     let response = app
@@ -762,52 +762,3 @@ async fn queued_send_can_be_cancelled_through_the_api() {
     assert_eq!(body_json(response).await["job"]["state"], "cancelled");
 }
 
-#[tokio::test]
-async fn filesystem_route_requires_auth_identity_local_ip_and_idle_consent() {
-    let app = test_app().await;
-    for (query, body, token, expected) in [
-        (
-            "ip=192.168.1.4&manufacturer=emberconnect&serial=A",
-            r#"{"confirmedIdle":true}"#,
-            false,
-            StatusCode::UNAUTHORIZED,
-        ),
-        (
-            "ip=192.168.1.4&manufacturer=emberconnect",
-            r#"{"confirmedIdle":true}"#,
-            true,
-            StatusCode::BAD_REQUEST,
-        ),
-        (
-            "ip=192.168.1.4&manufacturer=Brother&serial=A",
-            r#"{"confirmedIdle":true}"#,
-            true,
-            StatusCode::BAD_REQUEST,
-        ),
-        (
-            "ip=192.168.1.4&manufacturer=emberconnect&serial=A",
-            r#"{"confirmedIdle":false}"#,
-            true,
-            StatusCode::BAD_REQUEST,
-        ),
-        (
-            "ip=8.8.8.8&manufacturer=emberconnect&serial=A",
-            r#"{"confirmedIdle":true}"#,
-            true,
-            StatusCode::BAD_REQUEST,
-        ),
-    ] {
-        let mut request = Request::post(format!("/api/link/filesystem?{query}"))
-            .header(header::CONTENT_TYPE, "application/json");
-        if token {
-            request = request.header(header::AUTHORIZATION, format!("Bearer {}", app.token));
-        }
-        let response = app
-            .router
-            .clone()
-            .oneshot(request.body(Body::from(body)).unwrap())
-            .await
-            .unwrap();
-        assert_eq!(response.status(), expected);
-    }
-}

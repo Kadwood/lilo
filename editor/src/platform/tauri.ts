@@ -73,7 +73,7 @@ export const tauriPlatform: Platform = {
 
   async sendToMachine(ip, filename, bytes, options) {
     const c = await client();
-    // Dongle machines need their serial so the Rust side can find the pairing token.
+    // Send with the saved machine's identity so the Rust side can check it is the same device.
     const saved = (await c.machines()).saved.find((m) => m.ip === ip);
     const identity =
       saved?.manufacturer && saved.serial

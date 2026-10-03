@@ -7,7 +7,7 @@ use crate::server::jobs::JobQueue;
 use crate::server::pairing::Pairing;
 use serde::Serialize;
 use std::sync::atomic::AtomicBool;
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 use std::time::Instant;
 use tokio::sync::RwLock;
 
@@ -26,7 +26,7 @@ pub struct DiscoveryCache {
 }
 
 /// Health of the embedded HTTP server, surfaced in the UI so a port
-/// conflict is visible instead of silently breaking Ember.
+/// conflict is visible instead of silently breaking the Link view.
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServerHealth {
@@ -40,9 +40,6 @@ pub struct AppState {
     pub lifecycle: RwLock<()>,
     pub config: ConfigStore,
     pub registry: BackendRegistry,
-    /// Ember Link pairing tokens — one live map shared between the LAN
-    /// backend (reads) and the USB setup flow (pre-pairs new dongles).
-    pub dongle_tokens: Arc<crate::emberconnect::TokenStore>,
     pub logs: LogBuffer,
     pub jobs: JobQueue,
     pub discovered: RwLock<DiscoveryCache>,
@@ -55,8 +52,7 @@ pub struct AppState {
 
 impl AppState {
     pub fn new(config: ConfigStore, port: u16) -> Self {
-        let dongle_tokens = Arc::new(crate::emberconnect::TokenStore::load(config.dir()));
-        let registry = BackendRegistry::with_default_backends(dongle_tokens.clone());
+        let registry = BackendRegistry::with_default_backends();
         let jobs = JobQueue::load(config.dir())
             .expect("transfer history must be readable before accepting more transfers");
         Self {
@@ -64,7 +60,6 @@ impl AppState {
             lifecycle: RwLock::new(()),
             config,
             registry,
-            dongle_tokens,
             logs: LogBuffer::new(),
             jobs,
             discovered: RwLock::new(DiscoveryCache::default()),

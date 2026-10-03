@@ -1,6 +1,6 @@
-# Ember feature inventory (target: match/exceed, all free)
+# Feature inventory (target: match/exceed the commercial digitizers, all free)
 
-Source: emberdesign.net manual + pricing, read 2026-10-03 via WebFetch (summarised text, not raw HTML).
+Source: a commercial digitizer's public manual + pricing, read 2026-10-03 via WebFetch (summarised text, not raw HTML).
 
 ## Pricing split
 - Free: all digitizing tools, pixel art, 15 projects, 7 fills, 23 fonts, 3 run types, multi-format export.
@@ -39,7 +39,7 @@ Reshape, cut holes, start/end points, edit angle, map to path (repeat/count, rot
 - Pixel art: 32x32 grid → stitches.
 - Community: explore, publish, clone, profiles, views, likes, download.
 - Bridge: desktop app, LAN push to Brother Wi-Fi machines (closed source).
-- Ember Link: ESP32-S3 USB dongle, MIT firmware (github.com/EmberSoftwareInc/ember-link), cloud-polled.
+- A USB Wi-Fi dongle exists for sending designs. Out of scope for Lilo.
 
 ## NV2700 facts
 - Max area 160x260mm; hoops 260x160, 180x130.
@@ -50,24 +50,24 @@ Reshape, cut holes, start/end points, edit angle, map to path (repeat/count, rot
 Which run types/fills are free; 34 vs 23 fills gap; fill underlay types; setting ranges/defaults; NV2700 support in Bridge/Link; PES version limits.
 
 ## OSS libraries (checked 2026-10-03)
-- **stitchjs** (github.com/stitchables/stitchjs, npm `@stitchables/stitchjs`): by Ember's founders (Matt Jacobson, Cory Ortega); has `examples/emberEditorSandbox`. TS, browser. Runs: Satin, ClassicSatin, CalligraphySatin, AutoSatin, TatamiFill, AutoFill, BCDFill, CircularFill, PatternFill, StreamlineFill, CrossStitchFill, Run + routed fill/satin. Writers: PES v1 (`#PES0001`), DST. MIT on npm but NO LICENSE file in repo. Verdict: reuse, get licence confirmed.
+- **stitchjs** (github.com/stitchables/stitchjs, npm `@stitchables/stitchjs`): by the authors of a commercial digitizer (Matt Jacobson, Cory Ortega). TS, browser. Runs: Satin, ClassicSatin, CalligraphySatin, AutoSatin, TatamiFill, AutoFill, BCDFill, CircularFill, PatternFill, StreamlineFill, CrossStitchFill, Run + routed fill/satin. Writers: PES v1 (`#PES0001`), DST. MIT on npm but NO LICENSE file in repo. Verdict: reuse, get licence confirmed.
 - **pyembroidery**: MIT, pure Python, writes PES v1 + v6, DST/EXP/JEF/VP3. No digitizer. Last push 2024-05 (stale). Pyodide untested.
 - **pystitch** (inkstitch/pystitch): MIT, maintained pyembroidery fork.
 - **@guillaumemmm/tsembroidery**: MIT TS port of pyembroidery, writePes/readPes/DST, svgToPes. New, 1 author. PES version unverified.
 - **Ink/Stitch**: GPL-3 — reference only.
 - **libembroidery**: zlib, C, no wasm build found.
-- **Embroiderly**: GPL, cross-stitch app — not related to Ember. Ignore.
+- **Embroiderly**: GPL, cross-stitch app — not related. Ignore.
 - **Stitch Lab**: closed source. Ignore.
 
 ## Machine transfer (checked 2026-10-03)
-- **Ember Bridge is open source, MIT**: github.com/EmberSoftwareInc/ember-bridge (Tauri + Rust, pushed 2026-10-02). Speaks Brother's reverse-engineered "pedxml" protocol (TLS 1.2, static RSA) to Innov-is / WLAN machines over local Wi-Fi. Localhost REST API on 127.0.0.1:17831 with origin-gated pairing → token; endpoints: health, discover, machines, info, status, send (raw bytes), jobs, logs, settings. Manufacturer-neutral `machine/` layer + `brother/` backend + Ember Link dongle backend. NV2700 not named — test it.
+- **A Wi-Fi bridge for Brother machines is open source, MIT** (Tauri + Rust, pushed 2026-10-02; credited in NOTICE.md). Speaks Brother's reverse-engineered "pedxml" protocol (TLS 1.2, static RSA) to Innov-is / WLAN machines over local Wi-Fi. Localhost REST API on 127.0.0.1:17831 with origin-gated pairing → token; endpoints: health, discover, machines, info, status, send (raw bytes), jobs, logs, settings. Manufacturer-neutral `machine/` layer + `brother/` backend. NV2700 not named — test it.
 - Protocol PoC: github.com/evozago/brother-embroidery-connect (MIT, PROTOCOL.md).
 - USB on Brother (sibling models; NV2700 unconfirmed): machine mounts as removable disk on Mac. Write PES at root — no folders. Brother says max ~12 designs. Eject before unplug.
 - Browser write to USB: Chrome/Edge only (`showDirectoryPicker`); Safari + Firefox no.
 
 ## Auto digitize (checked 2026-10-03)
 - stitchjs has NO image tracing/quantise/region code. Starts at polygons: `AutoFill(shell, holes, angle, rowSpacingMm, fillPattern, travelStitchLengthMm, start, end, center?, underpath, gradient?)` (src/Core/Runs/AutoFill.ts:79); `AutoSatin(ClassicSatin[], start?, end?)`. Example `examples/svgToEmbroidery` = SVG → stitches.
-- Ember's method: not published.
+- The commercial digitizers' method: not published.
 - **vtracer** (visioncortex/vtracer): MIT, colour quantise + trace, WASM (~65 KiB) + Rust crate. Alpha (1.0.0-alpha.4) — pin it. Best fit.
 - imagetracerjs: Unlicense, stale (2023). Fallback.
 - potrace (GPL), imgly background-removal (AGPL): avoid.

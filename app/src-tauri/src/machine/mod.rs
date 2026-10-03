@@ -9,7 +9,7 @@
 //!   1. create a sibling module implementing both traits,
 //!   2. register the backend in [`BackendRegistry::with_default_backends`].
 //!
-//! No changes to the Ember-facing API are required.
+//! No changes to the localhost API are required.
 
 pub mod error;
 pub mod models;
@@ -90,17 +90,10 @@ impl BackendRegistry {
         Self { backends }
     }
 
-    /// Registry with every backend this build ships with. `dongle_tokens`
-    /// is the Ember Link pairing-token store, shared with the USB setup
-    /// flow (which mints tokens this backend then presents on the LAN).
-    pub fn with_default_backends(dongle_tokens: Arc<crate::emberconnect::TokenStore>) -> Self {
+    /// Registry with every backend this build ships with.
+    pub fn with_default_backends() -> Self {
         Self {
-            backends: vec![
-                Arc::new(crate::brother::BrotherBackend::new()),
-                Arc::new(crate::emberconnect::EmberConnectBackend::with_tokens(
-                    dongle_tokens,
-                )),
-            ],
+            backends: vec![Arc::new(crate::brother::BrotherBackend::new())],
         }
     }
 
