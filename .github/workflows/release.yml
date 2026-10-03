@@ -290,11 +290,231 @@ jobs:
           if-no-files-found: error
           retention-days: ${{ env.IS_RELEASE == 'true' && 7 || 14 }}
 
+  # ---- smoke tests: install the built bundles on a clean runner and check Lilo really starts --------
+  # Each one installs (or unpacks) the artifact, launches the app, and polls the local API
+  # (GET http://127.0.0.1:17841/api/health) until it says app=lilo and the version being released.
+  # `release` needs all three, so a failure here means no draft release. Screenshots go up as
+  # `smoke-*` artifacts (not `lilo-*`, so the release job never picks them up).
+  smoke-windows:
+    name: Smoke test Windows install
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: [verify, build]
+    runs-on: windows-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: lilo-windows
+          path: dist
+
+      - name: WebView2 runtime is present
+        shell: pwsh
+        run: |
+          $key = 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}'
+          $pv = (Get-ItemProperty -Path $key -ErrorAction SilentlyContinue).pv
+          if (-not $pv) { Write-Error 'WebView2 runtime not found on this runner'; exit 1 }
+          Write-Output "WebView2 $pv"
+
+      - name: Silent install (per-user)
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem dist -Filter '*-setup.exe' | Select-Object -First 1
+          if (-not $setup) { Write-Error 'no *-setup.exe in the lilo-windows artifact'; exit 1 }
+          Write-Output "Installing $($setup.Name)"
+          $p = Start-Process -FilePath $setup.FullName -ArgumentList '/S' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { Write-Error "installer exited $($p.ExitCode)"; exit 1 }
+
+          # Find the install dir: the per-user uninstall key first, then the default location.
+          $dir = $null
+          $roots = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*'
+          foreach ($e in Get-ItemProperty -Path $roots -ErrorAction SilentlyContinue) {
+            if ($e.DisplayName -eq 'Lilo' -and $e.InstallLocation) { $dir = $e.InstallLocation.Trim('"'); break }
+          }
+          if (-not $dir) { $dir = Join-Path $env:LOCALAPPDATA 'Lilo' }
+          $exe = Join-Path $dir 'Lilo.exe'
+          if (-not (Test-Path $exe)) {
+            Get-ChildItem -Recurse $env:LOCALAPPDATA -Filter '*.exe' -ErrorAction SilentlyContinue |
+              Where-Object { $_.FullName -like '*Lilo*' } | ForEach-Object { Write-Output $_.FullName }
+            Write-Error "Lilo.exe not found in $dir"; exit 1
+          }
+          Write-Output "Installed at $dir"
+          "LILO_DIR=$dir" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "LILO_EXE=$exe" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Launch and check the local API
+        shell: pwsh
+        run: |
+          $app = Start-Process -FilePath $env:LILO_EXE -PassThru
+          node scripts/smoke-health.mjs --version $env:VERSION --timeout 60
+          if ($LASTEXITCODE -ne 0) { Write-Error 'health check failed'; exit 1 }
+          if ($app.HasExited) { Write-Error "Lilo exited on its own (code $($app.ExitCode))"; exit 1 }
+
+      - name: Screenshot
+        if: always()
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $b = [System.Windows.Forms.SystemInformation]::VirtualScreen
+          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          $g = [System.Drawing.Graphics]::FromImage($bmp)
+          $g.CopyFromScreen($b.Left, $b.Top, 0, 0, $bmp.Size)
+          $bmp.Save("$env:RUNNER_TEMP\windows-desktop.png", [System.Drawing.Imaging.ImageFormat]::Png)
+          $g.Dispose(); $bmp.Dispose()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-windows-screenshot
+          path: ${{ runner.temp }}/windows-desktop.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop Lilo
+        if: always()
+        shell: pwsh
+        run: |
+          Get-Process -Name 'Lilo' -ErrorAction SilentlyContinue | Stop-Process -Force
+          Start-Sleep -Seconds 2
+
+      - name: Silent uninstall removes the install
+        shell: pwsh
+        run: |
+          $un = Join-Path $env:LILO_DIR 'uninstall.exe'
+          if (-not (Test-Path $un)) { Write-Error "uninstaller not found at $un"; exit 1 }
+          Start-Process -FilePath $un -ArgumentList '/S' -Wait
+          # NSIS copies the uninstaller to temp and returns early, so wait for the folder to vanish.
+          $deadline = (Get-Date).AddSeconds(60)
+          while ((Test-Path (Join-Path $env:LILO_DIR 'Lilo.exe')) -and (Get-Date) -lt $deadline) {
+            Start-Sleep -Seconds 1
+          }
+          if (Test-Path (Join-Path $env:LILO_DIR 'Lilo.exe')) { Write-Error 'Lilo.exe still there after uninstall'; exit 1 }
+          Write-Output 'Uninstalled cleanly'
+
+  smoke-linux:
+    name: Smoke test Linux (.deb and AppImage)
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: [verify, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      # Software rendering inside Xvfb: no GPU on the runner.
+      WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+      WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+      LIBGL_ALWAYS_SOFTWARE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: lilo-linux
+          path: dist
+
+      - name: Runtime packages (no -dev, no build tools)
+        run: |
+          sudo apt-get update
+          # What a user's machine needs. The .deb pulls most of it in itself; the AppImage test
+          # below relies on these being on the system (AppImages bundle webkit but not GTK/X libs).
+          sudo apt-get install -y xvfb imagemagick dbus-x11 libwebkit2gtk-4.1-0 libgtk-3-0 \
+            libayatana-appindicator3-1 librsvg2-2 libssl3 xdg-utils
+
+      - name: .deb installs and launches
+        run: |
+          set -euo pipefail
+          debs=(dist/*.deb); deb="${debs[0]}"
+          [ -f "$deb" ] || { echo "::error::no .deb in the lilo-linux artifact"; exit 1; }
+          pkg="$(dpkg-deb -f "$deb" Package)"
+          sudo apt-get install -y "./$deb"
+          dpkg -L "$pkg"
+          bin="$(dpkg -L "$pkg" | grep -E '^/usr/bin/[^/]+$' | head -n 1)"
+          [ -n "$bin" ] || { echo "::error::the .deb installs nothing in /usr/bin"; exit 1; }
+          echo "binary: $bin"
+          ldd "$bin" | grep "not found" && { echo "::error::missing shared libraries"; exit 1; } || true
+          xvfb-run -a -s "-screen 0 1280x800x24" \
+            scripts/smoke-launch.sh "$VERSION" "$RUNNER_TEMP/linux-deb.png" "$bin"
+          sudo apt-get remove -y "$pkg"
+          [ ! -e "$bin" ] || { echo "::error::$bin still there after apt remove"; exit 1; }
+
+      - name: AppImage launches (no FUSE)
+        run: |
+          set -euo pipefail
+          imgs=(dist/*.AppImage); img="${imgs[0]}"
+          [ -f "$img" ] || { echo "::error::no AppImage in the lilo-linux artifact"; exit 1; }
+          chmod +x "$img"
+          xvfb-run -a -s "-screen 0 1280x800x24" \
+            scripts/smoke-launch.sh "$VERSION" "$RUNNER_TEMP/linux-appimage.png" "$PWD/$img" --appimage-extract-and-run
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-linux-screenshots
+          path: ${{ runner.temp }}/linux-*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+  smoke-macos:
+    name: Smoke test macOS DMG
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: [verify, build]
+    runs-on: macos-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      VERSION: ${{ needs.verify.outputs.version }}
+      # Same "is it signed" test the build job used; unsigned dispatch builds skip the spctl check.
+      HAVE_APPLE: ${{ secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_API_KEY_P8_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: lilo-macos
+          path: dist
+
+      - name: Copy Lilo.app out of the DMG
+        run: |
+          set -euo pipefail
+          dmgs=(dist/*.dmg); dmg="${dmgs[0]}"
+          [ -f "$dmg" ] || { echo "::error::no .dmg in the lilo-macos artifact"; exit 1; }
+          mnt="$RUNNER_TEMP/lilo-dmg"
+          mkdir -p "$mnt" "$RUNNER_TEMP/lilo-app"
+          hdiutil attach "$dmg" -nobrowse -readonly -mountpoint "$mnt"
+          ls "$mnt"
+          cp -R "$mnt/Lilo.app" "$RUNNER_TEMP/lilo-app/"
+          hdiutil detach "$mnt"
+
+      - name: Gatekeeper accepts it (signed builds only)
+        if: env.HAVE_APPLE == 'true'
+        run: spctl -a -vv -t exec "$RUNNER_TEMP/lilo-app/Lilo.app"
+
+      - name: Launch and check the local API
+        run: |
+          set -euo pipefail
+          app="$RUNNER_TEMP/lilo-app/Lilo.app"
+          bins=("$app"/Contents/MacOS/*); bin="${bins[0]}"
+          [ -x "$bin" ] || { echo "::error::no executable in $app/Contents/MacOS"; exit 1; }
+          echo "binary: $bin"
+          scripts/smoke-launch.sh "$VERSION" - "$bin"
+
   release:
     name: Draft release
     # tags only: a manual run stops after the artifacts above
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [verify, build]
+    needs: [verify, build, smoke-windows, smoke-linux, smoke-macos]
     runs-on: ubuntu-latest
     permissions:
       contents: write
