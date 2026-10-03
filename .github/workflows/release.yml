@@ -151,7 +151,7 @@ jobs:
           node -e '
             const pub = require("fs").readFileSync("app/src-tauri/updater.pub", "utf8").trim();
             const cfg = { bundle: { createUpdaterArtifacts: true }, plugins: { updater: { pubkey: pub } } };
-            console.log("TAURI_CONFIG=" + JSON.stringify(cfg));
+            console.log("LILO_TAURI_CONFIG=" + JSON.stringify(cfg));
           ' >> "$GITHUB_ENV"
 
       # ---- macOS: Developer ID signing + notarization -------------------------------------------
@@ -215,7 +215,23 @@ jobs:
           # linuxdeploy (AppImage) cannot use FUSE on a CI runner and chokes on newer ELF sections
           APPIMAGE_EXTRACT_AND_RUN: "1"
           NO_STRIP: "true"
-        run: pnpm tauri build ${{ matrix.args }}
+        # (--config, not the TAURI_CONFIG env var: the CLI ignores that one when bundling)
+        run: pnpm tauri build ${{ matrix.args }} ${LILO_TAURI_CONFIG:+--config "$LILO_TAURI_CONFIG"}
+
+      # Tauri notarizes and staples the .app but only SIGNS the .dmg (checked with a local run:
+      # `spctl` says "Unnotarized Developer ID" for it). Notarize and staple the DMG too, so it
+      # opens cleanly even offline.
+      - name: Notarize and staple the DMG (macOS)
+        if: matrix.id == 'macos' && env.HAVE_APPLE == 'true'
+        env:
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          set -euo pipefail
+          DMG="$(ls ${{ matrix.bundle_dir }}/dmg/*.dmg)"
+          xcrun notarytool submit "$DMG" --key "$APPLE_API_KEY_PATH" --key-id "$APPLE_API_KEY" \
+            --issuer "$APPLE_API_ISSUER" --wait --timeout 30m
+          xcrun stapler staple "$DMG"
 
       - name: Verify signature and notarization (macOS)
         if: matrix.id == 'macos' && env.HAVE_APPLE == 'true'

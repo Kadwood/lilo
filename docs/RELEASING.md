@@ -95,7 +95,9 @@ codesign -dvv /Volumes/Lilo/Lilo.app 2>&1 | grep -E "Authority|flags"
 # expect: Authority=Developer ID Application: Jins Kaduthodil (7CTKDV6KVS), flags include runtime
 ```
 
-The workflow runs the same checks on the CI-built files and fails the job if any fails.
+Tauri notarizes and staples the `.app`, but only signs the `.dmg`; the workflow submits the DMG to
+the notary service and staples it as a separate step. It then runs the same checks on the CI-built
+files and fails the job if any fails.
 
 ## Rollback
 
@@ -116,7 +118,7 @@ The workflow runs the same checks on the CI-built files and fails the job if any
   universal DMG, Windows NSIS, Linux AppImage + deb), then `release` (tags only) which writes
   `SHA256SUMS`, builds `latest.json` with `scripts/make-latest-json.mjs`, and creates the draft in one go.
 - Updater bundles are only produced when `TAURI_SIGNING_PRIVATE_KEY` exists. They are switched on
-  from CI (`TAURI_CONFIG`), not in `tauri.conf.json`, so building from source doesn't need our key.
+  from CI (`--config`), not in `tauri.conf.json`, so building from source doesn't need our key.
 - The Mac DMG layout and hibiscus background are `app/src-tauri/dmg/`. Known Tauri limitation: on CI
   runners the Finder step that places icons and draws the background may be skipped
   (<https://github.com/tauri-apps/tauri/issues/1731>); the DMG still contains Lilo and an
