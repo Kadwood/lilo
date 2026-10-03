@@ -14,7 +14,8 @@
   "scripts": {
     "test": "vitest run",
     "smoke": "SMOKE_OUT=${SMOKE_OUT:-.smoke} vitest run test/smoke.test.ts --silent=false && cat ${SMOKE_OUT:-.smoke}/smoke.txt",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "swatches": "LILO_SWATCHES=1 vitest run test/swatches.test.ts"
   },
   "dependencies": {
     "@stitchables/stitchjs": "^1.0.37",
