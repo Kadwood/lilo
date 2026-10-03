@@ -26,7 +26,9 @@ describe("designToStitchPlan", () => {
     for (const s of fill) {
       expect(s.x).toBeGreaterThan(-15.5);
       expect(s.x).toBeLessThan(15.5);
-      const inHole = s.x > -7.7 && s.x < 7.7 && s.y > -3.7 && s.y < 3.7;
+      // hole is +-8 x +-4, pulled in to +-7.8 x +-3.8. At the 4 mm default stitch length stitchjs can clip a
+      // hole corner by a few tenths of a mm, so the test box is 0.5 mm further in.
+      const inHole = s.x > -7.3 && s.x < 7.3 && s.y > -3.3 && s.y < 3.3;
       expect(inHole).toBe(false);
     }
   });

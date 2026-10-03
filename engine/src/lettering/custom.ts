@@ -1,7 +1,8 @@
 /// <reference path="./opentype.d.ts" />
 import { init as initStitch } from "@stitchables/stitchjs";
 import * as opentype from "opentype.js";
-import { LETTERING_STROKES, median, strokePlan } from "../autodigitize/strokes";
+import { LETTERING_STROKES, median, satinTraits, strokePlan } from "../autodigitize/strokes";
+import { DEFAULTS } from "../presets/defaults";
 import { polygonFromRings, polygonsOf, ringsOf, unionAll, type Poly } from "../geom";
 import { DEFAULT_FILL_PARAMS, DEFAULT_SATIN_PARAMS, type Pt } from "../model";
 import { stripWidths } from "./satin";
@@ -239,8 +240,8 @@ function fillOf(part: Poly): PlacedElement {
     angle: DEFAULT_FILL_PARAMS.angleDeg,
     rowSpacing: DEFAULT_FILL_PARAMS.rowSpacingMm,
     stitchLen: DEFAULT_FILL_PARAMS.stitchLengthMm,
-    pull: 0.15,
-    underlay: part.getArea() > 6,
+    pull: DEFAULTS.lettering.fillPullCompMm,
+    underlay: part.getArea() > DEFAULTS.lettering.fillUnderlayMinAreaMm2,
     edgeRun: true,
     c: 0,
   };
@@ -252,8 +253,8 @@ function satinFrom(strip: Pt[]): PlacedElement {
     k: "satin",
     strip,
     widthMm: w,
-    pull: w < 1.2 ? 0.1 : DEFAULT_SATIN_PARAMS.pullCompMm,
-    underlay: w < 1.2 ? "none" : w < 4 ? "center" : "contour",
+    pull: satinTraits(w).pull,
+    underlay: satinTraits(w).underlay,
     density: DEFAULT_SATIN_PARAMS.densityMm,
     c: 0,
   };
