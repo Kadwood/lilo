@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { validateDesign } from "../model";
 import { designToStitchPlan, type StitchPlan } from "../stitch";
 import { islandsPlan, samplePlan } from "./test-plans";
 import {
@@ -127,7 +128,8 @@ describe("embroidery formats", () => {
     const read = readEmbroidery(writeEmbroidery(plan, "pes"), "pes").plan;
     const { objects, threads } = stitchPlanToManualObjects(read);
     expect(objects.length).toBeGreaterThanOrEqual(3);
-    expect(objects.every((o) => o.kind === "run" && o.geometry.path.length >= 1)).toBe(true);
+    expect(objects.every((o) => o.kind === "run" && o.geometry.path.length >= 2)).toBe(true);
+    expect(validateDesign(planToManualDesign(read))).toEqual([]);
     expect(threads.length).toBe(3);
     const design = planToManualDesign(read);
     const regenerated = designToStitchPlan(design);

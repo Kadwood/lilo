@@ -9,3 +9,4 @@ export * from "./autodigitize";
 export * from "./threads/shelf";
 export * from "./formats";
 export * from "./pixelart";
+export * from "./project";

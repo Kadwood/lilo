@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@stitchables/stitchjs": "^1.0.37",
+    "fflate": "^0.8.3",
     "image-q": "4.0.0",
     "jsts": "2.12.1",
     "vtracer-wasm": "0.1.0"

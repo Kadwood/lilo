@@ -196,7 +196,8 @@ export function stitchPlanToManualObjects(plan: StitchPlan, namePrefix = "Stitch
         name: `${namePrefix} ${objects.length + 1}`,
         kind: "run",
         threadId: blockThread.id,
-        geometry: { path, closed: false },
+        // validateDesign wants 2+ points; a lone needle drop is doubled (generation drops the duplicate)
+        geometry: { path: path.length === 1 ? [path[0], path[0]] : path, closed: false },
         params: { ...MANUAL_RUN_PARAMS },
       });
     }
