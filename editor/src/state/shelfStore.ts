@@ -13,9 +13,11 @@ export interface ShelfState {
   status: "idle" | "loading" | "ready" | "error";
   /** Set when reading or writing failed; the shelf still works for this session. */
   error: string | null;
+  /** The file was damaged but the previous save is good: the panel offers to restore it. */
+  recovery: { backup: string } | null;
 }
 
-export const shelfStore = createStore<ShelfState>(() => ({ shelf: emptyShelf(), status: "idle", error: null }));
+export const shelfStore = createStore<ShelfState>(() => ({ shelf: emptyShelf(), status: "idle", error: null, recovery: null }));
 
 /** The shelf right now (empty until `loadShelf` finishes). */
 export const getShelf = (): Shelf => shelfStore.getState().shelf;
@@ -30,8 +32,17 @@ export function loadShelf(): Promise<void> {
   loading ??= (async () => {
     shelfStore.setState({ status: "loading" });
     try {
-      const text = await getPlatform().readMyThreads();
-      shelfStore.setState({ shelf: text ? importShelf(text) : emptyShelf(), status: "ready", error: null });
+      const file = await getPlatform().readMyThreads();
+      if (file.corrupt) {
+        // never overwrite what we could not read; offer the previous save if it is good
+        shelfStore.setState({
+          status: "error",
+          error: file.backup ? "Your My Threads file is damaged, but the copy from the previous save is intact." : "Your My Threads file is damaged and there is no earlier copy, so it has been left alone.",
+          recovery: file.backup ? { backup: file.backup } : null,
+        });
+        return;
+      }
+      shelfStore.setState({ shelf: file.text ? importShelf(file.text) : emptyShelf(), status: "ready", error: null, recovery: null });
     } catch (e) {
       // keep going with an empty shelf, but never overwrite the file we could not read
       shelfStore.setState({ status: "error", error: `Could not read My Threads: ${msg(e)}` });
@@ -51,11 +62,25 @@ export async function updateShelf(fn: (s: Shelf) => Shelf): Promise<void> {
   await writes;
 }
 
+/** Use the previous save in place of the damaged file, and save it as the shelf. */
+export async function restoreShelfBackup(): Promise<void> {
+  const r = shelfStore.getState().recovery;
+  if (!r) return;
+  const shelf = importShelf(r.backup);
+  shelfStore.setState({ shelf, status: "ready", error: null, recovery: null });
+  await getPlatform().writeMyThreads(exportShelf(shelf));
+}
+
+/** Carry on with an empty shelf; the damaged file is replaced by the next change (the good backup is kept). */
+export function startShelfEmpty(): void {
+  shelfStore.setState({ shelf: emptyShelf(), status: "ready", error: null, recovery: null });
+}
+
 /** Forget everything (tests). */
 export function resetShelfStore(): void {
   loading = null;
   writes = Promise.resolve();
-  shelfStore.setState({ shelf: emptyShelf(), status: "idle", error: null });
+  shelfStore.setState({ shelf: emptyShelf(), status: "idle", error: null, recovery: null });
 }
 
 export function useShelf(): ShelfState {

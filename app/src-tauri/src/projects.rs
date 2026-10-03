@@ -145,7 +145,13 @@ fn resolve(path: &Path) -> Result<PathBuf, String> {
     }
     let parent = path.parent().filter(|p| !p.as_os_str().is_empty()).ok_or("The path has no folder.")?;
     let parent = parent.canonicalize().map_err(|_| "The folder does not exist.".to_string())?;
-    Ok(parent.join(path.file_name().ok_or("The path has no file name.")?))
+    let resolved = parent.join(path.file_name().ok_or("The path has no file name.")?);
+    // A symbolic link could point a save at any file the user can write. Checked here, so it holds
+    // when the path is registered and again at every read and write.
+    if std::fs::symlink_metadata(&resolved).is_ok_and(|m| m.file_type().is_symlink()) {
+        return Err("That file is a symbolic link; Lilo won't open or save through it.".into());
+    }
+    Ok(resolved)
 }
 
 /// The user picked this `.lilo` file in a native Open or Save dialog (possibly outside the default
@@ -224,12 +230,26 @@ pub async fn write_project_file(app: tauri::AppHandle, request: tauri::ipc::Requ
     if bytes.len() as u64 > MAX_PROJECT_BYTES {
         return Err("That project is too large to save.".into());
     }
-    let tmp = path.with_extension("lilo.tmp");
-    tokio::fs::write(&tmp, bytes).await.map_err(|e| format!("Could not save: {e}"))?;
-    tokio::fs::rename(&tmp, &path).await.map_err(|e| {
-        let _ = std::fs::remove_file(&tmp);
-        format!("Could not save: {e}")
-    })
+    let bytes = bytes.to_vec();
+    tokio::task::spawn_blocking(move || crate::fsutil::durable_write(&path, &bytes, crate::fsutil::looks_like_zip))
+        .await
+        .map_err(|e| format!("Could not save: {e}"))?
+        .map_err(|e| format!("Could not save: {e}"))
+}
+
+/// The previous save of a project (`<name>.lilo.bak`), for when the file itself is damaged.
+#[tauri::command]
+pub async fn read_project_backup(app: tauri::AppHandle, path: String) -> Result<tauri::ipc::Response, String> {
+    let path = allowed(&app, Path::new(&path))?;
+    let bak = crate::fsutil::bak_path(&path);
+    if std::fs::symlink_metadata(&bak).is_ok_and(|m| m.file_type().is_symlink()) {
+        return Err("There is no earlier copy.".into());
+    }
+    let bytes = tokio::fs::read(&bak).await.map_err(|_| "There is no earlier copy.".to_string())?;
+    if bytes.len() as u64 > MAX_PROJECT_BYTES || !crate::fsutil::looks_like_zip(&bytes) {
+        return Err("There is no earlier copy.".into());
+    }
+    Ok(tauri::ipc::Response::new(bytes))
 }
 
 /// Minimal `%XX` decoder for the path header.
@@ -333,6 +353,25 @@ mod tests {
         // the folder part is canonicalised, so "sub/../x.lilo" lands where it really is
         std::fs::create_dir_all(dir.join("sub")).unwrap();
         assert_eq!(resolve(&dir.join("sub").join("..").join("x.lilo")).unwrap(), canonical.join("x.lilo"));
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn refuses_a_project_path_that_is_a_symlink() {
+        let dir = scratch("symlink");
+        let target = dir.join("elsewhere.txt");
+        std::fs::write(&target, b"x").unwrap();
+        let link = dir.join("Evil.lilo");
+        std::os::unix::fs::symlink(&target, &link).unwrap();
+        assert!(resolve(&link).unwrap_err().contains("symbolic link"));
+        // a regular file next to it is fine
+        std::fs::write(dir.join("Good.lilo"), b"x").unwrap();
+        assert!(resolve(&dir.join("Good.lilo")).is_ok());
+        // and the check holds later: a good path swapped for a link after registering is refused again
+        std::fs::remove_file(dir.join("Good.lilo")).unwrap();
+        std::os::unix::fs::symlink(&target, dir.join("Good.lilo")).unwrap();
+        assert!(resolve(&dir.join("Good.lilo")).is_err());
         std::fs::remove_dir_all(dir).unwrap();
     }
 

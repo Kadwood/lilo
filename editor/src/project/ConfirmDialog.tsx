@@ -23,6 +23,7 @@ export function ConfirmDialog() {
   if (!confirm) return null;
   const name = confirm.projectName.trim() || "Untitled design";
   const revert = confirm.kind === "revert";
+  const recover = confirm.kind === "recover";
 
   return (
     <div className="dialog-backdrop" role="presentation">
@@ -39,23 +40,27 @@ export function ConfirmDialog() {
           }
         }}
       >
-        <h2 id="confirm-title">{revert ? "Revert to the saved version?" : `Save changes to “${name}”?`}</h2>
+        <h2 id="confirm-title">{recover ? "This project file is damaged" : revert ? "Revert to the saved version?" : `Save changes to “${name}”?`}</h2>
         <p id="confirm-body" className="muted">
-          {revert ? "Everything since you last saved will be lost." : `You have changes that are not saved. If you ${confirm.action} without saving, they will be lost.`}
+          {recover
+            ? "Lilo can't read it, but the copy from the save before the last one is fine. Open that copy instead? Nothing is overwritten until you save."
+            : revert
+              ? "Everything since you last saved will be lost."
+              : `You have changes that are not saved. If you ${confirm.action} without saving, they will be lost.`}
         </p>
         <div className="dialog-actions">
-          {!revert && (
+          {!revert && !recover && (
             <button className="danger" onClick={() => m.resolveConfirm("discard")}>
               Don&apos;t save
             </button>
           )}
           <span className="spacer" />
-          <button onClick={() => m.resolveConfirm("cancel")} ref={revert ? first : undefined}>
+          <button onClick={() => m.resolveConfirm("cancel")} ref={revert || recover ? first : undefined}>
             Cancel
           </button>
-          {revert ? (
+          {revert || recover ? (
             <button className="primary" onClick={() => m.resolveConfirm("discard")}>
-              Revert
+              {recover ? "Open the earlier copy" : "Revert"}
             </button>
           ) : (
             <button className="primary" ref={first} onClick={() => m.resolveConfirm("save")}>

@@ -1,6 +1,8 @@
 import { createStore, type StoreApi } from "zustand/vanilla";
 import {
+  MAX_FONT_BYTES,
   ProjectError,
+  addFont,
   addHistorySnapshot,
   addImage,
   createProject,
@@ -27,8 +29,8 @@ export type UnsavedChoice = "save" | "discard" | "cancel";
 export interface ConfirmRequest {
   /** What the user was about to do: "close", "start a new design", "open another project"... */
   action: string;
-  /** Which question: unsaved changes (Save / Don't save / Cancel) or revert (Revert / Cancel). */
-  kind: "unsaved" | "revert";
+  /** Which question: unsaved changes (Save / Don't save / Cancel), revert (Revert / Cancel), or a damaged file (Open the earlier copy / Cancel). */
+  kind: "unsaved" | "revert" | "recover";
   projectName: string;
 }
 
@@ -66,8 +68,15 @@ export interface ProjectDeps {
   platform: () => Platform;
   pixel: PixelStore;
   shelf: () => Shelf;
+  /** Uploaded fonts: which ones a project embeds (the ones its text uses) and how they are brought back on open. */
+  fonts?: {
+    collect(keys: readonly string[]): Promise<{ id: string; name: string; ext: string; bytes: Uint8Array }[]>;
+    restore(fonts: readonly { id: string; name: string; bytes: Uint8Array }[]): Promise<void>;
+  };
   now?: () => Date;
 }
+
+class CancelledOpen extends Error {}
 
 const msg = (e: unknown) => (e instanceof Error ? e.message : String(e));
 const fileNameFor = (title: string) => `${(title.trim() || "Untitled").replace(/[\\/:*?"<>|]+/g, "_")}.lilo`;
@@ -104,6 +113,8 @@ export function createProjectManager(deps: ProjectDeps) {
   /** What "saved" looked like, to tell when something changed. */
   let saved: { design: Design | null; name: string; pixel: PixelArt } = { design: es().design, name: es().projectName, pixel: pixel.store.getState().art };
   let queue: Promise<unknown> = Promise.resolve();
+  /** What went wrong embedding fonts in the last project built; shown with "Saved". */
+  let fontWarnings: string[] = [];
   const serial = <T>(fn: () => Promise<T>): Promise<T> => {
     const run = queue.then(fn, fn);
     queue = run.catch(() => {});
@@ -137,6 +148,19 @@ export function createProjectManager(deps: ProjectDeps) {
     const art = pixel.store.getState().art;
     let project = createProject({ title: s.projectName, design, shelf: deps.shelf(), app: "Lilo", now: base ? new Date(base.doc.createdAt) : t });
     project = { ...project, doc: { ...project.doc, savedAt: t.toISOString(), pixelArt: isBlank(art) ? null : art } };
+    fontWarnings = [];
+    const customKeys = (design.textBlocks ?? []).filter((b) => b.fontId.startsWith("custom:")).map((b) => b.fontId.slice(7));
+    if (customKeys.length > 0 && deps.fonts) {
+      const found = await deps.fonts.collect(customKeys);
+      for (const f of found) {
+        try {
+          project = addFont(project, f);
+        } catch {
+          fontWarnings.push(`The font "${f.name}" is over ${MAX_FONT_BYTES / 1024 / 1024} MB, so it was not saved in the project.`);
+        }
+      }
+      for (const k of customKeys) if (!found.some((f) => f.id === k)) fontWarnings.push("A font used by the text is no longer available here, so it was not saved in the project.");
+    }
     const bytes = new Map(editor.actions.imageAssets().map((a) => [a.id, a]));
     for (const m of design.images ?? []) {
       const a = bytes.get(m.id);
@@ -162,6 +186,9 @@ export function createProjectManager(deps: ProjectDeps) {
       design = { ...design, images: refs.map((r) => placementOf(r)) };
     }
     const images = Object.fromEntries(refs.map((r) => [r.id, { bytes: project.images[r.id], mime: r.mime }]));
+    // fonts the project carries, so its text opens (and can be edited) on a machine that never had them
+    const embedded = doc.fonts.flatMap((f) => (f.source === "custom" && project.fonts[f.id] && project.fonts[f.id].length <= MAX_FONT_BYTES ? [{ id: f.id, name: f.name, bytes: project.fonts[f.id] }] : []));
+    await deps.fonts?.restore(embedded).catch(() => {});
     await editor.actions.loadDesign(design, { name: doc.title, images });
     pixel.actions.load(doc.pixelArt ?? null);
     base = project;
@@ -219,10 +246,28 @@ export function createProjectManager(deps: ProjectDeps) {
     /** The OS asks us to open a file (double-click). */
     openFile: (file: OpenedPath): Promise<boolean> =>
       guarded("open another project", async () => {
-        const { project, warnings } = loadProject(file.bytes);
-        await apply(project, file.path || null);
-        if (warnings.length) set({ notice: { kind: "ok", text: warnings.join(" ") } });
-      }).catch(fail),
+        let loaded: ReturnType<typeof loadProject>;
+        let recovered = false;
+        try {
+          loaded = loadProject(file.bytes);
+        } catch (e) {
+          // a damaged file: the previous save (kept beside it) may still be good, but only open it if the user says so
+          const bak = e instanceof ProjectError && file.path ? await deps.platform().readProjectBackup(file.path).catch(() => null) : null;
+          let earlier: ReturnType<typeof loadProject> | null = null;
+          try {
+            earlier = bak ? loadProject(bak) : null;
+          } catch {
+            earlier = null;
+          }
+          if (!earlier) throw e;
+          if ((await ask("open the earlier copy", "recover")) === "cancel") throw new CancelledOpen();
+          loaded = earlier;
+          recovered = true;
+        }
+        await apply(loaded.project, file.path || null);
+        if (recovered) set({ dirty: true, notice: { kind: "ok", text: "Opened the copy from the previous save. Save to replace the damaged file." } });
+        else if (loaded.warnings.length) set({ notice: { kind: "ok", text: loaded.warnings.join(" ") } });
+      }).catch((e) => (e instanceof CancelledOpen ? false : fail(e))),
 
     /** Open… */
     async openDialog(): Promise<boolean> {
@@ -413,7 +458,7 @@ export function createProjectManager(deps: ProjectDeps) {
   function finish(project: LiloProject, path: string | null) {
     base = project;
     markSaved();
-    set({ path, savedAt: project.doc.savedAt, history: project.history, notice: { kind: "ok", text: path ? `Saved ${path.split(/[\\/]/).pop()}` : "Saved" } });
+    set({ path, savedAt: project.doc.savedAt, history: project.history, notice: { kind: "ok", text: `${path ? `Saved ${path.split(/[\\/]/).pop()}` : "Saved"}${fontWarnings.length ? `. ${fontWarnings.join(" ")}` : ""}` } });
   }
 
   return api;

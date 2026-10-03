@@ -15,7 +15,7 @@ import {
   type ThreadEntry,
 } from "@lilo/engine/light";
 import { getPlatform } from "../platform";
-import { loadShelf, updateShelf, useShelf } from "../state/shelfStore";
+import { loadShelf, restoreShelfBackup, startShelfEmpty, updateShelf, useShelf } from "../state/shelfStore";
 import { brandChartUrl } from "../threads/charts";
 import { Section } from "./controls";
 
@@ -29,7 +29,7 @@ const label = (t: { brand: string; line?: string; code: string }) => `${t.brand}
  * prefer these spools ("Use my threads").
  */
 export function ShelfPanel() {
-  const { shelf, error } = useShelf();
+  const { shelf, error, recovery } = useShelf();
   const [note, setNote] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
   useEffect(() => void loadShelf(), []);
 
@@ -62,6 +62,14 @@ export function ShelfPanel() {
         <p className="error small" role="alert">
           {error}
         </p>
+      )}
+      {recovery && (
+        <div className="button-row">
+          <button className="primary" onClick={() => void restoreShelfBackup().catch((e) => setNote({ kind: "error", text: msg(e) }))}>
+            Restore the previous copy
+          </button>
+          <button onClick={startShelfEmpty}>Start with an empty shelf</button>
+        </div>
       )}
 
       <Section title="Add from the catalogue" help="Search every brand by code or name, for example “madeira 1000” or “navy”." id="shelf-catalogue">

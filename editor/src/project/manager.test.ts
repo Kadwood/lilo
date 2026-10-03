@@ -5,7 +5,7 @@ import { createMockPlatform, type MockState } from "../platform/mock";
 import type { Platform } from "../platform";
 import { createEditorStore, defaultThread, type EditorStore } from "../state/editorStore";
 import { createPixelStore, type PixelStore } from "../state/pixelStore";
-import { createProjectManager, type ProjectManager } from "./manager";
+import { createProjectManager, type ProjectDeps, type ProjectManager } from "./manager";
 
 // no canvas in node: decoded reference pictures are stand-ins
 vi.mock("../io/decode", async (orig) => ({
@@ -28,14 +28,14 @@ const st = () => core.store.getState();
 const ids = () => st().design!.objects.map((o) => o.id);
 const tick = (min = 1) => (clock = new Date(clock.getTime() + min * 60_000));
 
-async function setup(kind: "tauri" | "browser" = "tauri") {
+async function setup(kind: "tauri" | "browser" = "tauri", fonts?: ProjectDeps["fonts"]) {
   core = createEditorStore(createInlineEngine());
   px = createPixelStore();
   const p = createMockPlatform({ kind });
   platform = p.platform;
   mock = p.state;
   const shelf = addEntry(emptyShelf(), { brand: "Local Mill", code: "A7", hex: "#aa3366" });
-  m = createProjectManager({ editor: { api: core.store, actions: core.actions }, engine: createInlineEngine(), platform: () => platform, pixel: px, shelf: () => shelf, now: () => clock });
+  m = createProjectManager({ editor: { api: core.store, actions: core.actions }, engine: createInlineEngine(), platform: () => platform, pixel: px, shelf: () => shelf, fonts, now: () => clock });
   stop = m.start();
   await core.actions.loadDesign(design("a", "b"), { name: "Crest" });
   m.store.setState({ dirty: false });
@@ -183,6 +183,106 @@ describe("open and revert", () => {
     m.resolveConfirm("cancel");
     expect(await r).toBe(false);
     expect(ids()).toEqual(["b", "c"]);
+  });
+});
+
+describe("custom fonts travel inside the project", () => {
+  const withText = (fontId: string) => core.actions.commit("Add text", (d) => void (d.textBlocks = [{ id: "text-1", text: "Hi", fontId, heightMm: 10, letterSpacingMm: 0, lineSpacing: 1, align: "center", origin: [0, 0] }]));
+  const store = new Map<string, Uint8Array>();
+  const fonts: ProjectDeps["fonts"] = {
+    collect: async (keys) => keys.flatMap((k) => (store.has(k) ? [{ id: k, name: "Brand Sans", ext: "ttf", bytes: store.get(k)! }] : [])),
+    restore: vi.fn(async (list: readonly { id: string; bytes: Uint8Array }[]) => void list.forEach((f) => store.set(`restored:${f.id}`, f.bytes))),
+  };
+
+  it("saves the fonts the text uses, and brings them back on open", async () => {
+    store.clear();
+    store.set("Brand.ttf#0", new Uint8Array([0, 1, 0, 0, 7, 7]));
+    store.set("Unused.ttf#0", new Uint8Array([9]));
+    await setup("tauri", fonts);
+    withText("custom:Brand.ttf#0");
+    await m.save();
+    const path = m.store.getState().path!;
+    const { project } = loadProject(mock.files.get(path)!);
+    expect(project.doc.fonts.map((f) => [f.id, f.source])).toEqual([["Brand.ttf#0", "custom"]]); // only the one in use
+    expect(Array.from(project.fonts["Brand.ttf#0"])).toEqual([0, 1, 0, 0, 7, 7]);
+    // another Mac: no fonts there, opening the file restores them
+    store.clear();
+    await m.newProject();
+    expect(await m.openPath(path)).toBe(true);
+    expect(fonts!.restore).toHaveBeenLastCalledWith([{ id: "Brand.ttf#0", name: "Brand Sans", bytes: expect.any(Uint8Array) }]);
+    expect(Array.from(store.get("restored:Brand.ttf#0")!)).toEqual([0, 1, 0, 0, 7, 7]);
+  });
+
+  it("built-in fonts are not embedded; a font over 20 MB is left out with a clear note", async () => {
+    store.clear();
+    store.set("Huge.ttf#0", new Uint8Array(20 * 1024 * 1024 + 1));
+    await setup("tauri", fonts);
+    withText("geneva_simple");
+    await m.save();
+    expect(loadProject(mock.files.get(m.store.getState().path!)!).project.doc.fonts).toEqual([]);
+    withText("custom:Huge.ttf#0");
+    await m.save();
+    expect(loadProject(mock.files.get(m.store.getState().path!)!).project.doc.fonts).toEqual([]);
+    expect(m.store.getState().notice?.text).toMatch(/Brand Sans.*over 20 MB/);
+  });
+
+  it("a font that is no longer on this machine is reported, not silently dropped", async () => {
+    store.clear();
+    await setup("tauri", fonts);
+    withText("custom:Gone.ttf#0");
+    await m.save();
+    expect(m.store.getState().notice?.text).toMatch(/no longer available/);
+  });
+});
+
+describe("a damaged project file", () => {
+  async function twoSaves() {
+    await setup();
+    edit();
+    await m.save(); // a, b, c
+    const path = m.store.getState().path!;
+    core.actions.setSelection(["a"]);
+    core.actions.deleteSelection();
+    await m.save(); // b, c  (the earlier copy, a b c, is now the .bak)
+    return path;
+  }
+
+  it("a save keeps the previous one beside the file", async () => {
+    const path = await twoSaves();
+    const bak = await platform.readProjectBackup(path);
+    expect(loadProject(bak!).project.doc.design.objects.map((o) => o.id)).toEqual(["a", "b", "c"]);
+    expect(loadProject(mock.files.get(path)!).project.doc.design.objects.map((o) => o.id)).toEqual(["b", "c"]);
+  });
+
+  it("offers the earlier copy instead of failing; opening it marks the project unsaved so Save replaces the damaged file", async () => {
+    const path = await twoSaves();
+    mock.files.set(path, new Uint8Array([80, 75, 3, 4, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])); // damaged
+    await m.newProject();
+    const r = m.openPath(path);
+    await vi.waitFor(() => expect(m.store.getState().confirm?.kind).toBe("recover"));
+    m.resolveConfirm("discard");
+    expect(await r).toBe(true);
+    expect(ids()).toEqual(["a", "b", "c"]);
+    expect(m.store.getState().dirty).toBe(true);
+    expect(m.store.getState().notice?.text).toMatch(/previous save/);
+    await m.save();
+    expect(loadProject(mock.files.get(path)!).project.doc.design.objects.map((o) => o.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("declining leaves everything as it was; with no usable copy it is an error, not a guess", async () => {
+    const path = await twoSaves();
+    mock.files.set(path, new Uint8Array([1, 2, 3]));
+    m.clearNotice();
+    const before = st().design;
+    const r = m.openPath(path);
+    await vi.waitFor(() => expect(m.store.getState().confirm?.kind).toBe("recover"));
+    m.resolveConfirm("cancel");
+    expect(await r).toBe(false);
+    expect(st().design).toBe(before);
+    expect(m.store.getState().notice).toBeNull();
+    mock.backups.clear();
+    expect(await m.openPath(path)).toBe(false);
+    expect(m.store.getState().notice?.kind).toBe("error");
   });
 });
 

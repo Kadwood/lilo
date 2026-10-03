@@ -70,6 +70,13 @@ export interface OpenedPath {
   bytes: Uint8Array;
 }
 
+/** What is on disk for My Threads. `corrupt` means the file is there but unreadable; `backup` is the previous save, if that one is good. */
+export interface MyThreadsFile {
+  text: string | null;
+  backup: string | null;
+  corrupt: boolean;
+}
+
 export type Unsubscribe = () => void;
 
 export interface Platform {
@@ -110,7 +117,7 @@ export interface Platform {
   /** Save several files into a folder the user picks (one prompt, not one per file). Resolves to the folder, or null if cancelled. The browser downloads each. */
   saveFilesToFolder(files: { name: string; bytes: Uint8Array }[]): Promise<string | null>;
   /** The My Threads shelf as JSON text (`~/Documents/Lilo/my-threads.json`; localStorage in the browser), or null if there is none yet. */
-  readMyThreads(): Promise<string | null>;
+  readMyThreads(): Promise<MyThreadsFile>;
   writeMyThreads(json: string): Promise<void>;
   /** Open a web page in the user's browser. */
   openUrl(url: string): Promise<void>;
@@ -122,8 +129,13 @@ export interface Platform {
   /** Native "Save project as" dialog, starting in the default folder. Resolves to the saved path (a file name in the browser, where it downloads), or null if cancelled. */
   saveProjectAs(suggestedName: string, bytes: Uint8Array): Promise<string | null>;
   /**
-   * Called when the user closes the window. The window stays open until `handler` resolves to true
-   * (it can show an "unsaved changes" prompt first). Returns the unsubscribe function.
+   * Called whenever the user tries to quit: closing the window, Cmd-Q, the app menu, the Dock, the tray's
+   * Quit. Lilo stays open until `handler` resolves to true (it can show an "unsaved changes" prompt
+   * first). Returns the unsubscribe function.
    */
   onCloseRequested(handler: () => Promise<boolean>): Unsubscribe;
+  /** Tell the shell whether there are unsaved changes, so it can hold back a quit it can't ask about itself. */
+  setDirty(dirty: boolean): void;
+  /** The previous save of a project (its `.bak`), for when the file is damaged. Null if there is none. */
+  readProjectBackup(path: string): Promise<Uint8Array | null>;
 }

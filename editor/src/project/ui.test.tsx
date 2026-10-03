@@ -264,6 +264,15 @@ describe("Version history panel", () => {
 });
 
 describe("autosave, open-file and close wiring", () => {
+  it("tells the shell when there are unsaved changes, so Cmd-Q and the tray can be held back", async () => {
+    mount(<TopBar />, { design: design("a") });
+    await ready();
+    act(() => manager.markClean());
+    act(() => lastEditor!.actions.setName("Edited"));
+    await act(async () => void (await manager.save()));
+    expect(mock.dirtyReports.slice(-3)).toEqual([false, true, false]);
+  });
+
   it("autosaves every 30 s and when the window loses focus", async () => {
     vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout", "Date"] });
     mount(<div />, { design: design("a") });

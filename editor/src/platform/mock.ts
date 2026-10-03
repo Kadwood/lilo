@@ -11,6 +11,12 @@ export interface MockState {
   files: Map<string, Uint8Array>;
   recents: RecentProject[];
   shelfJson: string | null;
+  /** The previous save of My Threads, offered when `shelfJson` is damaged. */
+  shelfBackup: string | null;
+  /** Previous saves of projects by path (`<path>.bak` on the desktop). */
+  backups: Map<string, Uint8Array>;
+  /** Every value passed to `setDirty`, in order. */
+  dirtyReports: boolean[];
   openedUrls: string[];
   /** What `ocrImage` returns next. */
   ocr: OcrLine[] | Error;
@@ -31,6 +37,9 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
     files: new Map(),
     recents: [],
     shelfJson: null,
+    shelfBackup: null,
+    backups: new Map(),
+    dirtyReports: [],
     openedUrls: [],
     ocr: [],
     pickFiles: [],
@@ -81,15 +90,41 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
       return b;
     },
     async writeProjectFile(path, bytes) {
+      const prev = state.files.get(path);
+      if (prev) state.backups.set(path, prev); // the desktop keeps the previous save as <name>.bak
       state.files.set(path, bytes);
       const name = nameOf(path).replace(/\.lilo$/i, "");
       state.recents = [{ path, name, modifiedMs: Date.now(), sizeBytes: bytes.length }, ...state.recents.filter((r) => r.path !== path)];
     },
     projectsFolder: async () => "/mock/Documents/Lilo",
     async readMyThreads() {
-      return state.shelfJson;
+      const ok = (t: string) => {
+        try {
+          JSON.parse(t);
+          return true;
+        } catch {
+          return false;
+        }
+      };
+      const main = state.shelfJson;
+      if (main === null || ok(main)) return { text: main, backup: null, corrupt: false };
+      return { text: null, backup: state.shelfBackup && ok(state.shelfBackup) ? state.shelfBackup : null, corrupt: true };
+    },
+    setDirty(dirty) {
+      state.dirtyReports.push(dirty);
+    },
+    async readProjectBackup(path) {
+      return state.backups.get(path) ?? null;
     },
     async writeMyThreads(json) {
+      if (state.shelfJson !== null) {
+        try {
+          JSON.parse(state.shelfJson);
+          state.shelfBackup = state.shelfJson;
+        } catch {
+          // a damaged file never replaces a good backup
+        }
+      }
       state.shelfJson = json;
     },
     async openUrl(url) {

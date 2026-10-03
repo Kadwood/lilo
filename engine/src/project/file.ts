@@ -7,6 +7,7 @@ import {
   PROJECT_FORMAT,
   PROJECT_VERSION,
   ProjectError,
+  type FontRef,
   type HistoryEntry,
   type ImageRef,
   type LiloProject,
@@ -144,6 +145,27 @@ export function addImage(
     doc: { ...project.doc, images: [...project.doc.images.filter((i) => i.id !== img.id), ref] },
     images: { ...project.images, [img.id]: img.bytes },
   };
+}
+
+/** The biggest font file embedded in a project. Fonts are the user's own; this only guards the file's size. */
+export const MAX_FONT_BYTES = 20 * 1024 * 1024;
+
+/**
+ * Embed a custom (uploaded) font: its bytes go in `fonts/` and a `FontRef` records which text blocks'
+ * `custom:<id>` it is. Throws `ProjectError` for a font over `MAX_FONT_BYTES`. Re-adding an id replaces it.
+ */
+export function addFont(
+  project: LiloProject,
+  font: { id: string; name: string; bytes: Uint8Array; ext?: string; licence?: string },
+): LiloProject {
+  if (font.bytes.length > MAX_FONT_BYTES) throw new ProjectError("invalid-project", `The font "${font.name}" is over ${MAX_FONT_BYTES / 1024 / 1024} MB, too big to keep in the project.`);
+  const ext = /^(ttf|otf|ttc)$/i.test(font.ext ?? "") ? font.ext!.toLowerCase() : "ttf";
+  const others = project.doc.fonts.filter((f) => f.id !== font.id);
+  const used = new Set(others.map((f) => f.file));
+  let n = others.length + 1;
+  while (used.has(`fonts/font-${n}.${ext}`)) n++;
+  const ref: FontRef = { id: font.id, name: font.name, source: "custom", file: `fonts/font-${n}.${ext}`, ...(font.licence ? { licence: font.licence } : {}) };
+  return { ...project, doc: { ...project.doc, fonts: [...others, ref] }, fonts: { ...project.fonts, [font.id]: font.bytes } };
 }
 
 export function removeImage(project: LiloProject, id: string): LiloProject {

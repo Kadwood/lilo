@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode }
 import { useStore } from "zustand";
 import { useApp } from "../app/AppContext";
 import { useEngine } from "../engine/context";
+import { collectCustomFonts, restoreCustomFonts } from "../lettering/fonts";
 import { getPlatform } from "../platform";
 import { pixel } from "../state/pixelStore";
 import { getShelf } from "../state/shelfStore";
@@ -34,7 +35,7 @@ export function useProjectState<T>(select: (s: ProjectState) => T): T {
 export function ProjectProvider({ children, manager }: { children: ReactNode; manager?: ProjectManager }) {
   const engine = useEngine();
   const { api, actions } = useEditorActions();
-  const m = useMemo(() => manager ?? createProjectManager({ editor: { api, actions }, engine, platform: getPlatform, pixel, shelf: getShelf }), [manager, api, actions, engine]);
+  const m = useMemo(() => manager ?? createProjectManager({ editor: { api, actions }, engine, platform: getPlatform, pixel, shelf: getShelf, fonts: { collect: collectCustomFonts, restore: restoreCustomFonts } }), [manager, api, actions, engine]);
 
   useEffect(() => m.start(), [m]);
 
@@ -80,6 +81,9 @@ export function ProjectProvider({ children, manager }: { children: ReactNode; ma
   useEffect(() => {
     document.title = `${name || "Untitled design"}${dirty ? " •" : ""} — Lilo`;
   }, [name, dirty]);
+
+  // the shell holds back quits it can't ask about (Cmd-Q, the tray) while this is true
+  useEffect(() => getPlatform().setDirty(dirty), [dirty]);
 
   return <ProjectContext.Provider value={m}>{children}</ProjectContext.Provider>;
 }

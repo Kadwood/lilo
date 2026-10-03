@@ -86,7 +86,7 @@ Nav tabs: **Home**, **Editor**, **Pixel art**, **Converter**, **Lilo Link** (`ed
   engine's project API. Autosave goes to the version history every 30 s and when the window loses
   focus; the file's last explicit save is never overwritten by an autosave. Version history lists
   versions with thumbnails and restores one as a single undo step. Closing, New, Open and Revert ask
-  about unsaved changes in an in-page dialog. Reference images live in `Design.images` (undoable) and
+  about unsaved changes in an in-page dialog; Cmd-Q, the Dock and the tray's Quit go through the same question (Rust holds the exit back while the editor reports unsaved changes: `app/src-tauri/src/quit.rs`). Saves are fsynced and keep the previous version as `<name>.bak`; a damaged `.lilo` or `my-threads.json` offers that copy instead of failing. Uploaded fonts the text uses are embedded in the project (`fonts/`, up to 20 MB each). Reference images live in `Design.images` (undoable) and
   are saved in the project's `images/` folder.
 - **Looking at screens without the app**: `pnpm dev`, then open `http://localhost:5173/?mock`. An
   in-memory platform supplies sample projects, a thread shelf and a canned label OCR result

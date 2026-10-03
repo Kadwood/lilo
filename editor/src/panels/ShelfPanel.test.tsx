@@ -118,7 +118,7 @@ describe("My Threads shelf", () => {
   it("does not overwrite a shelf file it could not read", async () => {
     mock.state.shelfJson = "{ this is not json";
     render(<ShelfPanel />);
-    expect((await screen.findByText(/Could not read My Threads/, undefined, T)).textContent).toMatch(/not valid JSON/);
+    expect((await screen.findByText(/damaged and there is no earlier copy/, undefined, T)).textContent).toMatch(/left alone/);
     expect(shelfStore.getState().status).toBe("error");
     open("shelf-manual");
     fireEvent.change(screen.getByLabelText("Brand"), { target: { value: "X" } });
@@ -126,6 +126,34 @@ describe("My Threads shelf", () => {
     fireEvent.click(screen.getByRole("button", { name: "Add to My Threads" }));
     await waitFor(() => expect(getShelf().entries).toHaveLength(1)); // works for this session
     expect(mock.state.shelfJson).toBe("{ this is not json"); // but the unreadable file is left alone
+  });
+});
+
+describe("a damaged shelf file", () => {
+  it("offers the previous copy: Restore puts it back and saves it", async () => {
+    mock.state.shelfJson = "{ half a fi";
+    mock.state.shelfBackup = exportShelf(importShelf([{ brand: "Isacord", line: "Polyester", code: "0020", name: "Black", hex: "#000000", qty: 2 }]));
+    render(<ShelfPanel />);
+    expect((await screen.findByText(/previous save is intact/, undefined, T)).textContent).toBeTruthy();
+    expect(getShelf().entries).toHaveLength(0);
+    expect(mock.state.shelfJson).toBe("{ half a fi"); // untouched until the user chooses
+    fireEvent.click(screen.getByRole("button", { name: "Restore the previous copy" }));
+    await waitFor(() => expect(getShelf().entries).toHaveLength(1), T);
+    expect(saved()[0]).toMatchObject({ code: "0020", qty: 2 });
+    expect(screen.queryByRole("button", { name: "Restore the previous copy" })).toBeNull();
+  });
+
+  it("or carry on empty without losing the good backup", async () => {
+    mock.state.shelfJson = "{ half a fi";
+    mock.state.shelfBackup = exportShelf(importShelf([{ brand: "Isacord", line: "Polyester", code: "0020", name: "Black", hex: "#000000" }]));
+    render(<ShelfPanel />);
+    fireEvent.click(await screen.findByRole("button", { name: "Start with an empty shelf" }, T));
+    open("shelf-manual");
+    fireEvent.change(screen.getByLabelText("Brand"), { target: { value: "X" } });
+    fireEvent.change(screen.getByLabelText("Code"), { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: "Add to My Threads" }));
+    await waitFor(() => expect(saved()).toHaveLength(1), T);
+    expect(importShelf(mock.state.shelfBackup!).entries[0].code).toBe("0020"); // the damaged file did not replace it
   });
 });
 

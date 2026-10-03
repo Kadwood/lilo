@@ -21,6 +21,8 @@ export {
   historyDoc,
   restoreHistory,
   addImage,
+  addFont,
+  MAX_FONT_BYTES,
   removeImage,
   saveProject,
   loadProject,

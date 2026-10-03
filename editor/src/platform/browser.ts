@@ -34,9 +34,9 @@ export const browserPlatform: Platform = {
 
   async readMyThreads() {
     try {
-      return window.localStorage.getItem(SHELF_KEY);
+      return { text: window.localStorage.getItem(SHELF_KEY), backup: null, corrupt: false };
     } catch {
-      return null;
+      return { text: null, backup: null, corrupt: false };
     }
   },
   async writeMyThreads(json) {
@@ -53,6 +53,8 @@ export const browserPlatform: Platform = {
   },
   saveProjectAs: (suggestedName, bytes) => browserPlatform.saveFile(suggestedName, bytes),
   onCloseRequested: () => () => {},
+  setDirty: () => {},
+  readProjectBackup: async () => null,
 };
 
 const SHELF_KEY = "lilo.my-threads";

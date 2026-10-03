@@ -7,7 +7,7 @@ import { readFile, writeFile } from "@tauri-apps/plugin-fs";
 import { BridgeClient } from "../link/api/client";
 import type { SavedMachine } from "../link/api/types";
 import type { JobRecord } from "../link/api/types";
-import type { OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, SendResult } from "./types";
+import type { MyThreadsFile, OcrLine, OpenedPath, Platform, PlatformMachine, RecentProject, SendResult } from "./types";
 
 const TERMINAL = new Set(["done", "failed", "cancelled", "needs_reconciliation"]);
 const POLL_MS = 500;
@@ -125,8 +125,21 @@ export const tauriPlatform: Platform = {
     return dir;
   },
 
-  async readMyThreads() {
-    return invoke<string | null>("read_my_threads");
+  readMyThreads() {
+    return invoke<MyThreadsFile>("read_my_threads");
+  },
+
+  setDirty(dirty) {
+    void Promise.resolve(invoke("set_dirty", { dirty })).catch(() => {});
+  },
+
+  async readProjectBackup(path) {
+    try {
+      const data = await invoke<ArrayBuffer | number[]>("read_project_backup", { path });
+      return data instanceof ArrayBuffer ? new Uint8Array(data) : Uint8Array.from(data);
+    } catch {
+      return null;
+    }
   },
 
   async writeMyThreads(json) {
@@ -157,20 +170,32 @@ export const tauriPlatform: Platform = {
 
   onCloseRequested(handler) {
     let active = true;
-    let unlisten: (() => void) | null = null;
-    const win = getCurrentWindow();
-    void win
-      .onCloseRequested(async (event) => {
+    const unlisten: (() => void)[] = [];
+    // one at a time: a second request while the question is open must not open a second question
+    let asking = false;
+    const ask = async () => {
+      if (asking) return;
+      asking = true;
+      try {
+        // the shell exits for real only on `quit_now`; it knows how to do that without asking again
+        if (await handler()) await invoke("quit_now");
+      } finally {
+        asking = false;
+      }
+    };
+    const keep = (u: () => void) => (active ? unlisten.push(u) : u());
+    // the window's own close button
+    void getCurrentWindow()
+      .onCloseRequested((event) => {
         event.preventDefault();
-        if (await handler()) await win.destroy();
+        void ask();
       })
-      .then((u) => {
-        if (active) unlisten = u;
-        else u();
-      });
+      .then(keep);
+    // Cmd-Q, the app menu, the Dock and the tray's Quit: the shell holds the exit back and asks us
+    void listen("lilo-quit-requested", () => void ask()).then(keep);
     return () => {
       active = false;
-      unlisten?.();
+      unlisten.splice(0).forEach((u) => u());
     };
   },
 

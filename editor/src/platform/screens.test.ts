@@ -6,18 +6,22 @@ const save = vi.fn();
 const readFile = vi.fn();
 const writeFile = vi.fn();
 const openUrl = vi.fn();
-const destroy = vi.fn();
 let closeCb: ((e: { preventDefault(): void }) => Promise<void>) | null = null;
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke: (...a: unknown[]) => invoke(...a), Channel: class {} }));
-vi.mock("@tauri-apps/api/event", () => ({ listen: vi.fn(async () => () => {}) }));
+const events = new Map<string, () => void>();
+vi.mock("@tauri-apps/api/event", () => ({
+  listen: vi.fn(async (name: string, cb: () => void) => {
+    events.set(name, cb);
+    return () => events.delete(name);
+  }),
+}));
 vi.mock("@tauri-apps/api/window", () => ({
   getCurrentWindow: () => ({
     onCloseRequested: async (cb: typeof closeCb) => {
       closeCb = cb;
       return () => (closeCb = null);
     },
-    destroy,
   }),
 }));
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: (...a: unknown[]) => open(...a), save: (...a: unknown[]) => save(...a) }));
@@ -29,8 +33,9 @@ import { createMockPlatform } from "./mock";
 import { tauriPlatform } from "./tauri";
 
 beforeEach(() => {
-  for (const m of [invoke, open, save, readFile, writeFile, openUrl, destroy]) m.mockReset();
+  for (const m of [invoke, open, save, readFile, writeFile, openUrl]) m.mockReset();
   closeCb = null;
+  events.clear();
 });
 
 describe("tauri platform: screens", () => {
@@ -60,7 +65,7 @@ describe("tauri platform: screens", () => {
 
   it("My Threads goes through the two restricted commands", async () => {
     invoke.mockResolvedValueOnce(null).mockResolvedValueOnce(undefined);
-    expect(await tauriPlatform.readMyThreads()).toBeNull();
+    expect(await tauriPlatform.readMyThreads()).toBeNull(); // whatever Rust says comes back as is
     await tauriPlatform.writeMyThreads("{\"version\":1}");
     expect(invoke).toHaveBeenNthCalledWith(1, "read_my_threads");
     expect(invoke).toHaveBeenNthCalledWith(2, "write_my_threads", { json: "{\"version\":1}" });
@@ -95,19 +100,56 @@ describe("tauri platform: screens", () => {
     expect(await tauriPlatform.saveProjectAs("x.lilo", new Uint8Array())).toBeNull();
   });
 
-  it("closing the window waits for the handler: it stays open on false and is destroyed on true", async () => {
+  it("quitting waits for the handler: nothing happens on false, quit_now on true", async () => {
     const handler = vi.fn(async () => false);
     const off = tauriPlatform.onCloseRequested(handler);
     await vi.waitFor(() => expect(closeCb).not.toBeNull());
     const prevent = vi.fn();
     await closeCb!({ preventDefault: prevent });
-    expect(prevent).toHaveBeenCalled();
-    expect(destroy).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(prevent).toHaveBeenCalled(); // the window stays; the shell decides when to exit
+    expect(invoke).not.toHaveBeenCalledWith("quit_now");
     handler.mockResolvedValue(true);
     await closeCb!({ preventDefault: prevent });
-    expect(destroy).toHaveBeenCalledTimes(1);
+    await vi.waitFor(() => expect(invoke).toHaveBeenCalledWith("quit_now"));
     off();
     await vi.waitFor(() => expect(closeCb).toBeNull());
+    expect(events.size).toBe(0);
+  });
+
+  it("Cmd-Q, the app menu, the Dock and the tray's Quit arrive as the shell's quit event and run the same guard", async () => {
+    let answer = false;
+    const handler = vi.fn(async () => answer);
+    tauriPlatform.onCloseRequested(handler);
+    await vi.waitFor(() => expect(events.has("lilo-quit-requested")).toBe(true));
+    events.get("lilo-quit-requested")!();
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(invoke).not.toHaveBeenCalledWith("quit_now");
+    answer = true;
+    events.get("lilo-quit-requested")!();
+    await vi.waitFor(() => expect(invoke).toHaveBeenCalledWith("quit_now"));
+  });
+
+  it("a second quit request while the question is open does not open a second question", async () => {
+    let release!: (v: boolean) => void;
+    const handler = vi.fn(() => new Promise<boolean>((r) => (release = r)));
+    tauriPlatform.onCloseRequested(handler);
+    await vi.waitFor(() => expect(events.has("lilo-quit-requested")).toBe(true));
+    events.get("lilo-quit-requested")!();
+    events.get("lilo-quit-requested")!();
+    await closeCb!({ preventDefault() {} });
+    expect(handler).toHaveBeenCalledTimes(1);
+    release(false);
+  });
+
+  it("reports unsaved changes to the shell, and reads a project's backup (null when there is none)", async () => {
+    tauriPlatform.setDirty(true);
+    expect(invoke).toHaveBeenCalledWith("set_dirty", { dirty: true });
+    invoke.mockResolvedValueOnce(new Uint8Array([1, 2]).buffer);
+    expect(Array.from((await tauriPlatform.readProjectBackup("/p/a.lilo"))!)).toEqual([1, 2]);
+    expect(invoke).toHaveBeenCalledWith("read_project_backup", { path: "/p/a.lilo" });
+    invoke.mockRejectedValueOnce("There is no earlier copy.");
+    expect(await tauriPlatform.readProjectBackup("/p/a.lilo")).toBeNull();
   });
 });
 
@@ -115,9 +157,9 @@ describe("browser platform: screens", () => {
   it("keeps My Threads in localStorage", async () => {
     const store = new Map<string, string>();
     vi.stubGlobal("window", { localStorage: { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, v) } });
-    expect(await browserPlatform.readMyThreads()).toBeNull();
+    expect(await browserPlatform.readMyThreads()).toEqual({ text: null, backup: null, corrupt: false });
     await browserPlatform.writeMyThreads("{}");
-    expect(await browserPlatform.readMyThreads()).toBe("{}");
+    expect(await browserPlatform.readMyThreads()).toEqual({ text: "{}", backup: null, corrupt: false });
     vi.unstubAllGlobals();
   });
 
