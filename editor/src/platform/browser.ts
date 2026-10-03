@@ -20,33 +20,68 @@ export const browserPlatform: Platform = {
   projectsFolder: () => Promise.resolve(null),
 
   async saveFile(suggestedName, bytes) {
-    const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: "application/octet-stream" }));
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = suggestedName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+    download(suggestedName, bytes);
     return suggestedName;
   },
 
-  openFile(options) {
-    return new Promise((resolve, reject) => {
-      const input = document.createElement("input");
-      input.type = "file";
-      if (options?.extensions?.length) input.accept = options.extensions.map((e) => `.${e}`).join(",");
-      input.onchange = async () => {
-        const file = input.files?.[0];
-        if (!file) return resolve(null);
-        try {
-          resolve({ name: file.name, bytes: new Uint8Array(await file.arrayBuffer()) });
-        } catch (e) {
-          reject(e);
-        }
-      };
-      input.oncancel = () => resolve(null);
-      input.click();
-    });
+  async saveFilesToFolder(files) {
+    for (const f of files) download(f.name, f.bytes);
+    return files.length ? "Downloads" : null;
   },
+
+  openFile: async (options) => (await pick(options, false))[0] ?? null,
+  openFiles: (options) => pick(options, true),
+
+  async readMyThreads() {
+    try {
+      return window.localStorage.getItem(SHELF_KEY);
+    } catch {
+      return null;
+    }
+  },
+  async writeMyThreads(json) {
+    window.localStorage.setItem(SHELF_KEY, json);
+  },
+
+  async openUrl(url) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  },
+
+  async openProjectDialog() {
+    const f = (await pick({ extensions: ["lilo"] }, false))[0];
+    return f ? { path: "", name: f.name, bytes: f.bytes } : null;
+  },
+  saveProjectAs: (suggestedName, bytes) => browserPlatform.saveFile(suggestedName, bytes),
+  onCloseRequested: () => () => {},
 };
+
+const SHELF_KEY = "lilo.my-threads";
+
+function download(name: string, bytes: Uint8Array): void {
+  const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: "application/octet-stream" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function pick(options: { extensions?: string[] } | undefined, multiple: boolean): Promise<{ name: string; bytes: Uint8Array }[]> {
+  return new Promise((resolve, reject) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = multiple;
+    if (options?.extensions?.length) input.accept = options.extensions.map((e) => `.${e}`).join(",");
+    input.onchange = async () => {
+      try {
+        resolve(await Promise.all([...(input.files ?? [])].map(async (f) => ({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) }))));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    input.oncancel = () => resolve([]);
+    input.click();
+  });
+}

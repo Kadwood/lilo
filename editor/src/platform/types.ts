@@ -103,4 +103,27 @@ export interface Platform {
   writeProjectFile(path: string, bytes: Uint8Array): Promise<void>;
   /** The default projects folder (created on first use); null in the browser. */
   projectsFolder(): Promise<string | null>;
+
+  // ---- M5 screens ----------------------------------------------------------------------------
+  /** Let the user pick several files (the converter). Resolves to [] if cancelled. */
+  openFiles(options?: OpenFileOptions): Promise<OpenedFile[]>;
+  /** Save several files into a folder the user picks (one prompt, not one per file). Resolves to the folder, or null if cancelled. The browser downloads each. */
+  saveFilesToFolder(files: { name: string; bytes: Uint8Array }[]): Promise<string | null>;
+  /** The My Threads shelf as JSON text (`~/Documents/Lilo/my-threads.json`; localStorage in the browser), or null if there is none yet. */
+  readMyThreads(): Promise<string | null>;
+  writeMyThreads(json: string): Promise<void>;
+  /** Open a web page in the user's browser. */
+  openUrl(url: string): Promise<void>;
+  /**
+   * Native "Open project" dialog, starting in the default folder. The chosen file can then be saved
+   * to. In the browser (no path) the project opens but Save downloads a copy.
+   */
+  openProjectDialog(): Promise<OpenedPath | null>;
+  /** Native "Save project as" dialog, starting in the default folder. Resolves to the saved path (a file name in the browser, where it downloads), or null if cancelled. */
+  saveProjectAs(suggestedName: string, bytes: Uint8Array): Promise<string | null>;
+  /**
+   * Called when the user closes the window. The window stays open until `handler` resolves to true
+   * (it can show an "unsaved changes" prompt first). Returns the unsubscribe function.
+   */
+  onCloseRequested(handler: () => Promise<boolean>): Unsubscribe;
 }
