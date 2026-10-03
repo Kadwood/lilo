@@ -8,8 +8,17 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
-- A guide inside Lilo: a searchable Help panel (Help in the top bar, or ⌘? / Ctrl+?), 49 plain-words pages, a "?" hint next to almost every control (what it does, when to change it, a typical value), a five-step workflow strip that ticks itself (Get a design, Size and hoop, Stitches, Preview, Send), a first-launch tour with four paths that you can replay from Help, and a calm warnings tray with one-click fixes. All the wording lives in `docs/guide/` (`pnpm guide:check` validates it in CI).
-- Fixed: the stitch player could crash when a frame's time stamp came before the last one.
+## [1.1.0] - 2026-10-04
+
+Help when you need it.
+
+- **A built-in manual.** 49 short, friendly pages, right inside Lilo. Press ⌘? (Ctrl+? on Windows and Linux) or click Help. It is also on lilo.kadwood.com/manual.
+- **A "?" next to every setting.** It tells you what the setting does, when to change it and a good starting value.
+- **A first-launch tour.** Pick what you want to do: stitch a picture, draw from scratch, make a monogram or open a file. Lilo walks you through it. You can replay it from Help.
+- **A step-by-step guide along the top:** Get a design → Size and hoop → Stitches → Preview → Send. Each step ticks itself off as you go.
+- **Friendly warnings.** If something will not sew well, such as letters that are too small, a design too big for the hoop or a crowded patch, Lilo tells you and offers a one-click fix.
+- **Curved text.** Bend words into an arc, up or down, with a radius slider.
+- Fixed: the stitch player could stop when a frame arrived out of order.
 
 ## [1.0.0] - 2026-10-04
 
