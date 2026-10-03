@@ -35,6 +35,16 @@ export function HelpPanel() {
     };
   }, [open]);
 
+  // Esc closes the panel from anywhere on the page (focus can sit on the body after a page swap)
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !e.defaultPrevented) closeHelp();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   const { id: pageId, anchor } = pageRef ? splitRef(pageRef) : { id: null, anchor: undefined };
   const page = index && pageId ? (index.pages.find((p) => p.id === pageId) ?? null) : null;
 
@@ -42,7 +52,7 @@ export function HelpPanel() {
   useEffect(() => {
     if (!page || !body.current) return;
     const target = anchor ? body.current.querySelector(`#h-${CSS.escape(anchor)}`) : null;
-    if (target) target.scrollIntoView({ block: "start" });
+    if (target) target.scrollIntoView?.({ block: "start" });
     else body.current.scrollTop = 0;
   }, [page, anchor]);
 

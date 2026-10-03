@@ -40,7 +40,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
     let raf = 0;
     let last = performance.now();
     const frame = (now: number) => {
-      player.tick(Math.min(0.1, (now - last) / 1000)); // clamp so a background tab doesn't leap ahead
+      player.tick(Math.max(0, Math.min(0.1, (now - last) / 1000))); // never negative: a frame stamp can predate `last` // clamp so a background tab doesn't leap ahead
       last = now;
       raf = requestAnimationFrame(frame);
     };
@@ -58,7 +58,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
 
   const { stats } = planResult;
   const stopThread = snap.stop ? plan.threads[snap.stop.threadIndex] : null;
-  const shown = Math.min(total, Math.floor(snap.index));
+  const shown = Math.max(0, Math.min(total, Math.floor(snap.index)));
 
   return (
     <div className="player" role="group" aria-label="Stitch player">

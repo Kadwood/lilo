@@ -8,6 +8,8 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
+- A guide inside Lilo: a searchable Help panel (Help in the top bar, or ⌘? / Ctrl+?), 49 plain-words pages, a "?" hint next to almost every control (what it does, when to change it, a typical value), a five-step workflow strip that ticks itself (Get a design, Size and hoop, Stitches, Preview, Send), a first-launch tour with four paths that you can replay from Help, and a calm warnings tray with one-click fixes. All the wording lives in `docs/guide/` (`pnpm guide:check` validates it in CI).
+- Fixed: the stitch player could crash when a frame's time stamp came before the last one.
 - Faster on big designs: changing one shape re-stitches only that shape (about 60 ms instead of 2.4 s on a 300-object design); the canvas draws stitches as GPU quads that are culled off screen and simplified when zoomed out, so panning a 76,000-stitch design no longer freezes the window; version history is stored as small deltas (a project with 50 versions went from 9.4 MB to 1.7 MB and saves in a fifth of the time).
 - Minimum stitch follows quality (Standard 0.5 mm, Premium 0.6 mm). Custom-font lettering uses a 1.5 mm (Standard) or 1.0 mm (Premium) narrowest column, and the Text panel warns when letters are under 6 mm (40 wt) or 4 mm (60 wt), following the Sewing setup.
 - Fixed: the colour-change card hid under the tool dock, the File menu hid under the side panels, Home thumbnails could fail to load, and the Send dialog kept re-making its file in a loop.

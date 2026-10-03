@@ -47,6 +47,12 @@ Updates. It only ever talks to GitHub Releases.
 **Build from source**: see [Develop](#develop). Builds from source have no update key, so they never
 self-update.
 
+## Guide
+
+Lilo explains itself. Press **⌘?** (**Ctrl+?** on Windows and Linux) or **Help** in the top bar for the searchable manual. A first-launch tour, a five-step workflow strip, a "?" hint next to almost every control and a calm warnings tray with one-click fixes sit on top of it.
+
+All the wording lives in `docs/guide/`: the pages are Markdown (`*.md`), and the hints, tour, workflow tips and warnings are JSON (`hints.json`, `tour.json`, `workflow.json`, `live-hints.json`), so there is one copy source and it can be translated later. Four pages are generated from the app's own data (fill patterns, sewing presets, keyboard shortcuts, file formats). `pnpm guide` rebuilds them and `docs/guide/index.json`; `pnpm guide:check` validates everything and runs in CI. Screenshots still to capture are listed in `docs/guide/SCREENSHOTS.md`.
+
 ## Built on
 
 Lilo builds on open-source software. Credits and licences for third-party code are in [NOTICE.md](NOTICE.md).

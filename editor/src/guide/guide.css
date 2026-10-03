@@ -86,6 +86,13 @@
 .with-hint > input {
   flex: 1;
 }
+.with-hint > .sewing-chip,
+.with-hint > button:not(.hint-button) {
+  min-width: 0;
+}
+.with-hint > .sewing-chip {
+  flex: 1;
+}
 .with-hint > h2 {
   margin-bottom: 0;
 }

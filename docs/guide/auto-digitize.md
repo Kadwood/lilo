@@ -5,7 +5,7 @@ summary: "Open a logo or sketch and let Lilo trace it, pick thread colours and l
 section: "digitizing"
 order: 1
 keywords: ["auto digitize", "picture", "logo", "image", "png", "jpg", "svg", "trace", "colours", "background", "region", "digitize"]
-appContext: ["panel.digitize", "view.editor"]
+appContext: ["panel.digitize"]
 status: "ready"
 ---
 
