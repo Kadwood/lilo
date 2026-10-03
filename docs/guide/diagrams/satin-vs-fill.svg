@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 200" role="img" aria-labelledby="t d">
+  <title id="t">Satin column next to a fill area</title>
+  <desc id="d">On the left, a satin column: short stitches cross from edge to edge along a curved ribbon. On the right, a fill: long parallel rows cover a rounded shape.</desc>
+  <rect width="480" height="200" fill="#faf7f2"/>
+  <g stroke="#1f6f8b" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M30 150 L40 120"/><path d="M42 152 L52 118"/><path d="M54 154 L64 116"/><path d="M66 154 L76 114"/><path d="M78 154 L88 112"/><path d="M90 152 L100 112"/><path d="M102 150 L112 112"/><path d="M114 146 L124 112"/><path d="M126 142 L136 114"/><path d="M138 138 L148 116"/><path d="M150 132 L160 118"/><path d="M162 126 L172 120"/><path d="M174 120 L184 122"/>
+  </g>
+  <text x="30" y="185" font-family="sans-serif" font-size="14" fill="#333">Satin: short stitches edge to edge</text>
+  <g stroke="#b5483a" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M280 50 L420 50"/><path d="M270 62 L430 62"/><path d="M266 74 L434 74"/><path d="M264 86 L436 86"/><path d="M264 98 L436 98"/><path d="M266 110 L434 110"/><path d="M270 122 L430 122"/><path d="M280 134 L420 134"/>
+  </g>
+  <text x="262" y="185" font-family="sans-serif" font-size="14" fill="#333">Fill: long rows cover an area</text>
+</svg>

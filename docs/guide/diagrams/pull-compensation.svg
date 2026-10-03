@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 200" role="img" aria-labelledby="t d">
+  <title id="t">Pull compensation in three steps</title>
+  <desc id="d">Three rectangles. The first is the drawn width, 4 millimetres. The second is narrower, showing how the thread pulls the stitched column in. The third is drawn slightly wider than the first, so it ends up at the right width after the pull.</desc>
+  <rect width="480" height="200" fill="#faf7f2"/>
+  <rect x="45" y="40" width="70" height="90" fill="#cfe5ee" stroke="#1f6f8b" stroke-width="2"/>
+  <rect x="185" y="40" width="58" height="90" fill="#cfe5ee" stroke="#1f6f8b" stroke-width="2"/>
+  <rect x="325" y="40" width="82" height="90" fill="#cfe5ee" stroke="#1f6f8b" stroke-width="2" stroke-dasharray="6 4"/>
+  <rect x="331" y="40" width="70" height="90" fill="none" stroke="#b5483a" stroke-width="2"/>
+  <g font-family="sans-serif" font-size="13" fill="#333" text-anchor="middle">
+    <text x="80" y="155">1. You draw it</text>
+    <text x="214" y="155">2. Thread pulls it in</text>
+    <text x="366" y="155">3. Drawn wider, sews true</text>
+    <text x="80" y="175">4 mm</text>
+    <text x="214" y="175">about 3.7 mm</text>
+    <text x="366" y="175">4 mm after the pull</text>
+  </g>
+</svg>
