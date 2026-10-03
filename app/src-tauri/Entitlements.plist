@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Hardened-runtime entitlements for the Developer ID build (bundle.macOS.entitlements).
+
+  Deliberately empty. Lilo is NOT App Sandboxed, so the sandbox keys that look relevant
+  (com.apple.security.network.client, files.user-selected.read-write) do nothing here, and the
+  hardened runtime itself does not block what Lilo does:
+    * LAN machines, mDNS and the 127.0.0.1 API are ordinary sockets (macOS asks once, via
+      NSLocalNetworkUsageDescription in Info.plist)
+    * ~/Documents/Lilo and files picked in a dialog: a non-sandboxed app has normal file access
+    * the dongle's USB serial port: /dev/cu.* is a plain tty, no USB entitlement
+    * the editor's WebAssembly runs inside WKWebView's own process, so no JIT or
+      unsigned-memory entitlements
+  Do not add com.apple.security.cs.allow-jit, allow-unsigned-executable-memory or
+  disable-library-validation "just in case": each one weakens the signature. Add a key only when a
+  signed build fails without it.
+-->
+<plist version="1.0">
+<dict/>
+</plist>

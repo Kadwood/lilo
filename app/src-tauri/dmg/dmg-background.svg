@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="400" viewBox="0 0 660 400">
+  <!-- DMG window background: 660x400 pt, shipped as a 1320x800 PNG tagged 144 dpi so Finder draws it sharp.
+       Regenerate: rsvg-convert -w 1320 -h 800 dmg-background.svg -o dmg-background.png
+                   sips -s dpiWidth 144 -s dpiHeight 144 dmg-background.png -->
+  <rect width="660" height="400" fill="#F4EEE4"/>
+  <!-- the hibiscus, faint, in the bottom-right corner -->
+  <g transform="translate(590 330) scale(0.4)" fill="#111111" opacity="0.07"><g transform="rotate(0)"><path d="M0 -20 C -150 -60 -200 -250 -110 -330 C -60 -370 -20 -340 0 -360 C 20 -340 60 -370 110 -330 C 200 -250 150 -60 0 -20 Z"/></g><g transform="rotate(72)"><path d="M0 -20 C -150 -60 -200 -250 -110 -330 C -60 -370 -20 -340 0 -360 C 20 -340 60 -370 110 -330 C 200 -250 150 -60 0 -20 Z"/></g><g transform="rotate(144)"><path d="M0 -20 C -150 -60 -200 -250 -110 -330 C -60 -370 -20 -340 0 -360 C 20 -340 60 -370 110 -330 C 200 -250 150 -60 0 -20 Z"/></g><g transform="rotate(216)"><path d="M0 -20 C -150 -60 -200 -250 -110 -330 C -60 -370 -20 -340 0 -360 C 20 -340 60 -370 110 -330 C 200 -250 150 -60 0 -20 Z"/></g><g transform="rotate(288)"><path d="M0 -20 C -150 -60 -200 -250 -110 -330 C -60 -370 -20 -340 0 -360 C 20 -340 60 -370 110 -330 C 200 -250 150 -60 0 -20 Z"/></g></g>
+  <!-- arrow from the app (x=180) to Applications (x=480) at icon height -->
+  <g stroke="#111111" stroke-opacity="0.55" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M262 170 H398"/>
+    <path d="M384 156 L398 170 L384 184"/>
+  </g>
+  <text x="330" y="52" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="22" font-weight="600" fill="#111111">Lilo</text>
+  <text x="330" y="338" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" fill="#111111" fill-opacity="0.7">Drag Lilo to Applications</text>
+  <text x="330" y="374" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" fill="#111111" fill-opacity="0.4">Free and open source (GPL-3.0)  ·  © Kadwood</text>
+</svg>
