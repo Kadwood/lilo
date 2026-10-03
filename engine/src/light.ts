@@ -12,3 +12,4 @@ export type { Origin } from "./pes/write";
 export * from "./threads/shelf";
 export * from "./threads/label";
 export * from "./pixelart/grid";
+export * from "./presets";

@@ -95,8 +95,17 @@ export function stripFromCentreline(path: readonly Pt[], widthMm: number, closed
 
 /** ClassicSatin options from satin params. */
 export function satinOptions(p: SatinParams): Record<string, unknown> {
-  const underlays: { type: string }[] =
-    p.underlay === "center" ? [{ type: "CENTER_LINE" }] : p.underlay === "contour" ? [{ type: "CONTOUR" }] : p.underlay === "zigzag" ? [{ type: "ZIGZAG" }] : [];
+  // Underlay options are only passed when the params set them, so older designs sew exactly as before.
+  const stitchLen: Record<string, number> = p.underlayStitchMm !== undefined ? { stitchLengthMm: Math.max(0.5, p.underlayStitchMm) } : {};
+  const inset: Record<string, number> = p.underlayInsetMm !== undefined ? { sideInsetMm: Math.max(0, p.underlayInsetMm) } : {};
+  const zig: Record<string, number> = p.underlayZigzagMm !== undefined ? { densityMm: Math.max(0.5, p.underlayZigzagMm) } : {};
+  type U = { type: string; options?: Record<string, number> };
+  const withOpts = (type: string, o: Record<string, number>): U => (Object.keys(o).length ? { type, options: o } : { type });
+  const center = withOpts("CENTER_LINE", { ...stitchLen });
+  const contour = withOpts("CONTOUR", { ...stitchLen, ...inset });
+  const zigzag = withOpts("ZIGZAG", { ...inset, ...zig });
+  const underlays: U[] =
+    p.underlay === "center" ? [center] : p.underlay === "contour" ? [contour] : p.underlay === "zigzag" ? [zigzag] : p.underlay === "contour-zigzag" ? [contour, zigzag] : [];
   const opts: Record<string, unknown> = { densityMm: Math.max(0.1, p.densityMm), underlays };
   if (p.splitMaxWidthMm && p.splitMaxWidthMm > 0) {
     opts.split = {

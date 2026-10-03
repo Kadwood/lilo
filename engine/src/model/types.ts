@@ -105,6 +105,11 @@ export interface FillParams {
   gradient?: FillGradient;
   /** Replaces the single `underlay` layer when set: any number of underlay passes. */
   underlays?: FillUnderlay[];
+  /**
+   * Edge-walk underlay: a running-stitch loop along the shell and holes, `insetMm` inside the edge,
+   * sewn before the tatami underlay. It fences the fabric so the top stitches don't pull the edge in.
+   */
+  edgeWalk?: { insetMm: number; stitchLengthMm: number };
   /** Centre for centred patterns (Circular, Spiral, Tornado, Sunburst). Default: inside the shape. */
   center?: Pt;
   /** Guide curves that steer the Streamlines pattern. */
@@ -136,7 +141,11 @@ export interface FillGradient {
 /** Ids come from `FILL_PATTERNS` in `./patterns`. Kept a plain string so older files still load. */
 export type FillPatternId = string;
 
-export type SatinUnderlay = "none" | "center" | "contour" | "zigzag";
+/**
+ * `contour-zigzag` is the "German" underlay: an edge walk up both sides and a loose zig-zag back,
+ * for wide columns (Ink/Stitch: contour + zig-zag together).
+ */
+export type SatinUnderlay = "none" | "center" | "contour" | "zigzag" | "contour-zigzag";
 
 export interface SatinParams {
   /** Distance between satin stitches along the column. */
@@ -153,6 +162,12 @@ export interface SatinParams {
   staggerAmountMm?: number;
   /** Shorten stitches on the inside of tight curves so they don't pile up. */
   shortStitches?: boolean;
+  /** Stitch length (mm) of the centre / edge-walk underlay passes. Unset: the stitchjs default (3). */
+  underlayStitchMm?: number;
+  /** How far the edge walk / zig-zag underlay stays inside the column edge (mm). Unset: stitchjs default (0.6). */
+  underlayInsetMm?: number;
+  /** Peak-to-peak spacing of the zig-zag underlay (mm). Unset: stitchjs default (3). */
+  underlayZigzagMm?: number;
 }
 
 /** The seven run types. */

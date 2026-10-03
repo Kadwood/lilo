@@ -96,6 +96,18 @@ function fillRuns(o: FillObject, from: Pt, next: Pt): IRun[] {
   for (const part of polygonsOf(grown)) {
     if (part.getArea() < 0.05) continue;
     if (part.getArea() >= UNDERLAY_MIN_AREA_MM2) {
+      if (p.edgeWalk) {
+        // Edge walk first: a fence of running stitches just inside the edge (shell and holes).
+        for (const inner of polygonsOf(bufferGeom(part, -Math.max(0, p.edgeWalk.insetMm)))) {
+          if (inner.getArea() < 0.2) continue;
+          const iring = ringsOf(inner);
+          for (const ring of [iring.shell, ...iring.holes]) {
+            const k = ring.indexOf(nearest(ring, enter));
+            const rot = [...ring.slice(k), ...ring.slice(0, k)];
+            runs.push(new Core.Runs.Run(closedV(rot.map(toV)), { stitchLengthMm: Math.max(0.5, p.edgeWalk.stitchLengthMm) }));
+          }
+        }
+      }
       for (const u of underlays) {
         for (const inner of polygonsOf(bufferGeom(part, -Math.max(0, u.insetMm)))) {
           if (inner.getArea() < 0.5) continue;

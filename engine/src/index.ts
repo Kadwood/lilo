@@ -6,6 +6,7 @@ export * from "./stitch";
 export * from "./pes";
 export * from "./export";
 export * from "./autodigitize";
+export * from "./presets";
 export * from "./shapeops";
 export * from "./threads/shelf";
 export * from "./formats";
