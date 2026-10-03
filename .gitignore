@@ -13,3 +13,6 @@ data/fonts/*
 *.p12
 *.pem
 *.key
+
+# local-only test designs and brand assets (never published)
+private/
