@@ -70,6 +70,11 @@ export interface FillParams {
   pullCompMm: number;
   /** Lay a sparse perpendicular stitch layer first to stabilise the fabric. */
   underlay: boolean;
+  /**
+   * Sew a running-stitch outline along the shell and holes after the fill (default true). Tatami
+   * rows stop up to a stitch short of the edge, which looks ragged; the outline gives a clean edge.
+   */
+  edgeRun?: boolean;
 }
 
 export type SatinUnderlay = "none" | "center" | "contour" | "zigzag";

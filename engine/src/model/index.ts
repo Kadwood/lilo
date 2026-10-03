@@ -24,6 +24,7 @@ export const DEFAULT_FILL_PARAMS: FillParams = {
   stitchLengthMm: 3,
   pullCompMm: 0.2,
   underlay: true,
+  edgeRun: true,
 };
 export const DEFAULT_SATIN_PARAMS: SatinParams = {
   densityMm: 0.4,

@@ -17,6 +17,7 @@ const STITCHJS_JUMP = 1;
 /** Moves shorter than this (mm) are not worth a jump. */
 const SAME_SPOT_MM = 0.05;
 const UNDERLAY_INSET_MM = 0.5;
+const EDGE_RUN_STITCH_MM = 2;
 const UNDERLAY_ROW_SPACING_MM = 2.5;
 const UNDERLAY_STITCH_MM = 3.5;
 /** Fills smaller than this (mm^2) get no underlay: it would be all edge. */
@@ -79,7 +80,16 @@ function fillRuns(o: FillObject, from: Pt, next: Pt): IRun[] {
         runs.push(tatami(ringsOf(inner), angle + Math.PI / 2, UNDERLAY_ROW_SPACING_MM, UNDERLAY_STITCH_MM));
       }
     }
-    runs.push(tatami(ringsOf(part), angle, p.rowSpacingMm, p.stitchLengthMm));
+    const rings = ringsOf(part);
+    runs.push(tatami(rings, angle, p.rowSpacingMm, p.stitchLengthMm));
+    if (p.edgeRun !== false) {
+      for (const ring of [rings.shell, ...rings.holes]) {
+        // start at the vertex nearest the needle so the outline doesn't add a long jump
+        const k = ring.indexOf(nearest(ring, from));
+        const rot = [...ring.slice(k), ...ring.slice(0, k)];
+        runs.push(new Core.Runs.Run(closed(rot.map(toV)), { stitchLengthMm: EDGE_RUN_STITCH_MM }));
+      }
+    }
   }
   return runs;
 }

@@ -19,6 +19,8 @@ export interface PlanStitch {
   threadIndex: number;
   /** Index into `design.objects` of the object that produced it, or -1 (colour changes, splits). */
   objectIndex: number;
+  /** True for tie-in/tie-off (lock) stitches added by `validatePlan`. */
+  lock?: boolean;
 }
 
 export interface PlanWarning {

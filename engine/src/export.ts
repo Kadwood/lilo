@@ -8,6 +8,8 @@ export interface ExportOptions {
   /** Name embedded in the file (first 8 characters are used). */
   label?: string;
   hoop?: Hoop;
+  /** Tie stitch length in mm (0 = none). Default 0.4. */
+  lockStitchMm?: number;
 }
 
 export interface ExportResult {
@@ -20,7 +22,7 @@ export interface ExportResult {
 
 /** Design -> stitch plan -> validate/fix -> origin -> PES bytes. The one call Export and Send use. */
 export function designToPes(design: Design, options: ExportOptions = {}): ExportResult {
-  const { plan, warnings } = validatePlan(designToStitchPlan(design), options.hoop ?? design.hoop);
+  const { plan, warnings } = validatePlan(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm });
   const placed = applyOrigin(plan, options.origin ?? CENTER_ORIGIN);
   return { plan: placed, warnings, stats: planStats(placed), pes: writePes(placed, { label: options.label }) };
 }

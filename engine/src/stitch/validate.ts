@@ -9,11 +9,15 @@ export const TRIM_JUMP_MM = 3;
 const MAX_JUMP_MM = 200;
 /** Needle penetrations per 1 mm^2 cell above which fabric tends to pucker or thread breaks. */
 export const DENSITY_WARN_PER_MM2 = 10;
+/** Default length of lock (tie) stitches in mm. */
+export const LOCK_STITCH_MM = 0.4;
 
 export interface ValidationOptions {
   maxStitchMm?: number;
   trimJumpMm?: number;
   densityWarnPerMm2?: number;
+  /** Length (mm) of the tie-in/tie-off stitches; 0 turns them off. Default 0.4. */
+  lockStitchMm?: number;
 }
 
 export interface ValidationResult {
@@ -78,7 +82,9 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
     });
   }
 
-  const result: StitchPlan = { threads: plan.threads, stitches: out, warnings: [] };
+  const lockMm = options.lockStitchMm ?? LOCK_STITCH_MM;
+  const sewn = lockMm > 0 ? addLockStitches(out, lockMm) : out;
+  const result: StitchPlan = { threads: plan.threads, stitches: sewn, warnings: [] };
   const stats = planStats(result);
   if (stats.stitchCount === 0) {
     warnings.push({ code: "empty", message: "The design has no stitches." });
@@ -94,8 +100,8 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
   let worst = 0;
   let overCount = 0;
   let worstCell = "";
-  for (const s of out) {
-    if (s.type !== "stitch") continue;
+  for (const s of sewn) {
+    if (s.type !== "stitch" || s.lock) continue; // tie stitches are deliberately stacked
     const key = `${Math.floor(s.x)},${Math.floor(s.y)}`;
     const n = (cells.get(key) ?? 0) + 1;
     cells.set(key, n);
@@ -115,4 +121,71 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
 
   result.warnings = warnings;
   return { plan: result, warnings };
+}
+
+/**
+ * Lock the thread so cut ends can't pull out:
+ * - tie-in: right after the first stitch of the design and of every colour block / trim, sew
+ *   forward-back-forward along the direction of the next stitch (3 stitches of `len` mm);
+ * - tie-off: before every trim, colour change and the end, sew back-forward-back along the last
+ *   stitch's direction, ending where it started.
+ * Plain jumps (under the trim threshold) don't cut the thread, so they get neither.
+ */
+export function addLockStitches(list: PlanStitch[], len: number): PlanStitch[] {
+  const out: PlanStitch[] = [];
+  let cut = true; // thread is cut/new: the next stitch needs a tie-in
+  let last: PlanStitch | null = null; // last real stitch since the last cut
+  let before: PlanStitch | null = null; // the one before it
+  const tieOff = () => {
+    if (!last) return;
+    const ref = before ?? last;
+    let dx = last.x - ref.x;
+    let dy = last.y - ref.y;
+    const d = Math.hypot(dx, dy);
+    if (d < 1e-6) return;
+    dx /= d;
+    dy /= d;
+    const l = Math.min(len, d / 2);
+    const mk = (k: number): PlanStitch => ({ ...last!, x: last!.x - dx * l * k, y: last!.y - dy * l * k, type: "stitch", lock: true });
+    out.push(mk(1), mk(0), mk(1));
+    last = null;
+    before = null;
+  };
+  for (let i = 0; i < list.length; i++) {
+    const s = list[i];
+    if (s.type === "trim" || s.type === "colorChange") {
+      tieOff();
+      // a colour change parks the needle wherever the last tie-off left it
+      const at = out[out.length - 1];
+      out.push(s.type === "colorChange" && at ? { ...s, x: at.x, y: at.y } : s);
+      cut = true;
+      continue;
+    }
+    if (s.type !== "stitch") {
+      out.push(s);
+      continue;
+    }
+    out.push(s);
+    if (cut) {
+      cut = false;
+      // direction to the next real stitch
+      const next = list.slice(i + 1).find((n) => n.type === "stitch");
+      if (next) {
+        const dx = next.x - s.x;
+        const dy = next.y - s.y;
+        const d = Math.hypot(dx, dy);
+        if (d > 1e-6) {
+          const l = Math.min(len, d / 2);
+          const mk = (k: number): PlanStitch => ({ ...s, x: s.x + (dx / d) * l * k, y: s.y + (dy / d) * l * k, lock: true });
+          out.push(mk(1), mk(0), mk(1));
+        }
+      }
+      before = null;
+    } else {
+      before = last;
+    }
+    last = s;
+  }
+  tieOff();
+  return out;
 }

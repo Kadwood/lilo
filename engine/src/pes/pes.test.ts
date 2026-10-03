@@ -121,3 +121,17 @@ describe("full design -> PES -> back", () => {
     expect(Math.min(...cx)).toBeCloseTo(-Math.max(...cx), 6);
   });
 });
+
+describe("PEC short/long form boundary", () => {
+  it("round-trips deltas of -64, -63, 62, 63 and 64 (0.1 mm units)", () => {
+    const mk = (x: number, y: number) => ({ x, y, type: "stitch" as const, threadIndex: 0, objectIndex: 0 });
+    const xs = [0, -6.4, -12.7, -6.5, 0, 6.3, 12.6, 6.2, 12.7, 6.3];
+    const plan = { threads: [byName("Blue")], warnings: [], stitches: xs.map((x, i) => mk(x, i % 2 ? 6.3 : -6.4)) };
+    const back = readPes(writePes(plan));
+    expect(back.stitches).toHaveLength(plan.stitches.length);
+    plan.stitches.forEach((s, i) => {
+      expect(back.stitches[i].x).toBeCloseTo(s.x, 5);
+      expect(back.stitches[i].y).toBeCloseTo(s.y, 5);
+    });
+  });
+});

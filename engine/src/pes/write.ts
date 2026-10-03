@@ -189,7 +189,7 @@ export function writePes(plan: StitchPlan, options: WritePesOptions = {}): Uint8
     xx += dx;
     yy += dy;
     if (s.type === "stitch") {
-      if (dx > -64 && dx < 63 && dy > -64 && dy < 63) {
+      if (dx >= -64 && dx <= 63 && dy >= -64 && dy <= 63) {
         writeShort(out, dx);
         writeShort(out, dy);
       } else {
