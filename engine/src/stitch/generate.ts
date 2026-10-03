@@ -161,6 +161,68 @@ function satinRuns(o: SatinObject, from: Pt): IRun[] {
   return [new Core.Runs.ClassicSatin(strip.map(toV), satinOptions(o.params) as never)];
 }
 
+
+/**
+ * One object's needle drops, absolute and unvalidated. `xy` holds x,y pairs; `j[i]` is 1 when a jump
+ * precedes drop i (the first drop of a run, or a jump the run itself made, farther than a hair from
+ * where the needle was). Everything an object's stitches depend on is in the cache key: the object
+ * itself, where the needle starts and (for kinds that aim their exit) where the next object is.
+ */
+interface Moves {
+  xy: Float64Array;
+  j: Uint8Array;
+}
+
+const MOVES_CACHE = new Map<string, Moves>();
+const MOVES_CACHE_MAX_POINTS = 1_500_000;
+let cachedPoints = 0;
+
+/** Test and tooling hook: forget every cached object (the cache is otherwise invisible). */
+export function clearStitchCache(): void {
+  MOVES_CACHE.clear();
+  cachedPoints = 0;
+}
+
+function objectMoves(o: DesignObject, cur: Pt, next: Pt): Moves {
+  const aims = o.kind === "fill" || EXTRA_GENERATORS.has(o.kind);
+  const key = `${JSON.stringify(o)}|${cur[0]},${cur[1]}${aims ? `|${next[0]},${next[1]}` : ""}`;
+  const hit = MOVES_CACHE.get(key);
+  if (hit) {
+    MOVES_CACHE.delete(key); // most recently used goes last
+    MOVES_CACHE.set(key, hit);
+    return hit;
+  }
+  const extra = EXTRA_GENERATORS.get(o.kind);
+  const runs: IRun[] = extra ? extra.runs(o, cur, next) : o.kind === "fill" ? fillRuns(o, cur, next) : o.kind === "satin" ? satinRuns(o, cur) : runObjectRuns(o, cur);
+  const xs: number[] = [];
+  const js: number[] = [];
+  let at: Pt = cur;
+  for (const run of runs) {
+    let first = true;
+    for (const s of run.getStitches(PX)) {
+      const x = s.position.x / PX;
+      const y = s.position.y / PX;
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      const jump = first || (s.stitchType as number) === STITCHJS_JUMP;
+      first = false;
+      xs.push(x, y);
+      js.push(jump && Math.hypot(x - at[0], y - at[1]) > SAME_SPOT_MM ? 1 : 0);
+      at = [x, y];
+    }
+  }
+  const moves: Moves = { xy: Float64Array.from(xs), j: Uint8Array.from(js) };
+  if (moves.j.length > 0) {
+    MOVES_CACHE.set(key, moves);
+    cachedPoints += moves.j.length;
+    for (const [k, v] of MOVES_CACHE) {
+      if (cachedPoints <= MOVES_CACHE_MAX_POINTS) break;
+      MOVES_CACHE.delete(k);
+      cachedPoints -= v.j.length;
+    }
+  }
+  return moves;
+}
+
 /** A run whose stitch length is at least this is "manual": every path point is one needle drop, in order. */
 export { MANUAL_STITCH_LENGTH_MM } from "./runs";
 
@@ -195,28 +257,18 @@ export function designToStitchPlan(design: Design): StitchPlan {
     const nextObj = visible[vi + 1]?.o;
     const next: Pt = nextObj ? centreOf(nextObj) : cur;
 
-    let runs: IRun[];
     let produced: PlanStitch[] = [];
     try {
-      const extra = EXTRA_GENERATORS.get(o.kind);
-      runs = extra ? extra.runs(o, cur, next) : o.kind === "fill" ? fillRuns(o, cur, next) : o.kind === "satin" ? satinRuns(o, cur) : runObjectRuns(o, cur);
       const newBlock = o.threadId !== curThreadId;
       const blockIndex = newBlock ? blocks.length : blocks.length - 1;
+      const moves = objectMoves(o, cur, next);
       let at: Pt = cur;
-      for (const run of runs) {
-        let first = true;
-        for (const s of run.getStitches(PX)) {
-          const x = s.position.x / PX;
-          const y = s.position.y / PX;
-          if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
-          const jump = first || (s.stitchType as number) === STITCHJS_JUMP;
-          first = false;
-          if (jump && Math.hypot(x - at[0], y - at[1]) > SAME_SPOT_MM) {
-            produced.push({ x, y, type: "jump", threadIndex: blockIndex, objectIndex: index });
-          }
-          produced.push({ x, y, type: "stitch", threadIndex: blockIndex, objectIndex: index });
-          at = [x, y];
-        }
+      for (let i = 0; i < moves.j.length; i++) {
+        const x = moves.xy[i * 2];
+        const y = moves.xy[i * 2 + 1];
+        if (moves.j[i]) produced.push({ x, y, type: "jump", threadIndex: blockIndex, objectIndex: index });
+        produced.push({ x, y, type: "stitch", threadIndex: blockIndex, objectIndex: index });
+        at = [x, y];
       }
       if (produced.length === 0) {
         warnings.push({ code: "object-failed", message: `Object "${o.name}" produced no stitches`, objectId: o.id });

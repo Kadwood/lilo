@@ -1,6 +1,7 @@
 import { Unzip, UnzipInflate, UnzipPassThrough, unzipSync, zipSync, strFromU8, strToU8, type Unzipped, type Zippable } from "fflate";
 import { emptyDesign, type Design } from "../model";
 import { emptyShelf, type Shelf } from "../threads/shelf";
+import { applyDelta, diff, type Delta, type Json } from "./delta";
 import { migrateProjectDoc, SAFE_PATH } from "./migrate";
 import {
   HISTORY_LIMIT,
@@ -81,6 +82,41 @@ export function contentHash(doc: ProjectDoc): string {
 const seqOf = (e: HistoryEntry) => Number.parseInt(e.id.split("-")[0], 10) || 0;
 
 /**
+ * How a history entry keeps its document. The newest snapshots are stored as what changed since the one
+ * before (see `delta.ts`), with a full copy every `KEYFRAME_EVERY` entries, so fifty snapshots of a big
+ * design cost a few full copies, not fifty. `entry.json` still gives the whole document as text (rebuilt
+ * on each read from the nearest full copy; it is not kept).
+ */
+interface Stored {
+  full?: string;
+  base?: HistoryEntry;
+  delta?: Delta;
+  /** Deltas between this entry and its full copy (0 for a full entry). */
+  depth: number;
+}
+const STORED = new WeakMap<HistoryEntry, Stored>();
+const KEYFRAME_EVERY = 8;
+/** The parsed document of the newest entry made here, so the next snapshot need not rebuild it. */
+let newest: { entry: HistoryEntry; raw: Json } | null = null;
+
+function makeEntry(meta: Pick<HistoryEntry, "id" | "savedAt" | "hash">, stored: Stored): HistoryEntry {
+  const e = { id: meta.id, savedAt: meta.savedAt, hash: meta.hash } as HistoryEntry;
+  Object.defineProperty(e, "json", { enumerable: false, get: () => (stored.full ?? JSON.stringify(rawOf(e))) });
+  STORED.set(e, stored);
+  return e;
+}
+
+/** The document of an entry as a JSON tree (fresh for a full entry, shared with its base for a delta). */
+function rawOf(e: HistoryEntry): Json {
+  const s = STORED.get(e);
+  if (!s || s.full !== undefined) return JSON.parse(s?.full ?? e.json) as Json;
+  if (!s.base || !s.delta) throw new Error("The history entry has no content.");
+  return applyDelta(rawOf(s.base), s.delta);
+}
+
+const depthOf = (e: HistoryEntry): number => STORED.get(e)?.depth ?? 0;
+
+/**
  * Record the current document in the version history, unless it matches the newest entry. Keeps the
  * latest `HISTORY_LIMIT` (50) entries. Returns the same object when nothing changed.
  */
@@ -89,12 +125,22 @@ export function addHistorySnapshot(project: LiloProject, now: Date = new Date(),
   const last = project.history[project.history.length - 1];
   if (last && last.hash === hash) return project;
   const seq = last ? seqOf(last) + 1 : 1;
-  const entry: HistoryEntry = {
-    id: `${String(seq).padStart(6, "0")}-${hash}`,
-    savedAt: now.toISOString(),
-    hash,
-    json: JSON.stringify(project.doc),
-  };
+  const meta = { id: `${String(seq).padStart(6, "0")}-${hash}`, savedAt: now.toISOString(), hash };
+  const cur = JSON.parse(JSON.stringify(project.doc)) as Json; // exactly what a file would hold
+  let entry: HistoryEntry | null = null;
+  if (last && depthOf(last) + 1 < KEYFRAME_EVERY) {
+    try {
+      const prev = newest?.entry === last ? newest.raw : rawOf(last);
+      const delta: Delta = diff(prev, cur) ?? { o: {} };
+      const text = JSON.stringify(delta);
+      // a delta that is not much smaller than the document (everything changed) is no saving
+      if (text.length < 50_000 || text.length * 1.5 < JSON.stringify(cur).length) entry = makeEntry(meta, { base: last, delta, depth: depthOf(last) + 1 });
+    } catch {
+      entry = null; // fall back to a full copy
+    }
+  }
+  entry ??= makeEntry(meta, { full: JSON.stringify(cur), depth: 0 });
+  newest = { entry, raw: cur };
   const history = [...project.history, entry];
   return { ...project, history: history.length > limit ? history.slice(history.length - limit) : history };
 }
@@ -192,7 +238,18 @@ export function saveProject(project: LiloProject, now: Date = new Date()): Uint8
     const bytes = project.fonts[ref.id];
     if (bytes && ref.file) files[ref.file] = [bytes, packed];
   }
-  for (const h of project.history) files[`history/${h.id}.json`] = [strToU8(JSON.stringify({ savedAt: h.savedAt, doc: JSON.parse(h.json) })), packed];
+  const written = new Set(project.history.map((h) => h.id));
+  const newestId = project.history[project.history.length - 1]?.id;
+  for (const h of project.history) {
+    const st = STORED.get(h);
+    // a delta is written as such while the entry it builds on is in the file too, else as a full copy;
+    // the newest entry is always whole, so one damaged file never takes the latest version with it
+    const body =
+      st?.base && st.delta && h.id !== newestId && written.has(st.base.id)
+        ? JSON.stringify({ savedAt: h.savedAt, base: st.base.id, delta: st.delta })
+        : `{"savedAt":${JSON.stringify(h.savedAt)},"doc":${h.json}}`;
+    files[`history/${h.id}.json`] = [strToU8(body), packed];
+  }
   return zipSync(files);
 }
 
@@ -259,24 +316,32 @@ function unpack(bytes: Uint8Array, only?: (name: string) => boolean, limits: Unp
 }
 
 function parseHistory(files: Unzipped, warnings: string[]): HistoryEntry[] {
-  const entries: HistoryEntry[] = [];
+  const found: { seq: number; id: string; name: string; data: Uint8Array }[] = [];
   for (const [name, data] of Object.entries(files)) {
     const m = /^history\/(\d{1,9})-([0-9a-f]{1,32})\.json$/.exec(name);
-    if (!m) continue;
+    if (m) found.push({ seq: Number.parseInt(m[1], 10), id: `${m[1]}-${m[2]}`, name, data });
+  }
+  found.sort((a, b) => a.seq - b.seq);
+  const byId = new Map<string, HistoryEntry>();
+  for (const f of found) {
     try {
-      const j = JSON.parse(strFromU8(data)) as { savedAt?: unknown; doc?: unknown };
+      const j = JSON.parse(strFromU8(f.data)) as { savedAt?: unknown; doc?: unknown; base?: unknown; delta?: unknown };
+      const hash = f.id.slice(f.id.indexOf("-") + 1);
+      if (typeof j.base === "string" && j.delta !== undefined) {
+        // built on an earlier entry; checked when it is opened (`historyDoc`)
+        const base = byId.get(j.base);
+        if (!base) throw new Error("its base entry is missing");
+        const savedAt = typeof j.savedAt === "string" ? j.savedAt : "";
+        byId.set(f.id, makeEntry({ id: f.id, savedAt, hash }, { base, delta: j.delta as Delta, depth: depthOf(base) + 1 }));
+        continue;
+      }
       const { doc } = migrateProjectDoc(j.doc);
-      entries.push({
-        id: `${m[1]}-${m[2]}`,
-        savedAt: typeof j.savedAt === "string" ? j.savedAt : doc.savedAt,
-        hash: contentHash(doc),
-        json: JSON.stringify(doc),
-      });
+      byId.set(f.id, makeEntry({ id: f.id, savedAt: typeof j.savedAt === "string" ? j.savedAt : doc.savedAt, hash: contentHash(doc) }, { full: JSON.stringify(doc), depth: 0 }));
     } catch {
-      warnings.push(`Skipped an unreadable history entry (${name}).`);
+      warnings.push(`Skipped an unreadable history entry (${f.name}).`);
     }
   }
-  return entries.sort((a, b) => seqOf(a) - seqOf(b)).slice(-HISTORY_LIMIT);
+  return [...byId.values()].sort((a, b) => seqOf(a) - seqOf(b)).slice(-HISTORY_LIMIT);
 }
 
 /** Open `.lilo` bytes. Throws `ProjectError` (with a message for the user) if it can't be opened. */
