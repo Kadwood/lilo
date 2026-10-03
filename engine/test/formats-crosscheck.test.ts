@@ -45,7 +45,7 @@ describe.skipIf(!dir)("pyembroidery cross-check", () => {
       for (const [name, plan] of Object.entries(plans)) {
         for (const f of FORMATS) {
           const path = join(dir, "py", `${name}.${f.ext}`);
-          if (!existsSync(path)) continue;
+          if (!f.canRead || !existsSync(path)) continue;
           const back = readEmbroidery(new Uint8Array(readFileSync(path)), f.ext);
           // 1. Lilo reads the file exactly as pyembroidery does
           const ref = JSON.parse(readFileSync(`${path}.read.json`, "utf8")) as { needles: number[][]; blocks: number; trims: number };
