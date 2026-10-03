@@ -68,7 +68,7 @@ async function buildOnce() {
 
   const compat = readJson(join(here, "../docs/compat.json"));
   const demo = readJson(join(here, "public/demo/demo.json"));
-  const demoInfo = { stitches: demo.stats.stitches, colours: new Set(demo.threads).size };
+  const demoInfo = { stitches: demo.stats.stitches, width: demo.width, height: demo.height };
 
   const locales = loadLocales();
   const pages = [];

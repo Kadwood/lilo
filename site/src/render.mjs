@@ -314,37 +314,21 @@ export function renderHome(loc, locales, build) {
           <img class="hero-mark" src="/brand/lilo-mark.svg" width="64" height="64" alt="">
           <h1 id="h-hero" class="h1">${esc(h.title)}</h1>
           <p class="lede">${esc(h.sub)}</p>
-          <div class="drop" id="drop">
-            <div class="drop-stage">
-              <canvas id="demo" width="560" height="560" role="img" aria-label="${esc(fill(h.demoCaption, { stitches: build.demo.stitches, colours: build.demo.colours }))}"></canvas>
-              <img id="drop-img" class="drop-img" alt="${esc(h.droppedAlt)}" hidden>
-            </div>
-            <div class="drop-body">
-              <div id="drop-idle">
-                <label class="drop-pick" for="file">
-                  <span class="drop-ico">${icon("upload", { size: 22 })}</span>
-                  <span class="drop-title">${esc(h.dropTitle)}</span>
-                  <span class="drop-hint">${esc(h.dropHint)}</span>
-                </label>
-                <input id="file" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" aria-label="${esc(h.dropAria)}">
-                <ol class="stages" id="stages" aria-hidden="true"><li data-s="0">${esc(h.stageLook)}</li><li data-s="1">${esc(h.stageTrace)}</li><li data-s="2">${esc(h.stageSew)}</li></ol>
-                <p class="demo-cap">${esc(fill(h.demoCaption, { stitches: build.nf.format(build.demo.stitches), colours: build.demo.colours }))}</p>
-                <button class="mini" id="demo-toggle" type="button" aria-pressed="false">${esc(h.pause)}</button>
-              </div>
-              <div id="drop-done" hidden>
-                <h2 class="drop-title">${esc(h.droppedTitle)}</h2>
-                <p class="muted">${esc(h.droppedText)}</p>
-                <a class="btn btn-dark" href="#download">${esc(h.droppedCta)}</a>
-                <button class="mini" id="drop-reset" type="button">${esc(h.droppedOther)}</button>
-              </div>
-              <p class="drop-err" id="drop-err" role="alert" hidden>${esc(h.notImage)}</p>
-            </div>
-          </div>
           <p class="price">${esc(h.price)}</p>
           <div class="cta-row">
-            <a class="btn btn-dark" href="#download">${esc(h.cta)}</a>
-            <a class="btn btn-soft" href="#how">${esc(h.cta2)}</a>
+            <a class="btn btn-dark btn-lg" id="hero-dl" href="${build.downloads.releasesUrl}" rel="noopener">${icon("download", { size: 20 })}<span id="hero-dl-label">${esc(h.cta)}</span></a>
+            <a class="btn btn-soft btn-lg" href="${REPO}" rel="noopener">${GITHUB_SVG}<span>${esc(h.github)}</span></a>
           </div>
+          <figure class="showcase" id="showcase">
+            <div class="showcase-stage">
+              <canvas id="demo" width="${build.demo.width}" height="${build.demo.height}" role="img" aria-label="${esc(h.demoAlt)}"></canvas>
+            </div>
+            <figcaption>
+              <ol class="stages" id="stages" aria-hidden="true"><li data-s="0">${esc(h.stageLook)}</li><li data-s="1">${esc(h.stageTrace)}</li><li data-s="2">${esc(h.stageSew)}</li></ol>
+              <p class="demo-cap">${esc(fill(h.demoCaption, { stitches: build.nf.format(build.demo.stitches) }))}</p>
+              <button class="mini" id="demo-toggle" type="button" aria-pressed="false">${esc(h.pause)}</button>
+            </figcaption>
+          </figure>
         </div>
       </section>
 

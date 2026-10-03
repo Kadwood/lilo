@@ -436,81 +436,8 @@ body.lang-zh h3 {
   max-inline-size: 36em;
   margin-inline: auto;
 }
-.drop {
-  position: relative;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 28px;
-  align-items: center;
-  text-align: start;
-  inline-size: min(720px, 100%);
-  margin: 36px auto 0;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 32px;
-  padding: 20px;
-  box-shadow: var(--shadow);
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.drop.is-over {
-  border-color: var(--hib);
-  box-shadow: 0 0 0 4px var(--hib-soft), var(--shadow);
-}
-.drop-stage {
-  position: relative;
-  inline-size: 100%;
-  aspect-ratio: 1;
-  border-radius: 22px;
-  overflow: hidden;
-  background: var(--fabric);
-}
-.drop-stage canvas,
-.drop-img {
-  inline-size: 100%;
-  block-size: 100%;
-  object-fit: contain;
-}
-.drop-img {
-  position: absolute;
-  inset: 0;
-  background: var(--fabric);
-}
-.drop-img[hidden],
 [hidden] {
   display: none !important;
-}
-.drop-body {
-  display: grid;
-  gap: 14px;
-  padding-inline-end: 8px;
-}
-.drop-pick {
-  display: grid;
-  gap: 2px;
-  justify-items: start;
-  cursor: pointer;
-  border-radius: 20px;
-  padding: 14px 16px;
-  border: 1.5px dashed color-mix(in srgb, var(--hib) 55%, transparent);
-  background: color-mix(in srgb, var(--hib-soft) 55%, transparent);
-}
-.drop-pick:hover,
-.drop.is-over .drop-pick {
-  background: var(--hib-soft);
-}
-.drop-pick:has(+ input:focus-visible) {
-  outline: 3px solid var(--hib);
-  outline-offset: 3px;
-}
-.drop-ico {
-  color: var(--hib-ink);
-}
-.drop-title {
-  font: 500 24px/1.2 var(--serif);
-}
-.drop-hint {
-  color: var(--muted);
-  font-size: 15px;
 }
 .stages {
   display: flex;
@@ -535,16 +462,6 @@ body.lang-zh h3 {
   color: var(--muted);
   line-height: 1.5;
 }
-#drop-idle,
-#drop-done {
-  display: grid;
-  gap: 14px;
-  justify-items: start;
-}
-.drop-err {
-  color: var(--hib-ink);
-  font-size: 15px;
-}
 .price {
   margin-block: 34px 22px;
   font: 500 clamp(22px, 3vw, 30px) / 1.2 var(--serif);
@@ -554,6 +471,39 @@ body.lang-zh h3 {
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
+}
+
+/* showcase: a real result, replayed */
+.showcase {
+  inline-size: min(860px, 100%);
+  margin: clamp(36px, 6vw, 64px) auto 0;
+}
+.showcase-stage {
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--fabric);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  line-height: 0;
+}
+.showcase canvas {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1120 / 621;
+}
+.showcase figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 20px;
+  margin-block-start: 18px;
+}
+.showcase .demo-cap {
+  flex-basis: 100%;
+  order: 3;
+  max-inline-size: 38em;
+  margin-inline: auto;
 }
 
 /* ---- sections ---- */
@@ -1006,18 +956,6 @@ tbody tr:last-child > * {
   }
   .lang-cur {
     display: none;
-  }
-  .drop {
-    grid-template-columns: 1fr;
-    padding: 16px;
-    gap: 18px;
-  }
-  .drop-stage {
-    inline-size: min(100%, 320px);
-    margin-inline: auto;
-  }
-  .drop-body {
-    padding-inline-end: 0;
   }
   .card {
     aspect-ratio: auto;
