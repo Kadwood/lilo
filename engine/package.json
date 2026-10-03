@@ -16,6 +16,7 @@
   "dependencies": {
     "@stitchables/stitchjs": "^1.0.37",
     "image-q": "4.0.0",
+    "jsts": "2.12.1",
     "vtracer-wasm": "0.1.0"
   },
   "devDependencies": {
