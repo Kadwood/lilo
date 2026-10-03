@@ -134,7 +134,15 @@ function satinRuns(o: SatinObject, from: Pt): IRun[] {
   return [new Core.Runs.ClassicSatin(strip.map(toV), { densityMm: o.params.densityMm, underlays })];
 }
 
+/** A run whose stitch length is at least this is "manual": every path point is one needle drop, in order. */
+export const MANUAL_STITCH_LENGTH_MM = 1000;
+
 function runRuns(o: RunObject, from: Pt): IRun[] {
+  if (o.params.stitchLengthMm >= MANUAL_STITCH_LENGTH_MM) {
+    const pts = o.geometry.closed ? [...o.geometry.path, o.geometry.path[0]] : o.geometry.path;
+    const stitches = pts.map((p) => ({ position: { x: p[0] * PX, y: p[1] * PX }, stitchType: 0 }));
+    return [{ getStitches: () => stitches as unknown as InstanceType<typeof Core.Stitch>[] }];
+  }
   let path = [...o.geometry.path];
   if (o.geometry.closed) path.push(path[0]);
   const first = path[0];

@@ -1,0 +1,1790 @@
+[
+  {
+    "code": "1451",
+    "name": "Cloud Dancer",
+    "hex": "#f514e8",
+    "lab": [57.79, 92.1, -52.13]
+  },
+  {
+    "code": "NAT",
+    "name": "Marshmallow",
+    "hex": "#f2edde",
+    "lab": [93.76, -0.86, 7.86]
+  },
+  {
+    "code": "2029",
+    "name": "Wax Yellow",
+    "hex": "#f2ebad",
+    "lab": [92.27, -6.98, 31.02]
+  },
+  {
+    "code": "2030",
+    "name": "Charlock",
+    "hex": "#dee08a",
+    "lab": [87.33, -13.23, 41.87]
+  },
+  {
+    "code": "2160",
+    "name": "Sunshine",
+    "hex": "#f7e07d",
+    "lab": [89.19, -4.65, 50.97]
+  },
+  {
+    "code": "2280",
+    "name": "Limelight",
+    "hex": "#f5ed80",
+    "lab": [92.37, -11.67, 53.36]
+  },
+  {
+    "code": "1858",
+    "name": "Buttercup",
+    "hex": "#f5e03b",
+    "lab": [88.47, -9.54, 77.27]
+  },
+  {
+    "code": "2314",
+    "name": "Aurora",
+    "hex": "#e8db52",
+    "lab": [86.22, -11.37, 66.43]
+  },
+  {
+    "code": "2058",
+    "name": "Buttercup",
+    "hex": "#f5e03b",
+    "lab": [88.47, -9.54, 77.27]
+  },
+  {
+    "code": "2193",
+    "name": "Primrose Yellow",
+    "hex": "#edcc52",
+    "lab": [82.81, -1.69, 62.98]
+  },
+  {
+    "code": "2051",
+    "name": "Lemon Drop",
+    "hex": "#f5e07a",
+    "lab": [88.98, -5.71, 52.11]
+  },
+  {
+    "code": "1491",
+    "name": "Sunset Gold",
+    "hex": "#f7c966",
+    "lab": [83.18, 5.29, 54.75]
+  },
+  {
+    "code": "2008",
+    "name": "Super Lemon",
+    "hex": "#e3bf38",
+    "lab": [78.39, -0.49, 68.34]
+  },
+  {
+    "code": "2297",
+    "name": "Lemon",
+    "hex": "#e8bf17",
+    "lab": [78.74, 0.74, 77.59]
+  },
+  {
+    "code": "2033",
+    "name": "Golden Rod",
+    "hex": "#e0ab1c",
+    "lab": [72.93, 7.86, 71.72]
+  },
+  {
+    "code": "2049",
+    "name": "Beeswax",
+    "hex": "#ebad45",
+    "lab": [74.81, 12.94, 60.05]
+  },
+  {
+    "code": "2158",
+    "name": "Freesia",
+    "hex": "#f0bd21",
+    "lab": [79.06, 5.42, 76.15]
+  },
+  {
+    "code": "3244",
+    "name": "Double Cream",
+    "hex": "#f0dba8",
+    "lab": [87.98, -0.25, 27.76]
+  },
+  {
+    "code": "2032",
+    "name": "Golden Haze",
+    "hex": "#fad999",
+    "lab": [88.09, 2.85, 35.76]
+  },
+  {
+    "code": "2159",
+    "name": "Mellow Yeloow",
+    "hex": "#f2e09c",
+    "lab": [89.2, -3.48, 35.57]
+  },
+  {
+    "code": "2219",
+    "name": "Marigold",
+    "hex": "#fcab47",
+    "lab": [76.24, 21.2, 61.26]
+  },
+  {
+    "code": "1859",
+    "name": "Citrus",
+    "hex": "#f5b526",
+    "lab": [77.64, 11.85, 73.96]
+  },
+  {
+    "code": "2106",
+    "name": "Cradle Pink",
+    "hex": "#f2d4d6",
+    "lab": [87.4, 10.74, 2.85]
+  },
+  {
+    "code": "9099",
+    "name": "Peony",
+    "hex": "#f5a3a6",
+    "lab": [75.05, 30.74, 10.98]
+  },
+  {
+    "code": "2103",
+    "name": "Sea Pink",
+    "hex": "#e399a1",
+    "lab": [70.66, 28.77, 7.19]
+  },
+  {
+    "code": "2057",
+    "name": "Salmon",
+    "hex": "#faad94",
+    "lab": [77.49, 25.26, 24.23]
+  },
+  {
+    "code": "2084",
+    "name": "Salmon",
+    "hex": "#faad94",
+    "lab": [77.49, 25.26, 24.23]
+  },
+  {
+    "code": "2211",
+    "name": "Grain",
+    "hex": "#ebb38c",
+    "lab": [77.16, 15.4, 27.79]
+  },
+  {
+    "code": "2125",
+    "name": "Coral Sands",
+    "hex": "#f0ab82",
+    "lab": [75.62, 20.57, 31.15]
+  },
+  {
+    "code": "2116",
+    "name": "Golden Nugget",
+    "hex": "#db9e54",
+    "lab": [69.58, 15.08, 46.92]
+  },
+  {
+    "code": "2044",
+    "name": "Tangerine",
+    "hex": "#fc8f4f",
+    "lab": [70.11, 36.14, 51.05]
+  },
+  {
+    "code": "10050",
+    "name": "Dusty Orange",
+    "hex": "#e38754",
+    "lab": [65.2, 30.66, 42.04]
+  },
+  {
+    "code": "2195",
+    "name": "Dusty Orange",
+    "hex": "#e38754",
+    "lab": [65.2, 30.66, 42.04]
+  },
+  {
+    "code": "2052",
+    "name": "Tangerine",
+    "hex": "#fc8f4f",
+    "lab": [70.11, 36.14, 51.05]
+  },
+  {
+    "code": "2037",
+    "name": "Sun Orange",
+    "hex": "#ed8530",
+    "lab": [65.75, 33.99, 59.91]
+  },
+  {
+    "code": "2294",
+    "name": "Apricot",
+    "hex": "#ed9430",
+    "lab": [69.04, 26.15, 62.94]
+  },
+  {
+    "code": "2291",
+    "name": "Marigold",
+    "hex": "#fcab47",
+    "lab": [76.24, 21.2, 61.26]
+  },
+  {
+    "code": "10040",
+    "name": "Pumpkin",
+    "hex": "#f5a866",
+    "lab": [75.06, 21.75, 45.13]
+  },
+  {
+    "code": "3227",
+    "name": "Apricot Nectar",
+    "hex": "#edad70",
+    "lab": [75.49, 16.65, 40.36]
+  },
+  {
+    "code": "3238",
+    "name": "Caramel Cream",
+    "hex": "#f2bf94",
+    "lab": [80.89, 12.69, 28.67]
+  },
+  {
+    "code": "2299",
+    "name": "Almond Cream",
+    "hex": "#fac9a1",
+    "lab": [84.32, 12.03, 26.59]
+  },
+  {
+    "code": "1857",
+    "name": "Sunburst",
+    "hex": "#fac78a",
+    "lab": [83.45, 10.59, 37.38]
+  },
+  {
+    "code": "2130",
+    "name": "Pink Champagne",
+    "hex": "#f0d9c7",
+    "lab": [88.1, 5.08, 11.75]
+  },
+  {
+    "code": "2213",
+    "name": "Pale Dogwood",
+    "hex": "#ebc7b8",
+    "lab": [82.9, 10.44, 12.24]
+  },
+  {
+    "code": "2081",
+    "name": "Pearlblush",
+    "hex": "#f2d1bf",
+    "lab": [86.13, 8.78, 13.19]
+  },
+  {
+    "code": "7129",
+    "name": "Peach Melba",
+    "hex": "#f7bfad",
+    "lab": [81.87, 17.61, 16.82]
+  },
+  {
+    "code": "2161",
+    "name": "Bisque",
+    "hex": "#f0ccb5",
+    "lab": [84.51, 9.24, 16.17]
+  },
+  {
+    "code": "2162",
+    "name": "Evening Sand",
+    "hex": "#e3baa3",
+    "lab": [78.52, 11.39, 17.21]
+  },
+  {
+    "code": "2164",
+    "name": "Pink Sand",
+    "hex": "#e0b091",
+    "lab": [75.42, 13.26, 22.57]
+  },
+  {
+    "code": "2123",
+    "name": "Terra Cotta",
+    "hex": "#d1806e",
+    "lab": [61.76, 29.35, 23.05]
+  },
+  {
+    "code": "1853",
+    "name": "Flamingo",
+    "hex": "#e8704a",
+    "lab": [61, 43.79, 42.52]
+  },
+  {
+    "code": "10058",
+    "name": "Tigerlily",
+    "hex": "#e36338",
+    "lab": [57.6, 47.36, 47.82]
+  },
+  {
+    "code": "2215",
+    "name": "Paprika",
+    "hex": "#c74f38",
+    "lab": [49.52, 46.52, 37.75]
+  },
+  {
+    "code": "1850",
+    "name": "Deep Sea Coral",
+    "hex": "#d65e54",
+    "lab": [55.02, 46.51, 29.13]
+  },
+  {
+    "code": "2165",
+    "name": "Deep Sea Coral",
+    "hex": "#d65e54",
+    "lab": [55.02, 46.51, 29.13]
+  },
+  {
+    "code": "2149",
+    "name": "Cranberry",
+    "hex": "#ba4f4f",
+    "lab": [47.75, 43.25, 21.8]
+  },
+  {
+    "code": "1851",
+    "name": "Rococco Red",
+    "hex": "#c73b3b",
+    "lab": [46.43, 55.1, 32.47]
+  },
+  {
+    "code": "2007",
+    "name": "Chili",
+    "hex": "#ba573d",
+    "lab": [49, 38.04, 33.83]
+  },
+  {
+    "code": "2150",
+    "name": "Chrysanthemum",
+    "hex": "#b8474d",
+    "lab": [45.96, 46.16, 20.58]
+  },
+  {
+    "code": "10024",
+    "name": "Baked Apple",
+    "hex": "#b04a45",
+    "lab": [45.03, 41.28, 23.93]
+  },
+  {
+    "code": "3066",
+    "name": "Baked Apple",
+    "hex": "#b04a45",
+    "lab": [45.03, 41.28, 23.93]
+  },
+  {
+    "code": "2066",
+    "name": "Red Earth",
+    "hex": "#9e473b",
+    "lab": [41.36, 35.25, 24.67]
+  },
+  {
+    "code": "2054",
+    "name": "Mineral Red",
+    "hex": "#b3544f",
+    "lab": [47.61, 38.17, 21.41]
+  },
+  {
+    "code": "2009",
+    "name": "Marsala",
+    "hex": "#9e544a",
+    "lab": [44.38, 29.53, 19.57]
+  },
+  {
+    "code": "2209",
+    "name": "Garnet Rose",
+    "hex": "#a84f4f",
+    "lab": [44.92, 36.58, 17.53]
+  },
+  {
+    "code": "3255",
+    "name": "Redwood",
+    "hex": "#ad5c4a",
+    "lab": [48.3, 31.2, 25.09]
+  },
+  {
+    "code": "2171",
+    "name": "Dusty Cedar",
+    "hex": "#b36359",
+    "lab": [50.96, 31.14, 19.95]
+  },
+  {
+    "code": "2172",
+    "name": "Mahogany",
+    "hex": "#8a5447",
+    "lab": [41.53, 20.95, 17.08]
+  },
+  {
+    "code": "10032",
+    "name": "Oxblood Red",
+    "hex": "#754040",
+    "lab": [33.6, 22.98, 10.16]
+  },
+  {
+    "code": "9078",
+    "name": "Pompeii",
+    "hex": "#854a45",
+    "lab": [38.4, 24.42, 13.96]
+  },
+  {
+    "code": "2001",
+    "name": "Pinkish Gray",
+    "hex": "#edcfc7",
+    "lab": [85.38, 9.21, 7.83]
+  },
+  {
+    "code": "2002",
+    "name": "Powder Pink",
+    "hex": "#edbab0",
+    "lab": [79.76, 16.92, 12.1]
+  },
+  {
+    "code": "3209",
+    "name": "Lotus",
+    "hex": "#e0c2ba",
+    "lab": [80.73, 9.34, 7.94]
+  },
+  {
+    "code": "2079",
+    "name": "Candy Pink",
+    "hex": "#f7b5ba",
+    "lab": [79.82, 24.63, 6.94]
+  },
+  {
+    "code": "2117",
+    "name": "Peony",
+    "hex": "#f5a3a6",
+    "lab": [75.05, 30.74, 10.98]
+  },
+  {
+    "code": "2003",
+    "name": "Lilac Sachet",
+    "hex": "#edb5c7",
+    "lab": [79.14, 22.96, -1.21]
+  },
+  {
+    "code": "10044",
+    "name": "Prism Pink",
+    "hex": "#faabba",
+    "lab": [77.87, 30.98, 4.17]
+  },
+  {
+    "code": "2104",
+    "name": "Rosebloom",
+    "hex": "#e68fa8",
+    "lab": [68.97, 36.11, 0.89]
+  },
+  {
+    "code": "2100",
+    "name": "Sea Pink",
+    "hex": "#e399a1",
+    "lab": [70.66, 28.77, 7.19]
+  },
+  {
+    "code": "2090",
+    "name": "Tea Rose",
+    "hex": "#e37373",
+    "lab": [61.51, 43.4, 20.29]
+  },
+  {
+    "code": "2151",
+    "name": "Burnt Coral",
+    "hex": "#f28f78",
+    "lab": [69.39, 35.14, 28.38]
+  },
+  {
+    "code": "2071",
+    "name": "Strawberry Ice",
+    "hex": "#e38782",
+    "lab": [65.96, 34.6, 17.9]
+  },
+  {
+    "code": "2110",
+    "name": "Blush",
+    "hex": "#cc9494",
+    "lab": [66.64, 21.09, 8.36]
+  },
+  {
+    "code": "10048",
+    "name": "Wild Orchid",
+    "hex": "#de7899",
+    "lab": [62.73, 43.26, 0.16]
+  },
+  {
+    "code": "2304",
+    "name": "Confetti",
+    "hex": "#e37382",
+    "lab": [61.83, 44.87, 12.15]
+  },
+  {
+    "code": "2005",
+    "name": "Chatea Rose",
+    "hex": "#d1788c",
+    "lab": [60.68, 37, 4.43]
+  },
+  {
+    "code": "1852",
+    "name": "Mauvewood",
+    "hex": "#a3595c",
+    "lab": [46.59, 30.62, 11.83]
+  },
+  {
+    "code": "2006",
+    "name": "Tea Rose",
+    "hex": "#e37373",
+    "lab": [61.51, 43.4, 20.29]
+  },
+  {
+    "code": "2026",
+    "name": "Raspberry",
+    "hex": "#d9455c",
+    "lab": [51.59, 58.92, 20.07]
+  },
+  {
+    "code": "2087",
+    "name": "Lilac Rose",
+    "hex": "#c24a70",
+    "lab": [48.93, 51.31, 3.72]
+  },
+  {
+    "code": "10047",
+    "name": "Carmine",
+    "hex": "#ba425e",
+    "lab": [45.83, 50.47, 10.1]
+  },
+  {
+    "code": "8792",
+    "name": "Sangria",
+    "hex": "#9c4054",
+    "lab": [40.21, 40.24, 7.65]
+  },
+  {
+    "code": "1873",
+    "name": "Violet Quartz",
+    "hex": "#8f4d5e",
+    "lab": [41.15, 29.77, 2.5]
+  },
+  {
+    "code": "1882",
+    "name": "Oxblood Red",
+    "hex": "#754040",
+    "lab": [33.6, 22.98, 10.16]
+  },
+  {
+    "code": "2170",
+    "name": "Plum Wine",
+    "hex": "#6b4d52",
+    "lab": [36.07, 13.49, 2.05]
+  },
+  {
+    "code": "10043",
+    "name": "Plum Wine",
+    "hex": "#6b4d52",
+    "lab": [36.07, 13.49, 2.05]
+  },
+  {
+    "code": "10052",
+    "name": "Orchid Pink",
+    "hex": "#f7bfc2",
+    "lab": [82.34, 20.49, 6.25]
+  },
+  {
+    "code": "2012",
+    "name": "Lilas",
+    "hex": "#b58a8f",
+    "lab": [61.64, 17.12, 3.69]
+  },
+  {
+    "code": "2223",
+    "name": "Amethyst",
+    "hex": "#824f6b",
+    "lab": [40.25, 25.68, -7.08]
+  },
+  {
+    "code": "1875",
+    "name": "Damson",
+    "hex": "#804759",
+    "lab": [37.51, 26.68, 0.08]
+  },
+  {
+    "code": "2185",
+    "name": "Amethyst",
+    "hex": "#824f6b",
+    "lab": [40.25, 25.68, -7.08]
+  },
+  {
+    "code": "2109",
+    "name": "Baton Rouge",
+    "hex": "#a3406b",
+    "lab": [42.03, 45.25, -3.91]
+  },
+  {
+    "code": "2256",
+    "name": "Dahlia Mauve",
+    "hex": "#ab597a",
+    "lab": [48.52, 37.39, -3.33]
+  },
+  {
+    "code": "2811",
+    "name": "Crocus",
+    "hex": "#c987ab",
+    "lab": [63.91, 30.59, -8.64]
+  },
+  {
+    "code": "2091",
+    "name": "Lavandula",
+    "hex": "#c4a3c7",
+    "lab": [70.91, 18.44, -13.86]
+  },
+  {
+    "code": "2277",
+    "name": "Bouganville",
+    "hex": "#9e85b8",
+    "lab": [59.44, 19.52, -23.2]
+  },
+  {
+    "code": "9014",
+    "name": "Hyacinth",
+    "hex": "#9c73a3",
+    "lab": [54, 24.72, -19.49]
+  },
+  {
+    "code": "2184",
+    "name": "Crushed Grape",
+    "hex": "#7d547d",
+    "lab": [41.5, 24.3, -16.3]
+  },
+  {
+    "code": "2183",
+    "name": "Loganberry",
+    "hex": "#614761",
+    "lab": [33.8, 16.09, -10.93]
+  },
+  {
+    "code": "8830",
+    "name": "Berry Conserve",
+    "hex": "#7d5466",
+    "lab": [40.67, 19.95, -3.43]
+  },
+  {
+    "code": "2803",
+    "name": "Grayish Purple",
+    "hex": "#70576e",
+    "lab": [40.23, 14.63, -9.18]
+  },
+  {
+    "code": "2108",
+    "name": "Imperial Palace",
+    "hex": "#664d75",
+    "lab": [36.78, 18.69, -18.87]
+  },
+  {
+    "code": "2105",
+    "name": "Corsican Blue",
+    "hex": "#6e6194",
+    "lab": [44.24, 16.72, -26.1]
+  },
+  {
+    "code": "2166",
+    "name": "Viola",
+    "hex": "#ab8fb5",
+    "lab": [63.04, 17.53, -15.9]
+  },
+  {
+    "code": "2252",
+    "name": "Bouganville",
+    "hex": "#9e85b8",
+    "lab": [59.44, 19.52, -23.2]
+  },
+  {
+    "code": "2312",
+    "name": "Pastel Lilac",
+    "hex": "#bfb0cc",
+    "lab": [73.86, 10.59, -12.22]
+  },
+  {
+    "code": "2013",
+    "name": "Dusk",
+    "hex": "#8f8294",
+    "lab": [56.03, 8.4, -7.85]
+  },
+  {
+    "code": "2086",
+    "name": "Lavender Frost",
+    "hex": "#bfb0ba",
+    "lab": [73.33, 7.15, -3.15]
+  },
+  {
+    "code": "2167",
+    "name": "Persian Violet",
+    "hex": "#8f8ab0",
+    "lab": [59.11, 9.92, -19.27]
+  },
+  {
+    "code": "2218",
+    "name": "Easter Egg",
+    "hex": "#949cc9",
+    "lab": [65.19, 7.19, -24.02]
+  },
+  {
+    "code": "1872",
+    "name": "Jacaranda",
+    "hex": "#878fc2",
+    "lab": [60.51, 8.95, -27.38]
+  },
+  {
+    "code": "2118",
+    "name": "Purple Impression",
+    "hex": "#8f91b0",
+    "lab": [60.98, 5.91, -16.43]
+  },
+  {
+    "code": "8820",
+    "name": "Sweet Lavender",
+    "hex": "#a39ebf",
+    "lab": [66.52, 8.51, -16.32]
+  },
+  {
+    "code": "2146",
+    "name": "Allure",
+    "hex": "#738ab3",
+    "lab": [57.15, 2.01, -24.17]
+  },
+  {
+    "code": "3147",
+    "name": "Lavender Lustre",
+    "hex": "#8f9cbf",
+    "lab": [64.47, 3.23, -19.58]
+  },
+  {
+    "code": "3272",
+    "name": "Kentucky Blue",
+    "hex": "#abb5cc",
+    "lab": [73.59, 1.27, -12.79]
+  },
+  {
+    "code": "2293",
+    "name": "Powder Blue",
+    "hex": "#a3b8d1",
+    "lab": [73.98, -1.78, -14.99]
+  },
+  {
+    "code": "2055",
+    "name": "Cashmere Blue",
+    "hex": "#adbacf",
+    "lab": [75.14, -0.15, -12.08]
+  },
+  {
+    "code": "1839",
+    "name": "Powder Blue",
+    "hex": "#a3b8d1",
+    "lab": [73.98, -1.78, -14.99]
+  },
+  {
+    "code": "2134",
+    "name": "Dusk Blue",
+    "hex": "#7a99b8",
+    "lab": [61.98, -3.17, -19.57]
+  },
+  {
+    "code": "2133",
+    "name": "Silver Lake Blue",
+    "hex": "#6987b3",
+    "lab": [55.67, 0.95, -26.5]
+  },
+  {
+    "code": "2231",
+    "name": "Riviera",
+    "hex": "#5e759e",
+    "lab": [48.97, 2.48, -24.76]
+  },
+  {
+    "code": "1840",
+    "name": "Bluebell",
+    "hex": "#4570a3",
+    "lab": [46.31, 0.77, -31.95]
+  },
+  {
+    "code": "9020",
+    "name": "Dutch Blue",
+    "hex": "#526694",
+    "lab": [43.41, 5.28, -27.55]
+  },
+  {
+    "code": "2142",
+    "name": "Federal Blue",
+    "hex": "#4d638a",
+    "lab": [41.74, 2.69, -24.17]
+  },
+  {
+    "code": "2021",
+    "name": "Delft",
+    "hex": "#3d5c87",
+    "lab": [38.54, 1.91, -27.43]
+  },
+  {
+    "code": "9802",
+    "name": "Deep Ultramarine",
+    "hex": "#404780",
+    "lab": [32.16, 13.93, -33.19]
+  },
+  {
+    "code": "1841",
+    "name": "Liberty",
+    "hex": "#594f8c",
+    "lab": [37.13, 19.34, -32.55]
+  },
+  {
+    "code": "3102",
+    "name": "Deep Wisteria",
+    "hex": "#54476e",
+    "lab": [32.96, 14.52, -20.56]
+  },
+  {
+    "code": "10057",
+    "name": "Deep Cobalt",
+    "hex": "#404261",
+    "lab": [29.03, 7.4, -18.54]
+  },
+  {
+    "code": "2141",
+    "name": "Nightshadow Blue",
+    "hex": "#4f5466",
+    "lab": [35.91, 2.38, -11.04]
+  },
+  {
+    "code": "2121",
+    "name": "Graystone",
+    "hex": "#524d5c",
+    "lab": [33.72, 5.4, -8.04]
+  },
+  {
+    "code": "3056",
+    "name": "Graystone",
+    "hex": "#524d5c",
+    "lab": [33.72, 5.4, -8.04]
+  },
+  {
+    "code": "1871",
+    "name": "Nine Iron",
+    "hex": "#524f54",
+    "lab": [34.04, 2.31, -2.5]
+  },
+  {
+    "code": "1185",
+    "name": "Dark Shadow",
+    "hex": "#4f4f4f",
+    "lab": [33.6, 0, 0]
+  },
+  {
+    "code": "9056",
+    "name": "Graystone",
+    "hex": "#524d5c",
+    "lab": [33.72, 5.4, -8.04]
+  },
+  {
+    "code": "2227",
+    "name": "Nightshadow Blue",
+    "hex": "#4f5466",
+    "lab": [35.91, 2.38, -11.04]
+  },
+  {
+    "code": "9826",
+    "name": "Heron",
+    "hex": "#6b667d",
+    "lab": [44.39, 6.96, -12.08]
+  },
+  {
+    "code": "2127",
+    "name": "Nightshadow Blue",
+    "hex": "#4f5466",
+    "lab": [35.91, 2.38, -11.04]
+  },
+  {
+    "code": "3344",
+    "name": "China Blue",
+    "hex": "#546378",
+    "lab": [41.48, -0.39, -13.65]
+  },
+  {
+    "code": "1407",
+    "name": "Velvet Morning",
+    "hex": "#5c6180",
+    "lab": [41.82, 5.62, -17.93]
+  },
+  {
+    "code": "2126",
+    "name": "Purple Impression",
+    "hex": "#8f91b0",
+    "lab": [60.98, 5.91, -16.43]
+  },
+  {
+    "code": "10045",
+    "name": "Flint Stone",
+    "hex": "#707885",
+    "lab": [50.18, -0.11, -8.1]
+  },
+  {
+    "code": "2023",
+    "name": "Castlerock",
+    "hex": "#636363",
+    "lab": [41.96, 0, 0]
+  },
+  {
+    "code": "2323",
+    "name": "Gobelin Blue",
+    "hex": "#5c696b",
+    "lab": [43.42, -4.46, -2.79]
+  },
+  {
+    "code": "2061",
+    "name": "Bluesteel",
+    "hex": "#456b7a",
+    "lab": [43.04, -9.18, -12.58]
+  },
+  {
+    "code": "2419",
+    "name": "Cendre Blue",
+    "hex": "#4d80a3",
+    "lab": [51.45, -6.89, -23.93]
+  },
+  {
+    "code": "10046",
+    "name": "Swedish Blue",
+    "hex": "#2482ab",
+    "lab": [51.01, -12.43, -29.35]
+  },
+  {
+    "code": "2259",
+    "name": "Azure Blue",
+    "hex": "#4f8ac2",
+    "lab": [55.82, -2.35, -34.92]
+  },
+  {
+    "code": "1868",
+    "name": "Azure Blue",
+    "hex": "#4f8ac2",
+    "lab": [55.82, -2.35, -34.92]
+  },
+  {
+    "code": "3250",
+    "name": "Sky Blue",
+    "hex": "#91bdd1",
+    "lab": [74.2, -9.84, -14.77]
+  },
+  {
+    "code": "1977",
+    "name": "Ice Flow",
+    "hex": "#c9d1cf",
+    "lab": [83.19, -3.09, 0.04]
+  },
+  {
+    "code": "2015",
+    "name": "Winter Sky",
+    "hex": "#b0bfc9",
+    "lab": [76.5, -3.12, -6.78]
+  },
+  {
+    "code": "2207",
+    "name": "Baby Blue",
+    "hex": "#bac9d1",
+    "lab": [80.08, -3.5, -5.73]
+  },
+  {
+    "code": "2065",
+    "name": "Cameo Blue",
+    "hex": "#7aa1ab",
+    "lab": [63.81, -10.84, -9.5]
+  },
+  {
+    "code": "2145",
+    "name": "Forget-Me-Not",
+    "hex": "#8fb0bf",
+    "lab": [69.93, -7.78, -11.33]
+  },
+  {
+    "code": "2072",
+    "name": "Blue Moon",
+    "hex": "#4087a3",
+    "lab": [53.02, -13.65, -21.56]
+  },
+  {
+    "code": "2272",
+    "name": "Blue Moon",
+    "hex": "#4087a3",
+    "lab": [53.02, -13.65, -21.56]
+  },
+  {
+    "code": "2018",
+    "name": "Blue Mist",
+    "hex": "#63a8bf",
+    "lab": [65.29, -15.55, -18.56]
+  },
+  {
+    "code": "2242",
+    "name": "Norse Blue",
+    "hex": "#57a3c7",
+    "lab": [63.62, -13.18, -25.61]
+  },
+  {
+    "code": "2092",
+    "name": "Marine Blue",
+    "hex": "#7aadb3",
+    "lab": [67.48, -15.29, -8.48]
+  },
+  {
+    "code": "2175",
+    "name": "Lagoon",
+    "hex": "#4a9e99",
+    "lab": [60.08, -26.61, -5.16]
+  },
+  {
+    "code": "1861",
+    "name": "Marine Green",
+    "hex": "#409e82",
+    "lab": [59.12, -34.7, 6.41]
+  },
+  {
+    "code": "2206",
+    "name": "Bay Leaf",
+    "hex": "#388c8c",
+    "lab": [53.48, -24.91, -7.58]
+  },
+  {
+    "code": "2154",
+    "name": "Dull Blue",
+    "hex": "#618a99",
+    "lab": [55.09, -10.19, -12.49]
+  },
+  {
+    "code": "10022",
+    "name": "Gumdrop Green",
+    "hex": "#52ab87",
+    "lab": [63.89, -35.45, 10.5]
+  },
+  {
+    "code": "2307",
+    "name": "Blue Light",
+    "hex": "#add6d1",
+    "lab": [82.69, -14.4, -1.98]
+  },
+  {
+    "code": "2266",
+    "name": "Crystal Blue",
+    "hex": "#abccd9",
+    "lab": [80.1, -8.15, -10.1]
+  },
+  {
+    "code": "2048",
+    "name": "Eggshell Blue",
+    "hex": "#a1c9c4",
+    "lab": [78.07, -14.22, -1.87]
+  },
+  {
+    "code": "2237",
+    "name": "Blue Glow",
+    "hex": "#adcfd4",
+    "lab": [80.88, -10.17, -6.24]
+  },
+  {
+    "code": "2148",
+    "name": "Opal Blue",
+    "hex": "#c7ded1",
+    "lab": [86.5, -10.09, 3.78]
+  },
+  {
+    "code": "2070",
+    "name": "Celadon Green",
+    "hex": "#b3bf9c",
+    "lab": [75.6, -10.35, 16.3]
+  },
+  {
+    "code": "2177",
+    "name": "Almost Aqua",
+    "hex": "#c9d1bd",
+    "lab": [82.75, -6.3, 8.99]
+  },
+  {
+    "code": "2290",
+    "name": "Pastel Blue",
+    "hex": "#c4d9d6",
+    "lab": [85.11, -7.57, -0.92]
+  },
+  {
+    "code": "2309",
+    "name": "Blue Glow",
+    "hex": "#adcfd4",
+    "lab": [80.88, -10.17, -6.24]
+  },
+  {
+    "code": "2262",
+    "name": "Green Ash",
+    "hex": "#a6d9a8",
+    "lab": [82.14, -25.94, 18.9]
+  },
+  {
+    "code": "2078",
+    "name": "Arcadian Green",
+    "hex": "#9ebf8a",
+    "lab": [73.78, -20.87, 23.19]
+  },
+  {
+    "code": "10049",
+    "name": "Light Elm Green",
+    "hex": "#549969",
+    "lab": [57.74, -32.87, 18.62]
+  },
+  {
+    "code": "2250",
+    "name": "Vibrant Green",
+    "hex": "#54a859",
+    "lab": [62.18, -42.27, 33.05]
+  },
+  {
+    "code": "2124",
+    "name": "Absinthe Green",
+    "hex": "#70b580",
+    "lab": [68.06, -33.22, 20.32]
+  },
+  {
+    "code": "1863",
+    "name": "Ming Green",
+    "hex": "#3da375",
+    "lab": [60.31, -40.57, 15.36]
+  },
+  {
+    "code": "10053",
+    "name": "Green Moss",
+    "hex": "#878047",
+    "lab": [53, -5.83, 31.75]
+  },
+  {
+    "code": "3303",
+    "name": "Dark Citron",
+    "hex": "#94a84f",
+    "lab": [65.64, -20.71, 43.12]
+  },
+  {
+    "code": "3120",
+    "name": "Green Glow",
+    "hex": "#b3cc61",
+    "lab": [78.25, -24.37, 49.9]
+  },
+  {
+    "code": "2226",
+    "name": "BrightLime Green",
+    "hex": "#a3c95c",
+    "lab": [76.27, -29.63, 49.65]
+  },
+  {
+    "code": "10021",
+    "name": "Neptune Green",
+    "hex": "#87bfa1",
+    "lab": [72.88, -24.55, 9.35]
+  },
+  {
+    "code": "1864",
+    "name": "Leprechaun",
+    "hex": "#388a5e",
+    "lab": [51.64, -35.67, 16.29]
+  },
+  {
+    "code": "2075",
+    "name": "Bottle Green",
+    "hex": "#3d7a69",
+    "lab": [46.88, -24.23, 3.24]
+  },
+  {
+    "code": "2275",
+    "name": "Bottle Green",
+    "hex": "#3d7a69",
+    "lab": [46.88, -24.23, 3.24]
+  },
+  {
+    "code": "3028",
+    "name": "Fairway",
+    "hex": "#40704a",
+    "lab": [43.02, -25.3, 16.16]
+  },
+  {
+    "code": "2228",
+    "name": "Fairway",
+    "hex": "#40704a",
+    "lab": [43.02, -25.3, 16.16]
+  },
+  {
+    "code": "9817",
+    "name": "Bronze Green",
+    "hex": "#57634a",
+    "lab": [40.32, -9.67, 12.71]
+  },
+  {
+    "code": "10030",
+    "name": "Duck Green",
+    "hex": "#4f6357",
+    "lab": [40.04, -10.27, 4.34]
+  },
+  {
+    "code": "1837",
+    "name": "Smoke Pine",
+    "hex": "#426357",
+    "lab": [39.19, -14.92, 3.01]
+  },
+  {
+    "code": "1838",
+    "name": "Green Black",
+    "hex": "#4f4f4a",
+    "lab": [33.45, -1.05, 2.95]
+  },
+  {
+    "code": "3180",
+    "name": "Sweet Pea",
+    "hex": "#9eab66",
+    "lab": [67.54, -15.69, 33.99]
+  },
+  {
+    "code": "10051",
+    "name": "Pale Khaki",
+    "hex": "#c9b896",
+    "lab": [75.39, 0.71, 19.5]
+  },
+  {
+    "code": "2025",
+    "name": "Bog",
+    "hex": "#bdba8f",
+    "lab": [74.77, -5.94, 22.25]
+  },
+  {
+    "code": "2224",
+    "name": "Tuffet",
+    "hex": "#a89e85",
+    "lab": [65.34, -0.56, 14.4]
+  },
+  {
+    "code": "1899",
+    "name": "Laurel Wreath",
+    "hex": "#667366",
+    "lab": [47.03, -7.59, 5.55]
+  },
+  {
+    "code": "3318",
+    "name": "Burnt Olive",
+    "hex": "#69664f",
+    "lab": [42.87, -3, 13.46]
+  },
+  {
+    "code": "10034",
+    "name": "Aloe",
+    "hex": "#828061",
+    "lab": [53, -4.64, 17.15]
+  },
+  {
+    "code": "2111",
+    "name": "Golden Olive",
+    "hex": "#ab9c42",
+    "lab": [64.02, -5.75, 47.95]
+  },
+  {
+    "code": "1865",
+    "name": "Military Olive",
+    "hex": "#695e42",
+    "lab": [40.25, -0.19, 17.69]
+  },
+  {
+    "code": "10031",
+    "name": "Teak",
+    "hex": "#615445",
+    "lab": [36.58, 2.73, 10.75]
+  },
+  {
+    "code": "2990",
+    "name": "Antique Bronze",
+    "hex": "#948052",
+    "lab": [54.39, 1.03, 27.75]
+  },
+  {
+    "code": "2114",
+    "name": "Light Taupe",
+    "hex": "#b39e8c",
+    "lab": [66.47, 4.79, 12.23]
+  },
+  {
+    "code": "2120",
+    "name": "Candied Ginger",
+    "hex": "#c2ab85",
+    "lab": [71.07, 2.63, 22.66]
+  },
+  {
+    "code": "2077",
+    "name": "Warm Sand",
+    "hex": "#c7b08a",
+    "lab": [72.91, 2.57, 22.53]
+  },
+  {
+    "code": "2203",
+    "name": "Latte",
+    "hex": "#c7ab7d",
+    "lab": [71.39, 3.63, 27.47]
+  },
+  {
+    "code": "2080",
+    "name": "Warm Taupe",
+    "hex": "#ba9c82",
+    "lab": [66.39, 7.2, 17.77]
+  },
+  {
+    "code": "2205",
+    "name": "Sesame",
+    "hex": "#bfa88c",
+    "lab": [70.16, 4.01, 17.55]
+  },
+  {
+    "code": "1886",
+    "name": "Dune",
+    "hex": "#998f75",
+    "lab": [59.62, -0.66, 15.2]
+  },
+  {
+    "code": "2039",
+    "name": "Nouget",
+    "hex": "#ba9e82",
+    "lab": [66.9, 6.1, 18.48]
+  },
+  {
+    "code": "2289",
+    "name": "Shifting Sand",
+    "hex": "#d6c2a6",
+    "lab": [79.41, 2.65, 16.66]
+  },
+  {
+    "code": "2053",
+    "name": "Dawn",
+    "hex": "#f0d4b3",
+    "lab": [86.44, 4.8, 19.92]
+  },
+  {
+    "code": "2238",
+    "name": "Wheat",
+    "hex": "#e6c9a3",
+    "lab": [82.51, 4.62, 22.77]
+  },
+  {
+    "code": "2221",
+    "name": "Tannin",
+    "hex": "#a68f6b",
+    "lab": [60.62, 3.25, 22.37]
+  },
+  {
+    "code": "2180",
+    "name": "Kelp",
+    "hex": "#998763",
+    "lab": [57.08, 1.28, 21.88]
+  },
+  {
+    "code": "2344",
+    "name": "Lark",
+    "hex": "#b59c70",
+    "lab": [65.57, 2.89, 26.47]
+  },
+  {
+    "code": "2083",
+    "name": "New Wheat",
+    "hex": "#deb880",
+    "lab": [76.9, 6.29, 33.54]
+  },
+  {
+    "code": "2186",
+    "name": "Cress Green",
+    "hex": "#b5b047",
+    "lab": [70.41, -11.62, 52.94]
+  },
+  {
+    "code": "2319",
+    "name": "PaleGreen-Yellow",
+    "hex": "#baa65e",
+    "lab": [68.4, -2.35, 39.69]
+  },
+  {
+    "code": "2128",
+    "name": "Fall Leaf",
+    "hex": "#c2a86b",
+    "lab": [69.85, 1.2, 34.93]
+  },
+  {
+    "code": "1897",
+    "name": "New Wheat",
+    "hex": "#deb880",
+    "lab": [76.9, 6.29, 33.54]
+  },
+  {
+    "code": "2042",
+    "name": "Almond",
+    "hex": "#a3784d",
+    "lab": [53.77, 11.58, 30.06]
+  },
+  {
+    "code": "3273",
+    "name": "Butterum",
+    "hex": "#c28f5c",
+    "lab": [63.25, 13.35, 34.54]
+  },
+  {
+    "code": "2849",
+    "name": "Mineral Yellow",
+    "hex": "#d4a340",
+    "lab": [69.87, 8.2, 56.31]
+  },
+  {
+    "code": "2035",
+    "name": "Nugget",
+    "hex": "#d18c45",
+    "lab": [63.95, 19.63, 47.57]
+  },
+  {
+    "code": "1879",
+    "name": "Raw Sienna",
+    "hex": "#b8734d",
+    "lab": [55.06, 23.35, 32.22]
+  },
+  {
+    "code": "2036",
+    "name": "Mecca Orange",
+    "hex": "#c2613d",
+    "lab": [52.24, 36.03, 37.91]
+  },
+  {
+    "code": "1856",
+    "name": "Autumn Glaze",
+    "hex": "#b05c3b",
+    "lab": [48.51, 31.33, 33.99]
+  },
+  {
+    "code": "2274",
+    "name": "Marsala",
+    "hex": "#9e544a",
+    "lab": [44.38, 29.53, 19.57]
+  },
+  {
+    "code": "1883",
+    "name": "Mahogany",
+    "hex": "#8a5447",
+    "lab": [41.53, 20.95, 17.08]
+  },
+  {
+    "code": "2311",
+    "name": "Rustic Brown",
+    "hex": "#8a5745",
+    "lab": [42.23, 18.99, 19.22]
+  },
+  {
+    "code": "2062",
+    "name": "Copper Brown",
+    "hex": "#9e614d",
+    "lab": [47.44, 22.54, 21.81]
+  },
+  {
+    "code": "2306",
+    "name": "Rawhide",
+    "hex": "#8a6147",
+    "lab": [44.81, 13.34, 21.42]
+  },
+  {
+    "code": "10081",
+    "name": "Beige",
+    "hex": "#d9bf94",
+    "lab": [78.55, 2.94, 25.12]
+  },
+  {
+    "code": "2302",
+    "name": "Grain",
+    "hex": "#ebb38c",
+    "lab": [77.16, 15.4, 27.79]
+  },
+  {
+    "code": "2265",
+    "name": "Nude",
+    "hex": "#f5d6b5",
+    "lab": [87.41, 5.9, 20.28]
+  },
+  {
+    "code": "10023",
+    "name": "Desert Mist",
+    "hex": "#e0b382",
+    "lab": [75.89, 9.95, 31.2]
+  },
+  {
+    "code": "2073",
+    "name": "Sandstorm",
+    "hex": "#bd8c5e",
+    "lab": [61.99, 13.09, 31.75]
+  },
+  {
+    "code": "2041",
+    "name": "Biscuit",
+    "hex": "#b5875c",
+    "lab": [59.82, 12.3, 29.9]
+  },
+  {
+    "code": "3275",
+    "name": "Thrush",
+    "hex": "#946b4a",
+    "lab": [48.64, 12.2, 24.88]
+  },
+  {
+    "code": "2043",
+    "name": "Raw Umber",
+    "hex": "#96735c",
+    "lab": [51.29, 10.5, 18.03]
+  },
+  {
+    "code": "2244",
+    "name": "Cocoa Brown",
+    "hex": "#6b4f3d",
+    "lab": [36.09, 9.15, 15.21]
+  },
+  {
+    "code": "1881",
+    "name": "Canteen",
+    "hex": "#66594d",
+    "lab": [38.74, 3.16, 8.89]
+  },
+  {
+    "code": "2144",
+    "name": "Acorn",
+    "hex": "#7a5e52",
+    "lab": [42.39, 9.54, 11.26]
+  },
+  {
+    "code": "2074",
+    "name": "Carob Brown",
+    "hex": "#8f634a",
+    "lab": [45.99, 14.67, 21.31]
+  },
+  {
+    "code": "2395",
+    "name": "Ermine",
+    "hex": "#85704d",
+    "lab": [48.4, 3.06, 22.52]
+  },
+  {
+    "code": "3198",
+    "name": "Lark",
+    "hex": "#b59c70",
+    "lab": [65.57, 2.89, 26.47]
+  },
+  {
+    "code": "0853",
+    "name": "Tannin",
+    "hex": "#a68f6b",
+    "lab": [60.62, 3.25, 22.37]
+  },
+  {
+    "code": "10042",
+    "name": "Tan",
+    "hex": "#bf9e73",
+    "lab": [67.1, 6.24, 27.05]
+  },
+  {
+    "code": "2298",
+    "name": "Sirocco",
+    "hex": "#c7a382",
+    "lab": [69.43, 8.56, 22.14]
+  },
+  {
+    "code": "3040",
+    "name": "Toasted Almond",
+    "hex": "#d9b599",
+    "lab": [76.13, 8.89, 19.13]
+  },
+  {
+    "code": "10041",
+    "name": "Maple Sugar",
+    "hex": "#d1a88c",
+    "lab": [71.86, 11.07, 20.17]
+  },
+  {
+    "code": "8880",
+    "name": "Vanilla Cream",
+    "hex": "#f2d9bd",
+    "lab": [88.05, 4.34, 16.96]
+  },
+  {
+    "code": "2113",
+    "name": "White Smoke",
+    "hex": "#ebdbc7",
+    "lab": [88.18, 2.25, 11.81]
+  },
+  {
+    "code": "2194",
+    "name": "Birch",
+    "hex": "#e3d9c4",
+    "lab": [86.97, -0.05, 11.57]
+  },
+  {
+    "code": "2187",
+    "name": "Pelican",
+    "hex": "#c7bda8",
+    "lab": [76.9, -0.01, 11.88]
+  },
+  {
+    "code": "2255",
+    "name": "String",
+    "hex": "#b3a699",
+    "lab": [68.86, 2.47, 8.42]
+  },
+  {
+    "code": "2085",
+    "name": "Dove",
+    "hex": "#b3ada6",
+    "lab": [71.03, 0.88, 4.35]
+  },
+  {
+    "code": "2806",
+    "name": "Vapor Blue",
+    "hex": "#c2c2c2",
+    "lab": [78.43, 0, 0]
+  },
+  {
+    "code": "2096",
+    "name": "Pumice Stone",
+    "hex": "#ccc2b0",
+    "lab": [78.78, 0.46, 10.31]
+  },
+  {
+    "code": "2045",
+    "name": "Blue Gray",
+    "hex": "#abada6",
+    "lab": [70.38, -2.01, 3.34]
+  },
+  {
+    "code": "2076",
+    "name": "Vapor Blue",
+    "hex": "#c2c2c2",
+    "lab": [78.43, 0, 0]
+  },
+  {
+    "code": "2253",
+    "name": "Wind Chime",
+    "hex": "#ccc7bf",
+    "lab": [80.43, 0.32, 4.61]
+  },
+  {
+    "code": "2317",
+    "name": "Ashes of Roses",
+    "hex": "#b8ada6",
+    "lab": [71.44, 2.71, 5]
+  },
+  {
+    "code": "2316",
+    "name": "Moon Rock",
+    "hex": "#948778",
+    "lab": [57.06, 2.3, 9.84]
+  },
+  {
+    "code": "2301",
+    "name": "Cinder",
+    "hex": "#8f827d",
+    "lab": [55.37, 4.02, 4.49]
+  },
+  {
+    "code": "2064",
+    "name": "Fungi",
+    "hex": "#8f8273",
+    "lab": [55.12, 2.33, 9.91]
+  },
+  {
+    "code": "2251",
+    "name": "Wrought Iron",
+    "hex": "#999e96",
+    "lab": [64.51, -3.32, 3.55]
+  },
+  {
+    "code": "2260",
+    "name": "Slate Gray",
+    "hex": "#91998f",
+    "lab": [62.33, -4.82, 4.26]
+  },
+  {
+    "code": "2249",
+    "name": "Lead",
+    "hex": "#788787",
+    "lab": [55.14, -5.44, -1.85]
+  },
+  {
+    "code": "2022",
+    "name": "Cadet Gray",
+    "hex": "#758a94",
+    "lab": [56.18, -5.22, -7.84]
+  },
+  {
+    "code": "2135",
+    "name": "Flint Stone",
+    "hex": "#707885",
+    "lab": [50.18, -0.11, -8.1]
+  },
+  {
+    "code": "2137",
+    "name": "Cloud Blue",
+    "hex": "#adbaba",
+    "lab": [74.54, -4.48, -1.54]
+  },
+  {
+    "code": "2248",
+    "name": "Purple Cloud",
+    "hex": "#999eb8",
+    "lab": [65.5, 3.67, -14.02]
+  },
+  {
+    "code": "2155",
+    "name": "Medium Gray",
+    "hex": "#918785",
+    "lab": [57.12, 3.38, 2.42]
+  },
+  {
+    "code": "2156",
+    "name": "Silver Rose",
+    "hex": "#968c94",
+    "lab": [59.32, 5.23, -2.91]
+  },
+  {
+    "code": "2046",
+    "name": "Gull Gray",
+    "hex": "#aba3a1",
+    "lab": [67.6, 2.52, 2.07]
+  },
+  {
+    "code": "2350",
+    "name": "Wild Dove",
+    "hex": "#8c8a87",
+    "lab": [57.56, 0.16, 1.86]
+  },
+  {
+    "code": "2047",
+    "name": "Frost Gray",
+    "hex": "#8a8585",
+    "lab": [55.96, 1.87, 0.67]
+  },
+  {
+    "code": "2082",
+    "name": "Charcoal Gray",
+    "hex": "#736e6b",
+    "lab": [46.79, 1.35, 2.36]
+  },
+  {
+    "code": "8832",
+    "name": "Dark Gull Gray",
+    "hex": "#615c59",
+    "lab": [39.44, 1.4, 2.44]
+  },
+  {
+    "code": "8846",
+    "name": "Rabbit",
+    "hex": "#595457",
+    "lab": [36.28, 2.65, -1.02]
+  },
+  {
+    "code": "2254",
+    "name": "Castlerock",
+    "hex": "#636363",
+    "lab": [41.96, 0, 0]
+  },
+  {
+    "code": "9100",
+    "name": "Olive Night",
+    "hex": "#545442",
+    "lab": [35.24, -3.49, 10.56]
+  }
+]

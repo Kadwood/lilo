@@ -59,3 +59,8 @@ bytes = "1"
 tauri = { version = "2", features = ["test"] }
 tower = { version = "0.5", features = ["util"] }
 http-body-util = "0.1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = "0.3"
+objc2-vision = "0.3"
