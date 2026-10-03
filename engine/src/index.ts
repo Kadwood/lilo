@@ -8,3 +8,4 @@ export * from "./export";
 export * from "./autodigitize";
 export * from "./threads/shelf";
 export * from "./formats";
+export * from "./pixelart";
