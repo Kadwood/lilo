@@ -44,6 +44,9 @@ export const DEFAULTS = {
     premiumNoUnderlayBelowMm: 1.2,
     /** Underlay stitch length. [CAL] 2 to 3. */
     underlayStitchMm: 2.5,
+    /** Zig-zag underlay peak-to-peak spacing, mm: single zig-zag (edge+zigzag band) and the wider first pass of a double zig-zag (the second pass is half). [IS-SRC] 3 mm default; [CAL] "zigzag" bands; 2.5 UNVERIFIED tightening for 4-6 mm columns. */
+    zigzagSpacingMm: 2.5,
+    doubleZigzagSpacingMm: 3,
     /** Edge-walk inset. [CAL] 0.35 standard, 0.4 premium (0.6 to 0.7 on tight curves: not modelled). */
     underlayInsetMm: 0.35,
     premiumUnderlayInsetMm: 0.4,

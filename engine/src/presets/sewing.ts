@@ -38,10 +38,9 @@ import { DEFAULTS } from "./defaults";
  *              5-6 mm block letters shrink to about 3 mm.
  *  [NAA]       naandesigns.com, 40 vs 60 wt: swapping the cone without changing the file loses coverage.
  *
- * IMPORTANT unit note: satin "spacing" here is the commercial one, the distance between neighbouring
- * stitch LINES (Wilcom/Hatch "density 0.40 mm"), and that is what `SatinParams.densityMm` stores.
- * stitchjs satins zig-zag in ladder form, two stitch lines per row, so the stitch layer doubles it for
- * stitchjs (`satinDensityFromPitch` in model/index.ts). Standard uses 0.40 mm; Premium 0.32 to 0.38 mm by width.
+ * UNIT NOTE: satin "density" is the commercial same-side spacing, mm between two needle penetrations on
+ * the same side of the column (Hatch "stitch spacing", Wilcom "density 0.40"), and `SatinParams.densityMm`
+ * stores exactly that; stitchjs takes it unchanged. The numbers live in `defaults.ts`.
  */
 
 export type Quality = "standard" | "premium";

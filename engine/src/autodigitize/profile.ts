@@ -50,7 +50,7 @@ export function satinUnderlayFor(
   const stitch = { underlayStitchMm: DEFAULTS.satin.underlayStitchMm };
   if (underlay === "center") return { underlay, ...stitch };
   const inset = { underlayInsetMm: underlayInset(w) };
-  if (underlay === "contour-zigzag" || underlay === "double-zigzag") return { underlay, ...stitch, ...inset, underlayZigzagMm: underlay === "double-zigzag" ? 3 : 2.5 };
+  if (underlay === "contour-zigzag" || underlay === "double-zigzag") return { underlay, ...stitch, ...inset, underlayZigzagMm: underlay === "double-zigzag" ? DEFAULTS.satin.doubleZigzagSpacingMm : DEFAULTS.satin.zigzagSpacingMm };
   return { underlay, ...stitch, ...inset };
 }
 
