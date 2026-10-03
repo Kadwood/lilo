@@ -109,7 +109,7 @@ export interface RefImage {
 }
 
 /** What the shape actions are doing right now (the contextual toolbar sets these). */
-export type ShapeMode = "none" | "reshape" | "knife" | "hole" | "setStart" | "setEnd" | "angle" | "pickPath";
+export type ShapeMode = "none" | "reshape" | "knife" | "hole" | "setStart" | "setEnd" | "angle" | "pickPath" | "guide";
 
 export interface MapDraft {
   /** Ids of the objects being repeated (originals), or of the existing group's copies when re-editing. */
@@ -157,6 +157,8 @@ export interface EditorState {
   selectedImageId: string | null;
   seqTab: SeqTab;
   paletteOpen: boolean;
+  /** Which top-level dialog is open (opened from the top bar or the command palette). */
+  dialog: "export" | "send" | null;
   mapDraft: MapDraft | null;
   /** True while a re-stitch is pending or running. */
   planning: boolean;
@@ -189,6 +191,7 @@ export const initialState: EditorState = {
   selectedImageId: null,
   seqTab: "shapes",
   paletteOpen: false,
+  dialog: null,
   mapDraft: null,
   planning: false,
 };
@@ -258,6 +261,7 @@ export interface EditorActions {
   setUnits(u: "mm" | "in"): void;
   setAspectLock(on: boolean): void;
   setPaletteOpen(open: boolean): void;
+  setDialog(dialog: "export" | "send" | null): void;
   setSeqTab(tab: SeqTab): void;
 
   addObjects(objects: DesignObject[], label: string): void;
@@ -579,6 +583,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     setUnits: (units) => set({ units }),
     setAspectLock: (aspectLock) => set({ aspectLock }),
     setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
+    setDialog: (dialog) => set({ dialog }),
     setSeqTab: (seqTab) => set({ seqTab }),
 
     addObjects(objects, label) {
