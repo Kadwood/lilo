@@ -7,6 +7,7 @@ import {
   DEFAULT_REGION_SETTINGS,
   applyMapGroup,
   autoRedwork,
+  designBounds,
   detachMapGroup,
   duplicateObjects,
   emptyDesign,
@@ -135,6 +136,8 @@ export interface MapDraft {
   options: MapToPathOptions;
 }
 
+export type Dialog = "export" | "send" | "history" | null;
+
 export type SeqTab = "shapes" | "colours" | "images" | "threads";
 
 export interface EditorState {
@@ -170,7 +173,7 @@ export interface EditorState {
   seqTab: SeqTab;
   paletteOpen: boolean;
   /** Which top-level dialog is open (opened from the top bar or the command palette). */
-  dialog: "export" | "send" | null;
+  dialog: Dialog;
   mapDraft: MapDraft | null;
   /** Where the Text tool was last clicked: new text is placed centred here. */
   textAnchor: Pt | null;
@@ -305,10 +308,16 @@ export interface EditorActions {
   setUnits(u: "mm" | "in"): void;
   setAspectLock(on: boolean): void;
   setPaletteOpen(open: boolean): void;
-  setDialog(dialog: "export" | "send" | null): void;
+  setDialog(dialog: Dialog): void;
   setSeqTab(tab: SeqTab): void;
 
   addObjects(objects: DesignObject[], label: string): void;
+  /**
+   * Drop objects made elsewhere (an imported embroidery file, the pixel-art editor) into the design as
+   * one undo step. They get fresh ids, their threads are added, and with `centreOnDesign` they are
+   * centred on what is already there (on 0,0 for an empty design).
+   */
+  placeObjects(objects: readonly DesignObject[], threads: readonly Thread[], label: string, opts?: { centreOnDesign?: boolean }): void;
   /** Change objects by id through a recipe on each; one undo step. */
   updateObjects(ids: readonly string[], label: string, recipe: (o: DesignObject) => void, opts?: CommitOptions): void;
   replaceObject(id: string, pieces: DesignObject[], label: string): void;
@@ -675,6 +684,12 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     },
     async loadDesign(design, opts = {}) {
       const planResult = await engine.plan(design);
+      // a new document: the old one's picture to digitize and reference pixels don't carry over
+      decoded = null;
+      if (digitizeTimer) clearTimeout(digitizeTimer);
+      runId++;
+      assets.clear();
+      assetVersion++;
       if (opts.images) {
         for (const [id, a] of Object.entries(opts.images)) {
           const src = await decodeAsset(a.bytes, a.mime, design.images?.find((m) => m.id === id)?.name ?? id);
@@ -688,6 +703,10 @@ export function createEditorStore(engine: EngineClient): EditorStore {
         ...designState(design),
         planResult,
         status: { kind: "idle" },
+        source: null,
+        stages: { quantized: null, palette: [], imageToMm: null },
+        palette: [],
+        placement: null,
         mapDraft: null,
         planning: false,
         trace: null,
@@ -733,6 +752,31 @@ export function createEditorStore(engine: EngineClient): EditorStore {
           }
         },
         { select: objects.map((o) => o.id) },
+      );
+    },
+    placeObjects(objects, threads, label, opts = {}) {
+      if (objects.length === 0) return;
+      const d0 = get().design;
+      const nextId = makeIdGen(d0 ?? emptyDesign());
+      let dx = 0;
+      let dy = 0;
+      if (opts.centreOnDesign) {
+        const ob = unionBox(objects.map(objectBox));
+        const b = d0 && d0.objects.length ? designBounds(d0) : null;
+        if (ob) {
+          const [tx, ty] = b ? [(b.minX + b.maxX) / 2, (b.minY + b.maxY) / 2] : [0, 0];
+          dx = tx - (ob.minX + ob.maxX) / 2;
+          dy = ty - (ob.minY + ob.maxY) / 2;
+        }
+      }
+      const placed = objects.map((o) => ({ ...(dx || dy ? transformObject(o, translation(dx, dy)) : o), id: nextId() }));
+      commit(
+        label,
+        (d) => {
+          for (const t of threads) ensureThread(d, t);
+          d.objects.push(...placed);
+        },
+        { select: placed.map((o) => o.id) },
       );
     },
     updateObjects(ids, label, recipe, opts) {
@@ -1053,13 +1097,23 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const nextId = makeIdGen(s.design ?? emptyDesign());
       const made = wanted.map((r) => ({ regionId: r.id, ...regionToObjects(r, s.stitchSettings, nextId) }));
       const all = made.flatMap((m) => m.objects.map((o) => o.id));
+      // a region you already stitched is re-stitched with the new settings, in its place, not doubled
+      const have = new Set((s.design?.objects ?? []).map((o) => o.id));
+      const olds = made.map((m) => (s.regionObjects[m.regionId] ?? []).filter((id) => have.has(id)));
+      const redo = olds.some((o) => o.length > 0);
       commit(
-        wanted.length === 1 ? "Stitch region" : `Stitch ${wanted.length} regions`,
+        redo ? (wanted.length === 1 ? "Restitch region" : `Restitch ${wanted.length} regions`) : wanted.length === 1 ? "Stitch region" : `Stitch ${wanted.length} regions`,
         (d) => {
-          for (const m of made) {
+          made.forEach((m, i) => {
             ensureThread(d, m.thread);
-            d.objects.push(...m.objects);
-          }
+            const old = new Set(olds[i]);
+            let at = d.objects.length;
+            if (old.size > 0) {
+              at = d.objects.findIndex((o) => old.has(o.id));
+              d.objects = d.objects.filter((o) => !old.has(o.id));
+            }
+            d.objects.splice(Math.max(0, Math.min(at, d.objects.length)), 0, ...m.objects);
+          });
         },
         { select: all },
       );

@@ -139,6 +139,21 @@ describe("click to stitch: hover, click, shift-click, Esc", () => {
     expect(t.objs()).toHaveLength(0);
   });
 
+  it("clicking a region you already stitched re-stitches it with the new settings, in its place", () => {
+    const t = setup(regions);
+    t.click(5, 5);
+    t.click(25, 5);
+    const first = t.objs()[0].id;
+    t.core.actions.setStitchSettings({ style: "outline", run: { stitchLengthMm: 2, repeats: 1 } });
+    t.click(5, 5);
+    expect(t.objs().map((o) => o.kind)).toEqual(["run", "fill"]); // r1 became an outline, still first; nothing doubled
+    expect(t.objs().some((o) => o.id === first)).toBe(false);
+    expect(t.st().undoLabel).toBe("Restitch region");
+    t.core.actions.undo();
+    expect(t.objs().map((o) => o.kind)).toEqual(["fill", "fill"]);
+    expect(t.objs()[0].id).toBe(first);
+  });
+
   it("undoing a stitched region frees it to be clicked again; clearing is one undo step", () => {
     const t = setup(regions);
     t.click(5, 5);

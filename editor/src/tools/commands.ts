@@ -1,5 +1,6 @@
 import { FILL_PATTERNS, HOOPS, patternInfo, type RunType } from "@lilo/engine/light";
 import type { EditorActions, EditorState, ShapeMode } from "../state/editorStore";
+import type { AppApi } from "../app/AppContext";
 import { TOOLS } from "./registry";
 
 export interface Command {
@@ -9,7 +10,7 @@ export interface Command {
   shortcut?: string;
   /** Extra search words. */
   keywords?: string;
-  group: "Tools" | "Edit" | "Shape" | "Stitch" | "Fill pattern" | "View" | "File";
+  group: "Tools" | "Edit" | "Shape" | "Stitch" | "Fill pattern" | "View" | "File" | "Go" | "Threads" | "Pixel art";
   enabled: boolean;
   run: () => void;
 }
@@ -30,10 +31,14 @@ export interface CommandHost {
   /** Open the file picker for an image. */
   openImage: () => void;
   fit: () => void;
+  /** Screen navigation, when the host has screens (the app does; a lone editor shell in a test doesn't). */
+  app?: AppApi;
+  /** Commands from other parts of the app (projects, pixel art), added to the list. */
+  extra?: readonly Command[];
 }
 
 /** Every action and tool the palette can run. Rebuilt on each open, so `enabled` reflects the selection. */
-export function buildCommands({ state, actions, openImage, fit }: CommandHost): Command[] {
+export function buildCommands({ state, actions, openImage, fit, app, extra }: CommandHost): Command[] {
   const objs = state.design ? state.design.objects.filter((o) => state.selectedIds.includes(o.id)) : [];
   const has = objs.length > 0;
   const single = objs.length === 1;
@@ -133,7 +138,27 @@ export function buildCommands({ state, actions, openImage, fit }: CommandHost): 
   add({ id: "file.open", group: "File", label: "Open image to auto-digitize…", keywords: "import png jpg svg", run: openImage });
   add({ id: "file.export", group: "File", label: "Export…", keywords: "pes dst jef save", enabled: (state.planResult?.stats.stitchCount ?? 0) > 0, run: () => actions.setDialog("export") });
   add({ id: "file.send", group: "File", label: "Send to machine…", keywords: "brother wifi", enabled: (state.planResult?.stats.stitchCount ?? 0) > 0, run: () => actions.setDialog("send") });
-  return cmds;
+  add({ id: "file.history", group: "File", label: "Version history…", keywords: "restore autosave snapshots older versions", run: () => (app?.go("editor"), actions.setDialog("history")) });
+
+  // My Threads
+  const toEditor = () => app?.go("editor");
+  add({ id: "threads.open", group: "Threads", label: "My Threads…", keywords: "shelf spools thread library", run: () => (toEditor(), actions.setSeqTab("threads")) });
+  add({ id: "threads.photo", group: "Threads", label: "Add a spool by photo…", keywords: "ocr label scan camera shelf my threads", run: () => (toEditor(), actions.setSeqTab("threads")) });
+  add({ id: "threads.use", group: "Threads", label: `Auto digitize: ${state.options.useMyThreads ? "stop using" : "use"} my threads`, keywords: "snap colours shelf spools", run: () => actions.setOptions({ useMyThreads: !state.options.useMyThreads }) });
+
+  // Screens
+  if (app) {
+    for (const [id, label, kw] of [
+      ["home", "Home", "recent projects launch"],
+      ["editor", "Editor", "canvas"],
+      ["pixel", "Pixel art", "grid cross tatami"],
+      ["converter", "Converter", "convert pes dst jef vp3 png svg"],
+      ["link", "Lilo Link", "send machine wifi brother"],
+    ] as const) {
+      add({ id: `go.${id}`, group: "Go", label: `Go to ${label}`, keywords: kw, enabled: app.view !== id, run: () => app.go(id) });
+    }
+  }
+  return [...cmds, ...(extra ?? [])];
 }
 
 /** Rank commands for a query: every word must appear in the label or keywords; label matches and earlier matches first. */

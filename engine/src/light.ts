@@ -33,3 +33,4 @@ export {
 } from "./project/file";
 export { migrateProjectDoc } from "./project/migrate";
 export { encodePngRgba, planThumbnailPng, type ThumbnailOptions } from "./project/png";
+export * from "./formats/types";
