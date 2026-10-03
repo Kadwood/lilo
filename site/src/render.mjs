@@ -175,7 +175,7 @@ function downloads(loc, build) {
   const row = (key, label, note, files) => `<li class="os-row" data-os="${key}">
           <div class="os-info"><strong>${esc(label)}</strong><span>${esc(note)}</span></div>
           <div class="os-files">${files
-            .map(([k, t]) => `<a class="pill pill-soft" href="${href(k)}" rel="noopener">${icon("download", { size: 16 })}<span>${esc(t)}</span></a>`)
+            .map(([k, t]) => `<a class="pill pill-soft" href="${href(k)}" rel="noopener">${icon("download", { size: 16 })}<span>${esc(t)}${a[k]?.size ? ` · ${build.nf.format(Math.round(a[k].size / 1048576))} MB` : ""}</span></a>`)
             .join("")}</div>
         </li>`;
   return `<section class="section" id="download" aria-labelledby="h-download">

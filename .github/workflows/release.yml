@@ -538,6 +538,24 @@ jobs:
       - name: latest.json (updater manifest)
         run: node scripts/make-latest-json.mjs --dir assets --version "$VERSION" --tag "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --notes-file notes.md > assets/latest.json
 
+      - name: Stable-named copies (permanent download links)
+        working-directory: assets
+        run: |
+          set -euo pipefail
+          # Added AFTER latest.json on purpose: the updater manifest must only ever point at the
+          # versioned, signed files. These copies are for lilo.kadwood.com's buttons, which use
+          # https://github.com/Kadwood/lilo/releases/latest/download/<stable name> and never go stale.
+          copy() {
+            local src
+            src="$(find . -maxdepth 1 -type f -name "$1" | head -n 1)"
+            [ -n "$src" ] || { echo "::error::no file matching $1 in the release assets"; exit 1; }
+            cp "$src" "$2"
+          }
+          copy '*.dmg' Lilo-mac.dmg
+          copy '*-setup.exe' Lilo-windows-setup.exe
+          copy '*.AppImage' Lilo-linux.AppImage
+          copy '*.deb' Lilo-linux.deb
+
       - name: SHA256SUMS
         working-directory: assets
         run: |
