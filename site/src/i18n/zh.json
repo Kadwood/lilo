@@ -6,8 +6,8 @@
     "name": "简体中文",
     "path": "zh",
     "ogLocale": "zh_CN",
-    "title": "Lilo by Kadwood：把任何东西变成刺绣",
-    "description": "Lilo 是一款免费开源的应用，能把图片、手绘和文字变成刺绣文件，并发送到你的绣花机。支持 Mac、Windows 和 Linux。"
+    "title": "Lilo by Kadwood：人人都能用的免费开源刺绣软件",
+    "description": "Lilo 是一款免费开源的刺绣应用，从新手到专业人士都能用。它把图片、手绘和名字变成针迹文件，并发送到你的绣花机。支持 Mac、Windows 和 Linux。"
   },
   "nav": {
     "features": "功能",
@@ -19,34 +19,27 @@
     "language": "语言",
     "home": "Lilo by Kadwood，首页",
     "primary": "主导航",
-    "skip": "跳到正文"
+    "skip": "跳到正文",
+    "manual": "手册"
   },
   "hero": {
-    "title": "把任何东西变成刺绣",
-    "sub": "放进一张图片、一幅画或一个名字。Lilo 生成针迹，并发送到你的绣花机。",
+    "title": "人人都能刺绣",
+    "sub": "Lilo 是一款免费开源的应用，能把图片、手绘和名字变成刺绣。支持 Mac、Windows 和 Linux。",
     "price": "免费。永远免费。开源。",
     "cta": "下载 Lilo",
-    "cta2": "看看怎么用",
-    "dropTitle": "把图片拖到这里",
-    "dropHint": "或点击选择一张",
-    "dropAria": "把图片拖到这里，或点击选择一张",
-    "demoCaption": "真实示例。Lilo 自己的引擎把这朵花变成了 {stitches} 针，用了 {colours} 种颜色。",
+    "demoCaption": "真实示例：用内置手写体绣出的“Lilo”一词，共 {stitches} 针，由 Lilo 自己的引擎生成。",
     "stageLook": "正在看图片",
     "stageTrace": "正在描出形状",
     "stageSew": "正在绣出针迹",
     "replay": "再看一遍",
     "pause": "暂停",
     "play": "播放",
-    "droppedTitle": "好漂亮的图片！",
-    "droppedText": "Lilo 在你自己的电脑上把它变成针迹。你的图片不会离开电脑。",
-    "droppedCta": "下载 Lilo 把它绣出来",
-    "droppedAlt": "你选的图片",
-    "droppedOther": "换一张图片",
-    "notImage": "这不是图片。请试试 PNG、JPG、WEBP 或 SVG。"
+    "github": "在 GitHub 查看",
+    "demoAlt": "动画：“Lilo”一词先被描出轮廓，再用粉色线绣出来"
   },
   "download": {
     "title": "获取 Lilo",
-    "sub": "一个小应用。不用注册。没有网络也能用。",
+    "sub": "一个小应用。对所有人免费。不用注册。没有网络也能用。",
     "button": "下载 {os} 版",
     "version": "版本 {version}",
     "versionNone": "第一个版本即将发布。",
@@ -67,7 +60,7 @@
     "mobile": "Lilo 是电脑应用。请在 Mac、Windows 或 Linux 电脑上打开本页下载。"
   },
   "features": {
-    "title": "从想法到针迹，需要的都在这里",
+    "title": "免费、简单，人人可用",
     "cards": [
       {
         "id": "digitize",
@@ -77,10 +70,26 @@
         "sub": "放进一张图片，Lilo 帮你描形状、选线色。",
         "cta": "试试自动打版",
         "items": [
-          { "icon": "image", "title": "任何图片", "text": "PNG、JPG、WEBP 或 SVG" },
-          { "icon": "palette", "title": "自动选色", "text": "对应真实的线色" },
-          { "icon": "scan", "title": "实时描摹", "text": "看着形状一点点出现" },
-          { "icon": "wand", "title": "都能修改", "text": "每一针都可以改" }
+          {
+            "icon": "image",
+            "title": "任何图片",
+            "text": "PNG、JPG、WEBP 或 SVG"
+          },
+          {
+            "icon": "palette",
+            "title": "自动选色",
+            "text": "对应真实的线色"
+          },
+          {
+            "icon": "scan",
+            "title": "实时描摹",
+            "text": "看着形状一点点出现"
+          },
+          {
+            "icon": "wand",
+            "title": "都能修改",
+            "text": "每一针都可以改"
+          }
         ]
       },
       {
@@ -91,10 +100,26 @@
         "sub": "输入名字，选个样式，或者用你自己的字体。",
         "cta": "做一个字母组合",
         "items": [
-          { "icon": "type", "title": "约 100 种字体", "text": "专为刺绣设计" },
-          { "icon": "upload", "title": "用你自己的字体", "text": "可添加任何 TTF 或 OTF" },
-          { "icon": "text", "title": "轻松调整", "text": "大小、间距和行距" },
-          { "icon": "check", "title": "大小提示", "text": "字太小会提醒你" }
+          {
+            "icon": "type",
+            "title": "约 100 种字体",
+            "text": "专为刺绣设计"
+          },
+          {
+            "icon": "upload",
+            "title": "用你自己的字体",
+            "text": "可添加任何 TTF 或 OTF"
+          },
+          {
+            "icon": "text",
+            "title": "轻松调整",
+            "text": "大小、间距和行距"
+          },
+          {
+            "icon": "check",
+            "title": "大小提示",
+            "text": "字太小会提醒你"
+          }
         ]
       },
       {
@@ -105,10 +130,26 @@
         "sub": "用 Wi-Fi 或 U 盘，由你选。",
         "cta": "看看怎么发送",
         "items": [
-          { "icon": "wifi", "title": "Brother Wi-Fi", "text": "适用于 Brother Wi-Fi 机器（自动识别）" },
-          { "icon": "usb", "title": "U 盘", "text": "保存文件，插上就行" },
-          { "icon": "list", "title": "开绣之前", "text": "一张清单，不会漏掉" },
-          { "icon": "files", "title": "12 种文件类型", "text": "PES、DST、JEF、EXP 等" }
+          {
+            "icon": "wifi",
+            "title": "Brother Wi-Fi",
+            "text": "适用于 Brother Wi-Fi 机器（自动识别）"
+          },
+          {
+            "icon": "usb",
+            "title": "U 盘",
+            "text": "保存文件，插上就行"
+          },
+          {
+            "icon": "list",
+            "title": "开绣之前",
+            "text": "一张清单，不会漏掉"
+          },
+          {
+            "icon": "files",
+            "title": "12 种文件类型",
+            "text": "PES、DST、JEF、EXP 等"
+          }
         ]
       },
       {
@@ -119,10 +160,26 @@
         "sub": "真实的线色，真实的绣框尺寸，不用猜。",
         "cta": "浏览线和绣框",
         "items": [
-          { "icon": "spool", "title": "{threadColours} 种颜色", "text": "来自 {threadLines} 个线系列" },
-          { "icon": "shelf", "title": "我的线", "text": "加入你自己有的线轴" },
-          { "icon": "hoop", "title": "{hoops} 种绣框", "text": "选你的，或自己添加" },
-          { "icon": "ruler", "title": "标尺和网格", "text": "以毫米查看真实大小" }
+          {
+            "icon": "spool",
+            "title": "{threadColours} 种颜色",
+            "text": "来自 {threadLines} 个线系列"
+          },
+          {
+            "icon": "shelf",
+            "title": "我的线",
+            "text": "加入你自己有的线轴"
+          },
+          {
+            "icon": "hoop",
+            "title": "{hoops} 种绣框",
+            "text": "选你的，或自己添加"
+          },
+          {
+            "icon": "ruler",
+            "title": "标尺和网格",
+            "text": "以毫米查看真实大小"
+          }
         ]
       },
       {
@@ -133,10 +190,26 @@
         "sub": "一格一格地画。或者把文件从一种类型转成另一种。",
         "cta": "打开像素画",
         "items": [
-          { "icon": "grid", "title": "一格一格画", "text": "像十字绣，在屏幕上做" },
-          { "icon": "cross", "title": "三种针法", "text": "平铺、十字或缎面" },
-          { "icon": "swap", "title": "文件转换", "text": "把 DST 变成 PES" },
-          { "icon": "play", "title": "针迹播放器", "text": "一针一针看它绣" }
+          {
+            "icon": "grid",
+            "title": "一格一格画",
+            "text": "像十字绣，在屏幕上做"
+          },
+          {
+            "icon": "cross",
+            "title": "三种针法",
+            "text": "平铺、十字或缎面"
+          },
+          {
+            "icon": "swap",
+            "title": "文件转换",
+            "text": "把 DST 变成 PES"
+          },
+          {
+            "icon": "play",
+            "title": "针迹播放器",
+            "text": "一针一针看它绣"
+          }
         ]
       },
       {
@@ -144,13 +217,29 @@
         "img": "home",
         "alt": "Lilo 首页，有欢迎语和最近的设计",
         "title": "免费开源",
-        "sub": "不用注册，不用付费。离线可用，代码向所有人公开。",
+        "sub": "对所有人免费，从新手到专业人士。不用注册。离线可用，代码向所有人公开。",
         "cta": "查看代码",
         "items": [
-          { "icon": "heart", "title": "免费。永远。", "text": "没有需要解锁的东西" },
-          { "icon": "code", "title": "GPL-3 许可", "text": "可以阅读、分享、改进" },
-          { "icon": "user", "title": "无需账号", "text": "不用注册，不跟踪" },
-          { "icon": "offline", "title": "离线可用", "text": "你的设计留在你的电脑里" }
+          {
+            "icon": "heart",
+            "title": "免费。永远。",
+            "text": "没有需要解锁的东西"
+          },
+          {
+            "icon": "code",
+            "title": "GPL-3 许可",
+            "text": "可以阅读、分享、改进"
+          },
+          {
+            "icon": "user",
+            "title": "无需账号",
+            "text": "不用注册，不跟踪"
+          },
+          {
+            "icon": "offline",
+            "title": "离线可用",
+            "text": "你的设计留在你的电脑里"
+          }
         ]
       }
     ]
@@ -172,31 +261,71 @@
   "how": {
     "title": "怎么用",
     "steps": [
-      { "icon": "image", "title": "放进一张图片", "text": "照片、手绘、标志或名字都可以。" },
-      { "icon": "wand", "title": "Lilo 生成针迹", "text": "选好线色和大小。先在屏幕上看它怎么绣。" },
-      { "icon": "send", "title": "发送到你的机器", "text": "用 Wi-Fi，或保存到 U 盘。然后按下开始。" }
+      {
+        "icon": "image",
+        "title": "放进一张图片",
+        "text": "照片、手绘、标志或名字都可以。"
+      },
+      {
+        "icon": "wand",
+        "title": "Lilo 生成针迹",
+        "text": "选好线色和大小。先在屏幕上看它怎么绣。"
+      },
+      {
+        "icon": "send",
+        "title": "发送到你的机器",
+        "text": "用 Wi-Fi，或保存到 U 盘。然后按下开始。"
+      }
     ]
   },
   "faq": {
     "title": "常见问题",
     "items": [
-      { "q": "Lilo 真的免费吗？", "a": "是的。现在免费，以后也免费。没有试用期，不用账号，也没有藏起来的收费部分。" },
-      { "q": "开源是什么意思？", "a": "任何人都能看到 Lilo 是怎么做的，也能分享或改进它。Lilo 使用 GPL-3 许可。" },
-      { "q": "什么是刺绣打版？", "a": "缝纫机看不懂图片，它读的是一串针迹，像是给针的地图。打版就是把你的图片变成这张地图。Lilo 帮你完成。" },
-      { "q": "我的机器能用吗？", "a": "Lilo 能保存 12 种文件类型，适合大多数家用和商用机器。打开完整列表，找找你的品牌。也请看看机器说明书，并先在碎布上试绣。" },
-      { "q": "Wi-Fi 发送是怎么回事？", "a": "如果你的 Brother 或 Baby Lock 机器有 Wi-Fi，Lilo 会在你家的网络里自己找到它。没有 Wi-Fi？把文件存到 U 盘就行。" },
-      { "q": "需要联网吗？", "a": "不需要。Lilo 可以离线使用。它只会检查有没有新版本，你也可以关掉。" },
-      { "q": "我的设计会去哪里？", "a": "哪里也不去。它们留在你的电脑里。Lilo 从不上传你的图片或设计。" },
-      { "q": "为什么 Windows 会弹出蓝色窗口？", "a": "Windows 安装程序还没有签名，所以 Windows 提醒你小心。请点“更多信息”，再点“仍要运行”。Mac 版已由苹果签名并检查。" }
+      {
+        "q": "Lilo 真的免费吗？",
+        "a": "是的。Lilo 现在免费，以后也免费，对所有人都一样。没有试用期，不用账号，也没有藏起来的收费部分。"
+      },
+      {
+        "q": "Lilo 适合我吗？",
+        "a": "适合。Lilo 为所有人而做：孩子、长辈、手工爱好者和专业人士。只要会放进一张图片，你就能做刺绣。"
+      },
+      {
+        "q": "开源是什么意思？",
+        "a": "任何人都能看到 Lilo 是怎么做的，也能分享或改进它。Lilo 使用 GPL-3 许可。"
+      },
+      {
+        "q": "什么是刺绣打版？",
+        "a": "缝纫机看不懂图片，它读的是一串针迹，像是给针的地图。打版就是把你的图片变成这张地图。Lilo 帮你完成。"
+      },
+      {
+        "q": "我的机器能用吗？",
+        "a": "Lilo 能保存 12 种文件类型，适合大多数家用和商用机器。打开完整列表，找找你的品牌。也请看看机器说明书，并先在碎布上试绣。"
+      },
+      {
+        "q": "Wi-Fi 发送是怎么回事？",
+        "a": "如果你的 Brother 或 Baby Lock 机器有 Wi-Fi，Lilo 会在你家的网络里自己找到它。没有 Wi-Fi？把文件存到 U 盘就行。"
+      },
+      {
+        "q": "需要联网吗？",
+        "a": "不需要。Lilo 可以离线使用。它只会检查有没有新版本，你也可以关掉。"
+      },
+      {
+        "q": "我的设计会去哪里？",
+        "a": "哪里也不去。它们留在你的电脑里。Lilo 从不上传你的图片或设计。"
+      },
+      {
+        "q": "为什么 Windows 会弹出蓝色窗口？",
+        "a": "Windows 安装程序还没有签名，所以 Windows 提醒你小心。请点“更多信息”，再点“仍要运行”。Mac 版已由苹果签名并检查。"
+      }
     ]
   },
   "cta": {
-    "title": "准备好开始绣了吗？",
+    "title": "刺绣，人人都可以",
     "sub": "免费。永远免费。开源。"
   },
   "footer": {
     "by": "by",
-    "tagline": "免费开源的刺绣软件。",
+    "tagline": "人人可用的免费开源刺绣软件。",
     "github": "GitHub 上的代码",
     "licence": "GPL-3.0 许可",
     "releases": "下载",
@@ -205,7 +334,8 @@
     "kadwood": "Kadwood",
     "kadwoodAria": "Kadwood，打开 kadwood.com",
     "trademark": "Kadwood 的名称和标志，以及 Lilo 的名称和木槿花标志，是 Kadwood 的商标。其他品牌和机器名称归其所有者所有。Lilo 与它们没有关联。",
-    "rights": "Kadwood 用心制作。"
+    "rights": "Kadwood 用心制作。",
+    "manual": "手册"
   },
   "langBanner": {
     "text": "本页也有{language}版。",
@@ -238,5 +368,13 @@
     "checked": "{n} 台已在厂商网页核对",
     "wifiLine": "Lilo Link（Wi-Fi）会自己查找机器。还没有在真实设备上试过。",
     "disclaimer": "品牌和产品名称归其所有者所有。Lilo 与它们没有关联。"
+  },
+  "manual": {
+    "englishNote": "手册目前只有英文版。",
+    "read": "阅读手册",
+    "threads": "了解线",
+    "hoops": "了解绣框",
+    "pixel": "了解像素画",
+    "converter": "了解格式转换"
   }
 }
