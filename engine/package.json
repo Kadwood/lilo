@@ -13,7 +13,7 @@
     "./lettering": "./src/lettering/index.ts"
   },
   "scripts": {
-    "test": "vitest run",
+    "test": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && vitest run",
     "smoke": "SMOKE_OUT=${SMOKE_OUT:-.smoke} vitest run test/smoke.test.ts --silent=false && cat ${SMOKE_OUT:-.smoke}/smoke.txt",
     "typecheck": "tsc --noEmit"
   },

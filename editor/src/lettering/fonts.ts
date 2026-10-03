@@ -55,6 +55,8 @@ export interface LetteringServices {
 // ---------------------------------------------------------------------------------------------
 
 const fontAssets = import.meta.glob("../../../data/fonts/*/font.json", { query: "?url", import: "default" }) as Record<string, () => Promise<string>>;
+// index.json is generated too (git-ignored); a glob keeps typecheck working before `pnpm fonts` has run.
+const indexAsset = import.meta.glob("../../../data/fonts/index.json", { query: "?url", import: "default" }) as Record<string, () => Promise<string>>;
 const previews = import.meta.glob("../../../data/fonts/*/preview.png", { query: "?url", import: "default", eager: true }) as Record<string, string>;
 
 const idOfPath = (p: string): string => p.split("/").slice(-2, -1)[0];
@@ -167,8 +169,11 @@ async function customFont(key: string): Promise<CustomFont> {
 
 export const defaultServices: LetteringServices = {
   async loadIndex() {
-    const m = await import("../../../data/fonts/index.json");
-    return (m.default as { fonts: FontIndexEntry[] }).fonts;
+    const load = Object.values(indexAsset)[0];
+    if (!load) throw new Error("The built-in fonts have not been generated. Run `pnpm fonts`.");
+    const res = await fetch(await load());
+    if (!res.ok) throw new Error(`Could not load the font list (${res.status})`);
+    return ((await res.json()) as { fonts: FontIndexEntry[] }).fonts;
   },
   previewUrl: (id) => previewById.get(id),
   async listCustom() {

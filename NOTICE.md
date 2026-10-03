@@ -96,8 +96,9 @@ Distribution License 1.0 (BSD-3-Clause style).
 ## Embroidery fonts (Ink/Stitch)
 
 The built-in lettering fonts are hand-digitized embroidery fonts from the Ink/Stitch project
-([inkstitch/embroidery-fonts](https://github.com/inkstitch/embroidery-fonts), commit `c7e3a05c3d6f5c77b881c50f257851af9a8e9cb8`). Their glyph geometry was converted
-into Lilo's JSON format by `scripts/import-fonts.mjs`; each font keeps its own `LICENSE` in `data/fonts/<id>/`.
+([inkstitch/embroidery-fonts](https://github.com/inkstitch/embroidery-fonts), commit `c7e3a05c3d6f5c77b881c50f257851af9a8e9cb8`). Their glyph geometry is converted
+into Lilo's JSON format by `scripts/import-fonts.mjs` (`pnpm fonts`); the generated files are not committed. Each font's own
+`LICENSE` is kept in `data/fonts/<id>/` and shipped with the app.
 Only OFL, public-domain/CC0, CC-BY and CC-BY-SA fonts are included (non-commercial, no-derivatives, GPL-only and
 unrecognised licences are excluded).
 

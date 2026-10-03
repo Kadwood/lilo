@@ -18,6 +18,17 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Built-in embroidery fonts are generated, not committed. Cache the pinned download.
+      - id: fonts-pin
+        run: echo "commit=$(node --experimental-strip-types --no-warnings scripts/import-fonts.mjs --print-commit)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/lilo-fonts-cache
+          key: lilo-fonts-${{ steps.fonts-pin.outputs.commit }}
+      - run: pnpm fonts
+        env:
+          LILO_FONTS_CACHE: ${{ runner.temp }}/lilo-fonts-cache
+      - run: pnpm fonts:check
       - run: pnpm typecheck
       - run: pnpm -r test
       - run: pnpm --filter editor build
@@ -37,6 +48,13 @@ jobs:
         with:
           workspaces: app/src-tauri
       - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/lilo-fonts-cache
+          key: lilo-fonts-${{ hashFiles('scripts/import-fonts.mjs') }}
+      - run: pnpm fonts
+        env:
+          LILO_FONTS_CACHE: ${{ runner.temp }}/lilo-fonts-cache
       # tauri::generate_context! embeds the frontend, so it must be built first.
       - run: pnpm --filter editor build
       - run: cargo test --all-targets
