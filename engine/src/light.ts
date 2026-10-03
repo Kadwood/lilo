@@ -9,3 +9,6 @@ export * from "./threads";
 export * from "./stitch/plan";
 export { PEC_PALETTE, nearestPecIndex, pecColor, type PecColor } from "./pes/pec-palette";
 export type { Origin } from "./pes/write";
+export * from "./threads/shelf";
+export * from "./threads/label";
+export * from "./pixelart/grid";

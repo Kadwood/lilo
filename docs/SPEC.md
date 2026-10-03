@@ -140,7 +140,7 @@ Pipeline, each step visible and animated:
   - right sequencer
   - top bar with project menu, Export, Send
 - Calm, luxurious, Kadwood-inspired typography. Dark + light. Keyboard-first.
-- First-run tutorial (draw → satin → fill → preview).
+- First-run tour, workflow stepper, hints and guides: see M7.
 - Accessible: focus rings, labels, reduced motion respected (animations skippable).
 
 ## 5. Quality bar (v1 acceptance)
@@ -173,6 +173,14 @@ Stitch count within ~15% of Ember for the same design.
 4. **M4 Lettering:** built-in fonts + custom-font pipeline.
 5. **M5:** click-to-stitch, threads + My Threads + OCR, pixel art, converters, import, remaining fills.
 6. **M6 Polish:** Liquid Glass, tutorial, `.lilo` versions, installers (signed + notarized DMG), docs, GitHub release.
+
+7. **M7 Guides, tour + hints** (last, built from the finished app):
+   - **Ember-style manual:** original wording; Ember's structure studied, never copied. It lives in `docs/guide/` and in the app's searchable Help panel, with "?" deep links.
+   - **First-launch tour:** mascot host, four paths (picture / draw / monogram / open a file), replayable.
+   - **Workflow stepper:** Get a design → Size & hoop → Stitches → Preview → Send. Steps tick themselves off, and each has a tip card.
+   - **Hints on every control:** what it does, when to change it, a typical value.
+   - **Live warnings with one-click fixes.**
+   - One copy source feeds the guide, the hints and the tour.
 
 Each milestone goes through builder → refuter before it's reported done.
 

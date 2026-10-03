@@ -148,6 +148,9 @@ function satinRuns(o: SatinObject, from: Pt): IRun[] {
   return [new Core.Runs.ClassicSatin(strip.map(toV), satinOptions(o.params) as never)];
 }
 
+/** A run whose stitch length is at least this is "manual": every path point is one needle drop, in order. */
+export { MANUAL_STITCH_LENGTH_MM } from "./runs";
+
 /**
  * Turn a design into a flat, machine-oriented list of needle moves.
  *

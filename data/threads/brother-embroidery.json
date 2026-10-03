@@ -1,612 +1,368 @@
 [
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "900",
     "name": "Black",
     "hex": "#000000",
-    "lab": [0, 0, 0],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [0, 0, 0]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "001",
     "name": "White",
     "hex": "#f0f0f0",
-    "lab": [94.8, 0, 0],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [94.8, 0, 0]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "800",
     "name": "Red",
     "hex": "#ed171f",
-    "lab": [50.36, 73.99, 53.73],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [50.36, 73.99, 53.73]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "085",
     "name": "Pink",
     "hex": "#f993bc",
-    "lab": [72.66, 43.37, -4.57],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [72.66, 43.37, -4.57]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "086",
     "name": "Deep Rose",
     "hex": "#f64a8a",
-    "lab": [58.35, 69.36, 2.93],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [58.35, 69.36, 2.93]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "124",
     "name": "Flesh Pink",
     "hex": "#fdd9de",
-    "lab": [89.76, 13.27, 2.18],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [89.76, 13.27, 2.18]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "107",
     "name": "Dark Fuchsia",
     "hex": "#c70156",
-    "lab": [42.52, 69.16, 10.81],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [42.52, 69.16, 10.81]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "030",
     "name": "Vermilion",
     "hex": "#fe370f",
-    "lab": [55.93, 71.78, 64.81],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [55.93, 71.78, 64.81]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "807",
     "name": "Carmine",
     "hex": "#f73866",
-    "lab": [55.65, 72.52, 20.48],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [55.65, 72.52, 20.48]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "869",
     "name": "Royal Purple",
     "hex": "#770176",
-    "lab": [27.44, 55.58, -34],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [27.44, 55.58, -34]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "620",
     "name": "Magenta",
     "hex": "#913697",
-    "lab": [39.4, 51.4, -35.19],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [39.4, 51.4, -35.19]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "079",
     "name": "Salmon Pink",
     "hex": "#fcbbc4",
-    "lab": [81.96, 24.69, 4.69],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [81.96, 24.69, 4.69]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "333",
     "name": "Amber Red",
     "hex": "#b54c64",
-    "lab": [46.86, 44.81, 7.76],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [46.86, 44.81, 7.76]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "202",
     "name": "Lemon Yellow",
     "hex": "#f0f970",
-    "lab": [94.93, -20.79, 63.51],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [94.93, -20.79, 63.51]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "205",
     "name": "Yellow",
     "hex": "#ffff00",
-    "lab": [97.14, -21.55, 94.48],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [97.14, -21.55, 94.48]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "206",
     "name": "Harvest Gold",
     "hex": "#ffd911",
-    "lab": [87.45, -2.79, 85.97],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [87.45, -2.79, 85.97]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "208",
     "name": "Orange",
     "hex": "#feba35",
-    "lab": [79.87, 13.48, 71.72],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [79.87, 13.48, 71.72]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "126",
     "name": "Pumpkin",
     "hex": "#feb343",
-    "lab": [78.3, 17.66, 65.06],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [78.3, 17.66, 65.06]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "209",
     "name": "Tangerine",
     "hex": "#fe9e32",
-    "lab": [73.39, 28, 66.93],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [73.39, 28, 66.93]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "010",
     "name": "Cream Brown",
     "hex": "#ffffb3",
-    "lab": [98.45, -11.32, 36.42],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [98.45, -11.32, 36.42]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "812",
     "name": "Cream Yellow",
     "hex": "#fff08d",
-    "lab": [94.1, -8.04, 49.47],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [94.1, -8.04, 49.47]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "348",
     "name": "Khaki",
     "hex": "#d0a660",
-    "lab": [70.55, 7.08, 41.77],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [70.55, 7.08, 41.77]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "214",
     "name": "Deep Gold",
     "hex": "#e8a900",
-    "lab": [73.24, 12.03, 76.56],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [73.24, 12.03, 76.56]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "328",
     "name": "Brass",
     "hex": "#ba9800",
-    "lab": [64.08, 0.78, 67.95],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [64.08, 0.78, 67.95]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "307",
     "name": "Linen",
     "hex": "#fee3c5",
-    "lab": [91.7, 4.72, 18.05],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [91.7, 4.72, 18.05]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "058",
     "name": "Dark Brown",
     "hex": "#2a1301",
-    "lab": [8.66, 9.93, 12.76],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [8.66, 9.93, 12.76]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "337",
     "name": "Reddish Brown",
     "hex": "#d15c00",
-    "lab": [53.18, 42.7, 62.37],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [53.18, 42.7, 62.37]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "339",
     "name": "Clay Brown",
     "hex": "#d15400",
-    "lab": [51.72, 46.49, 61.56],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [51.72, 46.49, 61.56]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "843",
     "name": "Beige",
     "hex": "#efe3b9",
-    "lab": [90.23, -2.45, 22.03],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [90.23, -2.45, 22.03]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "399",
     "name": "Warm Gray",
     "hex": "#d8ccc6",
-    "lab": [82.84, 3.13, 4.48],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [82.84, 3.13, 4.48]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "330",
     "name": "Russet Brown",
     "hex": "#7d6f00",
-    "lab": [46.62, -4.95, 52.75],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [46.62, -4.95, 52.75]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "323",
     "name": "Light Brown",
     "hex": "#b27624",
-    "lab": [54.61, 16.69, 51.6],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [54.61, 16.69, 51.6]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "542",
     "name": "Seacrest",
     "hex": "#a8ddc4",
-    "lab": [83.98, -22.09, 6.75],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [83.98, -22.09, 6.75]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "502",
     "name": "Mint Green",
     "hex": "#9ed67d",
-    "lab": [80.09, -33.81, 38.24],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [80.09, -33.81, 38.24]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "509",
     "name": "Leaf Green",
     "hex": "#66ba49",
-    "lab": [68.33, -46.41, 48.35],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [68.33, -46.41, 48.35]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "519",
     "name": "Olive Green",
     "hex": "#132b1a",
-    "lab": [15.17, -14.22, 8.24],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [15.17, -14.22, 8.24]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "517",
     "name": "Dark Olive",
     "hex": "#435607",
-    "lab": [33.7, -18.72, 38.61],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [33.7, -18.72, 38.61]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "534",
     "name": "Teal Green",
     "hex": "#008777",
-    "lab": [50.28, -34.93, -0.19],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [50.28, -34.93, -0.19]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "507",
     "name": "Emerald Green",
     "hex": "#00673e",
-    "lab": [37.93, -36.52, 16.06],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [37.93, -36.52, 16.06]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "808",
     "name": "Deep Green",
     "hex": "#003822",
-    "lab": [19.82, -23.55, 9.06],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [19.82, -23.55, 9.06]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "027",
     "name": "Fresh Green",
     "hex": "#e3f35b",
-    "lab": [92.22, -24.54, 69.02],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [92.22, -24.54, 69.02]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "513",
     "name": "Lime Green",
     "hex": "#70bc1f",
-    "lab": [69.12, -46.91, 64.37],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [69.12, -46.91, 64.37]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "515",
     "name": "Moss Green",
     "hex": "#2f7e20",
-    "lab": [46.48, -42.34, 41.72],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [46.48, -42.34, 41.72]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "405",
     "name": "Blue",
     "hex": "#0a55a3",
-    "lab": [36.38, 10.15, -47.86],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [36.38, 10.15, -47.86]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "406",
     "name": "Ultramarine",
     "hex": "#0b3d91",
-    "lab": [27.99, 19.15, -50.54],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [27.99, 19.15, -50.54]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "017",
     "name": "Light Blue",
     "hex": "#a8deeb",
-    "lab": [85.28, -14.28, -11.96],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [85.28, -14.28, -11.96]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "019",
     "name": "Sky Blue",
     "hex": "#2584bb",
-    "lab": [52.38, -7.7, -36.42],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [52.38, -7.7, -36.42]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "420",
     "name": "Electric Blue",
     "hex": "#095ba6",
-    "lab": [38.36, 7.37, -46.45],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [38.36, 7.37, -46.45]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "415",
     "name": "Peacock Blue",
     "hex": "#134a76",
-    "lab": [30.26, -0.48, -30.09],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [30.26, -0.48, -30.09]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "007",
     "name": "Prussian Blue",
     "hex": "#0e1f7c",
-    "lab": [18.04, 31.53, -53.7],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [18.04, 31.53, -53.7]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "070",
     "name": "Corn Flower",
     "hex": "#4b6baf",
-    "lab": [45.78, 9.19, -39.8],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [45.78, 9.19, -39.8]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "810",
     "name": "Light Lilac",
     "hex": "#e49acb",
-    "lab": [72.17, 34.89, -13.84],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [72.17, 34.89, -13.84]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "612",
     "name": "Lilac",
     "hex": "#915fac",
-    "lab": [48.49, 34.57, -33.37],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [48.49, 34.57, -33.37]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "613",
     "name": "Violet",
     "hex": "#6a1c8a",
-    "lab": [28.72, 50.5, -44.66],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [28.72, 50.5, -44.66]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "614",
     "name": "Purple",
     "hex": "#4e2990",
-    "lab": [27.35, 40.77, -50.78],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [27.35, 40.77, -50.78]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "804",
     "name": "Lavender",
     "hex": "#b2afd4",
-    "lab": [72.81, 8.53, -18.28],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [72.81, 8.53, -18.28]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "607",
     "name": "Wistaria Violet",
     "hex": "#686ab0",
-    "lab": [47.48, 17.19, -37.57],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [47.48, 17.19, -37.57]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "704",
     "name": "Pewter",
     "hex": "#4f5556",
-    "lab": [35.66, -2.15, -1.4],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [35.66, -2.15, -1.4]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "707",
     "name": "Dark Gray",
     "hex": "#293133",
-    "lab": [19.67, -2.89, -2.43],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [19.67, -2.89, -2.43]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "005",
     "name": "Silver",
     "hex": "#a8a8a8",
-    "lab": [68.87, 0, 0],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [68.87, 0, 0]
   },
   {
-    "brand": "Brother",
-    "line": "Embroidery",
     "code": "817",
     "name": "Gray",
     "hex": "#878787",
-    "lab": [56.32, 0, 0],
-    "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
-    "licence": "GPL-3.0"
+    "lab": [56.32, 0, 0]
   }
 ]

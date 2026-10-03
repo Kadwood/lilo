@@ -130,8 +130,11 @@ export function reversedStrip(strip: readonly Pt[]): Pt[] {
   return out;
 }
 
-/** `RunObject.params.type`, falling back to the legacy `repeats` field. */
-export const runTypeOf = (o: RunObject): RunType => o.params.type ?? (o.params.repeats === 3 ? "triple" : "single");
+/** A run whose stitch length is at least this is "manual": every path point is one needle drop (imported stitches, pixel art). */
+export const MANUAL_STITCH_LENGTH_MM = 1000;
+
+/** `RunObject.params.type`, falling back to the legacy conventions (`repeats`, huge stitch length = manual). */
+export const runTypeOf = (o: RunObject): RunType => o.params.type ?? (o.params.stitchLengthMm >= MANUAL_STITCH_LENGTH_MM ? "manual" : o.params.repeats === 3 ? "triple" : "single");
 
 const d2 = (a: Pt, b: Pt) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
 
@@ -141,7 +144,7 @@ export function runObjectRuns(o: RunObject, from: Pt): IRun[] {
   const p = o.params;
   let path: Pt[] = [...o.geometry.path];
   if (path.length < 2) return [];
-  if (o.geometry.closed && type !== "manual") path.push(path[0]);
+  if (o.geometry.closed) path.push(path[0]);
 
   // Manual stitches are sewn exactly in the order they were placed; everything else may be reversed
   // so it starts at the end nearest the needle (or nearest the user's start marker).

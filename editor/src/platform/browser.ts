@@ -12,6 +12,13 @@ export const browserPlatform: Platform = {
   savedMachines: () => Promise.reject(unavailable("savedMachines")),
   sendToMachine: () => Promise.reject(unavailable("sendToMachine")),
 
+  ocrImage: () => Promise.reject(new Error("unsupported: text recognition needs the desktop app")),
+  listRecentProjects: () => Promise.resolve([]),
+  onOpenFile: () => () => {},
+  readProjectFile: () => Promise.reject(unavailable("readProjectFile")),
+  writeProjectFile: () => Promise.reject(unavailable("writeProjectFile")),
+  projectsFolder: () => Promise.resolve(null),
+
   async saveFile(suggestedName, bytes) {
     const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type: "application/octet-stream" }));
     const a = document.createElement("a");
