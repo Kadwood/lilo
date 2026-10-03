@@ -2,6 +2,8 @@ import { useState } from "react";
 import { FABRICS, FABRIC_IDS, QUALITIES, QUALITY_IDS, THREAD_WEIGHTS, THREAD_WEIGHT_IDS, autoObjectCount, type ApplyResult, type FabricId, type Quality, type ThreadWeight } from "@lilo/engine/light";
 import { useHoop } from "../hoops/autoPick";
 import { fmtSize } from "../hoops/format";
+import { Hint } from "../guide/Hint";
+import { setSewingOpen, useGuide } from "../guide/guideStore";
 import { setHoopView } from "../state/hoopViewStore";
 import { useEditor } from "../state/store";
 import { shortFabric, useResolvedSewing, useSewing } from "./useSewing";
@@ -23,7 +25,7 @@ export function SewingCard() {
   const sewing = useSewing();
   const resolved = useResolvedSewing();
   const hoop = useHoop();
-  const [open, setOpen] = useState(false);
+  const open = useGuide((g) => g.sewingOpen);
   const [result, setResult] = useState<ApplyResult | null>(null);
   const auto = state.design ? autoObjectCount(state.design) : 0;
 
@@ -32,16 +34,21 @@ export function SewingCard() {
 
   return (
     <section className="sewing-card" aria-label="Sewing setup">
-      <button className="sewing-chip" aria-expanded={open} aria-controls="sewing-card-body" onClick={() => setOpen((v) => !v)} title="What you are sewing on and with">
+      <div className="with-hint">
+      <button className="sewing-chip" aria-expanded={open} aria-controls="sewing-card-body" onClick={() => setSewingOpen(!open)} title="What you are sewing on and with" data-tour="sewing-chip">
         <span className="sewing-chip-text">{chip}</span>
         <span className="sewing-chip-caret" aria-hidden="true">
           {open ? "▴" : "▾"}
         </span>
       </button>
+      <Hint id="sewing.chip" />
+      </div>
       {open && (
         <div className="sewing-body" id="sewing-card-body">
           <label className="field">
-            Fabric
+            <span className="field-row">
+              Fabric <Hint id="sewing.fabric" />
+            </span>
             <select aria-label="Fabric" value={sewing.fabric} onChange={(e) => change({ fabric: e.target.value as FabricId })}>
               {FABRIC_IDS.map((f) => (
                 <option key={f} value={f} title={FABRICS[f].description}>
@@ -52,7 +59,9 @@ export function SewingCard() {
             <span className="muted small">{FABRICS[sewing.fabric].description}</span>
           </label>
           <label className="field">
-            Thread weight
+            <span className="field-row">
+              Thread weight <Hint id="sewing.thread-weight" />
+            </span>
             <select aria-label="Thread weight" value={sewing.threadWeight} onChange={(e) => change({ threadWeight: Number(e.target.value) as ThreadWeight })}>
               {THREAD_WEIGHT_IDS.map((w) => (
                 <option key={w} value={w} title={THREAD_WEIGHTS[w].description}>
@@ -63,7 +72,9 @@ export function SewingCard() {
             <span className="muted small">{THREAD_WEIGHTS[sewing.threadWeight].description}</span>
           </label>
           <label className="field">
-            Quality
+            <span className="field-row">
+              Quality <Hint id="sewing.quality" />
+            </span>
             <select aria-label="Quality" value={sewing.quality} onChange={(e) => change({ quality: e.target.value as Quality })}>
               {QUALITY_IDS.map((q) => (
                 <option key={q} value={q} title={QUALITIES[q].summary}>

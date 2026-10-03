@@ -60,10 +60,10 @@ const ICONS = {
 } as const;
 
 /** One quick-start card: a small icon, what it does in a word, and a line about it. */
-function Quick({ icon, title, hint, primary, onClick }: { icon: keyof typeof ICONS; title: string; hint: string; primary?: boolean; onClick: () => void }) {
+function Quick({ icon, title, hint, primary, onClick, tour }: { icon: keyof typeof ICONS; title: string; hint: string; primary?: boolean; onClick: () => void; tour?: string }) {
   return (
     <li>
-      <button className={`quick-card${primary ? " primary-card" : ""}`} onClick={onClick} aria-label={title}>
+      <button className={`quick-card${primary ? " primary-card" : ""}`} onClick={onClick} aria-label={title} data-tour={tour}>
         <span className="quick-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
             {ICONS[icon]}
@@ -109,9 +109,10 @@ export function HomeView() {
       <section aria-labelledby="start-title">
         <h2 id="start-title">Start</h2>
         <ul className="quick-grid" aria-label="Ways to start">
-          <Quick icon="new" title="New design" hint="A blank hoop to draw in" primary onClick={() => go(m.newProject())} />
+          <Quick icon="new" title="New design" hint="A blank hoop to draw in" primary tour="home-new" onClick={() => go(m.newProject())} />
           <Quick
             icon="picture"
+            tour="home-picture"
             title="Digitize a picture…"
             hint="Turn a logo or photo into stitches"
             onClick={() => {
@@ -121,6 +122,7 @@ export function HomeView() {
           />
           <Quick
             icon="type"
+            tour="home-monogram"
             title="Type a monogram"
             hint="Letters, ready to stitch"
             onClick={() =>
@@ -132,7 +134,7 @@ export function HomeView() {
             }
           />
           <Quick icon="pixel" title="Pixel art" hint="Cross-stitch style, square by square" onClick={() => app.go("pixel")} />
-          <Quick icon="open" title="Open…" hint="A Lilo project from your computer" onClick={() => go(m.openDialog())} />
+          <Quick icon="open" tour="home-open" title="Open…" hint="A Lilo project from your computer" onClick={() => go(m.openDialog())} />
           <Quick icon="convert" title="Converter" hint="Change embroidery file formats" onClick={() => app.go("converter")} />
         </ul>
         {notice && (

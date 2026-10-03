@@ -183,14 +183,14 @@
   {"id":"topbar.search","label":"Search","what":"Finds any tool or action by name.","when":"When you do not know where a command lives.","typical":"Command K.","guideId":"keyboard-shortcuts","level":"basic"},
   {"id":"topbar.export","label":"Export","what":"Saves the design as a machine file or a picture.","when":"When you are ready for a USB stick.","typical":"PES for Brother.","guideId":"export-formats","level":"basic"},
   {"id":"topbar.send","label":"Send","what":"Sends the design to a machine over Wi-Fi.","when":"When your machine is set up in Lilo Link.","typical":"Brother and Baby Lock.","guideId":"send-a-design","level":"basic"},
-  {"id":"nav.help","label":"Help","what":"Opens the guide with search.","when":"Whenever you are stuck.","typical":"Command question mark.","guideId":"welcome","level":"basic"},
 
   {"id":"cs.stitch-regions","label":"Stitch regions","what":"Stitches the regions you collected with Shift-click.","when":"After picking several regions.","typical":"Or press Enter.","guideId":"click-to-stitch","level":"basic"},
   {"id":"cs.clear-selection","label":"Clear selection","what":"Forgets the regions waiting to be stitched.","when":"If you picked the wrong ones.","typical":"Then pick again.","guideId":"click-to-stitch","level":"basic"},
   {"id":"cs.clear-stitches","label":"Clear the automatic stitches","what":"Removes the automatic result and keeps the bare trace.","when":"To stitch only the regions you choose.","typical":"One undo step.","guideId":"click-to-stitch","level":"basic"},
   {"id":"cs.back","label":"Back to Select","what":"Leaves Click to stitch and goes back to the Select tool.","when":"When you are done picking regions.","typical":"Or press Esc.","guideId":"click-to-stitch","level":"basic"},
 
-  {"id":"threads.photo","label":"Add a spool by photo","what":"Reads a thread label from a photo and suggests the thread.","when":"To add a spool without typing its code.","typical":"A sharp photo of the label.","guideId":"add-by-photo","level":"basic"},
+  {"id":"section.shelf-photo","label":"Add a spool by photo","what":"Reads a thread label from a photo and suggests the thread.","when":"To add a spool without typing its code.","typical":"A sharp photo of the label.","guideId":"add-by-photo","level":"basic"},
+  {"id":"section.shelf-manual","label":"Add by hand","what":"Add a thread Lilo does not know by typing its brand, code and name.","when":"For a spool that is not in the catalogue.","typical":"Pick the nearest colour yourself.","guideId":"my-threads","level":"advanced"},
   {"id":"threads.search","label":"Search the catalogue","what":"Find a thread by brand, code or name.","when":"To add a spool you own.","typical":"A brand and a code.","guideId":"my-threads","level":"basic"},
   {"id":"threads.quantity","label":"Quantity","what":"How many spools of this thread you own.","when":"To keep track of stock.","typical":"1.","guideId":"my-threads","level":"basic"},
   {"id":"threads.backup","label":"Import and export","what":"Saves your shelf to a file or loads one back.","when":"To back up, or move to another computer.","typical":"Export now and then.","guideId":"my-threads","level":"basic"}

@@ -18,6 +18,8 @@ import { ShapeBar } from "./ShapeBar";
 import { readTheme } from "./theme";
 import { buildTimeline, phaseAt, prefersReducedMotion, type AnimPhase, type Timeline } from "./timeline";
 import { TraceOutlines } from "./TraceOutlines";
+import { Hint } from "../guide/Hint";
+import { markPreviewed } from "../guide/guideStore";
 import { useShortcuts } from "./useShortcuts";
 import { classifyWheel, fitRect, fitView, wheelZoomFactor, zoomAt, panBy, type View } from "./viewport";
 
@@ -509,16 +511,16 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
       <div className="canvas-hud">
         <div className="hud-group" role="group" aria-label="View options">
           <label>
-            <input type="checkbox" checked={realistic} onChange={(e) => actions.setView({ realistic: e.target.checked })} /> Realistic
+            <input type="checkbox" checked={realistic} onChange={(e) => (actions.setView({ realistic: e.target.checked }), markPreviewed())} /> Realistic <Hint id="view.realistic" />
           </label>
           <label>
-            <input type="checkbox" checked={grid} onChange={(e) => actions.setView({ grid: e.target.checked })} /> Grid
+            <input type="checkbox" checked={grid} onChange={(e) => actions.setView({ grid: e.target.checked })} /> Grid <Hint id="view.grid" />
           </label>
           <label>
-            <input type="checkbox" checked={reference} onChange={(e) => actions.setView({ reference: e.target.checked })} /> Reference
+            <input type="checkbox" checked={reference} onChange={(e) => actions.setView({ reference: e.target.checked })} /> Reference <Hint id="view.reference" />
           </label>
           <label>
-            <input type="checkbox" checked={jumps} onChange={(e) => actions.setView({ jumps: e.target.checked })} /> Jumps
+            <input type="checkbox" checked={jumps} onChange={(e) => actions.setView({ jumps: e.target.checked })} /> Jumps <Hint id="view.jumps" />
           </label>
         </div>
         <div className="hud-group" role="group" aria-label="Zoom">

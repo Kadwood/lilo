@@ -17,6 +17,7 @@ import {
 import { getPlatform } from "../platform";
 import { loadShelf, restoreShelfBackup, startShelfEmpty, updateShelf, useShelf } from "../state/shelfStore";
 import { brandChartUrl } from "../threads/charts";
+import { Hint } from "../guide/Hint";
 import { Section } from "./controls";
 
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "heic"];
@@ -132,6 +133,8 @@ export function ShelfPanel() {
         <button onClick={() => void exportJson()} disabled={shelf.entries.length === 0}>
           Export JSON…
         </button>
+        <Hint id="threads.backup" />
+        <Hint id="threads.quantity" />
       </div>
       {note && (
         <p className={note.kind === "error" ? "error small" : "muted small"} role={note.kind === "error" ? "alert" : "status"}>
@@ -165,7 +168,10 @@ function CatalogueAdd({ onNote }: { onNote: (n: Note) => void }) {
 
   return (
     <div className="shelf-add">
-      <input type="search" aria-label="Search the catalogue to add a spool" placeholder="Brand, code or name" value={query} onChange={(e) => setQuery(e.target.value)} />
+      <div className="with-hint">
+        <input type="search" aria-label="Search the catalogue to add a spool" placeholder="Brand, code or name" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <Hint id="threads.search" />
+      </div>
       {hits?.length === 0 && (
         <p className="muted small">
           Not in the catalogue.{" "}

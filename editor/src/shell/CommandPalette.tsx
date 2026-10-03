@@ -6,6 +6,7 @@ import { useEngine } from "../engine/context";
 import { projectCommands } from "../project/commands";
 import { useOptionalProject } from "../project/ProjectProvider";
 import { buildCommands, searchCommands, type CommandHost } from "../tools/commands";
+import { guideCommands } from "../guide/commands";
 import { useEditor } from "../state/store";
 
 const fitEvent = () => window.dispatchEvent(new Event("lilo:fit"));
@@ -21,7 +22,7 @@ export function CommandPalette({ openImage, fit = fitEvent }: Partial<Pick<Comma
   const project = useOptionalProject();
   const open = state.paletteOpen;
   const openIt = useMemo(() => openImage ?? (() => void openImagePicker(actions)), [openImage, actions]);
-  const extra = open && project ? [...projectCommands(project, app, state, actions), ...pixelCommands(engine, app, state, actions)] : open ? pixelCommands(engine, app, state, actions) : [];
+  const extra = open && project ? [...projectCommands(project, app, state, actions), ...pixelCommands(engine, app, state, actions), ...guideCommands(app)] : open ? [...pixelCommands(engine, app, state, actions), ...guideCommands(app)] : [];
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
   const input = useRef<HTMLInputElement>(null);

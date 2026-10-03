@@ -12,6 +12,9 @@ import { CommandPalette } from "./shell/CommandPalette";
 import { useApplyAppearance } from "./shell/useAppearance";
 import { EditorShell } from "./shell/EditorShell";
 import { EditorProvider, useEditor } from "./state/store";
+import { HelpPanel } from "./guide/HelpPanel";
+import { TourOverlay } from "./guide/Tour";
+import { guideStore, openHelpFor, closeHelp, startTour, useGuide } from "./guide/guideStore";
 import { UpdateBanner } from "./updates/UpdateBanner";
 import { UpdatesProvider } from "./updates/UpdatesProvider";
 
@@ -42,6 +45,12 @@ function useAppShortcuts() {
     const down = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
       const k = e.key.toLowerCase();
+      if (k === "?" || (k === "/" && e.shiftKey)) {
+        e.preventDefault();
+        if (guideStore.getState().helpOpen) closeHelp();
+        else void openHelpFor(`view.${app.view}`);
+        return;
+      }
       const go = (p: Promise<boolean>) => void p.then((ok) => ok && app.go("editor"));
       if (k === "k") {
         if (app.view === "editor") return; // the canvas shortcuts own it there
@@ -63,8 +72,20 @@ function useAppShortcuts() {
   }, [project, app, actions, state.paletteOpen]);
 }
 
+/** First launch: offer the tour once. Not under test runners, and not in the `?mock` dev pages unless asked (`&tour`). */
+function shouldAutoTour(): boolean {
+  if (guideStore.getState().tourSeen) return false;
+  if (/jsdom/i.test(navigator.userAgent)) return false;
+  const q = new URLSearchParams(window.location.search);
+  return !q.has("mock") || q.has("tour");
+}
+
 function Shell() {
   const app = useApp();
+  const helpOpen = useGuide((s) => s.helpOpen);
+  useEffect(() => {
+    if (shouldAutoTour()) startTour();
+  }, []);
   const { state } = useEditor();
   const dirty = useProjectState((s) => s.dirty);
   useAppShortcuts();
@@ -85,6 +106,9 @@ function Shell() {
           </button>
         ))}
         <span className="spacer" data-tauri-drag-region />
+        <button className="nav-help" aria-expanded={helpOpen} aria-keyshortcuts="Control+? Meta+?" title="Open the guide (⌘?)" onClick={() => (helpOpen ? closeHelp() : void openHelpFor(`view.${app.view}`))}>
+          Help
+        </button>
         {app.view !== "editor" && app.view !== "link" && (
           <span className="app-doc" title="The design in the editor">
             {state.projectName || "Untitled design"}
@@ -112,6 +136,8 @@ function Shell() {
       </div>
       {app.view !== "editor" && <CommandPalette />}
       <ConfirmDialog />
+      <HelpPanel />
+      <TourOverlay />
     </div>
   );
 }

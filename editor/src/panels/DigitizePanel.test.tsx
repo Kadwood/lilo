@@ -67,7 +67,7 @@ describe("DigitizePanel", () => {
     let opened = 0;
     renderEditor(<DigitizePanel onOpen={() => opened++} />);
     expect((screen.getByRole("button", { name: "Digitize" }) as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: /Open image/ }));
+    fireEvent.click(screen.getByRole("button", { name: /^Open image/ }));
     expect(opened).toBe(1);
   });
 });

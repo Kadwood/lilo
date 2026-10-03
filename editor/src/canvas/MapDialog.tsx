@@ -1,4 +1,5 @@
 import { Field, Segmented, Toggle } from "../panels/controls";
+import { HintScope } from "../guide/Hint";
 import { useEditor } from "../state/store";
 
 /** Floating card for "map to path": how many copies, how far apart, whether they turn with the path. */
@@ -10,6 +11,7 @@ export function MapDialog() {
   const hasPath = !!draft.path && draft.path.length >= 2;
   const editing = !!draft.groupId;
   return (
+    <HintScope scope="map">
     <div className="map-dialog" role="dialog" aria-label="Map to path">
       <h3>Map to path</h3>
       {!hasPath ? (
@@ -50,5 +52,6 @@ export function MapDialog() {
         </button>
       </div>
     </div>
+    </HintScope>
   );
 }

@@ -7,6 +7,7 @@ import { useEditor } from "../state/store";
 import { defaultThread, findThread } from "../state/editorStore";
 import { hoopViewStore, setHoopView } from "../state/hoopViewStore";
 import { rememberHoop } from "../state/hoopStore";
+import { Hint } from "../guide/Hint";
 import { Section, Toggle } from "./controls";
 import { ThreadPicker } from "./ThreadPicker";
 
@@ -38,11 +39,12 @@ export function HoopSelect({ compact = false }: { compact?: boolean } = {}) {
 
   return (
     <div className={`hoop-select${compact ? " compact" : ""}`}>
-      <button className="hoop-button" onClick={() => setHoopView({ pickerOpen: true })} aria-label={`Hoop: ${hoop.name}, ${fmtSize(hoop)}. Change`} title="Choose a hoop">
+      <button className="hoop-button" onClick={() => setHoopView({ pickerOpen: true })} aria-label={`Hoop: ${hoop.name}, ${fmtSize(hoop)}. Change`} title="Choose a hoop" data-tour={compact ? "hoop-chip" : undefined}>
         <span className="hoop-button-icon" aria-hidden="true" data-shape={hoop.shape ?? "rect"} />
         <span className="hoop-button-name">{hoop.name}</span>
         {!compact && <span className="muted small">{fmtSize(hoop)}</span>}
       </button>
+      {!compact && <Hint id="hoop.chip" />}
       {!compact && (
         <>
           <div className="button-row">
@@ -51,6 +53,17 @@ export function HoopSelect({ compact = false }: { compact?: boolean } = {}) {
               Turn 90°
             </button>
             <button onClick={() => setHoopView({ customEditor: { id: null } })}>Add my own…</button>
+          </div>
+          <div className="hint-strip" aria-label="Hoop help">
+            <span>
+              Smallest hoop <Hint id="hoop.smallest-hoop-that-fits" />
+            </span>
+            <span>
+              Turn 90° <Hint id="hoop.swap" />
+            </span>
+            <span>
+              Your own hoop <Hint id="hoop.add-own" />
+            </span>
           </div>
           {note && (
             <p className="small" role="status">
@@ -61,7 +74,9 @@ export function HoopSelect({ compact = false }: { compact?: boolean } = {}) {
           <Toggle label="Show safe margin" checked={view.showSafeArea} onChange={(v) => setHoopView({ showSafeArea: v })} help="A dashed line 5 mm inside the sewing area. Stitches closer to the edge are close to the presser foot and the frame." />
           <Toggle label="Show rulers" checked={view.showRulers} onChange={(v) => setHoopView({ showRulers: v })} help="Rulers along the top and left of the canvas. Drag from a ruler to pull out a guide." />
           <label className="field-line">
-            <span className="field-label">Placement guide</span>
+            <span className="field-label">
+              Placement guide <Hint id="hoop.placement-guide" />
+            </span>
             <select aria-label="Placement guide" value={view.placementId ?? ""} onChange={(e) => setHoopView({ placementId: e.target.value || null })}>
               <option value="">None</option>
               {PLACEMENT_GUIDES.map((g) => (
@@ -71,6 +86,14 @@ export function HoopSelect({ compact = false }: { compact?: boolean } = {}) {
               ))}
             </select>
           </label>
+          <div className="hint-strip" aria-label="Real size help">
+            <span>
+              Actual size <Hint id="hoop.actual-size" />
+            </span>
+            <span>
+              Calibrate screen <Hint id="hoop.calibrate-screen" />
+            </span>
+          </div>
           <div className="button-row">
             <button onClick={() => window.dispatchEvent(new Event(ACTUAL_SIZE_EVENT))} title="Show the design at its real size on this screen (⌘0)">
               Actual size <kbd>⌘0</kbd>

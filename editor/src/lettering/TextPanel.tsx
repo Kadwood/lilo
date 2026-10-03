@@ -3,6 +3,7 @@ import type { FontIndexEntry, TextAlign } from "@lilo/engine/lettering";
 import { letterHeightWarning, minLetterHeightFor } from "@lilo/engine/light";
 import { useSewing } from "../sewing/useSewing";
 import { DimensionsSection } from "../panels/DimensionsSection";
+import { Hint } from "../guide/Hint";
 import { ThreadPicker } from "../panels/ThreadPicker";
 import { nextTextGroup, textThread, useTextTarget } from "./adapter";
 import { defaultServices, type CustomFontInfo, type FontRef, type LetteringServices } from "./fonts";
@@ -128,7 +129,7 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
   };
 
   return (
-    <aside className="panel panel-left panel-text" aria-label="Text">
+    <aside className="panel panel-left panel-text" aria-label="Text" data-tour="settings-panel">
       <h2>{editing ? "Edit text" : "Text"}</h2>
       {!editing && <p className="muted small">{anchor ? "New text goes where you clicked." : "Click the canvas to place text, or just add it."}</p>}
       {editing && (
@@ -151,13 +152,17 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
         </>
       )}
 
-      <label className="field">
-        <span className="field-row">Text</span>
+      <label className="field" data-tour="text-input">
+        <span className="field-row">
+          Text <Hint id="text.text" />
+        </span>
         <textarea aria-label="Text to stitch" rows={3} value={text} onChange={(e) => setText(e.target.value)} />
       </label>
 
-      <div className="field">
-        <span className="field-row">Height (mm)</span>
+      <div className="field" data-tour="text-height">
+        <span className="field-row">
+          Height (mm) <Hint id="text.height" /> <Hint id="text.height-presets" />
+        </span>
         <div className="segmented" role="group" aria-label="Height presets">
           {PRESETS.map((p) => (
             <button key={p} className={height === p ? "active" : ""} onClick={() => setHeight(p)} aria-pressed={height === p}>
@@ -180,20 +185,22 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
 
       <label className="field">
         <span className="field-row">
-          Letter spacing <output>{fmt(spacing)} mm</output>
+          Letter spacing <output>{fmt(spacing)} mm</output> <Hint id="text.letter-spacing" />
         </span>
         <input type="range" min={-1} max={5} step={0.1} value={spacing} aria-label="Letter spacing" onChange={(e) => setSpacing(Number(e.target.value))} />
       </label>
 
       <label className="field">
         <span className="field-row">
-          Line spacing <output>{fmt(lineSpacing)}x</output>
+          Line spacing <output>{fmt(lineSpacing)}x</output> <Hint id="text.line-spacing" />
         </span>
         <input type="range" min={0.6} max={2} step={0.05} value={lineSpacing} aria-label="Line spacing" onChange={(e) => setLineSpacing(Number(e.target.value))} />
       </label>
 
       <div className="field">
-        <span className="field-row">Align</span>
+        <span className="field-row">
+          Align <Hint id="text.align" />
+        </span>
         <div className="segmented" role="group" aria-label="Alignment">
           {(["left", "center", "right"] as const).map((a) => (
             <button key={a} className={align === a ? "active" : ""} onClick={() => setAlign(a)} aria-pressed={align === a}>
@@ -204,9 +211,10 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
       </div>
 
       <div className="field">
-        <button className="primary" onClick={() => void add()} disabled={busy || !text.trim() || !selected}>
+        <button className="primary" onClick={() => void add()} disabled={busy || !text.trim() || !selected} data-tour="text-add">
           {busy ? "Working..." : editing ? "Update text" : "Add text"}
         </button>
+        <Hint id="text.add" />
         {editing && <button onClick={startNew}>New text</button>}
         {message && (
           <span className={message.kind === "error" ? "error small" : "muted small"} role={message.kind === "error" ? "alert" : "status"}>
@@ -215,12 +223,15 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
         )}
       </div>
 
-      <h2 className="spaced">Fonts</h2>
+      <div className="with-hint">
+        <h2 className="spaced">Fonts</h2>
+        <Hint id="text.fonts" />
+      </div>
       <label className="field-row small">
-        <input type="checkbox" checked={fitOnly} onChange={(e) => setFitOnly(e.target.checked)} aria-label="Only fonts that suit this height" /> Only fonts for {fmt(height)} mm
+        <input type="checkbox" checked={fitOnly} onChange={(e) => setFitOnly(e.target.checked)} aria-label="Only fonts that suit this height" /> Only fonts for {fmt(height)} mm <Hint id="text.fit-only" />
       </label>
 
-      <ul className="font-list" aria-label="Built-in fonts">
+      <ul className="font-list" aria-label="Built-in fonts" data-tour="text-fonts">
         {shown.map((f) => {
           const url = services.previewUrl(f.id);
           const active = font.kind === "builtin" && font.id === f.id;
@@ -238,7 +249,10 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
         {index.length > 0 && shown.length === 0 && <li className="muted small">No built-in font suits {fmt(height)} mm.</li>}
       </ul>
 
-      <h2 className="spaced">Your fonts</h2>
+      <div className="with-hint">
+        <h2 className="spaced">Your fonts</h2>
+        <Hint id="text.your-fonts" />
+      </div>
       <ul className="font-list" aria-label="Your fonts">
         {custom.map((c) => {
           const active = font.kind === "custom" && font.key === c.key;
@@ -265,7 +279,10 @@ export function TextPanel({ services = defaultServices }: { services?: Lettering
         })}
       </ul>
       <input ref={file} type="file" accept=".ttf,.otf,.ttc,font/ttf,font/otf,font/collection" hidden aria-label="Upload a font file" onChange={(e) => void upload(e.target.files?.[0])} />
-      <button onClick={() => file.current?.click()}>Upload font (TTF, OTF, TTC)...</button>
+      <div className="with-hint">
+        <button onClick={() => file.current?.click()}>Upload font (TTF, OTF, TTC)...</button>
+        <Hint id="text.upload-font" />
+      </div>
       <span className="muted small">Custom fonts are auto-converted to satin columns and sew best above {minLetterHeightFor(sewing.threadWeight)} mm.</span>
     </aside>
   );

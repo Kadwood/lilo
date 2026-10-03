@@ -1,6 +1,8 @@
 import { useSyncExternalStore } from "react";
 import type { ShapeMode } from "../state/editorStore";
 import { selectionBox } from "../state/editorStore";
+import { hintById } from "../guide/data";
+import { HintList } from "../guide/Hint";
 import { useEditor } from "../state/store";
 import type { CanvasController } from "./controller";
 import type { View } from "./viewport";
@@ -13,6 +15,9 @@ interface Item {
   disabled?: boolean;
   run: () => void;
 }
+
+/** Shape-bar button ids that differ from their hint ids. */
+const HINT_KEY: Record<string, string> = { dup: "duplicate", del: "delete" };
 
 /** The contextual toolbar that floats above the selection: shape actions for whatever is selected. */
 export function ShapeBar({ controller, view, width, height }: { controller: CanvasController; view: View; width: number; height: number }) {
@@ -51,11 +56,15 @@ export function ShapeBar({ controller, view, width, height }: { controller: Canv
 
   return (
     <div className="shape-bar" role="toolbar" aria-label="Shape actions" style={style} onMouseDown={(e) => (e.target as HTMLElement).closest("button") && e.preventDefault()}>
-      {items.map((it) => (
-        <button key={it.id} className={it.active ? "active" : ""} aria-pressed={it.active} title={it.title} disabled={it.disabled} onClick={it.run} data-action={it.id}>
-          {it.label}
-        </button>
-      ))}
+      {items.map((it) => {
+        const h = hintById(`shape.${HINT_KEY[it.id] ?? it.id}`);
+        return (
+          <button key={it.id} className={it.active ? "active" : ""} aria-pressed={it.active} title={h ? `${h.label}: ${h.what} ${h.when}` : it.title} disabled={it.disabled} onClick={it.run} data-action={it.id}>
+            {it.label}
+          </button>
+        );
+      })}
+      <HintList ids={items.map((it) => `shape.${HINT_KEY[it.id] ?? it.id}`)} label="Help: what each shape action does" guideId="editing-shapes" name="shape.shape-bar-help" />
     </div>
   );
 }

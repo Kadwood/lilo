@@ -1,0 +1,446 @@
+/* The guide: "?" hints, the Help panel, the workflow strip, the tour and the warnings tray. */
+
+/* ---- hint buttons and cards --------------------------------------------------------------------- */
+.hint-button {
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 1;
+}
+.hint-button:hover,
+.hint-button[aria-expanded="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.hint-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.hint-card {
+  position: fixed;
+  z-index: 140;
+  width: 300px;
+  max-width: calc(100vw - 16px);
+  padding: 12px 14px;
+  border: 1px solid var(--glass-line, var(--border));
+  border-radius: var(--radius);
+  background: var(--sheet-bg, var(--surface));
+  color: var(--text);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.22);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.hint-card p {
+  margin: 6px 0 0;
+}
+.hint-title {
+  display: block;
+  font-size: 13px;
+}
+.hint-key {
+  display: block;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hint-more {
+  margin-top: 8px;
+}
+.hint-list dl {
+  display: grid;
+  gap: 8px;
+  max-height: 60vh;
+  margin: 0;
+  overflow: auto;
+}
+.hint-list dt {
+  font-weight: 600;
+}
+.hint-list dd {
+  margin: 0;
+  color: var(--muted);
+}
+.hint-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 4px 0 8px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.hint-strip > span {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.hint-row,
+.with-hint,
+.segmented-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.with-hint > button.wide,
+.with-hint > input {
+  flex: 1;
+}
+.with-hint > h2 {
+  margin-bottom: 0;
+}
+.segmented-wrap > .segmented {
+  flex: 1;
+}
+
+/* ---- Help panel --------------------------------------------------------------------------------- */
+.help-panel {
+  position: fixed;
+  z-index: 120;
+  top: 44px;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(520px, 100vw);
+  border-left: 1px solid var(--glass-line, var(--border));
+  background: var(--sheet-bg, var(--surface));
+  box-shadow: -12px 0 32px rgb(0 0 0 / 0.16);
+}
+.help-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px 4px;
+}
+.help-head h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 16px;
+}
+.help-search {
+  margin: 8px 16px;
+  padding: 8px 10px;
+}
+.help-body {
+  flex: 1;
+  padding: 4px 16px 24px;
+  overflow: auto;
+  line-height: 1.55;
+}
+.help-section h3 {
+  margin: 18px 0 2px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.help-body ul {
+  padding: 0;
+  list-style: none;
+}
+.help-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 2px 0;
+  padding: 7px 8px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.help-link:hover,
+.help-link:focus-visible {
+  background: var(--surface-2);
+}
+.help-page-title {
+  margin: 4px 0;
+  font-size: 20px;
+}
+.help-summary {
+  color: var(--muted);
+}
+.guide-md h3,
+.guide-md h4,
+.guide-md h5 {
+  margin: 20px 0 6px;
+  font-size: 15px;
+}
+.guide-md h4,
+.guide-md h5 {
+  font-size: 13.5px;
+}
+.guide-md p {
+  margin: 8px 0;
+}
+.guide-md ul,
+.guide-md ol {
+  margin: 8px 0;
+  padding-left: 22px;
+  list-style: revert;
+}
+.guide-md li {
+  margin: 3px 0;
+}
+.guide-md code {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  font-size: 12px;
+}
+.guide-md a {
+  color: var(--accent);
+}
+.guide-md figure {
+  margin: 12px 0;
+}
+.guide-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #faf7f2;
+}
+.guide-shot {
+  display: grid;
+  place-items: center;
+  min-height: 90px;
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+.guide-table {
+  margin: 10px 0;
+  overflow-x: auto;
+}
+.guide-table table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12.5px;
+}
+.guide-table th,
+.guide-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+/* ---- workflow strip ----------------------------------------------------------------------------- */
+.stepper {
+  position: relative;
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.stepper ol {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.stepper li + li::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  margin-right: 4px;
+  background: var(--border);
+  vertical-align: middle;
+}
+.stepper li {
+  display: flex;
+  align-items: center;
+}
+.stepper .step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 4px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12px;
+}
+.stepper .step:hover,
+.stepper .step[aria-expanded="true"] {
+  background: var(--surface-2);
+}
+.step-num {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+}
+.step.now .step-num {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.step.done .step-num {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.step-tip {
+  position: absolute;
+  z-index: 60;
+  top: 100%;
+  left: 12px;
+  width: 340px;
+  padding: 12px 14px;
+  border: 1px solid var(--glass-line, var(--border));
+  border-radius: var(--radius);
+  background: var(--sheet-bg, var(--surface));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+  font-size: 12.5px;
+}
+.step-tip p {
+  margin: 6px 0;
+}
+
+/* ---- tour --------------------------------------------------------------------------------------- */
+.tour-backdrop {
+  position: fixed;
+  z-index: 130;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--backdrop, rgb(0 0 0 / 0.4));
+}
+.tour-welcome {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  width: min(480px, calc(100vw - 32px));
+  padding: 24px;
+  border: 1px solid var(--glass-line, var(--border));
+  border-radius: 16px;
+  background: var(--sheet-bg, var(--surface));
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.3);
+  text-align: center;
+}
+.tour-welcome h2,
+.tour-welcome p {
+  margin: 0;
+}
+.tour-mascot {
+  border-radius: 22px;
+}
+.tour-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+.tour-choices button {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  text-align: left;
+}
+.tour-ring {
+  position: fixed;
+  z-index: 125;
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  box-shadow: 0 0 0 4px rgb(107 147 255 / 0.25);
+  pointer-events: none;
+}
+.tour-card {
+  position: fixed;
+  z-index: 135;
+  padding: 12px 14px;
+  border: 1px solid var(--glass-line, var(--border));
+  border-radius: var(--radius);
+  background: var(--sheet-bg, var(--surface));
+  box-shadow: 0 12px 36px rgb(0 0 0 / 0.28);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.tour-card p {
+  margin: 6px 0;
+}
+.tour-progress {
+  margin: 0 0 2px;
+}
+.tour-title {
+  font-size: 14px;
+}
+.tour-done {
+  width: 300px;
+}
+
+/* ---- warnings tray ------------------------------------------------------------------------------ */
+.live-tray {
+  position: absolute;
+  z-index: 20;
+  left: 12px;
+  bottom: 76px;
+  display: grid;
+  gap: 6px;
+  width: min(360px, calc(100% - 24px));
+}
+.live-tray ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.live-note {
+  padding: 8px 10px;
+  border: 1px solid var(--glass-line, var(--border));
+  border-left: 3px solid var(--muted);
+  border-radius: var(--radius);
+  background: var(--sheet-bg, var(--surface));
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.14);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.live-note.care {
+  border-left-color: #d9962b;
+}
+.live-note p {
+  margin: 0 0 6px;
+}
+.live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+.live-done {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .help-panel {
+    animation: help-in 0.16s ease-out;
+  }
+  @keyframes help-in {
+    from {
+      transform: translateX(16px);
+      opacity: 0;
+    }
+  }
+}
