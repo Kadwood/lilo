@@ -1,0 +1,1057 @@
+{
+ "version": 1,
+ "compiled": "2026-10-03",
+ "note": "Sewing areas (what the needle can reach), in mm, width x height as the hoop sits in the machine. 'verified' means the manufacturer page named in 'sources' stated the size on the compile date; everything else is UNVERIFIED. The clamp side is a drawing hint for every hoop (UNVERIFIED). Brother, Janome, Bernina and the other names belong to their owners; Lilo is not affiliated.",
+ "sources": {
+  "brother-usa": {
+   "title": "Brother USA product pages (Maximum Embroidery Area / Hoops spec rows): PE550D, PE800, PE900, SE600, SE625, SE1900, SE2000, NQ1700E, NQ3600D, NQ3700D, VM5100, VM6200D, PR670E, PR680W, PR1050X, PR1055X, PRS100",
+   "url": "https://www.brother-usa.com/products/<model>",
+   "checked": "2026-10-03",
+   "note": "Sizes are printed in inches; millimetres are Brother's usual metric figures (4x4 = 100x100, 5x7 = 130x180, 6x10 = 160x260, 8x12 = 200x300 ...)."
+  },
+  "brother-prcf3": {
+   "title": "Brother PRCF3 cap frame for PR series: 'embroidery area is 130mm x 60mm'",
+   "url": "https://www.brother-usa.com/products/prcf3",
+   "checked": "2026-10-03"
+  },
+  "janome-mc500e": {
+   "title": "Janome Memory Craft 500E: Available Hoops (mm)",
+   "url": "https://www.janome.com/machines/embroidery/memory-craft-500e/",
+   "checked": "2026-10-03"
+  },
+  "janome-mc550e": {
+   "title": "Janome Memory Craft 550E: Available Hoops, RE36b 200 x 360 mm",
+   "url": "https://www.janome.com/machines/embroidery/memory-craft-550e/",
+   "checked": "2026-10-03"
+  },
+  "janome-mb7": {
+   "title": "Janome MB-7: M1 240 x 200, M2 126 x 110, M3 50 x 50 mm; Tajima-hoop compatible",
+   "url": "https://www.janome.com/machines/embroidery/mb-7/",
+   "checked": "2026-10-03"
+  },
+  "janome-s9": {
+   "title": "Janome Skyline S9: RE20a 170 x 200, SQ14a 140 x 140, FA10a 100 x 40 mm",
+   "url": "https://www.janome.com/machines/embroidery/skyline-s9/",
+   "checked": "2026-10-03"
+  },
+  "ricoma-machines": {
+   "title": "Ricoma embroidery machines: 'Embroidery area' per series (inches, converted to mm)",
+   "url": "https://ricoma.com/collections/embroidery-machines",
+   "checked": "2026-10-03",
+   "note": "These are the machine's maximum sewing field; the frames that fit it are smaller or equal."
+  },
+  "lilo-spec": {
+   "title": "Lilo SPEC.md 4.1: Brother NV2700 hoops 160 x 260 and 130 x 180",
+   "url": "docs/SPEC.md",
+   "checked": "2026-10-03"
+  },
+  "recall": {
+   "title": "UNVERIFIED: author's recall of manufacturer catalogues; the manufacturer sites could not be fetched (bot-blocked or JS-only) when this was compiled",
+   "url": "",
+   "checked": "2026-10-03",
+   "note": "Check the number printed on your own hoop. Use My custom hoops for anything that differs."
+  }
+ },
+ "brands": [
+  "Brother",
+  "Janome",
+  "Bernina",
+  "Husqvarna Viking / Pfaff",
+  "Baby Lock",
+  "Singer",
+  "Ricoma",
+  "Tajima / commercial"
+ ],
+ "hoops": [
+  {
+   "id": "brother-100x100",
+   "brand": "Brother",
+   "name": "4 x 4 in",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PE550D",
+    "SE600",
+    "SE625",
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X",
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-130x180",
+   "brand": "Brother",
+   "name": "5 x 7 in",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PE800",
+    "PE900",
+    "SE1900",
+    "SE2000",
+    "NQ3700D",
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-160x260",
+   "brand": "Brother",
+   "name": "6 x 10 in",
+   "widthMm": 160,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NQ1700E",
+    "NQ3600D",
+    "NQ3700D"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-180x300",
+   "brand": "Brother",
+   "name": "7 x 12 in",
+   "widthMm": 180,
+   "heightMm": 300,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "VM5100",
+    "VM6200D"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true,
+   "note": "Maximum area from the spec page; the page does not name the hoop."
+  },
+  {
+   "id": "brother-300x200",
+   "brand": "Brother",
+   "name": "12 x 8 in (8 x 12 in frame)",
+   "widthMm": 300,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PR670E",
+    "PR680W"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true,
+   "note": "Landscape: the machine's field is 12 in wide, 8 in tall."
+  },
+  {
+   "id": "brother-360x200",
+   "brand": "Brother",
+   "name": "14 x 8 in (8 x 14 in frame)",
+   "widthMm": 360,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true,
+   "note": "Landscape: the machine's field is 14 in wide, 8 in tall."
+  },
+  {
+   "id": "brother-40x50",
+   "brand": "Brother",
+   "name": "1.5 x 2 in",
+   "widthMm": 40,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-200x200",
+   "brand": "Brother",
+   "name": "8 x 8 in",
+   "widthMm": 200,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-50x50",
+   "brand": "Brother",
+   "name": "2 x 2 in",
+   "widthMm": 50,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-40x45",
+   "brand": "Brother",
+   "name": "1.5 x 1.75 in",
+   "widthMm": 40,
+   "heightMm": 45,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-cap-130x60",
+   "brand": "Brother",
+   "name": "Cap frame PRCF3 (130 x 60)",
+   "widthMm": 130,
+   "heightMm": 60,
+   "shape": "cap",
+   "cornerRadiusMm": 8,
+   "clamp": "top",
+   "machines": [
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-prcf3"
+   ],
+   "verified": true,
+   "note": "Brother names the PR series; the machines listed here are the PR models Lilo knows."
+  },
+  {
+   "id": "brother-nv2700-160x260",
+   "brand": "Brother",
+   "name": "NV2700 160 x 260",
+   "widthMm": 160,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NV2700"
+   ],
+   "sources": [
+    "lilo-spec"
+   ],
+   "verified": true,
+   "note": "Named like Lilo's first built-in hoops so old files match."
+  },
+  {
+   "id": "brother-nv2700-130x180",
+   "brand": "Brother",
+   "name": "NV2700 130 x 180",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NV2700"
+   ],
+   "sources": [
+    "lilo-spec"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-nv1800q-130x180",
+   "brand": "Brother",
+   "name": "5 x 7 in",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NV1800Q"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED: NV1800Q hoop list not confirmed; Brother's page for it is gone."
+  },
+  {
+   "id": "janome-sq14b",
+   "brand": "Janome",
+   "name": "SQ14b (140 x 140)",
+   "widthMm": 140,
+   "heightMm": 140,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-sq20b",
+   "brand": "Janome",
+   "name": "SQ20b (200 x 200)",
+   "widthMm": 200,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re20b",
+   "brand": "Janome",
+   "name": "RE20b (140 x 200)",
+   "widthMm": 140,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re28b",
+   "brand": "Janome",
+   "name": "RE28b (200 x 280)",
+   "widthMm": 200,
+   "heightMm": 280,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re36b",
+   "brand": "Janome",
+   "name": "RE36b (200 x 360)",
+   "widthMm": 200,
+   "heightMm": 360,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "none",
+   "machines": [
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc550e"
+   ],
+   "verified": true,
+   "note": "Held with magnetic clips, no screw."
+  },
+  {
+   "id": "janome-re10b",
+   "brand": "Janome",
+   "name": "RE10b (40 x 100)",
+   "widthMm": 40,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-hh10b",
+   "brand": "Janome",
+   "name": "HH10b (40 x 90)",
+   "widthMm": 40,
+   "heightMm": 90,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc550e"
+   ],
+   "verified": true,
+   "note": "Janome prints 1.5 x 3.5 in; millimetres are converted."
+  },
+  {
+   "id": "janome-asq18b",
+   "brand": "Janome",
+   "name": "ASQ18b (180 x 180)",
+   "widthMm": 180,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc550e"
+   ],
+   "verified": true,
+   "note": "Janome prints 7.2 x 7.2 in; millimetres are converted."
+  },
+  {
+   "id": "janome-mb7-m1",
+   "brand": "Janome",
+   "name": "MB-7 M1 (240 x 200)",
+   "widthMm": 240,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "MB-7"
+   ],
+   "sources": [
+    "janome-mb7"
+   ],
+   "verified": true,
+   "note": "Janome lists it 240 mm wide, 200 mm tall."
+  },
+  {
+   "id": "janome-mb7-m2",
+   "brand": "Janome",
+   "name": "MB-7 M2 (126 x 110)",
+   "widthMm": 126,
+   "heightMm": 110,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "MB-7"
+   ],
+   "sources": [
+    "janome-mb7"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-mb7-m3",
+   "brand": "Janome",
+   "name": "MB-7 M3 (50 x 50)",
+   "widthMm": 50,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "MB-7"
+   ],
+   "sources": [
+    "janome-mb7"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re20a",
+   "brand": "Janome",
+   "name": "RE20a (170 x 200)",
+   "widthMm": 170,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Skyline S9"
+   ],
+   "sources": [
+    "janome-s9"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-sq14a",
+   "brand": "Janome",
+   "name": "SQ14a (140 x 140)",
+   "widthMm": 140,
+   "heightMm": 140,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Skyline S9"
+   ],
+   "sources": [
+    "janome-s9"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-fa10a",
+   "brand": "Janome",
+   "name": "FA10a (100 x 40)",
+   "widthMm": 100,
+   "heightMm": 40,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Skyline S9"
+   ],
+   "sources": [
+    "janome-s9"
+   ],
+   "verified": true
+  },
+  {
+   "id": "bernina-oval-large",
+   "brand": "Bernina",
+   "name": "Large oval (145 x 255)",
+   "widthMm": 145,
+   "heightMm": 255,
+   "shape": "rect",
+   "cornerRadiusMm": 40,
+   "clamp": "right",
+   "machines": [
+    "B 700",
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. An oval frame around a rectangular field."
+  },
+  {
+   "id": "bernina-oval-medium",
+   "brand": "Bernina",
+   "name": "Medium oval (100 x 130)",
+   "widthMm": 100,
+   "heightMm": 130,
+   "shape": "rect",
+   "cornerRadiusMm": 30,
+   "clamp": "right",
+   "machines": [
+    "B 700",
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-oval-small",
+   "brand": "Bernina",
+   "name": "Small oval (72 x 50)",
+   "widthMm": 72,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 20,
+   "clamp": "right",
+   "machines": [
+    "B 700",
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-maxi",
+   "brand": "Bernina",
+   "name": "Maxi (400 x 210)",
+   "widthMm": 400,
+   "heightMm": 210,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "right",
+   "machines": [
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-mega",
+   "brand": "Bernina",
+   "name": "Mega (400 x 150)",
+   "widthMm": 400,
+   "heightMm": 150,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "right",
+   "machines": [
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-jumbo",
+   "brand": "Bernina",
+   "name": "Jumbo (400 x 260)",
+   "widthMm": 400,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "right",
+   "machines": [
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "viking-small-100x100",
+   "brand": "Husqvarna Viking / Pfaff",
+   "name": "Small (100 x 100)",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Husqvarna Viking Designer Epic",
+    "Pfaff Creative Icon 2",
+    "Pfaff Creative Ambition"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "viking-jumbo-240x150",
+   "brand": "Husqvarna Viking / Pfaff",
+   "name": "Jumbo (240 x 150)",
+   "widthMm": 240,
+   "heightMm": 150,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Husqvarna Viking Designer Epic",
+    "Pfaff Creative Icon 2",
+    "Pfaff Creative Ambition"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "viking-mega-360x200",
+   "brand": "Husqvarna Viking / Pfaff",
+   "name": "Mega (360 x 200)",
+   "widthMm": 360,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Husqvarna Viking Designer Epic",
+    "Pfaff Creative Icon 2",
+    "Pfaff Creative Ambition"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "babylock-100x100",
+   "brand": "Baby Lock",
+   "name": "4 x 4 in (100 x 100)",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Ellure Plus",
+    "Ellegante",
+    "Altair"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. Baby Lock embroidery machines are Brother-built; sizes follow the Brother standard."
+  },
+  {
+   "id": "babylock-130x180",
+   "brand": "Baby Lock",
+   "name": "5 x 7 in (130 x 180)",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Ellure Plus",
+    "Ellegante",
+    "Altair"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "babylock-160x260",
+   "brand": "Baby Lock",
+   "name": "6 x 10 in (160 x 260)",
+   "widthMm": 160,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Ellegante",
+    "Altair"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "singer-100x100",
+   "brand": "Singer",
+   "name": "4 x 4 in (100 x 100)",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Legacy SE300",
+    "Legacy SE340"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "ricoma-em",
+   "brand": "Ricoma",
+   "name": "EM Series max field (310 x 210)",
+   "widthMm": 310,
+   "heightMm": 210,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "EM Series"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Machine maximum, converted from 12.2 x 8.3 in. Real frames are smaller."
+  },
+  {
+   "id": "ricoma-creator",
+   "brand": "Ricoma",
+   "name": "Creator max field (380 x 210)",
+   "widthMm": 380,
+   "heightMm": 210,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Creator"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 15 x 8.3 in."
+  },
+  {
+   "id": "ricoma-swift",
+   "brand": "Ricoma",
+   "name": "Swift max field (520 x 350)",
+   "widthMm": 520,
+   "heightMm": 350,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Swift"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 20.5 x 13.8 in."
+  },
+  {
+   "id": "ricoma-marquee",
+   "brand": "Ricoma",
+   "name": "Marquee max field (500 x 360)",
+   "widthMm": 500,
+   "heightMm": 360,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Marquee"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 19.7 x 14.2 in."
+  },
+  {
+   "id": "ricoma-swift2",
+   "brand": "Ricoma",
+   "name": "Swift 2 / Marquee 2 max field (560 x 380)",
+   "widthMm": 560,
+   "heightMm": 380,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Swift 2",
+    "Marquee 2"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 22 x 14.9 in (Swift 2) and 22 x 15 in (Marquee 2)."
+  },
+  {
+   "id": "ricoma-titan",
+   "brand": "Ricoma",
+   "name": "Titan multi-head max field (500 x 450)",
+   "widthMm": 500,
+   "heightMm": 450,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Titan Series"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 19.7 x 17.7 in."
+  },
+  {
+   "id": "ricoma-combo",
+   "brand": "Ricoma",
+   "name": "Chenille combo max field (450 x 450)",
+   "widthMm": 450,
+   "heightMm": 450,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Embroidery and Chenille Combo"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 17.7 x 17.7 in."
+  },
+  {
+   "id": "commercial-round-120",
+   "brand": "Tajima / commercial",
+   "name": "Round tubular 120",
+   "widthMm": 120,
+   "heightMm": 120,
+   "shape": "round",
+   "clamp": "right",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. Common tubular frame diameter."
+  },
+  {
+   "id": "commercial-round-160",
+   "brand": "Tajima / commercial",
+   "name": "Round tubular 160",
+   "widthMm": 160,
+   "heightMm": 160,
+   "shape": "round",
+   "clamp": "right",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "commercial-round-200",
+   "brand": "Tajima / commercial",
+   "name": "Round tubular 200",
+   "widthMm": 200,
+   "heightMm": 200,
+   "shape": "round",
+   "clamp": "right",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "commercial-cap-50x110",
+   "brand": "Tajima / commercial",
+   "name": "Cap frame, typical (50 x 110)",
+   "widthMm": 110,
+   "heightMm": 50,
+   "shape": "cap",
+   "cornerRadiusMm": 8,
+   "clamp": "top",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco",
+    "Janome MB-7"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. A typical cap-front field; frames differ by maker."
+  }
+ ]
+}

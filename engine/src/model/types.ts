@@ -22,10 +22,31 @@ export const DESIGN_VERSION = 1;
 export type Pt = readonly [number, number];
 
 
+/** The shape of the sewing area. `cap` is a flat rectangle that stands for a curved cap front. */
+export type HoopShape = "rect" | "round" | "oval" | "cap";
+/** Which side of the frame carries the clamp (tightening screw). */
+export type HoopClamp = "top" | "right" | "bottom" | "left" | "none";
+
+/**
+ * The hoop a design is stitched in: its sewing area, centred on the origin. Only `name`, `widthMm` and
+ * `heightMm` are required, so files from before the hoop library still load; `normalizeHoop`
+ * (hoops/index.ts) fills in the rest. Everything else is for drawing and picking.
+ */
 export interface Hoop {
   name: string;
   widthMm: number;
   heightMm: number;
+  /** Library id (`brother-130x180`) or `custom-...`; absent on files from before the library. */
+  id?: string;
+  /** Default `rect`. `round` and `oval` are ellipses (`round` has width = height). */
+  shape?: HoopShape;
+  /** Rounded corners of a `rect` sewing area, mm. */
+  cornerRadiusMm?: number;
+  clamp?: HoopClamp;
+  /** Outer size of the frame, mm, when known (else a ring is drawn around the sewing area). */
+  outerWidthMm?: number;
+  outerHeightMm?: number;
+  brand?: string;
 }
 
 /** A physical thread, resolved from a catalogue (see `threads.ts`). */

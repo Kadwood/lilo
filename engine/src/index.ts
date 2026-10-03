@@ -13,3 +13,4 @@ export * from "./pixelart";
 export * from "./project";
 export * from "./threads/label";
 export * from "./clickstitch";
+export * from "./hoops";
