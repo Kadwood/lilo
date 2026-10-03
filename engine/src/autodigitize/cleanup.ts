@@ -32,11 +32,17 @@ export const RUN_MAX_WIDTH_MM = 1;
 export const SATIN_MAX_WIDTH_MM = 7;
 /** Elongation (spine length / width) a shape needs to be worth a satin column. */
 const SATIN_MIN_ELONGATION = 2;
+/** A shape wider than this anywhere (mm) is a fill even if its average width looks like a stroke. */
+const SATIN_MAX_PEAK_MM = 9;
 /** Minimum share of a shape the satin columns must cover, else we fill it instead. */
 const SATIN_MIN_COVERAGE = 0.8;
 /** How close (mm) two regions must be to count as neighbours when merging specks. */
 const NEIGHBOUR_MM = 0.3;
 const DEFAULT_LONGEST_MM = 60;
+/** Centre-line branches shorter than this (mm) are dropped (unless they are all there is). */
+const MIN_RUN_MM = 1.5;
+
+const pathLength = (pts: readonly Pt[]): number => pts.reduce((n, p, i) => (i ? n + Math.hypot(p[0] - pts[i - 1][0], p[1] - pts[i - 1][1]) : 0), 0);
 
 interface Part {
   threadIdx: number;
@@ -58,6 +64,39 @@ function dropSmallHoles(p: Poly, minArea: number): Poly {
   if (holes.length === 0) return p;
   const keep = holes.filter((h) => polygonFromRings(h).getArea() >= minArea);
   return keep.length === holes.length ? p : polygonFromRings(shell, keep);
+}
+
+/** Source units -> mm: `mm = (unit - centre) * scale`. */
+export interface UnitsToMm {
+  scale: number;
+  cx: number;
+  cy: number;
+}
+
+/**
+ * Where the artwork lands: its bounding box is scaled to the requested size (see
+ * `AutoDigitizeOptions.widthMm/heightMm`; default longest side 60 mm) and centred on (0, 0).
+ */
+export function regionsTransform(regions: readonly { geom: Poly }[], opts: Pick<CleanupOptions, "widthMm" | "heightMm">): UnitsToMm {
+  let x0 = Infinity;
+  let y0 = Infinity;
+  let x1 = -Infinity;
+  let y1 = -Infinity;
+  for (const s of regions) {
+    const e = s.geom.getEnvelopeInternal();
+    x0 = Math.min(x0, e.getMinX());
+    y0 = Math.min(y0, e.getMinY());
+    x1 = Math.max(x1, e.getMaxX());
+    y1 = Math.max(y1, e.getMaxY());
+  }
+  const bw = Math.max(x1 - x0, 1e-9);
+  const bh = Math.max(y1 - y0, 1e-9);
+  let scale: number;
+  if (opts.widthMm && opts.heightMm) scale = Math.min(opts.widthMm / bw, opts.heightMm / bh);
+  else if (opts.widthMm) scale = opts.widthMm / bw;
+  else if (opts.heightMm) scale = opts.heightMm / bh;
+  else scale = DEFAULT_LONGEST_MM / Math.max(bw, bh);
+  return { scale, cx: (x0 + x1) / 2, cy: (y0 + y1) / 2 };
 }
 
 /**
@@ -88,26 +127,10 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
   if (snapped.length === 0) throw new Error("Nothing to digitize: no coloured regions found.");
 
   // 2. Scale + centre.
-  let x0 = Infinity;
-  let y0 = Infinity;
-  let x1 = -Infinity;
-  let y1 = -Infinity;
-  for (const s of snapped) {
-    const e = s.geom.getEnvelopeInternal();
-    x0 = Math.min(x0, e.getMinX());
-    y0 = Math.min(y0, e.getMinY());
-    x1 = Math.max(x1, e.getMaxX());
-    y1 = Math.max(y1, e.getMaxY());
-  }
-  const bw = Math.max(x1 - x0, 1e-9);
-  const bh = Math.max(y1 - y0, 1e-9);
-  let scale: number;
-  if (opts.widthMm && opts.heightMm) scale = Math.min(opts.widthMm / bw, opts.heightMm / bh);
-  else if (opts.widthMm) scale = opts.widthMm / bw;
-  else if (opts.heightMm) scale = opts.heightMm / bh;
-  else scale = DEFAULT_LONGEST_MM / Math.max(bw, bh);
-  const cx = (x0 + x1) / 2;
-  const cy = (y0 + y1) / 2;
+  const { scale, cx, cy } = regionsTransform(
+    snapped.map((r) => ({ hex: "", geom: r.geom })),
+    opts,
+  );
   const toMm = (x: number, y: number): Pt => [(x - cx) * scale, (y - cy) * scale];
 
   // 3. Parts: simplified polygons in mm, tiny holes filled.
@@ -193,7 +216,10 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
     if (width < RUN_MAX_WIDTH_MM) {
       const rp = runPaths(p.geom);
       if (rp && rp.paths.length) {
+        // Drop stubs: skeleton twigs at line crossings are a stitch or two long and only add trims.
+        const keep = rp.paths.map((path) => pathLength(path)).map((len, _i, all) => len >= MIN_RUN_MM || len === Math.max(...all));
         rp.paths.forEach((path, k) => {
+          if (!keep[k]) return;
           const [fx, fy] = centre(path);
           const closed = rp.closed[k];
           drafts.push({
@@ -215,7 +241,7 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
       } else drafts.push(asFill());
     } else if (width <= SATIN_MAX_WIDTH_MM) {
       const sc = satinColumns(p.geom);
-      if (sc && sc.coverage >= SATIN_MIN_COVERAGE && sc.spineLengthMm / width >= SATIN_MIN_ELONGATION) {
+      if (sc && sc.coverage >= SATIN_MIN_COVERAGE && sc.maxWidthMm <= SATIN_MAX_PEAK_MM && sc.spineLengthMm / width >= SATIN_MIN_ELONGATION) {
         for (const strip of sc.strips) {
           const [fx, fy] = centre(strip);
           drafts.push({

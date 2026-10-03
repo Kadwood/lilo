@@ -1,6 +1,6 @@
 import { init as initStitch } from "@stitchables/stitchjs";
 import { DEFAULT_CATALOGUE_ID, getCatalogue } from "../threads";
-import { regionsToDesign } from "./cleanup";
+import { regionsToDesign, regionsTransform } from "./cleanup";
 import { prep, downscale } from "./prep";
 import { quantize } from "./quantize";
 import { svgToRegions, tracedSvgToRegions } from "./regions";
@@ -16,7 +16,7 @@ import {
 
 export * from "./types";
 export { initVtracer, isVtracerInitialised } from "./trace";
-export { regionsToDesign, RUN_MAX_WIDTH_MM, SATIN_MAX_WIDTH_MM } from "./cleanup";
+export { regionsToDesign, regionsTransform, RUN_MAX_WIDTH_MM, SATIN_MAX_WIDTH_MM, type UnitsToMm } from "./cleanup";
 export { parseSvgDocument } from "./svg";
 
 function resolve(options: Partial<AutoDigitizeOptions>) {
@@ -64,13 +64,14 @@ export async function autoDigitize(
   const mmPerPx = (o.widthMm ?? o.heightMm ?? 60) / Math.max(p.width, p.height);
   const speckle = Math.max(DEFAULT_TRACE_CONFIG.filterSpeckle, Math.floor(o.minRegionMm2 / (mmPerPx * mmPerPx) / 8));
   const { svg } = traceQuantized(q, { ...DEFAULT_TRACE_CONFIG, filterSpeckle: speckle });
-  onProgress?.({ stage: "trace", svg, width: p.width, height: p.height });
-
   const regions = tracedSvgToRegions(svg);
+  const imageToMm = regionsTransform(regions, o);
+  onProgress?.({ stage: "trace", svg, width: p.width, height: p.height, imageToMm });
+
   const design = regionsToDesign(regions, threads, o);
   onProgress?.({ stage: "cleanup", design });
   onProgress?.({ stage: "done", design });
-  return { design, svg, palette: q.palette, imageWidth: p.width, imageHeight: p.height };
+  return { design, svg, palette: q.palette, imageWidth: p.width, imageHeight: p.height, imageToMm, imageOrigin: [0, 0] };
 }
 
 /**
@@ -95,5 +96,5 @@ export async function autoDigitizeSvg(
   }));
   onProgress?.({ stage: "cleanup", design });
   onProgress?.({ stage: "done", design });
-  return { design, svg: svgText, palette, imageWidth: doc.width, imageHeight: doc.height };
+  return { design, svg: svgText, palette, imageWidth: doc.width, imageHeight: doc.height, imageToMm: regionsTransform(regions, o), imageOrigin: [doc.minX, doc.minY] };
 }

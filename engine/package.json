@@ -8,10 +8,12 @@
   "types": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./node": "./src/node.ts"
+    "./node": "./src/node.ts",
+    "./light": "./src/light.ts"
   },
   "scripts": {
     "test": "vitest run",
+    "smoke": "SMOKE_OUT=${SMOKE_OUT:-.smoke} vitest run test/smoke.test.ts --silent=false && cat ${SMOKE_OUT:-.smoke}/smoke.txt",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

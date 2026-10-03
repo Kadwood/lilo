@@ -329,8 +329,10 @@ export interface SatinColumns {
   strips: Pt[][];
   /** Fraction of the polygon's area covered by the strips (0..1). */
   coverage: number;
-  /** Total spine length (mm) and mean width, for the elongation test. */
+  /** Total spine length (mm), for the elongation test. */
   spineLengthMm: number;
+  /** Widest point of the shape (2 x the largest inscribed radius), mm. */
+  maxWidthMm: number;
 }
 
 /**
@@ -343,7 +345,9 @@ export function satinColumns(poly: Poly): SatinColumns | null {
   const edges = edgesOf(poly);
   const strips: Pt[][] = [];
   let spineLength = 0;
+  let maxHalf = 0;
   for (const b of branches) {
+    for (const h of b.half) maxHalf = Math.max(maxHalf, h);
     const s = branchToStrip(b, edges);
     if (!s) continue;
     strips.push(s);
@@ -358,7 +362,7 @@ export function satinColumns(poly: Poly): SatinColumns | null {
   }
   if (!union) return null;
   const covered = union.intersection(poly).getArea();
-  return { strips, coverage: Math.min(1, covered / poly.getArea()), spineLengthMm: spineLength };
+  return { strips, coverage: Math.min(1, covered / poly.getArea()), spineLengthMm: spineLength, maxWidthMm: 2 * maxHalf };
 }
 
 /** Centre-line paths (one per branch) for hairline shapes. */

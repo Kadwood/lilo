@@ -1,5 +1,6 @@
 import type { Design, FillParams, Hoop } from "../model";
 import type { ThreadEntry } from "../threads";
+import type { UnitsToMm } from "./cleanup";
 
 /** The subset of the DOM `ImageData` the engine needs, so it runs in Node, Workers and the page. */
 export interface ImageDataLike {
@@ -57,7 +58,7 @@ export interface PaletteChip {
 export type StageEvent =
   | { stage: "prep"; image: ImageDataLike; background: [number, number, number] | null }
   | { stage: "quantize"; image: ImageDataLike; palette: PaletteChip[] }
-  | { stage: "trace"; svg: string; width: number; height: number }
+  | { stage: "trace"; svg: string; width: number; height: number; imageToMm: UnitsToMm }
   | { stage: "cleanup"; design: Design }
   | { stage: "done"; design: Design };
 
@@ -68,7 +69,11 @@ export interface AutoDigitizeResult {
   /** The raw vtracer SVG (pixel units) - the editable "trace" stage. Empty for SVG imports. */
   svg: string;
   palette: PaletteChip[];
-  /** Size of the processed image, pixels. */
+  /** Size of the processed image, pixels (SVG: viewBox units). */
   imageWidth: number;
   imageHeight: number;
+  /** How image pixels (SVG: user units) map to design mm; for placing a reference image. */
+  imageToMm: UnitsToMm;
+  /** Image-space coordinates of the image's top-left corner: (0, 0) for rasters, the viewBox origin for SVG. */
+  imageOrigin: [number, number];
 }

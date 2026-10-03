@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="120" height="100">
+  <!-- Shield crest: three flat colours, a hole, and a stroked line. Hand-written fixture for SVG import. -->
+  <path d="M60 4 L112 20 V54 C112 78 90 92 60 98 C30 92 8 78 8 54 V20 Z" fill="#0b3d91"/>
+  <path d="M60 14 L102 27 V54 C102 72 84 83 60 88 C36 83 18 72 18 54 V27 Z" fill="#ffffff"/>
+  <path d="M60 24 L92 34 V54 C92 66 78 74 60 78 C42 74 28 66 28 54 V34 Z" fill="#ed171f"/>
+  <circle cx="60" cy="52" r="12" fill="#e8a900"/>
+  <circle cx="60" cy="52" r="5" fill="#ffffff"/>
+  <path d="M34 60 C46 68 74 68 86 60" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
