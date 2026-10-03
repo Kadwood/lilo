@@ -8,6 +8,7 @@ import { DigitizePanel } from "../panels/DigitizePanel";
 import { Sequencer } from "../panels/Sequencer";
 import { SettingsPanel } from "../panels/SettingsPanel";
 import { StitchPlayer } from "../panels/StitchPlayer";
+import { SewingCard } from "../sewing/SewingCard";
 import { HoopAssist } from "../hoops/HoopAssist";
 import { HoopDialogs } from "../hoops/HoopDialogs";
 import { getPlatform } from "../platform";
@@ -65,7 +66,10 @@ export function EditorShell() {
           <StitchPlayer />
         </main>
 
-        <Sequencer />
+        <div className="right-col">
+          <SewingCard />
+          <Sequencer />
+        </div>
       </div>
       <CommandPalette openImage={open} fit={fit} />
       <HoopDialogs />

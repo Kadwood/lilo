@@ -18,7 +18,7 @@ import type { Region } from "./regions";
 import { AUTODIGITIZE_STROKES, smoothPath, strokePlan, type StrokeOptions } from "./strokes";
 import { satinParamsFor } from "./profile";
 import { DEFAULTS } from "../presets/defaults";
-import { resolveSewingSetup, type SewingEngineParams } from "../presets";
+import { markAutoParams, resolveSewingSetup, type SewingEngineParams } from "../presets";
 
 const STANDARD_SEWING = resolveSewingSetup().engine;
 
@@ -361,5 +361,7 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
     counts.set(key, n);
     return d.build(`obj-${i + 1}`, `${t.name} ${d.kind} ${n}`, t.id, reversed);
   });
-  return { version: DESIGN_VERSION, unitsMm: 1, hoop: opts.hoop ?? DEFAULT_HOOP, threads: designThreads, objects };
+  const design: Design = { version: DESIGN_VERSION, unitsMm: 1, hoop: opts.hoop ?? DEFAULT_HOOP, threads: designThreads, objects };
+  // remember which values the sewing setup chose, so changing the setup later can re-apply them (presets/apply.ts)
+  return sew ? markAutoParams(design, { fabric: sew.fabric, threadWeight: sew.threadWeight, quality: sew.quality }) : design;
 }

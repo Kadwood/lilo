@@ -1,6 +1,10 @@
 import { applyPatches, enablePatches, produceWithPatches, setAutoFreeze, type Patch } from "immer";
 import { createStore, type StoreApi } from "zustand/vanilla";
 import {
+  applySewingSetupTo,
+  normaliseSewing,
+  type ApplyResult,
+  type DesignSewing,
   CATALOGUES,
   DEFAULT_CATALOGUE_ID,
   DEFAULT_MAP_OPTIONS,
@@ -282,6 +286,12 @@ const PLAN_DEBOUNCE_MS = 150;
 export interface EditorActions {
   setName(name: string): void;
   setOptions(patch: Partial<DigitizeUiOptions>): void;
+  /**
+   * Change the sewing setup (fabric, thread weight, quality): stored in the design, one undo step, and the
+   * preset values of auto-generated shapes follow while anything the user edited by hand is kept. Also
+   * what the next Digitize uses. Returns what was re-applied, or null with no design yet.
+   */
+  setSewing(patch: Partial<DesignSewing>): ApplyResult | null;
   setView(patch: Partial<ViewToggles>): void;
   /** Select one object (or none). */
   select(id: string | null): void;
@@ -709,6 +719,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       planId++;
       set({
         ...designState(design),
+        // a saved design brings its sewing setup back into the selectors
+        ...(design.sewing ? { options: { ...get().options, ...normaliseSewing(design.sewing) } } : {}),
         planResult,
         status: { kind: "idle" },
         source: null,
@@ -897,6 +909,16 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     },
     setHoop(hoop) {
       commit("Change hoop", (d) => void (d.hoop = hoop));
+    },
+    setSewing(patch) {
+      const s = get();
+      const merged = normaliseSewing({ ...(s.design?.sewing ?? { fabric: s.options.fabric, threadWeight: s.options.threadWeight, quality: s.options.quality }), ...patch });
+      // set directly, not through setOptions: that one re-runs the whole digitize, which would discard hand edits
+      set((st) => ({ options: { ...st.options, quality: merged.quality, threadWeight: merged.threadWeight, fabric: merged.fabric } }));
+      if (!get().design) return null;
+      let result: ApplyResult = { updated: 0, kept: 0 };
+      commit("Change sewing setup", (d) => void (result = applySewingSetupTo(d, merged)));
+      return result;
     },
     convertSelectionOutline() {
       const objs = selectedObjects();

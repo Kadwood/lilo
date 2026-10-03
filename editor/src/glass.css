@@ -1368,3 +1368,124 @@ kbd {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* ---- sewing setup card + "Before you sew" ------------------------------------ */
+
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  min-height: 0;
+  min-width: 0;
+}
+.right-col > .panel {
+  flex: 1;
+}
+.sewing-card {
+  flex: none;
+  padding: var(--s-2);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-panel);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow:
+    var(--glass-shadow),
+    inset 0 1px 0 var(--glass-edge);
+}
+.sewing-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  width: 100%;
+  min-height: var(--mac-control-inner);
+  padding: 0 var(--s-3);
+  border-radius: 1000px;
+  font-weight: var(--mac-weight-medium);
+  text-align: left;
+}
+.sewing-chip-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sewing-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  max-height: 52vh;
+  padding: var(--s-3) var(--s-2) var(--s-1);
+  overflow: auto;
+}
+.sewing-body .field {
+  margin: 0;
+}
+.sewing-body p {
+  margin: 0;
+}
+.sewing-facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px var(--s-3);
+  margin: 0;
+  font-size: var(--text-callout);
+}
+.sewing-facts dt {
+  color: var(--muted);
+}
+.sewing-facts dd {
+  margin: 0;
+}
+
+.dialog {
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+}
+.before-sew {
+  margin-top: var(--s-3);
+  padding: var(--s-3);
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius);
+  background: var(--well);
+}
+.before-sew-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.before-sew h3,
+.before-sew h4 {
+  margin: 0;
+  font-size: var(--text-body);
+}
+.before-sew h4 {
+  margin-top: var(--s-3);
+  color: var(--muted);
+}
+.before-sew .stats {
+  grid-template-columns: repeat(3, 1fr);
+}
+.sew-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  max-height: 200px;
+  margin: var(--s-2) 0 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+.sew-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  font-size: var(--text-callout);
+  line-height: 15px;
+}
+.sew-item input {
+  margin-top: 1px;
+}
+.sew-item .swatch {
+  margin-top: 2px;
+}

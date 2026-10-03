@@ -49,6 +49,13 @@ export interface Hoop {
   brand?: string;
 }
 
+/** The sewing setup a design is stored with. Ids are those of `presets/sewing.ts`. */
+export interface DesignSewing {
+  fabric: "suiting" | "shirting" | "twill" | "knit" | "denim" | "towel" | "leather";
+  threadWeight: 40 | 60;
+  quality: "standard" | "premium";
+}
+
 /** A physical thread, resolved from a catalogue (see `threads.ts`). */
 export interface Thread {
   /** Stable id, referenced by `DesignObject.threadId`. Unique within a design. */
@@ -275,6 +282,13 @@ interface ObjectBase {
   endPoint?: Pt;
   /** Id of the `Design.mapGroups` entry this object was mapped to a path by, until it is detached. */
   mapGroup?: string;
+  /**
+   * The parameter values the sewing setup (`Design.sewing`) generated for this object, kept so a later
+   * change of setup can tell a value it set from one the user edited by hand: a key still equal to its
+   * snapshot is re-applied, a key that differs is the user's and is left alone. Absent on objects
+   * drawn by hand, which the setup never touches.
+   */
+  autoParams?: Record<string, unknown>;
 }
 
 /** How a selection is repeated along a path (the "map to path" action). */
@@ -345,6 +359,8 @@ export interface Design {
   /** Millimetres per coordinate unit. Always 1 in v1 (geometry is already in mm); reserved for imports. */
   unitsMm: 1;
   hoop: Hoop;
+  /** What the design is sewn on and with (see `presets/sewing.ts`). Absent: the defaults. */
+  sewing?: DesignSewing;
   /** The threads this design uses (a subset of a catalogue, in first-use order). */
   threads: Thread[];
   /** Stitch order. */

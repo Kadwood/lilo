@@ -3,6 +3,7 @@ import type { FabricId, Quality, ThreadWeight } from "@lilo/engine/light";
 import { CATALOGUES, FABRICS, FABRIC_IDS, QUALITIES, QUALITY_IDS, THREAD_WEIGHTS, THREAD_WEIGHT_IDS, designBounds, resolveSewingSetup } from "@lilo/engine/light";
 import { loadShelf, useShelf } from "../state/shelfStore";
 import { useEditor } from "../state/store";
+import { useSewing } from "../sewing/useSewing";
 import { Toggle } from "./controls";
 
 const round1 = (n: number) => Math.round(n * 10) / 10;
@@ -11,6 +12,7 @@ const round1 = (n: number) => Math.round(n * 10) / 10;
 export function DigitizePanel({ onOpen, children }: { onOpen: () => void; children?: ReactNode }) {
   const { state, actions } = useEditor();
   const { options, source, design, palette, status } = state;
+  const sewing = useSewing();
   const working = status.kind === "working";
   const { shelf } = useShelf();
   useEffect(() => void loadShelf(), []);
@@ -132,7 +134,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
 
       <label className="field">
         Quality
-        <select value={options.quality} aria-label="Quality" onChange={(e) => actions.setOptions({ quality: e.target.value as Quality })}>
+        <select value={sewing.quality} aria-label="Quality" onChange={(e) => actions.setSewing({ quality: e.target.value as Quality })}>
           {QUALITY_IDS.map((q) => (
             <option key={q} value={q}>
               {QUALITIES[q].label}
@@ -142,7 +144,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
       </label>
       <label className="field">
         Thread weight
-        <select value={options.threadWeight} aria-label="Thread weight" onChange={(e) => actions.setOptions({ threadWeight: Number(e.target.value) as ThreadWeight })}>
+        <select value={sewing.threadWeight} aria-label="Thread weight" onChange={(e) => actions.setSewing({ threadWeight: Number(e.target.value) as ThreadWeight })}>
           {THREAD_WEIGHT_IDS.map((w) => (
             <option key={w} value={w}>
               {THREAD_WEIGHTS[w].label}
@@ -152,7 +154,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
       </label>
       <label className="field">
         Fabric
-        <select value={options.fabric} aria-label="Fabric" onChange={(e) => actions.setOptions({ fabric: e.target.value as FabricId })}>
+        <select value={sewing.fabric} aria-label="Fabric" onChange={(e) => actions.setSewing({ fabric: e.target.value as FabricId })}>
           {FABRIC_IDS.map((f) => (
             <option key={f} value={f}>
               {FABRICS[f].label}
@@ -161,7 +163,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
         </select>
       </label>
       <p className="muted small" aria-label="Sewing setup summary">
-        {resolveSewingSetup({ quality: options.quality, threadWeight: options.threadWeight, fabric: options.fabric }).summary}
+        {resolveSewingSetup(sewing).summary}
       </p>
 
       <div className="field">
