@@ -78,10 +78,11 @@ export interface Journey {
 }
 
 /** A new page on `/?mock` (sample projects, My Threads, canned OCR), recording everything that goes wrong. */
-export async function openApp(name: string, opts: { viewport?: { width: number; height: number }; query?: string } = {}): Promise<Journey> {
+export async function openApp(name: string, opts: { viewport?: { width: number; height: number }; query?: string; setup?: (context: BrowserContext) => Promise<void> } = {}): Promise<Journey> {
   if (!browser) await startStack();
   mkdirSync(SHOTS, { recursive: true });
   const context = await browser!.newContext({ viewport: opts.viewport ?? { width: 1440, height: 900 }, acceptDownloads: true });
+  await opts.setup?.(context);
   const page = await context.newPage();
   const problems: string[] = [];
   page.on("console", (m) => {

@@ -1,4 +1,4 @@
-import type { OcrLine, OpenedFile, OpenedPath, Platform, RecentProject, ScreenInfo, WindowMaterial } from "./types";
+import type { OcrLine, OpenedFile, OpenedPath, Platform, PlatformMachine, RecentProject, ScreenInfo, SendResult, WindowMaterial } from "./types";
 
 /**
  * An in-memory platform for tests and for `pnpm dev?mock` (screenshots, working on the UI without the
@@ -15,6 +15,13 @@ export interface MockState {
   shelfBackup: string | null;
   /** Previous saves of projects by path (`<path>.bak` on the desktop). */
   backups: Map<string, Uint8Array>;
+  /** Saved machines (what the Send dialog lists). */
+  machines: PlatformMachine[];
+  /** Machines a network sweep finds besides the saved ones. */
+  found: PlatformMachine[];
+  /** What `sendToMachine` answers (an Error is thrown), and every send it was given. */
+  sendResult: SendResult | Error;
+  sends: { ip: string; filename: string; bytes: Uint8Array }[];
   /** Every value passed to `setDirty`, in order. */
   dirtyReports: boolean[];
   openedUrls: string[];
@@ -50,6 +57,10 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
     shelfJson: null,
     shelfBackup: null,
     backups: new Map(),
+    machines: [],
+    found: [],
+    sendResult: { jobId: "mock", state: "done", storedAs: null, error: null },
+    sends: [],
     dirtyReports: [],
     openedUrls: [],
     ocr: [],
@@ -71,9 +82,15 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
     get kind() {
       return state.kind;
     },
-    discoverMachines: async () => [],
-    savedMachines: async () => [],
-    sendToMachine: async () => ({ jobId: "mock", state: "done", storedAs: null, error: null }),
+    discoverMachines: async () => [...state.machines, ...state.found.filter((f) => !state.machines.some((m) => m.ip === f.ip))],
+    savedMachines: async () => state.machines,
+    async sendToMachine(ip, filename, bytes, options) {
+      state.sends.push({ ip, filename, bytes });
+      options?.onProgress?.({ state: "uploading", sentBytes: 0, totalBytes: bytes.length });
+      options?.onProgress?.({ state: "uploading", sentBytes: bytes.length, totalBytes: bytes.length });
+      if (state.sendResult instanceof Error) throw state.sendResult;
+      return state.sendResult;
+    },
     async saveFile(name, bytes) {
       state.saved.push({ name, bytes });
       return `/mock/${name}`;

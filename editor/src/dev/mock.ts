@@ -73,7 +73,12 @@ declare global {
 
 /** Replace the platform with the in-memory one and fill it with sample content. */
 export async function installMockPlatform(): Promise<void> {
-  const { platform, state } = createMockPlatform({ kind: "tauri" });
+  const { platform, state } = createMockPlatform({
+    kind: "tauri",
+    machines: [{ ip: "192.168.1.50", name: "Brother NV2700", manufacturer: "Brother", serial: "NV2700-0001", model: "NV2700", saved: true }],
+    found: [{ ip: "192.168.1.77", name: "Brother PR1055X", manufacturer: "Brother", serial: null, model: "PR1055X", saved: false }],
+    sendResult: { jobId: "mock-1", state: "done", storedAs: "monogram.pes", error: null },
+  });
   setPlatform(platform);
   window.__lilo = { state };
 
