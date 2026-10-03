@@ -35,8 +35,10 @@ const ext = (e) => `.${e}`;
 const list = (a) => (a.length ? a.join(", ") : "none");
 const yesNo = (b) => (b ? "yes" : "no");
 
+const isUntested = (v) => typeof v === "string" && v.startsWith("untested");
+
 function wifiLabel(v) {
-  return v === true ? "yes" : v === "untested" ? "untested" : "no";
+  return v === true ? "yes" : isUntested(v) ? "untested (auto-detected)" : "no";
 }
 
 function table(head, rows) {
@@ -58,7 +60,7 @@ export function build({ machines, formats, threads, hoops, liloExts }) {
   for (const b of machines.brands) {
     for (const m of b.models) {
       const hasLilo = m.formats.some((f) => lilo.has(f));
-      const wifi = m.liloWifi === true || m.liloWifi === "untested";
+      const wifi = m.liloWifi === true || isUntested(m.liloWifi);
       const want = wifi ? "Wi-Fi + file" : hasLilo ? "file" : "not supported";
       if (m.liloSupport !== want) {
         throw new Error(`${b.name} ${m.name}: liloSupport is "${m.liloSupport}" but its data says "${want}".`);
@@ -78,7 +80,7 @@ export function build({ machines, formats, threads, hoops, liloExts }) {
     brands: brands.length,
     machines: allModels.length,
     machinesVerified: allModels.filter((m) => m.verified).length,
-    wifiCapableUntested: allModels.filter((m) => m.liloWifi === "untested").length,
+    wifiCapableUntested: allModels.filter((m) => isUntested(m.liloWifi)).length,
     wifiTested: allModels.filter((m) => m.liloWifi === true).length,
     threadBrands: threadBrands.length,
     threadLines: threads.length,
@@ -154,7 +156,7 @@ function brandSection(b) {
 function threadSection(threads, threadBrands, totalColours) {
   const lines = [
     `Lilo ships ${threads.length} thread lines from ${threadBrands.length} brands, ${totalColours.toLocaleString("en-US")} colours in total.` +
-      " Palettes come from Ink/Stitch (GPL-3.0). Weight and material are shown only where the palette file states them.",
+      " Palettes are open-source (GPL-3.0; see NOTICE.md and each line's source in compat.json). Weight and material are shown only where the palette file states them.",
     "",
   ];
   const rows = [];
@@ -200,10 +202,10 @@ export function renderDocs(inputs) {
   const { counts, brands, empty, threadBrands, combined } = build(inputs);
   const { formats, threads, hoops } = inputs;
 
-  const wifiBrands = brands.filter((b) => b.models.some((m) => m.liloWifi === "untested")).map((b) => b.name);
+  const wifiBrands = brands.filter((b) => b.models.some((m) => isUntested(m.liloWifi))).map((b) => b.name);
 
   const notSupported = [];
-  for (const f of formats.formats.filter((x) => x.lilo === "none")) {
+  for (const f of formats.formats.filter((x) => x.lilo === "none" && !x.planned)) {
     notSupported.push(`- **${ext(f.ext)}** (${f.name}): ${f.note}`);
   }
   const unsupportedMachines = brands.flatMap((b) => b.models.filter((m) => m.liloSupport === "not supported").map((m) => `${b.name} ${m.name}`));
@@ -222,8 +224,8 @@ export function renderDocs(inputs) {
     "## How Lilo gets designs to your machine",
     "",
     "1. **File.** Export a design in your machine's format and copy it to a USB stick (or send it with the maker's app). This works for every machine that reads one of the formats in the next section.",
-    `2. **Wi-Fi with Lilo Link (Brother).** Lilo Link sends a PES to a Brother machine over your home network. It finds the machine by scanning your local /24 network for one that answers Brother's design-transfer API ("pedxml", the one Brother's Design Database Transfer app uses). So in principle any machine that works with Design Database Transfer should show up. ${WIFI_PENDING}`,
-    `3. **Baby Lock.** Baby Lock's Wi-Fi models (${brands.find((b) => b.name === "Baby Lock").models.filter((m) => m.liloWifi === "untested").map((m) => m.name).join(", ")}) use Baby Lock's edition of the same Design Database Transfer app, so Lilo Link may find them too. Untested.`,
+    `2. **Wi-Fi with Lilo Link (Brother).** Lilo Link sends a PES to a Brother machine over your home network. It finds the machine by scanning your local /24 network for one that answers Brother's design-transfer API ("pedxml", the one Brother's Design Database Transfer app uses). Detection is automatic: a machine is supported if and only if its GET /info exposes the pedxml API, so any machine that works with Design Database Transfer should show up. The only recorded hardware test of this protocol (by the project Lilo's Wi-Fi code derives from) was a Brother NQ1700E, firmware 1.71. ${WIFI_PENDING}`,
+    `3. **Baby Lock.** Baby Lock's Wi-Fi models (${brands.find((b) => b.name === "Baby Lock").models.filter((m) => isUntested(m.liloWifi)).map((m) => m.name).join(", ")}) use Baby Lock's edition of the same Design Database Transfer app, so Lilo Link may find them too. Untested.`,
     "4. **Other brands.** Pfaff, Husqvarna Viking and Singer have their own cloud app (mySewnet), Brother has Artspira, Baby Lock has IQ Intuition Positioning. Lilo does not talk to those. Use a USB stick.",
     "",
     "Lilo never uploads your designs anywhere. Wi-Fi send only goes to a machine on your own network.",
@@ -236,7 +238,7 @@ export function renderDocs(inputs) {
     "",
     "## Machines by brand",
     "",
-    "Type: home or commercial (multi-needle). 'Lilo Wi-Fi': yes = tested working, untested = looks compatible but Lilo has not run against it, no = no Wi-Fi path with Lilo. 'Lilo support': Wi-Fi + file, file, or not supported.",
+    "Type: home or commercial (multi-needle). 'Lilo Wi-Fi': yes = tested working, untested (pedxml capability-detected) = looks compatible but Lilo has not run against it, no = no Wi-Fi path with Lilo. 'Lilo support': Wi-Fi + file, file, or not supported.",
     "",
     brands.map(brandSection).join("\n\n"),
     "",
@@ -247,6 +249,10 @@ export function renderDocs(inputs) {
     "## Hoops by brand and machine",
     "",
     hoopSection(hoops),
+    "",
+    "## Planned formats",
+    "",
+    ...formats.formats.filter((f) => f.planned).map((f) => `- **${ext(f.ext)}** (${f.name}): ${f.note}`),
     "",
     "## Not supported, and why",
     "",
@@ -269,7 +275,7 @@ export function renderDocs(inputs) {
     table(
       ["Brand", "File formats the machine takes", "Wi-Fi via Lilo Link"],
       brands.map((b) => {
-        const w = b.models.filter((m) => m.liloWifi === "untested").length;
+        const w = b.models.filter((m) => isUntested(m.liloWifi)).length;
         return [b.name, b.acceptedFormats.map(ext).join(" ") || "-", w ? `Untested (${w} model${w > 1 ? "s" : ""})` : "No"];
       }),
     ),

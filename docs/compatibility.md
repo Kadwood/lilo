@@ -11,7 +11,7 @@ At a glance: 17 brands, 66 machines (27 checked against a maker page), 75 thread
 ## How Lilo gets designs to your machine
 
 1. **File.** Export a design in your machine's format and copy it to a USB stick (or send it with the maker's app). This works for every machine that reads one of the formats in the next section.
-2. **Wi-Fi with Lilo Link (Brother).** Lilo Link sends a PES to a Brother machine over your home network. It finds the machine by scanning your local /24 network for one that answers Brother's design-transfer API ("pedxml", the one Brother's Design Database Transfer app uses). So in principle any machine that works with Design Database Transfer should show up. Wi-Fi send tested on: none yet. Brother NV2700 test pending.
+2. **Wi-Fi with Lilo Link (Brother).** Lilo Link sends a PES to a Brother machine over your home network. It finds the machine by scanning your local /24 network for one that answers Brother's design-transfer API ("pedxml", the one Brother's Design Database Transfer app uses). Detection is automatic: a machine is supported if and only if its GET /info exposes the pedxml API, so any machine that works with Design Database Transfer should show up. The only recorded hardware test of this protocol (by the project Lilo's Wi-Fi code derives from) was a Brother NQ1700E, firmware 1.71. Wi-Fi send tested on: none yet. Brother NV2700 test pending.
 3. **Baby Lock.** Baby Lock's Wi-Fi models (Altair, Array, Flare, Meridian, Solaris 2, Venture, Vesta) use Baby Lock's edition of the same Design Database Transfer app, so Lilo Link may find them too. Untested.
 4. **Other brands.** Pfaff, Husqvarna Viking and Singer have their own cloud app (mySewnet), Brother has Artspira, Baby Lock has IQ Intuition Positioning. Lilo does not talk to those. Use a USB stick.
 
@@ -44,10 +44,12 @@ Lilo reads and writes 8 formats. File-format round trips are checked against pye
 | .tap | Happy TAP | Happy | no | not supported | Happy's own format. DST covers the machine. |
 | .100 | Toyota 100 / 10o | Toyota | no | not supported | Toyota native. DST covers the machine. |
 | .zxy | ZSK ZXY / DSZ | ZSK | no | not supported | ZSK's own formats. DST covers the machine. |
+| .vip | Husqvarna / Pfaff VIP | Husqvarna Viking, Pfaff | yes | not supported | Legacy Husqvarna/Pfaff format. Planned. |
+| .gcode | G-code | CNC and plotter tools | no | not supported | Not a machine format; for stitch-path export to other tools. Planned. |
 
 ## Machines by brand
 
-Type: home or commercial (multi-needle). 'Lilo Wi-Fi': yes = tested working, untested = looks compatible but Lilo has not run against it, no = no Wi-Fi path with Lilo. 'Lilo support': Wi-Fi + file, file, or not supported.
+Type: home or commercial (multi-needle). 'Lilo Wi-Fi': yes = tested working, untested (pedxml capability-detected) = looks compatible but Lilo has not run against it, no = no Wi-Fi path with Lilo. 'Lilo support': Wi-Fi + file, file, or not supported.
 
 ### Baby Lock
 
@@ -60,15 +62,15 @@ Brother-built. Reads PES, PHC, PHX, PEC, DST. Wi-Fi models use the same Design D
 
 | Model | Type | Formats | Best | Transfer | Lilo Wi-Fi | Lilo support | Test status | Verified | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Altair | home | .pes .phc .pec .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | 9.5x14 in field. In the Baby Lock DDT compatible list. Same app as Brother, so Lilo Link may work; untested. |
-| Array | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested. |
+| Altair | home | .pes .phc .pec .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | 9.5x14 in field. In the Baby Lock DDT compatible list. Same app as Brother, so Lilo Link may work; untested. |
+| Array | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested. |
 | Ellegante | home | .pes .pec .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | UNVERIFIED | In the hoop library only. Formats and transfer UNVERIFIED. |
 | Ellure Plus | home | .pes .pec .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | UNVERIFIED | In the hoop library only. Formats and transfer UNVERIFIED. |
-| Flare | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
-| Meridian | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
-| Solaris 2 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
-| Venture | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested. |
-| Vesta | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
+| Flare | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
+| Meridian | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
+| Solaris 2 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
+| Venture | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested. |
+| Vesta | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Listed as DDT compatible. Wi-Fi with Lilo untested. |
 
 Sources (checked 2026-10-03):
 - https://babylock.com/software-support-and-downloads/design-database-transfer (Compatible machines: Altair, Flare, Meridian, Solaris 2, Vesta, Array, Venture; transfer formats .pes .phc .phx .dst)
@@ -89,7 +91,7 @@ Reads DST; native U01 and DAT (DAT is also used by Sunstar). Commercial.
 | BEVT-Z | commercial | .dst .u01 .dat | .dst | usb, network | no | file | file format verified (pyembroidery round-trip) | UNVERIFIED | UNVERIFIED. Barudan site was unreachable. |
 
 Sources (checked 2026-10-03):
-- https://inkstitch.org/docs/file-formats/ (DAT, DSB, U01 listed as readable formats; DAT is Barudan/Sunstar (pyembroidery))
+- https://github.com/EmbroidePy/pyembroidery/blob/main/README.md (DAT, DSB, U01 listed as readable formats in pyembroidery; DAT is Barudan/Sunstar)
 
 ### Bernette
 
@@ -138,26 +140,26 @@ Native PES. Wireless LAN models take designs from the free Windows app Design Da
 
 | Model | Type | Formats | Best | Transfer | Lilo Wi-Fi | Lilo support | Test status | Verified | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Innov-is NQ1700E | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. 6x10 in field. |
+| Innov-is NQ1700E | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. 6x10 in field. |
 | Innov-is NQ3600D | home | .pes .phc .phx .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | yes | Brother USA page does not mention wireless. |
-| Innov-is NQ3700D | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. Sewing + embroidery combo. |
-| Innov-is NV2700 | home | .pes .pec | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | UNVERIFIED | Kadwood's own machine and the first Wi-Fi test target. Wi-Fi support not confirmed against a Brother page; send test pending. |
+| Innov-is NQ3700D | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. Sewing + embroidery combo. |
+| Innov-is NV2700 | home | .pes .pec | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | UNVERIFIED | Kadwood's own machine and the first Wi-Fi test target. Wi-Fi support not confirmed against a Brother page; send test pending. |
 | Innov-is VM5100 | home | .pes .phc .phx .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | UNVERIFIED | Page does not mention wireless. Formats assumed from the Brother range. |
-| Luminaire Innov-is XE1 | home | .pes .phc .phx .dst | .pes | usb, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless enabled; Brother says XE1 connects to PE-Design wirelessly. Whether it also answers the Design Database Transfer API is unknown. |
-| Luminaire Innov-is XP1 | home | .pes .phc .phx .dst | .pes | usb, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Connects to PE-Design wirelessly per Brother. Design Database Transfer API unknown. |
+| Luminaire Innov-is XE1 | home | .pes .phc .phx .dst | .pes | usb, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless enabled; Brother says XE1 connects to PE-Design wirelessly. Whether it also answers the Design Database Transfer API is unknown. |
+| Luminaire Innov-is XP1 | home | .pes .phc .phx .dst | .pes | usb, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Connects to PE-Design wirelessly per Brother. Design Database Transfer API unknown. |
 | PE550D | home | .pes .phc .phx .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | yes | USB port; no wireless stated. |
 | PE800 | home | .pes .phc .phx .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | UNVERIFIED | Brother USA page lists USB only (discontinued). Wireless not stated; treated as USB. |
-| PE900 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. |
+| PE900 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. |
 | PR1050X | commercial | .pes .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | yes | 10-needle; Brother USA page does not mention wireless. |
-| PR1055X | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | 10-needle, wireless LAN. |
+| PR1055X | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | 10-needle, wireless LAN. |
 | PR670E | commercial | .pes .dst | .pes | usb | no | file | file format verified (pyembroidery round-trip) | yes | 6-needle; Brother USA page does not mention wireless. |
-| PR680W | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | 6-needle, wireless enabled. |
-| PRS100 | home | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page says wireless enabled. |
-| SE1900 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page says wireless enabled; Design Database Transfer not named on the page. |
-| SE2000 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. |
-| SE600 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page says wireless enabled; Design Database Transfer not named on the page. |
-| SE700 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page lists Wireless LAN and the Artspira app; Design Database Transfer not named on the page. |
-| SE725 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Not tested with Lilo yet. |
+| PR680W | commercial | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | 6-needle, wireless enabled. |
+| PRS100 | home | .pes .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page says wireless enabled. |
+| SE1900 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page says wireless enabled; Design Database Transfer not named on the page. |
+| SE2000 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. |
+| SE600 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page says wireless enabled; Design Database Transfer not named on the page. |
+| SE700 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Page lists Wireless LAN and the Artspira app; Design Database Transfer not named on the page. |
+| SE725 | home | .pes .phc .phx .dst | .pes | usb, wifi-lilo, wifi-official-app | untested (auto-detected) | Wi-Fi + file | file format verified (pyembroidery round-trip) | yes | Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. |
 
 Sources (checked 2026-10-03):
 - https://support.brother.com/g/s/hf/pcapp_info/ddt/en/index.html (Design Database Transfer sends .pes, .phc, .phx, .dst, .pen to wireless-LAN machines)
@@ -179,7 +181,7 @@ Janome-family brand (EMD native on some lines). Not verified; Lilo does not read
 | eXpressive 960 | home | .emd | .emd | usb | no | not supported | unverified | UNVERIFIED | UNVERIFIED. As above. |
 
 Sources (checked 2026-10-03):
-- https://inkstitch.org/docs/file-formats/ (EMD is a read-only format in Ink/Stitch (pyembroidery); Elna's own format)
+- https://github.com/EmbroidePy/pyembroidery/blob/main/README.md (EMD is a read-only format in pyembroidery; Elna's own format)
 
 ### Happy
 
@@ -358,7 +360,7 @@ Commercial. Native 100/10o files; reads DST. Not verified.
 | ESP9000 | commercial | .dst | .dst | usb | no | file | file format verified (pyembroidery round-trip) | UNVERIFIED | UNVERIFIED model name; DST from common practice. |
 
 Sources (checked 2026-10-03):
-- https://inkstitch.org/docs/file-formats/ (10o and 100 appear in the readable list (Toyota))
+- https://github.com/EmbroidePy/pyembroidery/blob/main/README.md (10o and 100 appear in pyembroidery's readable list (Toyota))
 
 ### ZSK
 
@@ -378,7 +380,7 @@ Sources (checked 2026-10-03):
 
 ## Thread catalogue
 
-Lilo ships 75 thread lines from 44 brands, 20,784 colours in total. Palettes come from Ink/Stitch (GPL-3.0). Weight and material are shown only where the palette file states them.
+Lilo ships 75 thread lines from 44 brands, 20,784 colours in total. Palettes are open-source (GPL-3.0; see NOTICE.md and each line's source in compat.json). Weight and material are shown only where the palette file states them.
 
 | Brand | Line | Colours | Material | Weight |
 | --- | --- | --- | --- | --- |
@@ -554,9 +556,15 @@ Lilo ships 75 thread lines from 44 brands, 20,784 colours in total. Palettes com
 | Round tubular 160 | 160 x 160 | 6.3 x 6.3 | round | Tajima, Barudan, Ricoma, Melco | UNVERIFIED |
 | Round tubular 200 | 200 x 200 | 7.87 x 7.87 | round | Tajima, Barudan, Ricoma, Melco | UNVERIFIED |
 
-## Not supported, and why
+## Planned formats
 
 - **.hus** (Husqvarna HUS): Older Viking format (VP3 replaced it). A candidate to add.
+- **.tbf** (Tajima TBF): Tajima's colour-aware format. DST covers the machine.
+- **.vip** (Husqvarna / Pfaff VIP): Legacy Husqvarna/Pfaff format. Planned.
+- **.gcode** (G-code): Not a machine format; for stitch-path export to other tools. Planned.
+
+## Not supported, and why
+
 - **.shv** (Husqvarna SHV): Older Viking format. Low priority.
 - **.sew** (Janome / Elna SEW): Older Janome/Elna format. Low priority.
 - **.phc** (Brother PHC): Brother file with a thumbnail. Machines that take PHC also take PES, which Lilo writes.
@@ -565,7 +573,6 @@ Lilo ships 75 thread lines from 44 brands, 20,784 colours in total. Palettes com
 - **.emd** (Elna EMD): Elna native. Closed; no maker docs found.
 - **.dsb** (Barudan DSB): Older Barudan format. DST or U01 cover it.
 - **.dat** (Barudan / Sunstar DAT): Older Barudan and Sunstar format.
-- **.tbf** (Tajima TBF): Tajima's colour-aware format. DST covers the machine.
 - **.tap** (Happy TAP): Happy's own format. DST covers the machine.
 - **.100** (Toyota 100 / 10o): Toyota native. DST covers the machine.
 - **.zxy** (ZSK ZXY / DSZ): ZSK's own formats. DST covers the machine.

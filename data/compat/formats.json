@@ -1,28 +1,263 @@
 {
  "version": 1,
  "compiled": "2026-10-03",
- "note": "One entry per embroidery file type. 'lilo' says what Lilo does today (it is checked against FORMAT_EXTENSIONS in engine/src/formats/types.ts by scripts/build-compat-docs.mjs). 'colours' says whether the file stores thread colours. Formats Lilo does not handle are listed with the reason. Brand lists are from pyembroidery's format docs and Ink/Stitch's file-formats page (https://inkstitch.org/docs/file-formats/), and from the maker pages named in machines.json.",
+ "note": "One entry per embroidery file type. 'lilo' says what Lilo does today (it is checked against FORMAT_EXTENSIONS in engine/src/formats/types.ts by scripts/build-compat-docs.mjs). 'colours' says whether the file stores thread colours. Formats Lilo does not handle are listed with the reason. Brand lists are from pyembroidery's format docs, and from the maker pages named in machines.json.",
  "formats": [
-  { "ext": "pes", "name": "Brother PES", "brands": ["Brother", "Baby Lock", "Bernina (reads)"], "colours": true, "lilo": "read+write", "note": "Brother and Baby Lock native. Stores thread colours." },
-  { "ext": "pec", "name": "Brother PEC", "brands": ["Brother", "Baby Lock"], "colours": true, "lilo": "read+write", "note": "The stitch block inside a PES, also used alone by older Brother machines." },
-  { "ext": "dst", "name": "Tajima DST", "brands": ["Tajima", "Barudan", "Ricoma", "Melco", "SWF", "Happy", "ZSK", "Toyota", "Janome MB-7", "Brother", "Baby Lock"], "colours": false, "lilo": "read+write", "note": "The commercial standard. Colour changes are kept as stops, thread colours are not." },
-  { "ext": "exp", "name": "Melco EXP", "brands": ["Melco", "Bernina"], "colours": false, "lilo": "read+write", "note": "No thread colours. Bernina machines read it when ART is not available." },
-  { "ext": "jef", "name": "Janome JEF", "brands": ["Janome", "Elna (some)"], "colours": true, "lilo": "read+write", "note": "Janome native. Newer machines also accept JEF+, which Lilo does not write." },
-  { "ext": "vp3", "name": "Pfaff / Husqvarna Viking VP3", "brands": ["Pfaff", "Husqvarna Viking"], "colours": true, "lilo": "read+write", "note": "Current Pfaff and Viking format." },
-  { "ext": "xxx", "name": "Singer XXX", "brands": ["Singer", "Compucon"], "colours": true, "lilo": "read+write", "note": "Singer native." },
-  { "ext": "u01", "name": "Barudan U01", "brands": ["Barudan"], "colours": false, "lilo": "read+write", "note": "Needle numbers, not thread colours." },
-  { "ext": "hus", "name": "Husqvarna HUS", "brands": ["Husqvarna Viking"], "colours": true, "lilo": "none", "note": "Older Viking format (VP3 replaced it). A candidate to add." },
-  { "ext": "shv", "name": "Husqvarna SHV", "brands": ["Husqvarna Viking"], "colours": true, "lilo": "none", "note": "Older Viking format. Low priority." },
-  { "ext": "sew", "name": "Janome / Elna SEW", "brands": ["Janome", "Elna"], "colours": true, "lilo": "none", "note": "Older Janome/Elna format. Low priority." },
-  { "ext": "phc", "name": "Brother PHC", "brands": ["Brother", "Baby Lock"], "colours": true, "lilo": "none", "note": "Brother file with a thumbnail. Machines that take PHC also take PES, which Lilo writes." },
-  { "ext": "phx", "name": "Brother PHX", "brands": ["Brother", "Baby Lock"], "colours": true, "lilo": "none", "note": "As PHC. Not needed while PES works." },
-  { "ext": "art", "name": "Bernina ART", "brands": ["Bernina"], "colours": true, "lilo": "none", "note": "Proprietary object format (outlines and settings, not stitches). Not practical to write. Use EXP for Bernina." },
-  { "ext": "emd", "name": "Elna EMD", "brands": ["Elna"], "colours": true, "lilo": "none", "note": "Elna native. Closed; no maker docs found." },
-  { "ext": "dsb", "name": "Barudan DSB", "brands": ["Barudan"], "colours": false, "lilo": "none", "note": "Older Barudan format. DST or U01 cover it." },
-  { "ext": "dat", "name": "Barudan / Sunstar DAT", "brands": ["Barudan", "Sunstar"], "colours": false, "lilo": "none", "note": "Older Barudan and Sunstar format." },
-  { "ext": "tbf", "name": "Tajima TBF", "brands": ["Tajima"], "colours": true, "lilo": "none", "note": "Tajima's colour-aware format. DST covers the machine." },
-  { "ext": "tap", "name": "Happy TAP", "brands": ["Happy"], "colours": false, "lilo": "none", "note": "Happy's own format. DST covers the machine." },
-  { "ext": "100", "name": "Toyota 100 / 10o", "brands": ["Toyota"], "colours": false, "lilo": "none", "note": "Toyota native. DST covers the machine." },
-  { "ext": "zxy", "name": "ZSK ZXY / DSZ", "brands": ["ZSK"], "colours": false, "lilo": "none", "note": "ZSK's own formats. DST covers the machine." }
+  {
+   "ext": "pes",
+   "name": "Brother PES",
+   "brands": [
+    "Brother",
+    "Baby Lock",
+    "Bernina (reads)"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Brother and Baby Lock native. Stores thread colours."
+  },
+  {
+   "ext": "pec",
+   "name": "Brother PEC",
+   "brands": [
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "The stitch block inside a PES, also used alone by older Brother machines."
+  },
+  {
+   "ext": "dst",
+   "name": "Tajima DST",
+   "brands": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco",
+    "SWF",
+    "Happy",
+    "ZSK",
+    "Toyota",
+    "Janome MB-7",
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": false,
+   "lilo": "read+write",
+   "note": "The commercial standard. Colour changes are kept as stops, thread colours are not."
+  },
+  {
+   "ext": "exp",
+   "name": "Melco EXP",
+   "brands": [
+    "Melco",
+    "Bernina"
+   ],
+   "colours": false,
+   "lilo": "read+write",
+   "note": "No thread colours. Bernina machines read it when ART is not available."
+  },
+  {
+   "ext": "jef",
+   "name": "Janome JEF",
+   "brands": [
+    "Janome",
+    "Elna (some)"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Janome native. Newer machines also accept JEF+, which Lilo does not write."
+  },
+  {
+   "ext": "vp3",
+   "name": "Pfaff / Husqvarna Viking VP3",
+   "brands": [
+    "Pfaff",
+    "Husqvarna Viking"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Current Pfaff and Viking format."
+  },
+  {
+   "ext": "xxx",
+   "name": "Singer XXX",
+   "brands": [
+    "Singer",
+    "Compucon"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Singer native."
+  },
+  {
+   "ext": "u01",
+   "name": "Barudan U01",
+   "brands": [
+    "Barudan"
+   ],
+   "colours": false,
+   "lilo": "read+write",
+   "note": "Needle numbers, not thread colours."
+  },
+  {
+   "ext": "hus",
+   "name": "Husqvarna HUS",
+   "brands": [
+    "Husqvarna Viking"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Older Viking format (VP3 replaced it). A candidate to add.",
+   "planned": true
+  },
+  {
+   "ext": "shv",
+   "name": "Husqvarna SHV",
+   "brands": [
+    "Husqvarna Viking"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Older Viking format. Low priority."
+  },
+  {
+   "ext": "sew",
+   "name": "Janome / Elna SEW",
+   "brands": [
+    "Janome",
+    "Elna"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Older Janome/Elna format. Low priority."
+  },
+  {
+   "ext": "phc",
+   "name": "Brother PHC",
+   "brands": [
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Brother file with a thumbnail. Machines that take PHC also take PES, which Lilo writes."
+  },
+  {
+   "ext": "phx",
+   "name": "Brother PHX",
+   "brands": [
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "As PHC. Not needed while PES works."
+  },
+  {
+   "ext": "art",
+   "name": "Bernina ART",
+   "brands": [
+    "Bernina"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Proprietary object format (outlines and settings, not stitches). Not practical to write. Use EXP for Bernina."
+  },
+  {
+   "ext": "emd",
+   "name": "Elna EMD",
+   "brands": [
+    "Elna"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Elna native. Closed; no maker docs found."
+  },
+  {
+   "ext": "dsb",
+   "name": "Barudan DSB",
+   "brands": [
+    "Barudan"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Older Barudan format. DST or U01 cover it."
+  },
+  {
+   "ext": "dat",
+   "name": "Barudan / Sunstar DAT",
+   "brands": [
+    "Barudan",
+    "Sunstar"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Older Barudan and Sunstar format."
+  },
+  {
+   "ext": "tbf",
+   "name": "Tajima TBF",
+   "brands": [
+    "Tajima"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Tajima's colour-aware format. DST covers the machine.",
+   "planned": true
+  },
+  {
+   "ext": "tap",
+   "name": "Happy TAP",
+   "brands": [
+    "Happy"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Happy's own format. DST covers the machine."
+  },
+  {
+   "ext": "100",
+   "name": "Toyota 100 / 10o",
+   "brands": [
+    "Toyota"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Toyota native. DST covers the machine."
+  },
+  {
+   "ext": "zxy",
+   "name": "ZSK ZXY / DSZ",
+   "brands": [
+    "ZSK"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "ZSK's own formats. DST covers the machine."
+  },
+  {
+   "ext": "vip",
+   "name": "Husqvarna / Pfaff VIP",
+   "brands": [
+    "Husqvarna Viking",
+    "Pfaff"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "planned": true,
+   "note": "Legacy Husqvarna/Pfaff format. Planned."
+  },
+  {
+   "ext": "gcode",
+   "name": "G-code",
+   "brands": [
+    "CNC and plotter tools"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "planned": true,
+   "note": "Not a machine format; for stitch-path export to other tools. Planned."
+  }
  ]
 }
