@@ -11,7 +11,7 @@ status: "ready"
 
 # What the warnings mean
 
-Lilo watches your design while you work. When something might sew badly, a short note appears in the **warnings tray**, at the lower left of the canvas. It never blocks you. Each note offers a **fix** button or a **Read more** link. You can dismiss any note.
+Lilo watches your design while you work. When something might sew badly, a short note appears in the **warnings tray**, in the right-hand column, under the Sewing setup card. It never blocks you. Each note offers a **fix** button or a **Read more** link. You can dismiss any note.
 
 ## Outside the hoop
 

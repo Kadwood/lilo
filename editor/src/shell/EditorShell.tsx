@@ -65,13 +65,13 @@ export function EditorShell() {
             <CanvasView onOpen={open} />
             <HoopAssist />
             <Toolbar />
-            <LiveWarnings />
           </div>
           <StitchPlayer />
         </main>
 
         <div className="right-col">
           <SewingCard />
+          <LiveWarnings />
           <Sequencer />
         </div>
       </div>

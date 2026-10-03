@@ -51,7 +51,7 @@ Press **Esc** to close it.
 
 ## The warnings tray
 
-When Lilo spots something that may sew badly, a note appears in a small tray at the lower left of the canvas. For example: your design is bigger than the hoop, or your letters are too small for the thread. Each note has a button that fixes it in one click, or a link to read more. You can dismiss a note. It stays dismissed until the problem changes.
+When Lilo spots something that may sew badly, a note appears in a small tray in the right-hand column, under the Sewing setup card. For example: your design is bigger than the hoop, or your letters are too small for the thread. Each note has a button that fixes it in one click, or a link to read more. You can dismiss a note. It stays dismissed until the problem changes.
 
 Read [What the warnings mean](warnings-explained.md).
 

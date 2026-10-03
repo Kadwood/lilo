@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import type { Design, FillObject } from "@lilo/engine/light";
+import type { Design, FillObject, SatinObject } from "@lilo/engine/light";
 import { createMockPlatform } from "../platform/mock";
 import { setPlatform } from "../platform";
 import { EditorShell } from "../shell/EditorShell";
@@ -90,7 +90,8 @@ describe("hint data and wiring", () => {
 describe("<Hint>", () => {
   it("opens a card with what, when and typical; Esc closes it; Read more opens the guide page", () => {
     render(<Hint id="satin.density-spacing" />);
-    const button = screen.getByRole("button", { name: "Help: Density (spacing)" });
+    const button = screen.getByTitle("Help: Density (spacing)");
+    expect(button.getAttribute("aria-label")).toBe("Help");
     expect(button.getAttribute("aria-expanded")).toBe("false");
     fireEvent.click(button);
     const card = screen.getByRole("dialog", { name: /Density \(spacing\)/ });
@@ -106,7 +107,7 @@ describe("<Hint>", () => {
 
   it("works from the keyboard", () => {
     render(<Hint id="player.speed" />);
-    const button = screen.getByRole("button", { name: "Help: Speed" });
+    const button = screen.getByTitle("Help: Speed");
     expect(button.getAttribute("tabindex")).toBe("0");
     fireEvent.keyDown(button, { key: "Enter" });
     expect(screen.getByRole("dialog")).toBeTruthy();
@@ -348,7 +349,7 @@ describe("live warnings (pure)", () => {
     expect(liveFindings({ design: d, planResult: null }).map((f) => f.hint.id)).toContain("tiny-region");
 
     const s = testDesign();
-    s.objects[2] = { ...(s.objects[2] as never), params: { ...(s.objects[2] as never as { params: object }).params, widthMm: 10 } } as never;
+    (s.objects[2] as SatinObject).params = { ...(s.objects[2] as SatinObject).params, widthMm: 10 };
     expect(wideSatin(s, 8).map((o) => o.id)).toEqual(["s1"]);
     expect(liveFindings({ design: s, planResult: null }).map((f) => f.hint.id)).toContain("satin-too-wide");
 

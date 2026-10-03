@@ -108,7 +108,9 @@ export function Hint({ id, what }: { id: string; what?: string }) {
         tabIndex={0}
         className="help-tip hint-button"
         data-hint={id}
-        aria-label={`Help: ${entry.label}`}
+        aria-label="Help"
+        aria-description={entry.label}
+        title={`Help: ${entry.label}`}
         aria-expanded={open}
         aria-controls={open ? cardId : undefined}
         aria-haspopup="dialog"

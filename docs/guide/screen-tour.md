@@ -51,4 +51,4 @@ Under the canvas. **Play**, scrub and change the speed. It also shows the totals
 
 ## The warnings tray
 
-When Lilo spots something that may sew badly, a small tray appears at the lower left of the canvas. It is calm and never blocks you. Read [What the warnings mean](warnings-explained.md).
+When Lilo spots something that may sew badly, a small tray appears in the right-hand column, under the Sewing setup card. It is calm and never blocks you. Read [What the warnings mean](warnings-explained.md).

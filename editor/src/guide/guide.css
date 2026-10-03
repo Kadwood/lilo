@@ -393,15 +393,13 @@
   width: 300px;
 }
 
-/* ---- warnings tray ------------------------------------------------------------------------------ */
+/* ---- warnings tray (in the right column, so it never covers the canvas) -------------------------- */
 .live-tray {
-  position: absolute;
-  z-index: 20;
-  left: 12px;
-  bottom: 76px;
+  flex: none;
   display: grid;
   gap: 6px;
-  width: min(360px, calc(100% - 24px));
+  max-height: 40vh;
+  overflow: auto;
 }
 .live-tray ul {
   display: grid;
