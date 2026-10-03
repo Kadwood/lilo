@@ -1,4 +1,4 @@
-import { useEffect, useRef, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import type { PixelArt } from "@lilo/engine/light";
 import type { Cell } from "../state/pixelShapes";
 
@@ -28,6 +28,15 @@ const css = (name: string, fb: string) => (typeof document === "undefined" ? fb 
  */
 export function PixelCanvas({ art, preview, previewHex, cursor, cellPx, onDown, onMove, onUp, onCursor, onActivate }: PixelCanvasProps) {
   const ref = useRef<HTMLCanvasElement>(null);
+  // the canvas paints with the theme's colours, so repaint when light/dark changes
+  const [theme, setTheme] = useState(0);
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const on = () => setTheme((n) => n + 1);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
   const w = art.width * cellPx;
   const h = art.height * cellPx;
 
@@ -83,7 +92,7 @@ export function PixelCanvas({ art, preview, previewHex, cursor, cellPx, onDown, 
     ctx.strokeStyle = css("--accent", "#2f5fd0");
     ctx.lineWidth = 2;
     ctx.strokeRect(cursor[0] * cellPx + 1, cursor[1] * cellPx + 1, cellPx - 2, cellPx - 2);
-  }, [art, preview, previewHex, cursor, cellPx, w, h]);
+  }, [art, preview, previewHex, cursor, cellPx, w, h, theme]);
 
   const cellAt = (e: PointerEvent): Cell => {
     const r = (e.currentTarget as HTMLElement).getBoundingClientRect();

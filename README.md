@@ -2,7 +2,9 @@
 
 Free, open-source embroidery digitizing. Turn images, SVGs and fonts into stitch files and send them to your machine over Wi-Fi.
 
-> Status: **M3 (Editor)**. Drop a PNG, JPG, WEBP or SVG on the canvas: Lilo traces it, snaps the
+> Status: **M5 (screens)**: Home with recent projects, click-to-stitch, My Threads, pixel art, the
+> converter, all export formats, projects with autosave and version history. Before that, **M3
+> (Editor)**: drop a PNG, JPG, WEBP or SVG on the canvas: Lilo traces it, snaps the
 > colours to Brother threads, lays down stitches and lets you play them back stitch by stitch
 > (pausing at each thread change). Everything it makes is editable, and you can draw from scratch
 > with the full toolbar, the seven run types and 36 fill patterns. Export a PES with the real thread
@@ -59,6 +61,36 @@ JSON model that later milestones extend; `designToStitchPlan` turns it into need
   gradient, underpath and multiple underlay passes. Picker previews are generated from the engine:
   `pnpm --filter @lilo/engine swatches` rewrites `editor/src/assets/fill-swatches/*.png`.
 - **⌘K** searches every tool and action.
+
+## The screens, in short (M5)
+
+Nav tabs: **Home**, **Editor**, **Pixel art**, **Converter**, **Lilo Link** (`editor/src/App.tsx`).
+
+- **Click to stitch** (K): `autoDigitize` keeps its trace as `traceRegions` (design mm). The tool
+  hit-tests them, highlights the one under the pointer, stitches a click with the panel's settings
+  (one undo step; clicking again re-stitches in place), collects shift-clicks for Enter, Esc leaves.
+  No second trace. State: `state.trace`, `stitchRegions` in `editorStore.ts`; hit-test and
+  region-to-object in `engine/src/clickstitch.ts`.
+- **Threads**: the picker reaches all 75 lines (brand, line, search; lines load on demand). **My
+  Threads** (Sequencer > Threads) holds the spools you own: add from the catalogue, by photo (Apple
+  Vision OCR, ranked candidates, you confirm) or by hand; quantity, notes, JSON import/export. It is
+  saved by two restricted Rust commands to `~/Documents/Lilo/my-threads.json`. "Use my threads" in
+  Auto digitize snaps to the shelf first.
+- **Pixel art**: grid canvas with pencil, fill, erase, eyedropper, line, rectangle; palette from My
+  Threads or any brand; tatami, cross or satin; live stitch preview with the player; Send to editor
+  (manual-stitch objects, one undo step) and Export. State in `state/pixelStore.ts`.
+- **Converter**: drop embroidery files or pictures, tick formats, convert, save one or all. Pictures
+  use the editor's Auto digitize settings; PNG/JPG can also be saved as the traced SVG.
+- **Export**: PES (default), DST, JEF, VP3, EXP, XXX, U01, PEC, or a PNG picture.
+- **Projects**: Save / Save As / Open / Revert (⌘S, ⇧⌘S, ⌘O) read and write `.lilo` through the
+  engine's project API. Autosave goes to the version history every 30 s and when the window loses
+  focus; the file's last explicit save is never overwritten by an autosave. Version history lists
+  versions with thumbnails and restores one as a single undo step. Closing, New, Open and Revert ask
+  about unsaved changes in an in-page dialog. Reference images live in `Design.images` (undoable) and
+  are saved in the project's `images/` folder.
+- **Looking at screens without the app**: `pnpm dev`, then open `http://localhost:5173/?mock`. An
+  in-memory platform supplies sample projects, a thread shelf and a canned label OCR result
+  (`editor/src/dev/mock.ts`, development only).
 
 Extension points for lettering: add `"text"` to `ObjectKind`, call `registerObjectGenerator` in
 `engine/src/stitch/generate.ts`, and enable the `text` entry in `editor/src/tools/registry.ts`.

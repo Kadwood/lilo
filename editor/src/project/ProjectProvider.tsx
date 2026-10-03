@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from "react";
 import { useStore } from "zustand";
+import { useApp } from "../app/AppContext";
 import { useEngine } from "../engine/context";
 import { getPlatform } from "../platform";
 import { pixel } from "../state/pixelStore";
@@ -52,7 +53,10 @@ export function ProjectProvider({ children, manager }: { children: ReactNode; ma
   }, [m]);
 
   // a project the OS asks us to open (Finder double-click, "Open With")
-  useEffect(() => getPlatform().onOpenFile((file) => void m.openFile(file)), [m]);
+  const app = useApp();
+  const goRef = useRef(app.go);
+  goRef.current = app.go;
+  useEffect(() => getPlatform().onOpenFile((file) => void m.openFile(file).then((ok) => ok && goRef.current("editor"))), [m]);
 
   // closing the window asks about unsaved changes first; the browser can only use its own prompt
   useEffect(() => {

@@ -1,9 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { addEntry, emptyShelf, exportShelf, type PixelArt } from "@lilo/engine/light";
 import { readEmbroidery as readFile } from "@lilo/engine";
-import { buildCommands } from "../tools/commands";
 import { createMockPlatform, type MockState } from "../platform/mock";
 import { setPlatform } from "../platform";
 import { pixel, isBlank } from "../state/pixelStore";
@@ -227,7 +226,7 @@ describe("Pixel art: stitches, send and export", () => {
     await waitFor(() => expect(go).toHaveBeenCalledWith("editor"), T);
     const d = lastEditor!.state.design!;
     expect(d.objects.length).toBeGreaterThan(0);
-    expect(d.objects.every((o) => o.kind === "run" && o.params.type === "manual" || o.kind === "run")).toBe(true);
+    expect(d.objects.every((o) => o.kind === "run")).toBe(true); // manual stitches are runs that sew every point
     expect(d.threads.map((t) => t.name).sort()).toEqual(["Red", "Ultramarine"]);
     expect(lastEditor!.state.undoLabel).toBe("Add pixel art");
     act(() => lastEditor!.actions.undo());
@@ -293,7 +292,6 @@ describe("Pixel art in the command palette", () => {
     expect(art().style).toBe("satin");
     after.find((c) => c.id === "pixel.export")!.run();
     expect(pixel.store.getState().exportOpen).toBe(true);
-    void buildCommands;
   });
 });
 
@@ -306,4 +304,3 @@ function noActions() {
 async function ready() {
   await new Promise((r) => setTimeout(r, 300)); // the live plan is debounced; sending waits for the engine itself
 }
-void render;

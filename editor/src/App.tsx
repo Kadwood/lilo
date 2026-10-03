@@ -124,14 +124,14 @@ export default function App() {
   );
 
   return (
-    <EngineProvider>
-      <EditorProvider>
-        <ProjectProvider>
-          <AppContext.Provider value={api}>
+    <AppContext.Provider value={api}>
+      <EngineProvider>
+        <EditorProvider>
+          <ProjectProvider>
             <Shell />
-          </AppContext.Provider>
-        </ProjectProvider>
-      </EditorProvider>
-    </EngineProvider>
+          </ProjectProvider>
+        </EditorProvider>
+      </EngineProvider>
+    </AppContext.Provider>
   );
 }

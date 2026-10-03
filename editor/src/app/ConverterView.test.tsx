@@ -175,7 +175,7 @@ describe("Converter screen", () => {
     await waitFor(() => expect(go).toHaveBeenCalledWith("editor"), T);
     const d = lastEditor!.state.design!;
     expect(d.objects.length).toBeGreaterThan(0);
-    expect(d.objects.every((o) => o.kind === "run" && o.params.type !== undefined || o.kind === "run")).toBe(true);
+    expect(d.objects.every((o) => o.kind === "run")).toBe(true); // an existing file opens as manual stitches, every needle drop kept
     expect(lastEditor!.state.undoLabel).toBe("Import crest.pes");
     act(() => lastEditor!.actions.undo());
     expect(lastEditor!.state.design!.objects).toHaveLength(0);

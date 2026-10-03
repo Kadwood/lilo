@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, screen, waitFor, within, type RenderResult } from "@testing-library/react";
 import { addHistorySnapshot, createProject, emptyDesign, makeFill, planThumbnailPng, rectNodes, saveProject, type Design } from "@lilo/engine/light";
-import { AppContext, type AppApi } from "../app/AppContext";
+import type { AppApi } from "../app/AppContext";
 import { HomeView } from "../app/HomeView";
 import { createMockPlatform, type MockState } from "../platform/mock";
 import { setPlatform } from "../platform";
@@ -58,7 +58,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const mount = (ui: React.ReactElement, opts: { design?: Design } = {}): RenderResult => renderEditor(<AppContext.Provider value={app()}><Grab />{ui}</AppContext.Provider>, opts);
+const mount = (ui: React.ReactElement, opts: { design?: Design } = {}): RenderResult => renderEditor(<><Grab />{ui}</>, { ...opts, app: app() });
 const ready = () => waitFor(() => expect(lastEditor?.state.planResult).not.toBeNull(), T);
 
 describe("Home", () => {
@@ -280,11 +280,12 @@ describe("autosave, open-file and close wiring", () => {
     expect(manager.store.getState().history).toHaveLength(2);
   });
 
-  it("a project the OS opens (double-click) is opened", async () => {
+  it("a project the OS opens (double-click) is opened, and the editor is shown", async () => {
     mount(<div />);
     await waitFor(() => expect(mock.openFileCb).not.toBeNull());
     await act(async () => mock.openFileCb!({ path: "/mock/Documents/Lilo/Crest.lilo", name: "Crest.lilo", bytes: projectBytes("Crest", design("a", "b")) }));
     await waitFor(() => expect(lastEditor!.state.projectName).toBe("Crest"), T);
+    await waitFor(() => expect(go).toHaveBeenCalledWith("editor"), T);
   });
 
   it("closing the window waits for the unsaved-changes answer", async () => {
