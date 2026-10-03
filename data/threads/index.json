@@ -1,0 +1,722 @@
+[
+ {
+  "id": "admelody-polyester",
+  "brand": "Admelody",
+  "line": "Polyester",
+  "label": "Admelody Polyester",
+  "count": 320,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Admelody%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "admelody-rayon",
+  "brand": "Admelody",
+  "line": "Rayon",
+  "label": "Admelody Rayon",
+  "count": 420,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Admelody%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "anchor-standard",
+  "brand": "Anchor",
+  "line": "Standard",
+  "label": "Anchor",
+  "count": 420,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Anchor.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "arc-polyester",
+  "brand": "ARC",
+  "line": "Polyester",
+  "label": "ARC Polyester",
+  "count": 288,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20ARC%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "arc-rayon",
+  "brand": "ARC",
+  "line": "Rayon",
+  "label": "ARC Rayon",
+  "count": 288,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20ARC%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "aurifil-lana",
+  "brand": "Aurifil",
+  "line": "Lana",
+  "label": "Aurifil Lana",
+  "count": 106,
+  "material": "wool",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Lana.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "aurifil-mako",
+  "brand": "Aurifil",
+  "line": "Mako",
+  "label": "Aurifil Mako",
+  "count": 158,
+  "material": "cotton",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Mako.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "aurifil-polyester",
+  "brand": "Aurifil",
+  "line": "Polyester",
+  "label": "Aurifil Polyester",
+  "count": 204,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "aurifil-rayon",
+  "brand": "Aurifil",
+  "line": "Rayon",
+  "label": "Aurifil Rayon",
+  "count": 180,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "aurifil-royal",
+  "brand": "Aurifil",
+  "line": "Royal",
+  "label": "Aurifil Royal",
+  "count": 499,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Royal.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "bfc-polyester",
+  "brand": "BFC",
+  "line": "Polyester",
+  "label": "BFC Polyester",
+  "count": 320,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20BFC%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brildor-ac",
+  "brand": "Brildor",
+  "line": "AC",
+  "label": "Brildor AC",
+  "count": 120,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20AC.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brildor-co",
+  "brand": "Brildor",
+  "line": "CO",
+  "label": "Brildor CO",
+  "count": 70,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20CO.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brildor-mf",
+  "brand": "Brildor",
+  "line": "MF",
+  "label": "Brildor MF",
+  "count": 210,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20MF.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brildor-ny",
+  "brand": "Brildor",
+  "line": "NY",
+  "label": "Brildor NY",
+  "count": 180,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20NY.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brildor-pb",
+  "brand": "Brildor",
+  "line": "PB",
+  "label": "Brildor PB",
+  "count": 260,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20PB.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brothread-40",
+  "brand": "Brother",
+  "line": "Brothread 40",
+  "label": "Brother Brothread 40",
+  "count": 40,
+  "weight": 40,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brothread%2040.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brother-brothread-80",
+  "brand": "Brother",
+  "line": "Brothread 80",
+  "label": "Brother Brothread 80",
+  "count": 78,
+  "weight": 80,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brothread%2080.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brother-country",
+  "brand": "Brother",
+  "line": "Country",
+  "label": "Brother Country",
+  "count": 61,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "brother-embroidery",
+  "brand": "Brother",
+  "line": "Embroidery",
+  "label": "Brother Embroidery",
+  "count": 61,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "coats-alcazar",
+  "brand": "Coats",
+  "line": "Alcazar",
+  "label": "Coats Alcazar",
+  "count": 500,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Alcazar.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "coats-alcazar-jazz",
+  "brand": "Coats",
+  "line": "Alcazar Jazz",
+  "label": "Coats Alcazar Jazz",
+  "count": 304,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Alcazar%20Jazz.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "coats-sylko",
+  "brand": "Coats",
+  "line": "Sylko",
+  "label": "Coats Sylko",
+  "count": 399,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Sylko.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "coats-sylko-usa",
+  "brand": "Coats",
+  "line": "Sylko USA",
+  "label": "Coats Sylko USA",
+  "count": 303,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Sylko%20USA.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "dmc-standard",
+  "brand": "DMC",
+  "line": "Standard",
+  "label": "DMC",
+  "count": 457,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20DMC.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "embroidex-standard",
+  "brand": "Embroidex",
+  "line": "Standard",
+  "label": "Embroidex",
+  "count": 257,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Embroidex.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "emmel-standard",
+  "brand": "Emmel",
+  "line": "Standard",
+  "label": "Emmel",
+  "count": 520,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Emmel.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "fil-tec-glide",
+  "brand": "Fil-Tec",
+  "line": "Glide",
+  "label": "Fil-Tec Glide",
+  "count": 212,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Fil-Tec%20Glide.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "floriani-polyester",
+  "brand": "Floriani",
+  "line": "Polyester",
+  "label": "Floriani Polyester",
+  "count": 286,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Floriani%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "fufu-polyester",
+  "brand": "FuFu",
+  "line": "Polyester",
+  "label": "FuFu Polyester",
+  "count": 713,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20FuFu%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "fufu-rayon",
+  "brand": "FuFu",
+  "line": "Rayon",
+  "label": "FuFu Rayon",
+  "count": 713,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20FuFu%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "gunold-polyester",
+  "brand": "Gunold",
+  "line": "Polyester",
+  "label": "Gunold Polyester",
+  "count": 300,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Gunold%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "gutermann-creativ-dekor",
+  "brand": "Gutermann",
+  "line": "Creativ Dekor",
+  "label": "Gutermann Creativ Dekor",
+  "count": 200,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Gutermann%20Creativ%20Dekor.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "hemingworth-standard",
+  "brand": "Hemingworth",
+  "line": "Standard",
+  "label": "Hemingworth",
+  "count": 294,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Hemingworth.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "isacord-polyester",
+  "brand": "Isacord",
+  "line": "Polyester",
+  "label": "Isacord Polyester",
+  "count": 398,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Isacord%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "isafil-rayon",
+  "brand": "Isafil",
+  "line": "Rayon",
+  "label": "Isafil Rayon",
+  "count": 286,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Isafil%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "isalon-polyester",
+  "brand": "Isalon",
+  "line": "Polyester",
+  "label": "Isalon Polyester",
+  "count": 414,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Isalon%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "janome-standard",
+  "brand": "Janome",
+  "line": "Standard",
+  "label": "Janome",
+  "count": 78,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Janome.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "king-star-standard",
+  "brand": "King Star",
+  "line": "Standard",
+  "label": "King Star",
+  "count": 430,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20King%20Star.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "madeira-burmilana",
+  "brand": "Madeira",
+  "line": "Burmilana",
+  "label": "Madeira Burmilana",
+  "count": 121,
+  "material": "wool",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Burmilana.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "madeira-matt",
+  "brand": "Madeira",
+  "line": "Matt",
+  "label": "Madeira Matt",
+  "count": 161,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Matt.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "madeira-polyneon",
+  "brand": "Madeira",
+  "line": "Polyneon",
+  "label": "Madeira Polyneon",
+  "count": 349,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Polyneon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "madeira-rayon",
+  "brand": "Madeira",
+  "line": "Rayon",
+  "label": "Madeira Rayon",
+  "count": 357,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "magnifico-standard",
+  "brand": "Magnifico",
+  "line": "Standard",
+  "label": "Magnifico",
+  "count": 200,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Magnifico.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "marathon-polyester",
+  "brand": "Marathon",
+  "line": "Polyester",
+  "label": "Marathon Polyester",
+  "count": 301,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Marathon%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "marathon-rayon",
+  "brand": "Marathon",
+  "line": "Rayon",
+  "label": "Marathon Rayon",
+  "count": 317,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Marathon%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "marathon-rayon-v3",
+  "brand": "Marathon",
+  "line": "Rayon V3",
+  "label": "Marathon Rayon V3",
+  "count": 384,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Marathon%20Rayon%20V3.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "metro-standard",
+  "brand": "Metro",
+  "line": "Standard",
+  "label": "Metro",
+  "count": 168,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Metro.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "mettler-embroidery",
+  "brand": "Mettler",
+  "line": "Embroidery",
+  "label": "Mettler Embroidery",
+  "count": 152,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Mettler%20Embroidery.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "mettler-poly-sheen",
+  "brand": "Mettler",
+  "line": "Poly Sheen",
+  "label": "Mettler Poly Sheen",
+  "count": 351,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Mettler%20Poly%20Sheen.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "mtb-embroidex",
+  "brand": "MTB",
+  "line": "- Embroidex",
+  "label": "MTB - Embroidex",
+  "count": 107,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20MTB%20-%20Embroidex.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "outback-embroidery-rayon",
+  "brand": "Outback",
+  "line": "Embroidery Rayon",
+  "label": "Outback Embroidery Rayon",
+  "count": 100,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Outback%20Embroidery%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "poly-x40-standard",
+  "brand": "Poly X40",
+  "line": "Standard",
+  "label": "Poly X40",
+  "count": 286,
+  "weight": 40,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Poly%20X40.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "princess-standard",
+  "brand": "Princess",
+  "line": "Standard",
+  "label": "Princess",
+  "count": 120,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Princess.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "radiant-rayon",
+  "brand": "Radiant",
+  "line": "Rayon",
+  "label": "Radiant Rayon",
+  "count": 102,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Radiant%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "ral-standard",
+  "brand": "RAL",
+  "line": "Standard",
+  "label": "RAL",
+  "count": 194,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20RAL.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "robison-anton-polyester",
+  "brand": "Robison-Anton",
+  "line": "Polyester",
+  "label": "Robison-Anton Polyester",
+  "count": 447,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Robison-Anton%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "robison-anton-rayon",
+  "brand": "Robison-Anton",
+  "line": "Rayon",
+  "label": "Robison-Anton Rayon",
+  "count": 419,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Robison-Anton%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "royal-polyester",
+  "brand": "Royal",
+  "line": "Polyester",
+  "label": "Royal Polyester",
+  "count": 412,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Royal%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "royal-viscose-rayon",
+  "brand": "Royal",
+  "line": "Viscose Rayon",
+  "label": "Royal Viscose Rayon",
+  "count": 494,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Royal%20Viscose%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "sigma-standard",
+  "brand": "Sigma",
+  "line": "Standard",
+  "label": "Sigma",
+  "count": 149,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Sigma.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "simthread-glow-in-the-dark-15-colors",
+  "brand": "Simthread",
+  "line": "Glow In The Dark 15 Colors",
+  "label": "Simthread Glow In The Dark 15 Colors",
+  "count": 15,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Glow%20In%20The%20Dark%2015%20Colors.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "simthread-polyester",
+  "brand": "Simthread",
+  "line": "Polyester",
+  "label": "Simthread Polyester",
+  "count": 107,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "simthread-polyester-63-brother-colors",
+  "brand": "Simthread",
+  "line": "Polyester 63 Brother Colors",
+  "label": "Simthread Polyester 63 Brother Colors",
+  "count": 63,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Polyester%2063%20Brother%20Colors.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "simthread-rayon",
+  "brand": "Simthread",
+  "line": "Rayon",
+  "label": "Simthread Rayon",
+  "count": 384,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "sulky-polyester",
+  "brand": "Sulky",
+  "line": "Polyester",
+  "label": "Sulky Polyester",
+  "count": 905,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Sulky%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "sulky-rayon",
+  "brand": "Sulky",
+  "line": "Rayon",
+  "label": "Sulky Rayon",
+  "count": 289,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Sulky%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "swist-rayon",
+  "brand": "Swist",
+  "line": "Rayon",
+  "label": "Swist Rayon",
+  "count": 227,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Swist%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "threadart-standard",
+  "brand": "Threadart",
+  "line": "Standard",
+  "label": "Threadart",
+  "count": 223,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Threadart.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "tristar-polyester",
+  "brand": "Tristar",
+  "line": "Polyester",
+  "label": "Tristar Polyester",
+  "count": 298,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Tristar%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "tristar-rayon",
+  "brand": "Tristar",
+  "line": "Rayon",
+  "label": "Tristar Rayon",
+  "count": 406,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Tristar%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "viking-palette",
+  "brand": "Viking",
+  "line": "Palette",
+  "label": "Viking Palette",
+  "count": 29,
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Viking%20Palette.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "vyapar-rayon",
+  "brand": "Vyapar",
+  "line": "Rayon",
+  "label": "Vyapar Rayon",
+  "count": 288,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Vyapar%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "wonderfil-polyester",
+  "brand": "Wonderfil",
+  "line": "Polyester",
+  "label": "Wonderfil Polyester",
+  "count": 170,
+  "material": "polyester",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Wonderfil%20Polyester.gpl",
+  "licence": "GPL-3.0"
+ },
+ {
+  "id": "wonderfil-rayon",
+  "brand": "Wonderfil",
+  "line": "Rayon",
+  "label": "Wonderfil Rayon",
+  "count": 342,
+  "material": "rayon",
+  "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Wonderfil%20Rayon.gpl",
+  "licence": "GPL-3.0"
+ }
+]

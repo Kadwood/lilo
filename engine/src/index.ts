@@ -6,3 +6,4 @@ export * from "./stitch";
 export * from "./pes";
 export * from "./export";
 export * from "./autodigitize";
+export * from "./threads/shelf";
