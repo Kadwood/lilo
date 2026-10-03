@@ -59,7 +59,7 @@ describe("journey a: picture -> stitches -> export -> before you sew", () => {
       await page.getByRole("button", { name: "Export" }).first().click();
       const dialog = page.getByRole("dialog", { name: "Export" });
       const radios = dialog.getByRole("radiogroup", { name: "File format" }).getByRole("radio");
-      expect(await radios.count()).toBe(9); // 8 machine formats + PNG
+      expect(await radios.count()).toBe(13); // 12 machine formats + PNG
       await radios.nth(i).click();
       await dialog.getByLabel("Export stats").waitFor({ timeout: 30_000 });
       if (i === 0) {
