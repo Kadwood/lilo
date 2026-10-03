@@ -3,6 +3,7 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -37,6 +38,38 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm -r test
       - run: pnpm --filter editor build
+
+  # The browser journeys (editor/e2e) take about 8 minutes, so they are opt-in: run this workflow by hand
+  # (Actions > CI > Run workflow) or put [e2e] in a commit message.
+  e2e:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[e2e]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - id: fonts-pin
+        run: echo "commit=$(node --experimental-strip-types --no-warnings scripts/import-fonts.mjs --print-commit)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/lilo-fonts-cache
+          key: lilo-fonts-${{ steps.fonts-pin.outputs.commit }}
+      - run: pnpm fonts
+        env:
+          LILO_FONTS_CACHE: ${{ runner.temp }}/lilo-fonts-cache
+      - run: pnpm --filter editor exec playwright-core install --with-deps chromium-headless-shell
+      - run: pnpm --filter editor e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-screenshots
+          path: editor/e2e/.shots
+          if-no-files-found: ignore
 
   rust:
     # macOS first: it's the primary target and needs no extra system packages for Tauri.
