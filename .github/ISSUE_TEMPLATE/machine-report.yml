@@ -1,0 +1,76 @@
+name: My machine works / doesn't work with Lilo
+description: Tell us how Lilo did with your embroidery machine. Two minutes, and it helps everyone.
+title: "Machine report: <brand and model>"
+labels: ["compatibility"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks. Every report goes into the compatibility table (docs/compatibility.md).
+        Please do not post anything private. Machine model and file format are all we need.
+  - type: input
+    id: machine
+    attributes:
+      label: Machine brand and model
+      placeholder: "Brother Innov-is NQ1700E"
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: Did it work?
+      options:
+        - Works
+        - Works, with a problem (tell us below)
+        - Does not work
+    validations:
+      required: true
+  - type: dropdown
+    id: transfer
+    attributes:
+      label: How did the design get to the machine?
+      options:
+        - USB stick
+        - Wi-Fi with Lilo Link
+        - Maker's app (Design Database Transfer, mySewnet, Artspira, other)
+        - Cable to a PC
+        - Network on a commercial machine
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: File format you used
+      options:
+        - PES
+        - PEC
+        - DST
+        - EXP
+        - JEF
+        - VP3
+        - XXX
+        - U01
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Lilo version and your computer
+      placeholder: "0.1.0, macOS 15"
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened?
+      description: Did it stitch? Were the colours right? Did the size, position or hoop match? For Wi-Fi, did Lilo Link find the machine? Any message the machine showed.
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Machine firmware or software version (if you know it)
+    validations:
+      required: false

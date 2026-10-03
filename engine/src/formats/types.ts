@@ -35,8 +35,8 @@ export interface EmbPattern {
   name?: string;
 }
 
-/** Extensions Lilo can read and write (lower case, no dot). */
-export const FORMAT_EXTENSIONS = ["pes", "dst", "exp", "jef", "vp3", "xxx", "u01", "pec"] as const;
+/** Extensions Lilo can write (lower case, no dot). All but `gcode` can be read too. */
+export const FORMAT_EXTENSIONS = ["pes", "dst", "exp", "jef", "vp3", "xxx", "u01", "pec", "hus", "vip", "tbf", "gcode"] as const;
 export type FormatExt = (typeof FORMAT_EXTENSIONS)[number];
 
 export interface FormatInfo {
@@ -44,6 +44,8 @@ export interface FormatInfo {
   label: string;
   /** Whether the file stores thread colours (DST, EXP and U01 do not). */
   hasColors: boolean;
+  /** False for write-only formats (G-code is an export, there is nothing to open). */
+  canRead: boolean;
 }
 
 /** Why a conversion lost or changed something. */
@@ -59,15 +61,22 @@ export interface ConvertWarning {
 }
 
 export const FORMATS: readonly FormatInfo[] = [
-  { ext: "pes", label: "Brother PES", hasColors: true },
-  { ext: "pec", label: "Brother PEC", hasColors: true },
-  { ext: "dst", label: "Tajima DST", hasColors: false },
-  { ext: "exp", label: "Melco EXP", hasColors: false },
-  { ext: "jef", label: "Janome JEF", hasColors: true },
-  { ext: "vp3", label: "Pfaff/Viking VP3", hasColors: true },
-  { ext: "xxx", label: "Singer XXX", hasColors: true },
-  { ext: "u01", label: "Barudan U01", hasColors: false },
+  { ext: "pes", label: "Brother PES", hasColors: true, canRead: true },
+  { ext: "pec", label: "Brother PEC", hasColors: true, canRead: true },
+  { ext: "dst", label: "Tajima DST", hasColors: false, canRead: true },
+  { ext: "exp", label: "Melco EXP", hasColors: false, canRead: true },
+  { ext: "jef", label: "Janome JEF", hasColors: true, canRead: true },
+  { ext: "vp3", label: "Pfaff/Viking VP3", hasColors: true, canRead: true },
+  { ext: "xxx", label: "Singer XXX", hasColors: true, canRead: true },
+  { ext: "u01", label: "Barudan U01", hasColors: false, canRead: true },
+  { ext: "hus", label: "Husqvarna Viking HUS", hasColors: true, canRead: true },
+  { ext: "vip", label: "Pfaff/Viking VIP", hasColors: true, canRead: true },
+  { ext: "tbf", label: "Tajima TBF", hasColors: true, canRead: true },
+  { ext: "gcode", label: "G-code (stitch path)", hasColors: false, canRead: false },
 ];
+
+/** Extensions Lilo can open (everything but write-only formats). */
+export const READABLE_EXTENSIONS: readonly FormatExt[] = FORMATS.filter((f) => f.canRead).map((f) => f.ext);
 
 /** "design.DST" or ".dst" to "dst", or null if Lilo doesn't know the format. */
 export function formatFromName(nameOrExt: string): FormatExt | null {

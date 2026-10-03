@@ -12,14 +12,20 @@ const V: Origin["v"][] = ["top", "center", "bottom"];
 
 export type ExportFormat = FormatExt | "png";
 
+/** Notes that replace the generic colour line for formats with something more to say. */
+const FORMAT_NOTES: Partial<Record<FormatExt, string>> = {
+  hus: "Keeps thread colours, matched to the nearest of Husqvarna's 29.",
+  gcode: "Not a sewing machine file: a stitch path for CNC and plotter tools, with a pause at each colour change.",
+};
+
 /** Every format Lilo writes, PES first (the default), then the picture. */
 export const EXPORT_CHOICES: { id: ExportFormat; label: string; note: string }[] = [
-  ...(["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec"] as const).map((ext) => {
+  ...(["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec", "hus", "vip", "tbf", "gcode"] as const).map((ext) => {
     const f = FORMATS.find((x) => x.ext === ext)!;
     return {
       id: ext as ExportFormat,
       label: f.label,
-      note: f.hasColors ? "Keeps thread colours." : "No thread colours in this format: only the colour changes are kept.",
+      note: FORMAT_NOTES[ext] ?? (f.hasColors ? "Keeps thread colours." : "No thread colours in this format: only the colour changes are kept."),
     };
   }),
   { id: "png", label: "PNG image", note: "A picture of the stitches, 1600 px, not a machine file." },

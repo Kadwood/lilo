@@ -1,0 +1,3850 @@
+{
+ "version": 1,
+ "compiled": "2026-10-03",
+ "note": "Compatibility research for Lilo. 'verified: true' means the page in 'source' stated the facts on the compile date; everything else is UNVERIFIED. liloWifi: true = tested working, \"untested (pedxml capability-detected)\" = machine looks compatible but Lilo has not been run against it, false = no Wi-Fi path with Lilo. No machine has been tested with Lilo on real hardware yet (Brother NV2700 test pending). Brand and product names belong to their owners; Lilo is not affiliated.",
+ "counts": {
+  "brands": 17,
+  "machines": 66,
+  "machinesVerified": 27,
+  "wifiCapableUntested": 21,
+  "wifiTested": 0,
+  "threadBrands": 44,
+  "threadLines": 75,
+  "threadColours": 20784,
+  "hoops": 52,
+  "hoopsVerified": 34,
+  "formatsReadWrite": 11,
+  "formatsWriteOnly": 1,
+  "formatsListed": 24
+ },
+ "liloTestStatus": {
+  "wifiTestedOn": [],
+  "pending": [
+   "Brother Innov-is NV2700"
+  ]
+ },
+ "formats": [
+  {
+   "ext": "pes",
+   "name": "Brother PES",
+   "brands": [
+    "Brother",
+    "Baby Lock",
+    "Bernina (reads)"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Brother and Baby Lock native. Stores thread colours."
+  },
+  {
+   "ext": "pec",
+   "name": "Brother PEC",
+   "brands": [
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "The stitch block inside a PES, also used alone by older Brother machines."
+  },
+  {
+   "ext": "dst",
+   "name": "Tajima DST",
+   "brands": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco",
+    "SWF",
+    "Happy",
+    "ZSK",
+    "Toyota",
+    "Janome MB-7",
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": false,
+   "lilo": "read+write",
+   "note": "The commercial standard. Colour changes are kept as stops, thread colours are not."
+  },
+  {
+   "ext": "exp",
+   "name": "Melco EXP",
+   "brands": [
+    "Melco",
+    "Bernina"
+   ],
+   "colours": false,
+   "lilo": "read+write",
+   "note": "No thread colours. Bernina machines read it when ART is not available."
+  },
+  {
+   "ext": "jef",
+   "name": "Janome JEF",
+   "brands": [
+    "Janome",
+    "Elna (some)"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Janome native. Newer machines also accept JEF+ and JPX, which Lilo does not read or write (see JEF+ below)."
+  },
+  {
+   "ext": "jef+",
+   "name": "Janome JEF+ / JPX",
+   "brands": [
+    "Janome"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Newer Janome files (MB-7, MC550E, MC9850) in a JEF-like container with a different header flag. Janome has not published the layout, pyembroidery only reads JPX stitches and drops the colours, and no sample files or maker docs were found, so Lilo does not guess at it. Use JEF."
+  },
+  {
+   "ext": "vp3",
+   "name": "Pfaff / Husqvarna Viking VP3",
+   "brands": [
+    "Pfaff",
+    "Husqvarna Viking"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Current Pfaff and Viking format."
+  },
+  {
+   "ext": "xxx",
+   "name": "Singer XXX",
+   "brands": [
+    "Singer",
+    "Compucon"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Singer native."
+  },
+  {
+   "ext": "u01",
+   "name": "Barudan U01",
+   "brands": [
+    "Barudan"
+   ],
+   "colours": false,
+   "lilo": "read+write",
+   "note": "Needle numbers, not thread colours."
+  },
+  {
+   "ext": "hus",
+   "name": "Husqvarna HUS",
+   "brands": [
+    "Husqvarna Viking"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Older Viking format (VP3 replaced it). Colours become the nearest of Husqvarna's 29 thread colours. Written with the format's own compression wrapper around the raw data, which any reader accepts but is bigger than a real compressor would make it. Checked against pyembroidery's reader; not yet tried on a machine."
+  },
+  {
+   "ext": "shv",
+   "name": "Husqvarna SHV",
+   "brands": [
+    "Husqvarna Viking"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Older Viking format. Low priority."
+  },
+  {
+   "ext": "sew",
+   "name": "Janome / Elna SEW",
+   "brands": [
+    "Janome",
+    "Elna"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Older Janome/Elna format. Low priority."
+  },
+  {
+   "ext": "phc",
+   "name": "Brother PHC",
+   "brands": [
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Brother file with a thumbnail. Machines that take PHC also take PES, which Lilo writes."
+  },
+  {
+   "ext": "phx",
+   "name": "Brother PHX",
+   "brands": [
+    "Brother",
+    "Baby Lock"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "As PHC. Not needed while PES works."
+  },
+  {
+   "ext": "art",
+   "name": "Bernina ART",
+   "brands": [
+    "Bernina"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Proprietary object format (outlines and settings, not stitches). Not practical to write. Use EXP for Bernina."
+  },
+  {
+   "ext": "emd",
+   "name": "Elna EMD",
+   "brands": [
+    "Elna"
+   ],
+   "colours": true,
+   "lilo": "none",
+   "note": "Elna native. Closed; no maker docs found."
+  },
+  {
+   "ext": "dsb",
+   "name": "Barudan DSB",
+   "brands": [
+    "Barudan"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Older Barudan format. DST or U01 cover it."
+  },
+  {
+   "ext": "dat",
+   "name": "Barudan / Sunstar DAT",
+   "brands": [
+    "Barudan",
+    "Sunstar"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Older Barudan and Sunstar format."
+  },
+  {
+   "ext": "tbf",
+   "name": "Tajima TBF",
+   "brands": [
+    "Tajima"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Tajima's colour-aware format. Written byte for byte as pyembroidery writes it. Colours are matched to colour blocks in order, and needles are numbered 1 to 5 round and round. Not yet tried on a machine; DST also covers the machine."
+  },
+  {
+   "ext": "tap",
+   "name": "Happy TAP",
+   "brands": [
+    "Happy"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Happy's own format. DST covers the machine."
+  },
+  {
+   "ext": "100",
+   "name": "Toyota 100 / 10o",
+   "brands": [
+    "Toyota"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "Toyota native. DST covers the machine."
+  },
+  {
+   "ext": "zxy",
+   "name": "ZSK ZXY / DSZ",
+   "brands": [
+    "ZSK"
+   ],
+   "colours": false,
+   "lilo": "none",
+   "note": "ZSK's own formats. DST covers the machine."
+  },
+  {
+   "ext": "vip",
+   "name": "Husqvarna / Pfaff VIP",
+   "brands": [
+    "Husqvarna Viking",
+    "Pfaff"
+   ],
+   "colours": true,
+   "lilo": "read+write",
+   "note": "Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader or real VIP file was available to check it, so treat it as untested on machines."
+  },
+  {
+   "ext": "gcode",
+   "name": "G-code",
+   "brands": [
+    "CNC and plotter tools"
+   ],
+   "colours": false,
+   "lilo": "write",
+   "note": "Not a machine format: a stitch path for CNC, plotter and DIY tools, written as pyembroidery writes it (G00 moves, M00 pause at each colour change, M30 end). Write only: there is nothing to open."
+  }
+ ],
+ "brands": [
+  {
+   "name": "Baby Lock",
+   "summary": "Brother-built. Reads PES, PHC, PHX, PEC, DST. Wi-Fi models use the same Design Database Transfer app (Baby Lock edition).",
+   "nativeFormats": [
+    "pes"
+   ],
+   "acceptedFormats": [
+    "pes",
+    "phc",
+    "phx",
+    "pec",
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Wi-Fi: Design Database Transfer (Windows)",
+    "Wi-Fi: IQ Intuition Positioning app (placement photo, not designs)"
+   ],
+   "officialApp": "Design Database Transfer (Baby Lock edition); IQ Intuition Positioning",
+   "sources": [
+    {
+     "url": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "claim": "Compatible machines: Altair, Flare, Meridian, Solaris 2, Vesta, Array, Venture; transfer formats .pes .phc .phx .dst"
+    },
+    {
+     "url": "https://www.babylock.com/altair",
+     "claim": "Altair data input types .pes .phc .pec .dst; IQ Intuition Positioning App; 2 USB ports"
+    }
+   ],
+   "models": [
+    {
+     "name": "Altair",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "pec",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.babylock.com/altair",
+     "verified": true,
+     "note": "9.5x14 in field. In the Baby Lock DDT compatible list. Same app as Brother, so Lilo Link may work; untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Array",
+     "type": "commercial",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "verified": true,
+     "note": "Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Ellegante",
+     "type": "home",
+     "formats": [
+      "pes",
+      "pec",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://github.com/Kadwood/lilo/blob/main/engine/src/hoops/library.json",
+     "verified": false,
+     "note": "In the hoop library only. Formats and transfer UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Ellure Plus",
+     "type": "home",
+     "formats": [
+      "pes",
+      "pec",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://github.com/Kadwood/lilo/blob/main/engine/src/hoops/library.json",
+     "verified": false,
+     "note": "In the hoop library only. Formats and transfer UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Flare",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "verified": true,
+     "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Meridian",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "verified": true,
+     "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Solaris 2",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "verified": true,
+     "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Venture",
+     "type": "commercial",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "verified": true,
+     "note": "Multi-needle (UNVERIFIED). Listed as DDT compatible. Wi-Fi with Lilo untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Vesta",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://babylock.com/software-support-and-downloads/design-database-transfer",
+     "verified": true,
+     "note": "Listed as DDT compatible. Wi-Fi with Lilo untested.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Barudan",
+   "summary": "Reads DST; native U01 and DAT (DAT is also used by Sunstar). Commercial.",
+   "nativeFormats": [
+    "u01"
+   ],
+   "acceptedFormats": [
+    "u01",
+    "dat",
+    "dst",
+    "dsb"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Network (UNVERIFIED)"
+   ],
+   "officialApp": "none confirmed",
+   "sources": [
+    {
+     "url": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "claim": "DAT, DSB, U01 listed as readable formats in pyembroidery; DAT is Barudan/Sunstar"
+    }
+   ],
+   "models": [
+    {
+     "name": "BEKY-S",
+     "type": "commercial",
+     "formats": [
+      "dst",
+      "u01",
+      "dat"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://www.barudan.com/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "BEVT-Z",
+     "type": "commercial",
+     "formats": [
+      "dst",
+      "u01",
+      "dat"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://www.barudan.com/",
+     "verified": false,
+     "note": "UNVERIFIED. Barudan site was unreachable.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Bernette",
+   "summary": "Bernina's budget brand. Formats not verified; treat like Bernina (EXP).",
+   "nativeFormats": [
+    "exp"
+   ],
+   "acceptedFormats": [
+    "exp"
+   ],
+   "transferMethods": [
+    "USB stick"
+   ],
+   "officialApp": "none confirmed",
+   "sources": [
+    {
+     "url": "https://www.bernette.com/en-AU/",
+     "claim": "Site reached; no spec page read"
+    }
+   ],
+   "models": [
+    {
+     "name": "b79",
+     "type": "home",
+     "formats": [
+      "exp"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.bernette.com/en-AU/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Bernina",
+   "summary": "ART is Bernina's proprietary object format and is not a stitch file; machines stitch expanded files. EXP is the practical choice (no colours, so set them on the machine). Machines are USB; newer ones add Wi-Fi to Bernina software.",
+   "nativeFormats": [
+    "art"
+   ],
+   "acceptedFormats": [
+    "art",
+    "exp"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Wi-Fi: Bernina Embroidery Software (UNVERIFIED)"
+   ],
+   "officialApp": "BERNINA Embroidery Software (V9)",
+   "sources": [
+    {
+     "url": "https://softwarehelp.bernina.com/en/MainHelp/PART_Processing/machine_files/machine_files-1.htm",
+     "claim": "Bernina software saves ART natively; can also write machine file formats; send to machine or USB stick"
+    },
+    {
+     "url": "https://sewflow.com/blog/bernina-embroidery-guide",
+     "claim": "Third party: Bernina machines read expanded stitch files; EXP widely used; DST for compatibility"
+    }
+   ],
+   "models": [
+    {
+     "name": "B 700",
+     "type": "home",
+     "formats": [
+      "exp",
+      "art"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://softwarehelp.bernina.com/en/MainHelp/PART_Processing/machine_files/machine_files-1.htm",
+     "verified": false,
+     "note": "UNVERIFIED. Bernina's own site blocked automated reads.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "B 770 QE",
+     "type": "home",
+     "formats": [
+      "exp",
+      "art"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://softwarehelp.bernina.com/en/MainHelp/PART_Processing/machine_files/machine_files-1.htm",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "B 790 PLUS",
+     "type": "home",
+     "formats": [
+      "exp",
+      "art",
+      "dst"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": false,
+     "source": "https://softwarehelp.bernina.com/en/MainHelp/PART_Processing/machine_files/machine_files-1.htm",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "B 880 PLUS",
+     "type": "home",
+     "formats": [
+      "exp",
+      "art",
+      "dst"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": false,
+     "source": "https://softwarehelp.bernina.com/en/MainHelp/PART_Processing/machine_files/machine_files-1.htm",
+     "verified": false,
+     "note": "Formats beyond EXP/ART UNVERIFIED. Can only be fed ART via Bernina software.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Brother",
+   "summary": "Native PES. Wireless LAN models take designs from the free Windows app Design Database Transfer; Lilo Link talks to the same machine API.",
+   "nativeFormats": [
+    "pes"
+   ],
+   "acceptedFormats": [
+    "pes",
+    "phc",
+    "phx",
+    "pec",
+    "dst",
+    "pen"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "USB cable to PC",
+    "Wi-Fi: Design Database Transfer (Windows)",
+    "Wi-Fi: Artspira app (some models)",
+    "Wi-Fi: PE-Design (Luminaire XP/XE/XJ)"
+   ],
+   "officialApp": "Design Database Transfer (Windows); Artspira (mobile)",
+   "sources": [
+    {
+     "url": "https://support.brother.com/g/s/hf/pcapp_info/ddt/en/index.html",
+     "claim": "Design Database Transfer sends .pes, .phc, .phx, .dst, .pen to wireless-LAN machines"
+    },
+    {
+     "url": "https://help.brother-usa.com/app/answers/detail/a_id/158016/~/wirelessly-transfer-a-design-to-the-machine",
+     "claim": "Only XP1, XP2, XP3, XE1, XE2, XJ1, XJ2 connect wirelessly to the PE-Design software"
+    },
+    {
+     "url": "https://www.brother-usa.com/p/sewing-embroidery/NQ1700E",
+     "claim": "NQ1700E wireless, sends from PC via Design Database Transfer"
+    }
+   ],
+   "models": [
+    {
+     "name": "Innov-is NQ1700E",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/NQ1700E",
+     "verified": true,
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. 6x10 in field.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Innov-is NQ3600D",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/NQ3600D",
+     "verified": true,
+     "note": "Brother USA page does not mention wireless.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Innov-is NQ3700D",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/NQ3700D",
+     "verified": true,
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet. Sewing + embroidery combo.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Innov-is NV2700",
+     "type": "home",
+     "formats": [
+      "pes",
+      "pec"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://github.com/Kadwood/lilo/blob/main/docs/SPEC.md",
+     "verified": false,
+     "note": "Kadwood's own machine and the first Wi-Fi test target. Wi-Fi support not confirmed against a Brother page; send test pending.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Innov-is VM5100",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/VM5100",
+     "verified": false,
+     "note": "Page does not mention wireless. Formats assumed from the Brother range.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Luminaire Innov-is XE1",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/XE1",
+     "verified": true,
+     "note": "Wireless enabled; Brother says XE1 connects to PE-Design wirelessly. Whether it also answers the Design Database Transfer API is unknown.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Luminaire Innov-is XP1",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://help.brother-usa.com/app/answers/detail/a_id/158016/~/wirelessly-transfer-a-design-to-the-machine",
+     "verified": true,
+     "note": "Connects to PE-Design wirelessly per Brother. Design Database Transfer API unknown.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PE550D",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PE550D",
+     "verified": true,
+     "note": "USB port; no wireless stated.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PE800",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PE800",
+     "verified": false,
+     "note": "Brother USA page lists USB only (discontinued). Wireless not stated; treated as USB.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PE900",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PE900",
+     "verified": true,
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PR1050X",
+     "type": "commercial",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PR1050X",
+     "verified": true,
+     "note": "10-needle; Brother USA page does not mention wireless.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PR1055X",
+     "type": "commercial",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PR1055X",
+     "verified": true,
+     "note": "10-needle, wireless LAN.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PR670E",
+     "type": "commercial",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PR670E",
+     "verified": true,
+     "note": "6-needle; Brother USA page does not mention wireless.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PR680W",
+     "type": "commercial",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PR680W",
+     "verified": true,
+     "note": "6-needle, wireless enabled.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "PRS100",
+     "type": "home",
+     "formats": [
+      "pes",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery/PRS100",
+     "verified": true,
+     "note": "Page says wireless enabled.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "SE1900",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE1900",
+     "verified": true,
+     "note": "Page says wireless enabled; Design Database Transfer not named on the page.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "SE2000",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE2000",
+     "verified": true,
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "SE600",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE600",
+     "verified": true,
+     "note": "Page says wireless enabled; Design Database Transfer not named on the page.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "SE700",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE700",
+     "verified": true,
+     "note": "Page lists Wireless LAN and the Artspira app; Design Database Transfer not named on the page.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "SE725",
+     "type": "home",
+     "formats": [
+      "pes",
+      "phc",
+      "phx",
+      "dst"
+     ],
+     "preferredFormat": "pes",
+     "transfer": [
+      "usb",
+      "wifi-lilo",
+      "wifi-official-app"
+     ],
+     "liloWifi": "untested (pedxml capability-detected)",
+     "source": "https://www.brother-usa.com/p/sewing-embroidery-combo/SE725",
+     "verified": true,
+     "note": "Wireless LAN model; the same Wi-Fi path Lilo Link uses (pedxml). Detection is automatic: Lilo Link supports any machine whose /info exposes the pedxml API. Not tested with Lilo yet.",
+     "liloSupport": "Wi-Fi + file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Elna",
+   "summary": "Janome-family brand (EMD native on some lines). Not verified; Lilo does not read or write EMD.",
+   "nativeFormats": [
+    "emd"
+   ],
+   "acceptedFormats": [
+    "emd"
+   ],
+   "transferMethods": [
+    "USB stick"
+   ],
+   "officialApp": "none confirmed",
+   "sources": [
+    {
+     "url": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "claim": "EMD is a read-only format in pyembroidery; Elna's own format"
+    }
+   ],
+   "models": [
+    {
+     "name": "eXpressive 860",
+     "type": "home",
+     "formats": [
+      "emd"
+     ],
+     "preferredFormat": "emd",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.elna.com/",
+     "verified": false,
+     "note": "UNVERIFIED. Elna site was reachable but no spec page was read.",
+     "liloSupport": "not supported",
+     "testStatus": "unverified"
+    },
+    {
+     "name": "eXpressive 960",
+     "type": "home",
+     "formats": [
+      "emd"
+     ],
+     "preferredFormat": "emd",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.elna.com/",
+     "verified": false,
+     "note": "UNVERIFIED. As above.",
+     "liloSupport": "not supported",
+     "testStatus": "unverified"
+    }
+   ]
+  },
+  {
+   "name": "Happy",
+   "summary": "Commercial (HappyJapan, sold in the US by TEXMAC). HappyLink and HappyLAN are Happy's own tools. Reads DST; TAP is Happy's own.",
+   "nativeFormats": [
+    "tap"
+   ],
+   "acceptedFormats": [
+    "tap",
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Network: HappyLAN",
+    "PC link: HappyLink"
+   ],
+   "officialApp": "HappyLink / HappyLAN",
+   "sources": [
+    {
+     "url": "https://happyjapan.com/",
+     "claim": "Support for HappyLink, HappyLAN and HappyBELL"
+    }
+   ],
+   "models": [
+    {
+     "name": "HCS3",
+     "type": "commercial",
+     "formats": [
+      "dst",
+      "tap"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://happyjapan.com/",
+     "verified": false,
+     "note": "UNVERIFIED model line.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Husqvarna Viking",
+   "summary": "Native VP3 on current machines (HUS on older ones). Wi-Fi/cloud via the mySewnet app on newer models. Not verified against Viking pages (site is script-rendered).",
+   "nativeFormats": [
+    "vp3"
+   ],
+   "acceptedFormats": [
+    "vp3",
+    "hus",
+    "shv"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Wi-Fi: mySewnet (newer models, UNVERIFIED)"
+   ],
+   "officialApp": "mySewnet",
+   "sources": [
+    {
+     "url": "https://www.singer.com/",
+     "claim": "SVP brands (Singer, Pfaff, Husqvarna Viking) link the mySewnet embroidery app (com.mysewnet.embroidery)"
+    }
+   ],
+   "models": [
+    {
+     "name": "Designer Epic 2",
+     "type": "home",
+     "formats": [
+      "vp3",
+      "hus"
+     ],
+     "preferredFormat": "vp3",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": false,
+     "source": "https://husqvarnaviking.com/",
+     "verified": false,
+     "note": "UNVERIFIED. Appears in the hoop library as 'Designer Epic'.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Designer Epic 3",
+     "type": "home",
+     "formats": [
+      "vp3",
+      "hus"
+     ],
+     "preferredFormat": "vp3",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": false,
+     "source": "https://husqvarnaviking.com/",
+     "verified": false,
+     "note": "UNVERIFIED. mySewnet Wi-Fi, no Lilo path.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Designer Jade 35",
+     "type": "home",
+     "formats": [
+      "vp3",
+      "hus"
+     ],
+     "preferredFormat": "vp3",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://husqvarnaviking.com/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Janome",
+   "summary": "Native JEF (JEF+ on newer models). USB stick only on every model checked. No Janome Wi-Fi path confirmed.",
+   "nativeFormats": [
+    "jef"
+   ],
+   "acceptedFormats": [
+    "jef",
+    "jef+",
+    "jpx",
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick"
+   ],
+   "officialApp": "AcuDesign / Janome software (not verified)",
+   "sources": [
+    {
+     "url": "https://www.janome.com/machines/embroidery/memory-craft-550e/",
+     "claim": "MC550E: .JEF, .JEF+, .JPX; USB"
+    },
+    {
+     "url": "https://www.janome.com/machines/embroidery/memory-craft-9850/",
+     "claim": "MC9850: .JEF, .JEF+; USB"
+    },
+    {
+     "url": "https://www.janome.com/machines/embroidery/mb-7/",
+     "claim": "MB-7: .jef+, .jef, .dst; USB"
+    }
+   ],
+   "models": [
+    {
+     "name": "MB-7",
+     "type": "commercial",
+     "formats": [
+      "jef+",
+      "jef",
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.janome.com/machines/embroidery/mb-7/",
+     "verified": true,
+     "note": "7-needle. 238x200 mm field.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Memory Craft 15000",
+     "type": "home",
+     "formats": [
+      "jef",
+      "jef+"
+     ],
+     "preferredFormat": "jef",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.janome.com/machines/embroidery/memory-craft-15000/",
+     "verified": false,
+     "note": "Page found but the spec text was not readable. UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Memory Craft 400E",
+     "type": "home",
+     "formats": [
+      "jef",
+      "jef+"
+     ],
+     "preferredFormat": "jef",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.janome.com/machines/embroidery/memory-craft-400e/",
+     "verified": false,
+     "note": "Page: USB for importing designs. Format list not in the page text.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Memory Craft 500E",
+     "type": "home",
+     "formats": [
+      "jef",
+      "jef+"
+     ],
+     "preferredFormat": "jef",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.janome.com/machines/embroidery/memory-craft-500e/",
+     "verified": false,
+     "note": "Janome page says it uses Janome embroidery formats; the exact list was not on the page text. 7.9x11 in.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Memory Craft 550E",
+     "type": "home",
+     "formats": [
+      "jef",
+      "jef+",
+      "jpx"
+     ],
+     "preferredFormat": "jef",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.janome.com/machines/embroidery/memory-craft-550e/",
+     "verified": true,
+     "note": "7.9x14.2 in field with magnetic clips.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Memory Craft 9850",
+     "type": "home",
+     "formats": [
+      "jef",
+      "jef+"
+     ],
+     "preferredFormat": "jef",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.janome.com/machines/embroidery/memory-craft-9850/",
+     "verified": true,
+     "note": "170x200 mm field.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Skyline S9",
+     "type": "home",
+     "formats": [
+      "jef",
+      "jef+"
+     ],
+     "preferredFormat": "jef",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://github.com/Kadwood/lilo/blob/main/engine/src/hoops/library.json",
+     "verified": false,
+     "note": "In the hoop library; formats and transfer UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Juki",
+   "summary": "No current Juki home embroidery lineup was verified. Industrial Juki sewing is outside Lilo's scope. Listed for completeness.",
+   "nativeFormats": [],
+   "acceptedFormats": [],
+   "transferMethods": [],
+   "officialApp": "none",
+   "sources": [
+    {
+     "url": "https://juki.com/",
+     "claim": "Reached; no embroidery model page read"
+    }
+   ],
+   "models": []
+  },
+  {
+   "name": "Melco",
+   "summary": "Native EXP (and OFM project files in Melco software). Commercial multi-needle. Reads DST too.",
+   "nativeFormats": [
+    "exp"
+   ],
+   "acceptedFormats": [
+    "exp",
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Network (Melco software, UNVERIFIED)"
+   ],
+   "officialApp": "Melco OS / Design Shop (UNVERIFIED)",
+   "sources": [
+    {
+     "url": "https://melco.com/",
+     "claim": "Site reached; no spec read. Formats from pyembroidery docs (EXP is Melco's)"
+    }
+   ],
+   "models": [
+    {
+     "name": "Bravo",
+     "type": "commercial",
+     "formats": [
+      "exp",
+      "dst"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://melco.com/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "EMT16X",
+     "type": "commercial",
+     "formats": [
+      "exp",
+      "dst"
+     ],
+     "preferredFormat": "exp",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://melco.com/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Pfaff",
+   "summary": "Native VP3 (KSM/MAX/PCS on very old machines). Newer models use mySewnet. Not verified against Pfaff pages.",
+   "nativeFormats": [
+    "vp3"
+   ],
+   "acceptedFormats": [
+    "vp3",
+    "hus"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Wi-Fi: mySewnet (newer models, UNVERIFIED)"
+   ],
+   "officialApp": "mySewnet",
+   "sources": [
+    {
+     "url": "https://www.singer.com/",
+     "claim": "SVP brands link the mySewnet embroidery app"
+    }
+   ],
+   "models": [
+    {
+     "name": "Creative Ambition",
+     "type": "home",
+     "formats": [
+      "vp3"
+     ],
+     "preferredFormat": "vp3",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://pfaff.com/",
+     "verified": false,
+     "note": "UNVERIFIED. In the hoop library.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Creative Icon 2",
+     "type": "home",
+     "formats": [
+      "vp3"
+     ],
+     "preferredFormat": "vp3",
+     "transfer": [
+      "usb",
+      "wifi-official-app"
+     ],
+     "liloWifi": false,
+     "source": "https://pfaff.com/",
+     "verified": false,
+     "note": "UNVERIFIED. In the hoop library.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Ricoma",
+   "summary": "Reads DST and 'many commonly used formats' (Ricoma). Commercial, popular with small shops.",
+   "nativeFormats": [
+    "dst"
+   ],
+   "acceptedFormats": [
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Wi-Fi / network (UNVERIFIED)"
+   ],
+   "officialApp": "Chroma (optional digitizing software)",
+   "sources": [
+    {
+     "url": "https://ricoma.com/",
+     "claim": "Machines read the embroidery file themselves, support many commonly used formats, Chroma optional"
+    }
+   ],
+   "models": [
+    {
+     "name": "Marquee 15",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://ricoma.com/",
+     "verified": false,
+     "note": "15-needle.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Marquee 2",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://ricoma.com/",
+     "verified": false,
+     "note": "20-needle.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Marquee 20",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://ricoma.com/",
+     "verified": false,
+     "note": "20-needle.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Swift 15",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://ricoma.com/",
+     "verified": false,
+     "note": "15-needle. Format list not on the page.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Swift 2",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://ricoma.com/",
+     "verified": false,
+     "note": "15-needle.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Singer",
+   "summary": "XXX on the Legacy/Futura embroidery machines. Singer's mySewnet app is linked from singer.com. Not verified per model.",
+   "nativeFormats": [
+    "xxx"
+   ],
+   "acceptedFormats": [
+    "xxx",
+    "pes"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "App: mySewnet (UNVERIFIED which models)"
+   ],
+   "officialApp": "mySewnet",
+   "sources": [
+    {
+     "url": "https://www.singer.com/",
+     "claim": "Links the mySewnet embroidery app; Creativate app for guided projects"
+    }
+   ],
+   "models": [
+    {
+     "name": "Legacy SE300",
+     "type": "home",
+     "formats": [
+      "xxx"
+     ],
+     "preferredFormat": "xxx",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.singer.com/",
+     "verified": false,
+     "note": "UNVERIFIED format. In the hoop library.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Legacy SE340",
+     "type": "home",
+     "formats": [
+      "xxx"
+     ],
+     "preferredFormat": "xxx",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.singer.com/",
+     "verified": false,
+     "note": "UNVERIFIED format. In the hoop library.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "Smart Heavy Duty 9120",
+     "type": "home",
+     "formats": [
+      "xxx"
+     ],
+     "preferredFormat": "xxx",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.singer.com/products/singer-smart-heavy-duty-9120-sewing-embroidery-machine",
+     "verified": false,
+     "note": "Listed on singer.com as embroidery-capable; specs not published on the page.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "SWF",
+   "summary": "Commercial multi-needle; reads DST. Not verified.",
+   "nativeFormats": [
+    "dst"
+   ],
+   "acceptedFormats": [
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Network (UNVERIFIED)"
+   ],
+   "officialApp": "none confirmed",
+   "sources": [
+    {
+     "url": "https://www.swf.co.jp/",
+     "claim": "Site reached; no spec read"
+    }
+   ],
+   "models": [
+    {
+     "name": "K-series",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://www.swf.co.jp/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Tajima",
+   "summary": "Created DST. Also TBF (Tajima's own). Commercial multi-head.",
+   "nativeFormats": [
+    "dst"
+   ],
+   "acceptedFormats": [
+    "dst",
+    "tbf"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Network (UNVERIFIED)"
+   ],
+   "officialApp": "DG/ML by Pulse (UNVERIFIED)",
+   "sources": [
+    {
+     "url": "https://www.tajima.com/",
+     "claim": "Site reached; no spec read. DST/TBF from pyembroidery docs"
+    }
+   ],
+   "models": [
+    {
+     "name": "TFMX-C",
+     "type": "commercial",
+     "formats": [
+      "dst",
+      "tbf"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://www.tajima.com/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    },
+    {
+     "name": "TMEZ-SC",
+     "type": "commercial",
+     "formats": [
+      "dst",
+      "tbf"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://www.tajima.com/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "Toyota",
+   "summary": "Commercial. Native 100/10o files; reads DST. Not verified.",
+   "nativeFormats": [
+    "100"
+   ],
+   "acceptedFormats": [
+    "100",
+    "10o",
+    "dst"
+   ],
+   "transferMethods": [
+    "USB stick"
+   ],
+   "officialApp": "none confirmed",
+   "sources": [
+    {
+     "url": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "claim": "10o and 100 appear in pyembroidery's readable list (Toyota)"
+    }
+   ],
+   "models": [
+    {
+     "name": "ESP9000",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb"
+     ],
+     "liloWifi": false,
+     "source": "https://github.com/EmbroidePy/pyembroidery/blob/main/README.md",
+     "verified": false,
+     "note": "UNVERIFIED model name; DST from common practice.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  },
+  {
+   "name": "ZSK",
+   "summary": "German commercial maker. Reads DST; ZXY/DSZ are ZSK's own. Not verified.",
+   "nativeFormats": [
+    "dst"
+   ],
+   "acceptedFormats": [
+    "dst",
+    "dsz",
+    "zxy"
+   ],
+   "transferMethods": [
+    "USB stick",
+    "Network (UNVERIFIED)"
+   ],
+   "officialApp": "ZSK software (UNVERIFIED)",
+   "sources": [
+    {
+     "url": "https://www.zsk.de/en/",
+     "claim": "Site reached; no spec read"
+    }
+   ],
+   "models": [
+    {
+     "name": "Sprint 7",
+     "type": "commercial",
+     "formats": [
+      "dst"
+     ],
+     "preferredFormat": "dst",
+     "transfer": [
+      "usb",
+      "network"
+     ],
+     "liloWifi": false,
+     "source": "https://www.zsk.de/en/",
+     "verified": false,
+     "note": "UNVERIFIED.",
+     "liloSupport": "file",
+     "testStatus": "file format verified (pyembroidery round-trip)"
+    }
+   ]
+  }
+ ],
+ "threads": [
+  {
+   "id": "admelody-polyester",
+   "brand": "Admelody",
+   "line": "Polyester",
+   "label": "Admelody Polyester",
+   "count": 320,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Admelody%20Polyester.gpl"
+  },
+  {
+   "id": "admelody-rayon",
+   "brand": "Admelody",
+   "line": "Rayon",
+   "label": "Admelody Rayon",
+   "count": 420,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Admelody%20Rayon.gpl"
+  },
+  {
+   "id": "anchor-standard",
+   "brand": "Anchor",
+   "line": "Standard",
+   "label": "Anchor",
+   "count": 420,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Anchor.gpl"
+  },
+  {
+   "id": "arc-polyester",
+   "brand": "ARC",
+   "line": "Polyester",
+   "label": "ARC Polyester",
+   "count": 288,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20ARC%20Polyester.gpl"
+  },
+  {
+   "id": "arc-rayon",
+   "brand": "ARC",
+   "line": "Rayon",
+   "label": "ARC Rayon",
+   "count": 288,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20ARC%20Rayon.gpl"
+  },
+  {
+   "id": "aurifil-lana",
+   "brand": "Aurifil",
+   "line": "Lana",
+   "label": "Aurifil Lana",
+   "count": 106,
+   "material": "wool",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Lana.gpl"
+  },
+  {
+   "id": "aurifil-mako",
+   "brand": "Aurifil",
+   "line": "Mako",
+   "label": "Aurifil Mako",
+   "count": 158,
+   "material": "cotton",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Mako.gpl"
+  },
+  {
+   "id": "aurifil-polyester",
+   "brand": "Aurifil",
+   "line": "Polyester",
+   "label": "Aurifil Polyester",
+   "count": 204,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Polyester.gpl"
+  },
+  {
+   "id": "aurifil-rayon",
+   "brand": "Aurifil",
+   "line": "Rayon",
+   "label": "Aurifil Rayon",
+   "count": 180,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Rayon.gpl"
+  },
+  {
+   "id": "aurifil-royal",
+   "brand": "Aurifil",
+   "line": "Royal",
+   "label": "Aurifil Royal",
+   "count": 499,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Aurifil%20Royal.gpl"
+  },
+  {
+   "id": "bfc-polyester",
+   "brand": "BFC",
+   "line": "Polyester",
+   "label": "BFC Polyester",
+   "count": 320,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20BFC%20Polyester.gpl"
+  },
+  {
+   "id": "brildor-ac",
+   "brand": "Brildor",
+   "line": "AC",
+   "label": "Brildor AC",
+   "count": 120,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20AC.gpl"
+  },
+  {
+   "id": "brildor-co",
+   "brand": "Brildor",
+   "line": "CO",
+   "label": "Brildor CO",
+   "count": 70,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20CO.gpl"
+  },
+  {
+   "id": "brildor-mf",
+   "brand": "Brildor",
+   "line": "MF",
+   "label": "Brildor MF",
+   "count": 210,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20MF.gpl"
+  },
+  {
+   "id": "brildor-ny",
+   "brand": "Brildor",
+   "line": "NY",
+   "label": "Brildor NY",
+   "count": 180,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20NY.gpl"
+  },
+  {
+   "id": "brildor-pb",
+   "brand": "Brildor",
+   "line": "PB",
+   "label": "Brildor PB",
+   "count": 260,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brildor%20PB.gpl"
+  },
+  {
+   "id": "brothread-40",
+   "brand": "Brother",
+   "line": "Brothread 40",
+   "label": "Brothread 40",
+   "count": 40,
+   "material": "polyester",
+   "weight": 40,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brothread%2040.gpl"
+  },
+  {
+   "id": "brother-brothread-80",
+   "brand": "Brother",
+   "line": "Brothread 80",
+   "label": "Brothread 80",
+   "count": 78,
+   "material": "polyester",
+   "weight": 80,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brothread%2080.gpl"
+  },
+  {
+   "id": "brother-country",
+   "brand": "Brother",
+   "line": "Country",
+   "label": "Brother Country",
+   "count": 61,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Country.gpl"
+  },
+  {
+   "id": "brother-embroidery",
+   "brand": "Brother",
+   "line": "Embroidery",
+   "label": "Brother Embroidery",
+   "count": 61,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Brother%20Embroidery.gpl"
+  },
+  {
+   "id": "coats-alcazar",
+   "brand": "Coats",
+   "line": "Alcazar",
+   "label": "Coats Alcazar",
+   "count": 500,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Alcazar.gpl"
+  },
+  {
+   "id": "coats-alcazar-jazz",
+   "brand": "Coats",
+   "line": "Alcazar Jazz",
+   "label": "Coats Alcazar Jazz",
+   "count": 304,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Alcazar%20Jazz.gpl"
+  },
+  {
+   "id": "coats-sylko",
+   "brand": "Coats",
+   "line": "Sylko",
+   "label": "Coats Sylko",
+   "count": 399,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Sylko.gpl"
+  },
+  {
+   "id": "coats-sylko-usa",
+   "brand": "Coats",
+   "line": "Sylko USA",
+   "label": "Coats Sylko USA",
+   "count": 303,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Coats%20Sylko%20USA.gpl"
+  },
+  {
+   "id": "dmc-standard",
+   "brand": "DMC",
+   "line": "Standard",
+   "label": "DMC",
+   "count": 457,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20DMC.gpl"
+  },
+  {
+   "id": "embroidex-standard",
+   "brand": "Embroidex",
+   "line": "Standard",
+   "label": "Embroidex",
+   "count": 257,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Embroidex.gpl"
+  },
+  {
+   "id": "emmel-standard",
+   "brand": "Emmel",
+   "line": "Standard",
+   "label": "Emmel",
+   "count": 520,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Emmel.gpl"
+  },
+  {
+   "id": "fil-tec-glide",
+   "brand": "Fil-Tec",
+   "line": "Glide",
+   "label": "Fil-Tec Glide",
+   "count": 212,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Fil-Tec%20Glide.gpl"
+  },
+  {
+   "id": "floriani-polyester",
+   "brand": "Floriani",
+   "line": "Polyester",
+   "label": "Floriani Polyester",
+   "count": 286,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Floriani%20Polyester.gpl"
+  },
+  {
+   "id": "fufu-polyester",
+   "brand": "FuFu",
+   "line": "Polyester",
+   "label": "FuFu Polyester",
+   "count": 713,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20FuFu%20Polyester.gpl"
+  },
+  {
+   "id": "fufu-rayon",
+   "brand": "FuFu",
+   "line": "Rayon",
+   "label": "FuFu Rayon",
+   "count": 713,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20FuFu%20Rayon.gpl"
+  },
+  {
+   "id": "gunold-polyester",
+   "brand": "Gunold",
+   "line": "Polyester",
+   "label": "Gunold Polyester",
+   "count": 300,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Gunold%20Polyester.gpl"
+  },
+  {
+   "id": "gutermann-creativ-dekor",
+   "brand": "Gutermann",
+   "line": "Creativ Dekor",
+   "label": "Gutermann Creativ Dekor",
+   "count": 200,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Gutermann%20Creativ%20Dekor.gpl"
+  },
+  {
+   "id": "hemingworth-standard",
+   "brand": "Hemingworth",
+   "line": "Standard",
+   "label": "Hemingworth",
+   "count": 294,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Hemingworth.gpl"
+  },
+  {
+   "id": "isacord-polyester",
+   "brand": "Isacord",
+   "line": "Polyester",
+   "label": "Isacord Polyester",
+   "count": 398,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Isacord%20Polyester.gpl"
+  },
+  {
+   "id": "isafil-rayon",
+   "brand": "Isafil",
+   "line": "Rayon",
+   "label": "Isafil Rayon",
+   "count": 286,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Isafil%20Rayon.gpl"
+  },
+  {
+   "id": "isalon-polyester",
+   "brand": "Isalon",
+   "line": "Polyester",
+   "label": "Isalon Polyester",
+   "count": 414,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Isalon%20Polyester.gpl"
+  },
+  {
+   "id": "janome-standard",
+   "brand": "Janome",
+   "line": "Standard",
+   "label": "Janome",
+   "count": 78,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Janome.gpl"
+  },
+  {
+   "id": "king-star-standard",
+   "brand": "King Star",
+   "line": "Standard",
+   "label": "King Star",
+   "count": 430,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20King%20Star.gpl"
+  },
+  {
+   "id": "madeira-burmilana",
+   "brand": "Madeira",
+   "line": "Burmilana",
+   "label": "Madeira Burmilana",
+   "count": 121,
+   "material": "wool",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Burmilana.gpl"
+  },
+  {
+   "id": "madeira-matt",
+   "brand": "Madeira",
+   "line": "Matt",
+   "label": "Madeira Matt",
+   "count": 161,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Matt.gpl"
+  },
+  {
+   "id": "madeira-polyneon",
+   "brand": "Madeira",
+   "line": "Polyneon",
+   "label": "Madeira Polyneon",
+   "count": 349,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Polyneon.gpl"
+  },
+  {
+   "id": "madeira-rayon",
+   "brand": "Madeira",
+   "line": "Rayon",
+   "label": "Madeira Rayon",
+   "count": 357,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Madeira%20Rayon.gpl"
+  },
+  {
+   "id": "magnifico-standard",
+   "brand": "Magnifico",
+   "line": "Standard",
+   "label": "Magnifico",
+   "count": 200,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Magnifico.gpl"
+  },
+  {
+   "id": "marathon-polyester",
+   "brand": "Marathon",
+   "line": "Polyester",
+   "label": "Marathon Polyester",
+   "count": 301,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Marathon%20Polyester.gpl"
+  },
+  {
+   "id": "marathon-rayon",
+   "brand": "Marathon",
+   "line": "Rayon",
+   "label": "Marathon Rayon",
+   "count": 317,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Marathon%20Rayon.gpl"
+  },
+  {
+   "id": "marathon-rayon-v3",
+   "brand": "Marathon",
+   "line": "Rayon V3",
+   "label": "Marathon Rayon V3",
+   "count": 384,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Marathon%20Rayon%20V3.gpl"
+  },
+  {
+   "id": "metro-standard",
+   "brand": "Metro",
+   "line": "Standard",
+   "label": "Metro",
+   "count": 168,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Metro.gpl"
+  },
+  {
+   "id": "mettler-embroidery",
+   "brand": "Mettler",
+   "line": "Embroidery",
+   "label": "Mettler Embroidery",
+   "count": 152,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Mettler%20Embroidery.gpl"
+  },
+  {
+   "id": "mettler-poly-sheen",
+   "brand": "Mettler",
+   "line": "Poly Sheen",
+   "label": "Mettler Poly Sheen",
+   "count": 351,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Mettler%20Poly%20Sheen.gpl"
+  },
+  {
+   "id": "mtb-embroidex",
+   "brand": "MTB",
+   "line": "- Embroidex",
+   "label": "MTB - Embroidex",
+   "count": 107,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20MTB%20-%20Embroidex.gpl"
+  },
+  {
+   "id": "outback-embroidery-rayon",
+   "brand": "Outback",
+   "line": "Embroidery Rayon",
+   "label": "Outback Embroidery Rayon",
+   "count": 100,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Outback%20Embroidery%20Rayon.gpl"
+  },
+  {
+   "id": "poly-x40-standard",
+   "brand": "Poly X40",
+   "line": "Standard",
+   "label": "Poly X40",
+   "count": 286,
+   "material": "polyester",
+   "weight": 40,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Poly%20X40.gpl"
+  },
+  {
+   "id": "princess-standard",
+   "brand": "Princess",
+   "line": "Standard",
+   "label": "Princess",
+   "count": 120,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Princess.gpl"
+  },
+  {
+   "id": "radiant-rayon",
+   "brand": "Radiant",
+   "line": "Rayon",
+   "label": "Radiant Rayon",
+   "count": 102,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Radiant%20Rayon.gpl"
+  },
+  {
+   "id": "ral-standard",
+   "brand": "RAL",
+   "line": "Standard",
+   "label": "RAL",
+   "count": 194,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20RAL.gpl"
+  },
+  {
+   "id": "robison-anton-polyester",
+   "brand": "Robison-Anton",
+   "line": "Polyester",
+   "label": "Robison-Anton Polyester",
+   "count": 447,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Robison-Anton%20Polyester.gpl"
+  },
+  {
+   "id": "robison-anton-rayon",
+   "brand": "Robison-Anton",
+   "line": "Rayon",
+   "label": "Robison-Anton Rayon",
+   "count": 419,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Robison-Anton%20Rayon.gpl"
+  },
+  {
+   "id": "royal-polyester",
+   "brand": "Royal",
+   "line": "Polyester",
+   "label": "Royal Polyester",
+   "count": 412,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Royal%20Polyester.gpl"
+  },
+  {
+   "id": "royal-viscose-rayon",
+   "brand": "Royal",
+   "line": "Viscose Rayon",
+   "label": "Royal Viscose Rayon",
+   "count": 494,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Royal%20Viscose%20Rayon.gpl"
+  },
+  {
+   "id": "sigma-standard",
+   "brand": "Sigma",
+   "line": "Standard",
+   "label": "Sigma",
+   "count": 149,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Sigma.gpl"
+  },
+  {
+   "id": "simthread-glow-in-the-dark-15-colors",
+   "brand": "Simthread",
+   "line": "Glow In The Dark 15 Colors",
+   "label": "Simthread Glow In The Dark 15 Colors",
+   "count": 15,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Glow%20In%20The%20Dark%2015%20Colors.gpl"
+  },
+  {
+   "id": "simthread-polyester",
+   "brand": "Simthread",
+   "line": "Polyester",
+   "label": "Simthread Polyester",
+   "count": 107,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Polyester.gpl"
+  },
+  {
+   "id": "simthread-polyester-63-brother-colors",
+   "brand": "Simthread",
+   "line": "Polyester 63 Brother Colors",
+   "label": "Simthread Polyester 63 Brother Colors",
+   "count": 63,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Polyester%2063%20Brother%20Colors.gpl"
+  },
+  {
+   "id": "simthread-rayon",
+   "brand": "Simthread",
+   "line": "Rayon",
+   "label": "Simthread Rayon",
+   "count": 384,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Simthread%20Rayon.gpl"
+  },
+  {
+   "id": "sulky-polyester",
+   "brand": "Sulky",
+   "line": "Polyester",
+   "label": "Sulky Polyester",
+   "count": 905,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Sulky%20Polyester.gpl"
+  },
+  {
+   "id": "sulky-rayon",
+   "brand": "Sulky",
+   "line": "Rayon",
+   "label": "Sulky Rayon",
+   "count": 289,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Sulky%20Rayon.gpl"
+  },
+  {
+   "id": "swist-rayon",
+   "brand": "Swist",
+   "line": "Rayon",
+   "label": "Swist Rayon",
+   "count": 227,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Swist%20Rayon.gpl"
+  },
+  {
+   "id": "threadart-standard",
+   "brand": "Threadart",
+   "line": "Standard",
+   "label": "Threadart",
+   "count": 223,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Threadart.gpl"
+  },
+  {
+   "id": "tristar-polyester",
+   "brand": "Tristar",
+   "line": "Polyester",
+   "label": "Tristar Polyester",
+   "count": 298,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Tristar%20Polyester.gpl"
+  },
+  {
+   "id": "tristar-rayon",
+   "brand": "Tristar",
+   "line": "Rayon",
+   "label": "Tristar Rayon",
+   "count": 406,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Tristar%20Rayon.gpl"
+  },
+  {
+   "id": "viking-palette",
+   "brand": "Viking",
+   "line": "Palette",
+   "label": "Viking Palette",
+   "count": 29,
+   "material": null,
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Viking%20Palette.gpl"
+  },
+  {
+   "id": "vyapar-rayon",
+   "brand": "Vyapar",
+   "line": "Rayon",
+   "label": "Vyapar Rayon",
+   "count": 288,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Vyapar%20Rayon.gpl"
+  },
+  {
+   "id": "wonderfil-polyester",
+   "brand": "Wonderfil",
+   "line": "Polyester",
+   "label": "Wonderfil Polyester",
+   "count": 170,
+   "material": "polyester",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Wonderfil%20Polyester.gpl"
+  },
+  {
+   "id": "wonderfil-rayon",
+   "brand": "Wonderfil",
+   "line": "Rayon",
+   "label": "Wonderfil Rayon",
+   "count": 342,
+   "material": "rayon",
+   "weight": null,
+   "licence": "GPL-3.0",
+   "source": "https://github.com/inkstitch/inkstitch/blob/d59c9ab1e390285a6c67822436ffd9ba9843d8b4/palettes/InkStitch%20Wonderfil%20Rayon.gpl"
+  }
+ ],
+ "hoops": [
+  {
+   "id": "brother-100x100",
+   "brand": "Brother",
+   "name": "4 x 4 in",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PE550D",
+    "SE600",
+    "SE625",
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X",
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-130x180",
+   "brand": "Brother",
+   "name": "5 x 7 in",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PE800",
+    "PE900",
+    "SE1900",
+    "SE2000",
+    "NQ3700D",
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-160x260",
+   "brand": "Brother",
+   "name": "6 x 10 in",
+   "widthMm": 160,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NQ1700E",
+    "NQ3600D",
+    "NQ3700D"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-180x300",
+   "brand": "Brother",
+   "name": "7 x 12 in",
+   "widthMm": 180,
+   "heightMm": 300,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "VM5100",
+    "VM6200D"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true,
+   "note": "Maximum area from the spec page; the page does not name the hoop."
+  },
+  {
+   "id": "brother-300x200",
+   "brand": "Brother",
+   "name": "12 x 8 in (8 x 12 in frame)",
+   "widthMm": 300,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PR670E",
+    "PR680W"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true,
+   "note": "Landscape: the machine's field is 12 in wide, 8 in tall."
+  },
+  {
+   "id": "brother-360x200",
+   "brand": "Brother",
+   "name": "14 x 8 in (8 x 14 in frame)",
+   "widthMm": 360,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true,
+   "note": "Landscape: the machine's field is 14 in wide, 8 in tall."
+  },
+  {
+   "id": "brother-40x50",
+   "brand": "Brother",
+   "name": "1.5 x 2 in",
+   "widthMm": 40,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-200x200",
+   "brand": "Brother",
+   "name": "8 x 8 in",
+   "widthMm": 200,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-50x50",
+   "brand": "Brother",
+   "name": "2 x 2 in",
+   "widthMm": 50,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-40x45",
+   "brand": "Brother",
+   "name": "1.5 x 1.75 in",
+   "widthMm": 40,
+   "heightMm": 45,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "PRS100"
+   ],
+   "sources": [
+    "brother-usa"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-cap-130x60",
+   "brand": "Brother",
+   "name": "Cap frame PRCF3 (130 x 60)",
+   "widthMm": 130,
+   "heightMm": 60,
+   "shape": "cap",
+   "cornerRadiusMm": 8,
+   "clamp": "top",
+   "machines": [
+    "PR670E",
+    "PR680W",
+    "PR1050X",
+    "PR1055X"
+   ],
+   "sources": [
+    "brother-prcf3"
+   ],
+   "verified": true,
+   "note": "Brother names the PR series; the machines listed here are the PR models Lilo knows."
+  },
+  {
+   "id": "brother-nv2700-160x260",
+   "brand": "Brother",
+   "name": "NV2700 160 x 260",
+   "widthMm": 160,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NV2700"
+   ],
+   "sources": [
+    "lilo-spec"
+   ],
+   "verified": true,
+   "note": "Named like Lilo's first built-in hoops so old files match."
+  },
+  {
+   "id": "brother-nv2700-130x180",
+   "brand": "Brother",
+   "name": "NV2700 130 x 180",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NV2700"
+   ],
+   "sources": [
+    "lilo-spec"
+   ],
+   "verified": true
+  },
+  {
+   "id": "brother-nv1800q-130x180",
+   "brand": "Brother",
+   "name": "5 x 7 in",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "NV1800Q"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED: NV1800Q hoop list not confirmed; Brother's page for it is gone."
+  },
+  {
+   "id": "janome-sq14b",
+   "brand": "Janome",
+   "name": "SQ14b (140 x 140)",
+   "widthMm": 140,
+   "heightMm": 140,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-sq20b",
+   "brand": "Janome",
+   "name": "SQ20b (200 x 200)",
+   "widthMm": 200,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re20b",
+   "brand": "Janome",
+   "name": "RE20b (140 x 200)",
+   "widthMm": 140,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re28b",
+   "brand": "Janome",
+   "name": "RE28b (200 x 280)",
+   "widthMm": 200,
+   "heightMm": 280,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re36b",
+   "brand": "Janome",
+   "name": "RE36b (200 x 360)",
+   "widthMm": 200,
+   "heightMm": 360,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "none",
+   "machines": [
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc550e"
+   ],
+   "verified": true,
+   "note": "Held with magnetic clips, no screw."
+  },
+  {
+   "id": "janome-re10b",
+   "brand": "Janome",
+   "name": "RE10b (40 x 100)",
+   "widthMm": 40,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 500E",
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc500e",
+    "janome-mc550e"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-hh10b",
+   "brand": "Janome",
+   "name": "HH10b (40 x 90)",
+   "widthMm": 40,
+   "heightMm": 90,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc550e"
+   ],
+   "verified": true,
+   "note": "Janome prints 1.5 x 3.5 in; millimetres are converted."
+  },
+  {
+   "id": "janome-asq18b",
+   "brand": "Janome",
+   "name": "ASQ18b (180 x 180)",
+   "widthMm": 180,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Memory Craft 550E"
+   ],
+   "sources": [
+    "janome-mc550e"
+   ],
+   "verified": true,
+   "note": "Janome prints 7.2 x 7.2 in; millimetres are converted."
+  },
+  {
+   "id": "janome-mb7-m1",
+   "brand": "Janome",
+   "name": "MB-7 M1 (240 x 200)",
+   "widthMm": 240,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "MB-7"
+   ],
+   "sources": [
+    "janome-mb7"
+   ],
+   "verified": true,
+   "note": "Janome lists it 240 mm wide, 200 mm tall."
+  },
+  {
+   "id": "janome-mb7-m2",
+   "brand": "Janome",
+   "name": "MB-7 M2 (126 x 110)",
+   "widthMm": 126,
+   "heightMm": 110,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "MB-7"
+   ],
+   "sources": [
+    "janome-mb7"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-mb7-m3",
+   "brand": "Janome",
+   "name": "MB-7 M3 (50 x 50)",
+   "widthMm": 50,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "MB-7"
+   ],
+   "sources": [
+    "janome-mb7"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-re20a",
+   "brand": "Janome",
+   "name": "RE20a (170 x 200)",
+   "widthMm": 170,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Skyline S9"
+   ],
+   "sources": [
+    "janome-s9"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-sq14a",
+   "brand": "Janome",
+   "name": "SQ14a (140 x 140)",
+   "widthMm": 140,
+   "heightMm": 140,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Skyline S9"
+   ],
+   "sources": [
+    "janome-s9"
+   ],
+   "verified": true
+  },
+  {
+   "id": "janome-fa10a",
+   "brand": "Janome",
+   "name": "FA10a (100 x 40)",
+   "widthMm": 100,
+   "heightMm": 40,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Skyline S9"
+   ],
+   "sources": [
+    "janome-s9"
+   ],
+   "verified": true
+  },
+  {
+   "id": "bernina-oval-large",
+   "brand": "Bernina",
+   "name": "Large oval (145 x 255)",
+   "widthMm": 145,
+   "heightMm": 255,
+   "shape": "rect",
+   "cornerRadiusMm": 40,
+   "clamp": "right",
+   "machines": [
+    "B 700",
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. An oval frame around a rectangular field."
+  },
+  {
+   "id": "bernina-oval-medium",
+   "brand": "Bernina",
+   "name": "Medium oval (100 x 130)",
+   "widthMm": 100,
+   "heightMm": 130,
+   "shape": "rect",
+   "cornerRadiusMm": 30,
+   "clamp": "right",
+   "machines": [
+    "B 700",
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-oval-small",
+   "brand": "Bernina",
+   "name": "Small oval (72 x 50)",
+   "widthMm": 72,
+   "heightMm": 50,
+   "shape": "rect",
+   "cornerRadiusMm": 20,
+   "clamp": "right",
+   "machines": [
+    "B 700",
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-maxi",
+   "brand": "Bernina",
+   "name": "Maxi (400 x 210)",
+   "widthMm": 400,
+   "heightMm": 210,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "right",
+   "machines": [
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-mega",
+   "brand": "Bernina",
+   "name": "Mega (400 x 150)",
+   "widthMm": 400,
+   "heightMm": 150,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "right",
+   "machines": [
+    "B 770 QE",
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "bernina-jumbo",
+   "brand": "Bernina",
+   "name": "Jumbo (400 x 260)",
+   "widthMm": 400,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "right",
+   "machines": [
+    "B 790 PLUS",
+    "B 880 PLUS"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "viking-small-100x100",
+   "brand": "Husqvarna Viking / Pfaff",
+   "name": "Small (100 x 100)",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Husqvarna Viking Designer Epic",
+    "Pfaff Creative Icon 2",
+    "Pfaff Creative Ambition"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "viking-jumbo-240x150",
+   "brand": "Husqvarna Viking / Pfaff",
+   "name": "Jumbo (240 x 150)",
+   "widthMm": 240,
+   "heightMm": 150,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Husqvarna Viking Designer Epic",
+    "Pfaff Creative Icon 2",
+    "Pfaff Creative Ambition"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "viking-mega-360x200",
+   "brand": "Husqvarna Viking / Pfaff",
+   "name": "Mega (360 x 200)",
+   "widthMm": 360,
+   "heightMm": 200,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Husqvarna Viking Designer Epic",
+    "Pfaff Creative Icon 2",
+    "Pfaff Creative Ambition"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "babylock-100x100",
+   "brand": "Baby Lock",
+   "name": "4 x 4 in (100 x 100)",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Ellure Plus",
+    "Ellegante",
+    "Altair"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. Baby Lock embroidery machines are Brother-built; sizes follow the Brother standard."
+  },
+  {
+   "id": "babylock-130x180",
+   "brand": "Baby Lock",
+   "name": "5 x 7 in (130 x 180)",
+   "widthMm": 130,
+   "heightMm": 180,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Ellure Plus",
+    "Ellegante",
+    "Altair"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "babylock-160x260",
+   "brand": "Baby Lock",
+   "name": "6 x 10 in (160 x 260)",
+   "widthMm": 160,
+   "heightMm": 260,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Ellegante",
+    "Altair"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "singer-100x100",
+   "brand": "Singer",
+   "name": "4 x 4 in (100 x 100)",
+   "widthMm": 100,
+   "heightMm": 100,
+   "shape": "rect",
+   "cornerRadiusMm": 6,
+   "clamp": "right",
+   "machines": [
+    "Legacy SE300",
+    "Legacy SE340"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "ricoma-em",
+   "brand": "Ricoma",
+   "name": "EM Series max field (310 x 210)",
+   "widthMm": 310,
+   "heightMm": 210,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "EM Series"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Machine maximum, converted from 12.2 x 8.3 in. Real frames are smaller."
+  },
+  {
+   "id": "ricoma-creator",
+   "brand": "Ricoma",
+   "name": "Creator max field (380 x 210)",
+   "widthMm": 380,
+   "heightMm": 210,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Creator"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 15 x 8.3 in."
+  },
+  {
+   "id": "ricoma-swift",
+   "brand": "Ricoma",
+   "name": "Swift max field (520 x 350)",
+   "widthMm": 520,
+   "heightMm": 350,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Swift"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 20.5 x 13.8 in."
+  },
+  {
+   "id": "ricoma-marquee",
+   "brand": "Ricoma",
+   "name": "Marquee max field (500 x 360)",
+   "widthMm": 500,
+   "heightMm": 360,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Marquee"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 19.7 x 14.2 in."
+  },
+  {
+   "id": "ricoma-swift2",
+   "brand": "Ricoma",
+   "name": "Swift 2 / Marquee 2 max field (560 x 380)",
+   "widthMm": 560,
+   "heightMm": 380,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Swift 2",
+    "Marquee 2"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 22 x 14.9 in (Swift 2) and 22 x 15 in (Marquee 2)."
+  },
+  {
+   "id": "ricoma-titan",
+   "brand": "Ricoma",
+   "name": "Titan multi-head max field (500 x 450)",
+   "widthMm": 500,
+   "heightMm": 450,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Titan Series"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 19.7 x 17.7 in."
+  },
+  {
+   "id": "ricoma-combo",
+   "brand": "Ricoma",
+   "name": "Chenille combo max field (450 x 450)",
+   "widthMm": 450,
+   "heightMm": 450,
+   "shape": "rect",
+   "cornerRadiusMm": 10,
+   "clamp": "none",
+   "machines": [
+    "Embroidery and Chenille Combo"
+   ],
+   "sources": [
+    "ricoma-machines"
+   ],
+   "verified": true,
+   "note": "Converted from 17.7 x 17.7 in."
+  },
+  {
+   "id": "commercial-round-120",
+   "brand": "Tajima / commercial",
+   "name": "Round tubular 120",
+   "widthMm": 120,
+   "heightMm": 120,
+   "shape": "round",
+   "clamp": "right",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. Common tubular frame diameter."
+  },
+  {
+   "id": "commercial-round-160",
+   "brand": "Tajima / commercial",
+   "name": "Round tubular 160",
+   "widthMm": 160,
+   "heightMm": 160,
+   "shape": "round",
+   "clamp": "right",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "commercial-round-200",
+   "brand": "Tajima / commercial",
+   "name": "Round tubular 200",
+   "widthMm": 200,
+   "heightMm": 200,
+   "shape": "round",
+   "clamp": "right",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED."
+  },
+  {
+   "id": "commercial-cap-50x110",
+   "brand": "Tajima / commercial",
+   "name": "Cap frame, typical (50 x 110)",
+   "widthMm": 110,
+   "heightMm": 50,
+   "shape": "cap",
+   "cornerRadiusMm": 8,
+   "clamp": "top",
+   "machines": [
+    "Tajima",
+    "Barudan",
+    "Ricoma",
+    "Melco",
+    "Janome MB-7"
+   ],
+   "sources": [
+    "recall"
+   ],
+   "verified": false,
+   "note": "UNVERIFIED. A typical cap-front field; frames differ by maker."
+  }
+ ],
+ "hoopBrands": [
+  "Brother",
+  "Janome",
+  "Bernina",
+  "Husqvarna Viking / Pfaff",
+  "Baby Lock",
+  "Singer",
+  "Ricoma",
+  "Tajima / commercial"
+ ]
+}

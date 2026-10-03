@@ -24,6 +24,8 @@ jobs:
       - run: pnpm test:scripts
       # The old product name may only appear in NOTICE.md.
       - run: node scripts/check-no-ember.mjs
+      # docs/compatibility.md, docs/compat.json and the README "Works with" block are generated from data/compat.
+      - run: pnpm compat:check
       # Built-in embroidery fonts are generated, not committed. Cache the pinned download.
       - id: fonts-pin
         run: echo "commit=$(node --experimental-strip-types --no-warnings scripts/import-fonts.mjs --print-commit)" >> "$GITHUB_OUTPUT"

@@ -30,12 +30,15 @@ const opts = toEngineOptions(DEFAULT_UI_OPTIONS);
 
 describe("convert: what a file is", () => {
   it("knows embroidery files, pictures and everything else", () => {
-    for (const n of ["a.pes", "a.DST", "a.jef", "a.vp3", "a.exp", "a.xxx", "a.u01", "a.pec"]) expect(classifyInput(n)).toBe("embroidery");
+    for (const n of ["a.pes", "a.DST", "a.jef", "a.vp3", "a.exp", "a.xxx", "a.u01", "a.pec", "a.hus", "a.VIP", "a.tbf"]) expect(classifyInput(n)).toBe("embroidery");
+    // G-code is write-only, so a dropped .gcode is not something the Converter can read
+    expect(classifyInput("a.gcode")).toBe("unknown");
     for (const n of ["a.png", "a.JPG", "a.jpeg", "a.webp", "a.svg"]) expect(classifyInput(n)).toBe("image");
     for (const n of ["a.txt", "a.lilo", "noextension", "a."]) expect(classifyInput(n)).toBe("unknown");
   });
   it("offers the formats an input can become, and the traced SVG for pictures only", () => {
-    expect(targetsFor("embroidery")).toHaveLength(8);
+    expect(targetsFor("embroidery")).toHaveLength(12);
+    expect(targetsFor("embroidery")).toContain("gcode");
     expect(targetsFor("embroidery")).not.toContain("svg");
     expect(targetsFor("image", "a.png")).toContain("svg");
     expect(targetsFor("image", "a.svg")).not.toContain("svg");
@@ -53,6 +56,18 @@ describe("convert: embroidery to embroidery", () => {
     expect(out.name).toBe("crest.pes");
     expect(stitches(out.bytes, "pes")).toBeGreaterThan(100);
     expect(out.warnings.join(" ")).toMatch(/DST files don't store thread colours, so placeholder colours were assigned/);
+  });
+
+  it("PES to HUS, VIP, TBF and G-code: the first three read back, G-code is a stitch path", async () => {
+    const src = file("pes");
+    const outs = await convertInput(engine, src, ["hus", "vip", "tbf", "gcode"], opts);
+    expect(outs.map((o) => o.name)).toEqual(["crest.hus", "crest.vip", "crest.tbf", "crest.gcode"]);
+    const want = stitches(src.bytes, "pes");
+    for (const o of outs.slice(0, 3)) expect(stitches(o.bytes, o.target), o.name).toBe(want);
+    expect(new TextDecoder().decode(outs[3].bytes)).toMatch(/^\(STITCH_COUNT: \d+\)[\s\S]*M30\n$/);
+    // and a HUS file can be dropped back in
+    const [back] = await convertInput(engine, { name: "crest.hus", bytes: outs[0].bytes }, ["pes"], opts);
+    expect(stitches(back.bytes, "pes")).toBe(want);
   });
 
   it("PES to DST warns that colours are not kept; PES to JEF and VP3 do not", async () => {

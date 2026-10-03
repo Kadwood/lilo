@@ -4,10 +4,13 @@ import { MANUAL_STITCH_LENGTH_MM } from "../stitch/generate";
 import type { StitchPlan } from "../stitch/plan";
 import { readDst, writeDst } from "./dst";
 import { readExp, writeExp } from "./exp";
+import { writeGcode } from "./gcode";
+import { readHus, readVip, writeHus, writeVip } from "./hus";
 import { FormatError } from "./io";
 import { readJef, writeJef, type JefWriteOptions } from "./jef";
 import { readPecOrPes, writePec } from "./pec";
 import { patternToPlan, planToPattern } from "./plan";
+import { readTbf, writeTbf } from "./tbf";
 import { readU01, writeU01 } from "./u01";
 import { readVp3, writeVp3 } from "./vp3";
 import { readXxx, writeXxx } from "./xxx";
@@ -57,6 +60,14 @@ export function writeEmbroidery(plan: StitchPlan, to: string, options: WriteOpti
       return writeXxx(p);
     case "u01":
       return writeU01(p);
+    case "hus":
+      return writeHus(p, { label: options.label });
+    case "vip":
+      return writeVip(p, { label: options.label });
+    case "tbf":
+      return writeTbf(p, { label: options.label });
+    case "gcode":
+      return writeGcode(p, { label: options.label });
   }
 }
 
@@ -72,6 +83,7 @@ export interface ReadResult {
 /** Read an embroidery file into a plan (mm). Throws `FormatError` on corrupt or unsupported input. */
 export function readEmbroidery(bytes: Uint8Array, from: string): ReadResult {
   const ext = need(from);
+  if (!info(ext).canRead) throw new FormatError(`Lilo can write ${ext.toUpperCase()} files but can't open them.`);
   if (bytes.length === 0) throw new FormatError("The file is empty.");
   let pattern;
   try {
@@ -88,7 +100,13 @@ export function readEmbroidery(bytes: Uint8Array, from: string): ReadResult {
                 ? readVp3(bytes)
                 : ext === "xxx"
                   ? readXxx(bytes)
-                  : readU01(bytes);
+                  : ext === "hus"
+                    ? readHus(bytes)
+                    : ext === "vip"
+                      ? readVip(bytes)
+                      : ext === "tbf"
+                        ? readTbf(bytes)
+                        : readU01(bytes);
   } catch (e) {
     if (e instanceof FormatError) throw e;
     throw new FormatError(`This ${ext.toUpperCase()} file could not be read (${e instanceof Error ? e.message : "corrupt"}).`);

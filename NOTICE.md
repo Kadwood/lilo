@@ -89,9 +89,29 @@ to each, with these copyright holders:
 | `vtracer-wasm` 0.1.0 (https://github.com/jsscheller/vtracer-wasm) | WASM build of the vtracer web-app crate, raster to vector tracing | (c) 2025 jsscheller |
 | vtracer / visioncortex (https://github.com/visioncortex/vtracer) | the tracing algorithm inside `vtracer-wasm` (dual MIT or Apache-2.0) | (c) 2024 TSANG, Hao Fung |
 | `image-q` 4.0.0 (https://github.com/ibezkrovny/image-quantization) | colour quantisation (Wu) | (c) 2015 Igor Bezkrovny |
-| pyembroidery (https://github.com/EmbroidePy/pyembroidery) | the 64-colour Brother PEC palette in `engine/src/pes/pec-palette.ts` and the PES/PEC byte layout in `engine/src/pes/` were ported from its `EmbThreadPec.py`, `PecWriter.py` and `PesWriter.py`; the DST, EXP, JEF (incl. the 78-colour Janome table), VP3, XXX and U01 readers and writers in `engine/src/formats/`, the move transcoder (`EmbEncoder.py`) and the trim interpolation (`EmbPattern.interpolate_trims`) were ported from `DstReader/Writer.py`, `ExpReader/Writer.py`, `JefReader/Writer.py`, `EmbThreadJef.py`, `Vp3Reader/Writer.py`, `XxxReader/Writer.py`, `U01Reader/Writer.py`, `EmbEncoder.py` and `EmbPattern.py` | (c) 2018 pyembroidery authors |
+| pyembroidery (https://github.com/EmbroidePy/pyembroidery) | the 64-colour Brother PEC palette in `engine/src/pes/pec-palette.ts` and the PES/PEC byte layout in `engine/src/pes/` were ported from its `EmbThreadPec.py`, `PecWriter.py` and `PesWriter.py`; the DST, EXP, JEF (incl. the 78-colour Janome table), VP3, XXX, U01 and TBF readers and writers, the HUS reader and its decompressor (`hus-compress.ts`, with Husqvarna's 29-colour table), and the G-code writer in `engine/src/formats/`, the move transcoder (`EmbEncoder.py`) and the trim interpolation (`EmbPattern.interpolate_trims`) were ported from `DstReader/Writer.py`, `ExpReader/Writer.py`, `JefReader/Writer.py`, `EmbThreadJef.py`, `Vp3Reader/Writer.py`, `XxxReader/Writer.py`, `U01Reader/Writer.py`, `TbfReader/Writer.py`, `HusReader.py`, `EmbCompress.py`, `EmbThreadHus.py`, `GcodeWriter.py`, `EmbEncoder.py` and `EmbPattern.py` | (c) 2018 pyembroidery authors |
 | `fflate` 0.8 (https://github.com/101arrowz/fflate) | zip reading/writing for `.lilo` project files (`engine/src/project/`) and PNG deflate for thumbnails | (c) 2023 Arjun Barrett |
 | `objc2`, `objc2-foundation`, `objc2-vision` 0.3 (https://github.com/madsmtm/objc2) | Apple Vision text recognition for spool-label photos (`app/src-tauri/src/ocr.rs`); dual-licensed Zlib OR Apache-2.0 OR MIT, used here under MIT | (c) 2022 Mads Marquart |
+
+## libembroidery (zlib licence)
+
+The HUS and VIP file layout in `engine/src/formats/hus.ts` (header fields, the three separately
+compressed streams, the command bytes, the VIP colour record and its 400-byte XOR table) and the
+literal-only block that `engine/src/formats/hus-compress.ts` writes follow libembroidery
+(https://github.com/Embroidermodder/libembroidery), `format-hus` / `format-vip` and `compress.c`,
+which in turn credit Jason Weiler's notes "HUS and VIP File Formats" (http://www.jasonweiler.com/HUSandVIPFileFormatInfo.html)
+and tatarize's decompression work in pyembroidery. No libembroidery source is copied: the code is
+TypeScript written from those descriptions. libembroidery is under the zlib/libpng licence,
+(c) 2018-2025 The Embroidermodder Team and Josh Varga, which allows this use; its notice, which may not be
+removed from a source distribution of libembroidery itself, reads:
+
+> This software is provided 'as-is', without any express or implied warranty. In no event will the
+> authors be held liable for any damages arising from the use of this software. Permission is granted
+> to anyone to use this software for any purpose, including commercial applications, and to alter it
+> and redistribute it freely, subject to the following restrictions: 1. The origin of this software
+> must not be misrepresented; you must not claim that you wrote the original software. 2. Altered
+> source versions must be plainly marked as such, and must not be misrepresented as being the
+> original software. 3. This notice may not be removed or altered from any source distribution.
 
 ## jsts (EDL-1.0 OR EPL-1.0)
 
