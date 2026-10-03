@@ -1,0 +1,103 @@
+import { open, save } from "@tauri-apps/plugin-dialog";
+import { readFile, writeFile } from "@tauri-apps/plugin-fs";
+import { BridgeClient } from "../link/api/client";
+import type { SavedMachine } from "../link/api/types";
+import type { JobRecord } from "../link/api/types";
+import type { Platform, PlatformMachine, SendResult } from "./types";
+
+const TERMINAL = new Set(["done", "failed", "cancelled", "needs_reconciliation"]);
+const POLL_MS = 500;
+/** Brother machines can take a while to accept a file; give up polling (not the job) after this. */
+const POLL_TIMEOUT_MS = 5 * 60 * 1000;
+
+let clientPromise: Promise<BridgeClient> | null = null;
+/** One connection to the local Lilo Link API (port + token come from the Rust side). */
+function client(): Promise<BridgeClient> {
+  clientPromise ??= BridgeClient.connect().catch((e) => {
+    clientPromise = null;
+    throw e;
+  });
+  return clientPromise;
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+function fromSaved(m: SavedMachine): PlatformMachine {
+  return {
+    ip: m.ip,
+    name: m.nickname || m.ip,
+    manufacturer: m.manufacturer ?? null,
+    serial: m.serial ?? null,
+    model: null,
+    saved: true,
+  };
+}
+
+function toResult(job: JobRecord): SendResult {
+  return { jobId: job.id, state: job.state, storedAs: job.storedAs, error: job.error };
+}
+
+export const tauriPlatform: Platform = {
+  kind: "tauri",
+
+  async savedMachines() {
+    return (await (await client()).machines()).saved.map(fromSaved);
+  },
+
+  async discoverMachines() {
+    const c = await client();
+    const found = (await c.discover()).discovered;
+    const { saved } = await c.machines();
+    const out = new Map<string, PlatformMachine>(saved.map((m) => [m.ip, fromSaved(m)]));
+    for (const { info } of found) {
+      const { identity } = info;
+      if (out.has(identity.ip)) continue;
+      out.set(identity.ip, {
+        ip: identity.ip,
+        name: identity.name || identity.model,
+        manufacturer: identity.manufacturer,
+        serial: identity.serial,
+        model: identity.model,
+        saved: false,
+      });
+    }
+    return [...out.values()];
+  },
+
+  async sendToMachine(ip, filename, bytes, options) {
+    const c = await client();
+    // Dongle machines need their serial so the Rust side can find the pairing token.
+    const saved = (await c.machines()).saved.find((m) => m.ip === ip);
+    const identity =
+      saved?.manufacturer && saved.serial
+        ? { manufacturer: saved.manufacturer, serial: saved.serial }
+        : undefined;
+    const body = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+    let job = await c.send(ip, filename, body, identity);
+    const deadline = Date.now() + POLL_TIMEOUT_MS;
+    for (;;) {
+      options?.onProgress?.({ state: job.state, sentBytes: job.sentBytes, totalBytes: job.totalBytes });
+      if (TERMINAL.has(job.state) || Date.now() > deadline) return toResult(job);
+      await sleep(POLL_MS);
+      job = await c.job(job.id);
+    }
+  },
+
+  async saveFile(suggestedName, bytes) {
+    const path = await save({ defaultPath: suggestedName });
+    if (!path) return null;
+    await writeFile(path, bytes);
+    return path;
+  },
+
+  async openFile(options) {
+    const picked = await open({
+      multiple: false,
+      directory: false,
+      filters: options?.extensions?.length ? [{ name: "Embroidery", extensions: options.extensions }] : undefined,
+    });
+    if (!picked) return null;
+    const bytes = await readFile(picked);
+    return { name: picked.split(/[\\/]/).pop() ?? picked, bytes };
+  },
+};
