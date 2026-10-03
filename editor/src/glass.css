@@ -406,6 +406,10 @@ kbd {
   gap: var(--s-2);
   padding: var(--s-2) var(--s-3);
   border-radius: var(--r-dock);
+  /* backdrop-filter makes the bar its own stacking layer; without a z-index the File menu inside it
+     painted under the side panels (which come later and have their own layers) and could not be clicked */
+  position: relative;
+  z-index: 30;
 }
 .project-name {
   font-family: var(--font-serif);
@@ -484,6 +488,11 @@ kbd {
 .player {
   background: var(--surface);
   border-top: 1px solid var(--glass-line);
+}
+
+/* the colour-change card sits above the player, in the same spot as the floating dock: it must win (it holds Continue) */
+.swap-card {
+  z-index: 20;
 }
 
 /* the tool dock floats over the bottom of the canvas */

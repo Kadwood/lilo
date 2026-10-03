@@ -9,7 +9,8 @@
     "build": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && pnpm typecheck && vite build",
     "preview": "vite preview",
     "test": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && vitest run",
-    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json"
+    "e2e": "node --experimental-strip-types ../scripts/import-fonts.mjs --ensure && vitest run -c vitest.e2e.config.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p e2e/tsconfig.json"
   },
   "dependencies": {
     "@lilo/engine": "workspace:^",
@@ -34,6 +35,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "jsdom": "^30.1.1",
+    "playwright-core": "^1.63.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",
     "vitest": "^5.0.3"

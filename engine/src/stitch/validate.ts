@@ -12,6 +12,10 @@ const MAX_JUMP_MM = DEFAULTS.limits.maxJumpMm;
 export const DENSITY_WARN_PER_MM2 = DEFAULTS.limits.densityWarnPerMm2;
 /** Needle drops closer than this to the previous one are merged away (thread piles up and can snap). */
 export const MIN_STITCH_MM = DEFAULTS.limits.minStitchMm;
+/** Premium quality merges needle drops closer than this. */
+export const MIN_STITCH_PREMIUM_MM = DEFAULTS.limits.minStitchPremiumMm;
+/** The shortest stitch kept for a sewing quality (Standard 0.5 mm, Premium 0.6 mm). */
+export const minStitchFor = (quality: "standard" | "premium" | undefined): number => (quality === "premium" ? MIN_STITCH_PREMIUM_MM : MIN_STITCH_MM);
 /** Default length of lock (tie) stitches in mm. */
 export const LOCK_STITCH_MM = DEFAULTS.limits.lockStitchMm;
 
@@ -21,8 +25,10 @@ export interface ValidationOptions {
   densityWarnPerMm2?: number;
   /** Length (mm) of the tie-in/tie-off stitches; 0 turns them off. Default 0.4. */
   lockStitchMm?: number;
-  /** Merge consecutive needle drops closer than this (mm) within one run. 0 turns it off. Default 0.3. */
+  /** Merge consecutive needle drops closer than this (mm) within one run. 0 turns it off. Default: by `quality`. */
   minStitchMm?: number;
+  /** The design's sewing quality: picks the default `minStitchMm` (Standard 0.5, Premium 0.6). */
+  quality?: "standard" | "premium";
 }
 
 export interface ValidationResult {
@@ -87,9 +93,10 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
     });
   }
 
-  const merged = mergeShortStitches(out, options.minStitchMm ?? MIN_STITCH_MM);
+  const minStitch = options.minStitchMm ?? minStitchFor(options.quality);
+  const merged = mergeShortStitches(out, minStitch);
   const lockMm = options.lockStitchMm ?? LOCK_STITCH_MM;
-  const sewn = lockMm > 0 ? addLockStitches(merged, lockMm) : merged;
+  const sewn = lockMm > 0 ? addLockStitches(merged, lockMm, minStitch) : merged;
   const result: StitchPlan = { threads: plan.threads, stitches: sewn, warnings: [] };
   const stats = planStats(result);
   if (stats.stitchCount === 0) {
@@ -180,7 +187,7 @@ export function mergeShortStitches(list: PlanStitch[], minMm: number): PlanStitc
  *   stitch's direction, ending where it started.
  * Plain jumps (under the trim threshold) don't cut the thread, so they get neither.
  */
-export function addLockStitches(list: PlanStitch[], len: number): PlanStitch[] {
+export function addLockStitches(list: PlanStitch[], len: number, minStitchMm: number = MIN_STITCH_MM): PlanStitch[] {
   const out: PlanStitch[] = [];
   let cut = true; // thread is cut/new: the next stitch needs a tie-in
   let last: PlanStitch | null = null; // last real stitch since the last cut
@@ -223,7 +230,7 @@ export function addLockStitches(list: PlanStitch[], len: number): PlanStitch[] {
         const dx = next.x - s.x;
         const dy = next.y - s.y;
         const d = Math.hypot(dx, dy);
-        if (d >= 2 * MIN_STITCH_MM) {
+        if (d >= 2 * minStitchMm) {
           const l = Math.min(len, d / 2);
           const mk = (k: number): PlanStitch => ({ ...s, x: s.x + (dx / d) * l * k, y: s.y + (dy / d) * l * k, lock: true });
           out.push(mk(1), mk(0), mk(1));

@@ -1,6 +1,7 @@
 /// <reference path="./opentype.d.ts" />
 import { init as initStitch } from "@stitchables/stitchjs";
 import * as opentype from "opentype.js";
+import { customMinColumnFor, minLetterHeightFor } from "../presets/sewing";
 import { LETTERING_STROKES, median, satinTraits, strokePlan } from "../autodigitize/strokes";
 import { DEFAULTS } from "../presets/defaults";
 import { polygonFromRings, polygonsOf, ringsOf, unionAll, type Poly } from "../geom";
@@ -265,18 +266,18 @@ function runFrom(path: Pt[], closed: boolean): PlacedElement {
 }
 
 /** Elements for one polygon part (solid area without touching others). */
-export function partElements(part: Poly): PlacedElement[] {
+export function partElements(part: Poly, minColumnMm: number = customMinColumnFor("standard")): PlacedElement[] {
   if (part.getArea() < MIN_AREA_MM2) return [];
   // Per-stroke classification lives in autodigitize/strokes.ts (shared with auto-digitizing).
-  const plan = strokePlan(part, LETTERING_STROKES);
+  const plan = strokePlan(part, { ...LETTERING_STROKES, minSatinMm: minColumnMm });
   if (!plan) return [fillOf(part)];
   return [...plan.satins.map((s) => satinFrom(s.strip)), ...plan.runs.map((r) => runFrom(r.path, r.closed))];
 }
 
 /** Elements for a whole glyph outline (rings in mm, y down). */
-export function outlineElements(rings: Pt[][]): PlacedElement[] {
+export function outlineElements(rings: Pt[][], minColumnMm?: number): PlacedElement[] {
   const out: PlacedElement[] = [];
-  for (const part of outlinePolygons(rings)) out.push(...partElements(part));
+  for (const part of outlinePolygons(rings)) out.push(...partElements(part, minColumnMm));
   return out;
 }
 
@@ -327,10 +328,11 @@ export function customTypeface(cf: CustomFont): Typeface {
           // The built-in Ink/Stitch fonts use the SVG hkern sign instead (subtract); see layout.ts.
           pos += kern * k + ctx.letterSpacingMm;
         }
-        const key = `${g.index}@${Math.round(ctx.heightMm * 100)}`;
+        const col = ctx.minColumnMm ?? customMinColumnFor("standard");
+        const key = `${g.index}@${Math.round(ctx.heightMm * 100)}@${col}`;
         let els = cf.cache.get(key);
         if (!els) {
-          els = outlineElements(glyphRings(g, k));
+          els = outlineElements(glyphRings(g, k), col);
           cf.cache.set(key, els);
         }
         const dx = pos;
@@ -341,9 +343,11 @@ export function customTypeface(cf: CustomFont): Typeface {
       }
       return { glyphs, missing: [...missing] };
     },
-    heightWarnings(h): LetteringWarning[] {
-      return h < CUSTOM_MIN_HEIGHT_MM - 1e-6
-        ? [{ code: "custom-font-small", message: "Custom fonts sew best above 6 mm. Try a built-in font for smaller letters." }]
+    heightWarnings(h, sewing): LetteringWarning[] {
+      // the smallest legible letter follows the thread in the Sewing setup: 6 mm at 40 wt, 4 mm at 60 wt
+      const min = minLetterHeightFor(sewing?.threadWeight);
+      return h < min - 1e-6
+        ? [{ code: "custom-font-small", message: `Custom fonts sew best above ${min} mm. Try a built-in font for smaller letters.` }]
         : [];
     },
   };

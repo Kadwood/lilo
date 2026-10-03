@@ -63,7 +63,7 @@ export interface ExportResponse {
 }
 
 export function buildPlan(design: Design): PlanResult {
-  const { plan, warnings } = validatePlan(designToStitchPlan(design), design.hoop);
+  const { plan, warnings } = validatePlan(designToStitchPlan(design), design.hoop, { quality: design.sewing?.quality });
   return { plan, stats: planStats(plan), warnings };
 }
 

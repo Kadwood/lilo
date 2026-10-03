@@ -96,6 +96,7 @@ export class Scene {
     this.view = view;
     this.world.position.set(view.x, view.y);
     this.world.scale.set(view.zoom);
+    this.stitches.setViewRect(visibleRect(view, this.width, this.height), view.zoom); // off-screen chunks are not drawn
     this.redrawBackdrop();
     this.drawHighlight();
     this.needleG.scale.set(1 / view.zoom);
@@ -213,6 +214,7 @@ export class Scene {
 
   setPlan(plan: StitchPlan | null, style: StitchStyle): void {
     this.plan = plan;
+    this.stitches.setViewRect(visibleRect(this.view, this.width, this.height), this.view.zoom);
     this.stitches.setPlan(plan, style);
   }
 

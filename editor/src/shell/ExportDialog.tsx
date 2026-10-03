@@ -63,7 +63,7 @@ export function usePreparedWith(prepare: Prepare, format: ExportFormat, origin: 
       alive = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [format, origin, label, ...deps]);
+  }, [format, origin.h, origin.v, label, ...deps]); // by value: a fresh `origin` object each render must not restart it
   return { prepared, error };
 }
 

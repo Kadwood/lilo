@@ -383,6 +383,26 @@ export function resolveSewingSetup(input: SewingSetupInput = {}): SewingSetup {
   return { input: { fabric: fabricId, threadWeight: weight, quality }, fabric, thread, quality: q, engine, checklist, summary };
 }
 
+/** The smallest letter (cap height, mm) that stays legible with this thread weight: 6 mm at 40 wt, 4 mm at 60 wt. */
+export const minLetterHeightFor = (threadWeight: ThreadWeight | undefined): number => THREAD_WEIGHTS[threadWeight === 60 ? 60 : 40].minLetterHeightMm;
+
+/** Narrowest satin column for custom-font lettering at a quality: 1.5 mm Standard, 1.0 mm Premium. */
+export const customMinColumnFor = (quality: Quality | undefined): number => DEFAULTS.lettering.customMinColumnMm[quality === "premium" ? "premium" : "standard"];
+
+/**
+ * Plain-English warning when letters are too small for the thread in the Sewing setup, or null. Applies to
+ * every font (built-in or your own).
+ */
+export function letterHeightWarning(heightMm: number, threadWeight: ThreadWeight | undefined): string | null {
+  const weight: ThreadWeight = threadWeight === 60 ? 60 : 40;
+  const min = minLetterHeightFor(weight);
+  if (heightMm >= min - 1e-6) return null;
+  const fmt = (n: number) => String(Math.round(n * 10) / 10);
+  return weight === 40
+    ? `Letters under ${min} mm tall fill in with 40 wt thread (now ${fmt(heightMm)} mm). Make them taller, or switch the Sewing setup to 60 wt thread (good from ${minLetterHeightFor(60)} mm).`
+    : `Letters under ${min} mm tall fill in even with 60 wt thread (now ${fmt(heightMm)} mm). Make them taller.`;
+}
+
 export const FABRIC_IDS: readonly FabricId[] = Object.keys(FABRICS) as FabricId[];
 export const THREAD_WEIGHT_IDS: readonly ThreadWeight[] = [40, 60];
 export const QUALITY_IDS: readonly Quality[] = ["standard", "premium"];
