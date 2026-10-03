@@ -86,7 +86,8 @@ export function Toolbar() {
   const [pick, setPick] = useState(false);
   const t = (state.threadId && (state.design?.threads.find((x) => x.id === state.threadId) ?? findThread(state.threadId))) || state.design?.threads[0] || defaultThread();
   return (
-    <div className="toolbar" role="toolbar" aria-label="Tools">
+    // mouse clicks shouldn't leave focus on a button: Space must keep panning afterwards
+    <div className="toolbar" role="toolbar" aria-label="Tools" onMouseDown={(e) => (e.target as HTMLElement).closest("button") && e.preventDefault()}>
       {TOOLS.map((tool) => (
         <button
           key={tool.id}

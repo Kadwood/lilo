@@ -23,6 +23,8 @@ export function useShortcuts(controller: CanvasController): void {
       }
       if (s.paletteOpen || s.dialog || isTyping(e.target)) return;
       if (e.code === "Space") {
+        // Space pans, except where it activates a focused button or tab
+        if (e.target instanceof HTMLElement && e.target.closest("button, [role=button], [role=tab], summary, a")) return;
         controller.setSpace(true);
         e.preventDefault();
         return;

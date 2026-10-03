@@ -50,7 +50,7 @@ export function ShapeBar({ controller, view, width, height }: { controller: Canv
   const style = { left, top: Math.max(8, Math.min(height - 60, top < 8 ? view.y + box.maxY * view.zoom + 44 : top)) };
 
   return (
-    <div className="shape-bar" role="toolbar" aria-label="Shape actions" style={style}>
+    <div className="shape-bar" role="toolbar" aria-label="Shape actions" style={style} onMouseDown={(e) => (e.target as HTMLElement).closest("button") && e.preventDefault()}>
       {items.map((it) => (
         <button key={it.id} className={it.active ? "active" : ""} aria-pressed={it.active} title={it.title} disabled={it.disabled} onClick={it.run} data-action={it.id}>
           {it.label}
