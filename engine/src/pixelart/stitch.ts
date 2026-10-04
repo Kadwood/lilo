@@ -16,6 +16,7 @@ import type { Hoop } from "../model";
 import { DEFAULTS as STITCH_DEFAULTS } from "../presets/defaults";
 import type { PlanStitch, StitchPlan } from "../stitch/plan";
 import { validatePlan } from "../stitch/validate";
+import { validateForMachine } from "../stitch/machine";
 import { applyOrigin, CENTER_ORIGIN, writePes, type Origin } from "../pes";
 import type { PixelArt, PixelStyle } from "./grid";
 
@@ -238,7 +239,7 @@ export function pixelArtToPes(
 ): PixelPesResult {
   const { origin, label, lockStitchMm, ...stitchOptions } = options;
   const raw = pixelArtToStitchPlan(art, stitchOptions);
-  const { plan, warnings } = validatePlan(raw, hoop, { lockStitchMm });
+  const { plan, warnings } = validateForMachine(raw, hoop, { lockStitchMm });
   const placed = applyOrigin(plan, origin ?? CENTER_ORIGIN);
   return { plan: placed, warnings, pes: writePes(placed, { label: label ?? "Pixels" }) };
 }

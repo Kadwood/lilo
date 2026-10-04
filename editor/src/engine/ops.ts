@@ -23,6 +23,7 @@ import {
   designToStitchPlan,
   planStats,
   validatePlan,
+  validateForMachine,
   type AutoDigitizeOptions,
   type AutoDigitizeResult,
   type Design,
@@ -149,7 +150,7 @@ export const extraOps = {
   /** A pixel grid in any format. */
   pixelExport(art: PixelArt, ext: FormatExt, hoop: Hoop, options: PixelStitchOptions & { origin?: Origin; label?: string }): FormatExportResponse {
     const { origin, label, ...stitch } = options;
-    const { plan, warnings } = validatePlan(pixelArtToStitchPlan(art, stitch), hoop);
+    const { plan, warnings } = validateForMachine(pixelArtToStitchPlan(art, stitch), hoop);
     const placed = applyOrigin(plan, origin ?? CENTER_ORIGIN);
     return { bytes: writeEmbroidery(placed, ext, { label: label ?? "Pixels" }), plan: placed, stats: planStats(placed), warnings };
   },
