@@ -8,6 +8,13 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
+- **Layers.** The right-hand panel now has a **Layers** tab where pictures and stitch layers sit in one list. The list is the order the machine sews: the bottom layer sews first and the top layer sews last, so it sits on top. Each layer has an eye (show or hide), a padlock, a name you can change, and a "sews 4–7" note that says where it falls in the order. Picture layers have an opacity slider.
+- Drag shapes between layers, drag layers to reorder them, or click a row and press Alt with the up or down arrow. Every move is one undo step. Use **New stitch layer**, **New picture layer**, **Delete layer** and **Merge down** under the banner. The whole tab works from the keyboard (arrows, Space to show or hide, L to lock, F2 to rename).
+- A **hidden stitch layer is not sewn**. Lilo leaves it out of every exported or sent file, and the stitch count, time and thread list ignore it. Export, Send and Before You Sew all warn you: "1 layer is hidden — it won't be sewn".
+- A locked layer cannot be clicked, boxed or changed on the canvas. A picture layer above a stitch layer draws over it, and a hidden picture layer changes nothing in the file.
+- Projects are saved in a new format. Old projects open as before: pictures go in a **Picture** layer and shapes in a **Stitches** layer, and the stitches come out exactly the same. Older versions of Lilo will say a project made with 1.3 is from a newer Lilo.
+- The right-hand panel is now called **Sew order**. Its old **Shapes** tab is now **Layers**. Colours, Images and Threads are unchanged. The manual has a new page, "Layers and sew order".
+
 ## [1.2.0] - 2026-10-05
 
 - **Stitch safety.** Every spacing, stitch length, width and pull setting now has a green band behind its slider. Go outside it and the slider turns amber with one short sentence on why. Lilo still sews it and still exports it. You will see the same sliders in a new **Stitch safety** card in Before you sew, where one slider changes every shape of that kind in one undo step.
@@ -24,12 +31,6 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [1.1.1] - 2026-10-05
 
-- **Layers.** The right-hand panel now has a **Layers** tab where pictures and stitch layers sit in one list. The list is the order the machine sews: the bottom layer sews first and the top layer sews last, so it sits on top. Each layer has an eye (show or hide), a padlock, a name you can change, and a "sews 4–7" note that says where it falls in the order. Picture layers have an opacity slider.
-- Drag shapes between layers, drag layers to reorder them, or click a row and press Alt with the up or down arrow. Every move is one undo step. Use **New stitch layer**, **New picture layer**, **Delete layer** and **Merge down** under the banner. The whole tab works from the keyboard (arrows, Space to show or hide, L to lock, F2 to rename).
-- A **hidden stitch layer is not sewn**. Lilo leaves it out of every exported or sent file, and the stitch count, time and thread list ignore it. Export, Send and Before You Sew all warn you: "1 layer is hidden — it won't be sewn".
-- A locked layer cannot be clicked, boxed or changed on the canvas. A picture layer above a stitch layer draws over it, and a hidden picture layer changes nothing in the file.
-- Projects are saved in a new format. Old projects open as before: pictures go in a **Picture** layer and shapes in a **Stitches** layer, and the stitches come out exactly the same. Older versions of Lilo will say a project made with 1.3 is from a newer Lilo.
-- The right-hand panel is now called **Sew order**. Its old **Shapes** tab is now **Layers**. Colours, Images and Threads are unchanged. The manual has a new page, "Layers and sew order".
 - Fixed: PES files had a short stitch-block header. Brother machines showed only part of the design and sewed it wrong. Lilo now writes the full header, and still opens older Lilo files.
 - Fixed: large designs saved as XXX no longer lose stitches. A stitch of exactly 12.4 mm in one direction was turned into a jump, so it was not sewn.
 - Every export format (PES, PEC, DST, EXP, JEF, VP3, XXX, U01, TBF, HUS, G-code) is now checked against an independent reader (pyembroidery) on every change. VIP has no independent reader and is checked only by Lilo itself.
