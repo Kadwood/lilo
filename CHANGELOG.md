@@ -14,6 +14,7 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 - A locked layer cannot be clicked, boxed or changed on the canvas. A picture layer above a stitch layer draws over it, and a hidden picture layer changes nothing in the file.
 - Projects are saved in a new format. Old projects open as before: pictures go in a **Picture** layer and shapes in a **Stitches** layer, and the stitches come out exactly the same. Older versions of Lilo will say a project made with 1.3 is from a newer Lilo.
 - The right-hand panel is now called **Sew order**. Its old **Shapes** tab is now **Layers**. Colours, Images and Threads are unchanged. The manual has a new page, "Layers and sew order".
+- The Stitch safety card follows layers: shapes in a hidden layer aren't counted, and its sliders never change shapes in a locked layer.
 
 ## [1.2.0] - 2026-10-05
 
