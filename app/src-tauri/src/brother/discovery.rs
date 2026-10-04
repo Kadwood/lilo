@@ -7,7 +7,7 @@
 //!   2. sweep each interface's /24 with a short TCP dial to port 443,
 //!   3. for hosts that accept, `GET /info` and check for the `pedxml` API.
 //!
-//! The sweep is bounded: only RFC-1918/link-local networks, only /24-sized
+//! The sweep is bounded: only RFC-1918 private networks (not link-local), only /24-sized
 //! slices (254 addresses), bounded concurrency, sub-second dial timeout —
 //! a full scan of one interface takes a few seconds.
 

@@ -10,8 +10,8 @@
 //!   crate uses reqwest's *native-tls* backend: rustls does not implement
 //!   static-RSA key exchange and would fail the handshake.
 //! * The embedded server (`debut/1.20`) is slow over Wi-Fi; requests get
-//!   generous timeouts and reads are retried. Uploads are retried at most
-//!   once more to avoid storing duplicate designs.
+//!   generous timeouts and reads are retried. Uploads are sent once,
+//!   never retried, to avoid storing duplicate designs.
 
 use super::models::{BrotherInfo, SewingResponse};
 use super::protocol;
