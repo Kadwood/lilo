@@ -415,7 +415,7 @@ export function layoutText(text: string, fontOrTypeface: LiloFont | Typeface, op
   const warnings: LetteringWarning[] = [];
   const h = opts.heightMm;
   if (!(h > 0)) throw new Error("heightMm must be positive");
-  const ctx: ShapeContext = { heightMm: h, letterSpacingMm: opts.letterSpacingMm ?? 0, wordSpacingMm: opts.wordSpacingMm ?? 0, minColumnMm: customMinColumnFor(opts.sewing?.quality) };
+  const ctx: ShapeContext = { heightMm: h, letterSpacingMm: opts.letterSpacingMm ?? 0, wordSpacingMm: opts.wordSpacingMm ?? 0, minColumnMm: customMinColumnFor(opts.sewing?.quality, opts.sewing?.threadWeight) };
   const align: TextAlign = opts.align ?? "left";
   const origin: Pt = opts.origin ?? [0, 0];
   const lineGap = face.leadingMm(h) * (opts.lineSpacing ?? 1);

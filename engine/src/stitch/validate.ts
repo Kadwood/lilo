@@ -1,5 +1,6 @@
-import type { Hoop } from "../model";
+import type { Design, Hoop } from "../model";
 import { DEFAULTS } from "../presets/defaults";
+import { isWearable, SAFE_RANGES, thinSatinMinMm, thinSatins } from "../presets/safety";
 import { planStats, type PlanStitch, type PlanWarning, type StitchPlan } from "./plan";
 
 /** Longest needle-to-needle distance we allow; longer ones are split. Machines snag above ~12 mm. */
@@ -29,6 +30,12 @@ export interface ValidationOptions {
   minStitchMm?: number;
   /** The design's sewing quality: picks the default `minStitchMm` (Standard 0.5, Premium 0.6). */
   quality?: "standard" | "premium";
+  /**
+   * The design the plan came from. When given, two honesty checks run: `thin-satin` (a satin column under
+   * the safe width for the thread) and `long-stitch-snag` (a stitch over 7 mm on cloth that is worn).
+   * Both are amber notes. Nothing is changed or blocked.
+   */
+  design?: Pick<Design, "objects" | "sewing">;
 }
 
 export interface ValidationResult {
@@ -130,6 +137,46 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
       code: "density",
       message: `${overCount} area${overCount === 1 ? "" : "s"} of 1 mm² have more than ${densityMax} needle drops (worst ${worst} near ${cx}, ${cy} mm). Thread may break or the fabric pucker.`,
     });
+  }
+
+  if (options.design) {
+    const thin = thinSatins(options.design);
+    if (thin.length > 0) {
+      const min = thinSatinMinMm(options.design.sewing?.threadWeight);
+      const narrowest = thin.reduce((a, b) => (b.widthMm < a.widthMm ? b : a));
+      warnings.push({
+        code: "thin-satin",
+        objectId: narrowest.id,
+        message: `${thin.length} satin column${thin.length === 1 ? " is" : "s are"} thinner than ${min} mm (narrowest ${narrowest.widthMm.toFixed(1)} mm). ${SAFE_RANGES.satinWidth.reasonLow}`,
+      });
+    }
+    if (isWearable(options.design.sewing?.fabric)) {
+      const snagAt = SAFE_RANGES.longStitch.max!;
+      let longCount = 0;
+      let longest = 0;
+      let lx = 0;
+      let ly = 0;
+      let have = false;
+      for (const s of sewn) {
+        if (s.type === "colorChange") continue;
+        if (s.type === "stitch" && have) {
+          const d = Math.hypot(s.x - lx, s.y - ly);
+          if (d > snagAt + 1e-6) {
+            longCount++;
+            longest = Math.max(longest, d);
+          }
+        }
+        lx = s.x;
+        ly = s.y;
+        have = true;
+      }
+      if (longCount > 0) {
+        warnings.push({
+          code: "long-stitch-snag",
+          message: `${longCount} stitch${longCount === 1 ? " is" : "es are"} longer than ${snagAt} mm (longest ${longest.toFixed(1)} mm). ${SAFE_RANGES.longStitch.reasonHigh}`,
+        });
+      }
+    }
   }
 
   result.warnings = warnings;

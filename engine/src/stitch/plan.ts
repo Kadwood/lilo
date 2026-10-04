@@ -24,7 +24,7 @@ export interface PlanStitch {
 }
 
 export interface PlanWarning {
-  code: "stitch-too-long" | "jump-split" | "outside-hoop" | "hoop-turned" | "density" | "object-failed" | "empty";
+  code: "stitch-too-long" | "jump-split" | "outside-hoop" | "hoop-turned" | "density" | "object-failed" | "empty" | "thin-satin" | "long-stitch-snag";
   message: string;
   /** Design object involved, if known. */
   objectId?: string;
@@ -53,12 +53,22 @@ export interface PlanStats {
   minY: number;
   maxX: number;
   maxY: number;
-  /** Rough sewing time at `spm` stitches per minute, plus 15 s per colour change. */
+  /**
+   * Sewing time with nothing going wrong: stitches at `spm`, 7 s per thread trim, 45 s per colour change.
+   * No allowance for real-world stops.
+   */
+  machineSeconds: number;
+  /** `machineSeconds` plus a quarter for real-world stops (thread breaks, checking, re-hooping). What the screens show. */
   estimatedSeconds: number;
 }
 
 export const DEFAULT_SPM = 850;
-const COLOR_CHANGE_SECONDS = 15;
+/** Seconds the machine takes to cut the thread. Time model: sewingtrip.com (researched). */
+export const TRIM_SECONDS = 7;
+/** Seconds to stop, swap the thread and restart. Time model: sewingtrip.com (researched). */
+export const COLOR_CHANGE_SECONDS = 45;
+/** Real-world stops on top of the machine time. Time model: sewingtrip.com (researched). */
+export const REAL_WORLD_FACTOR = 1.25;
 
 export function planStats(plan: StitchPlan, spm: number = DEFAULT_SPM): PlanStats {
   let stitchCount = 0;
@@ -81,6 +91,7 @@ export function planStats(plan: StitchPlan, spm: number = DEFAULT_SPM): PlanStat
     else colorChanges++;
   }
   if (!Number.isFinite(minX)) minX = minY = maxX = maxY = 0;
+  const machineSeconds = (stitchCount / spm) * 60 + trimCount * TRIM_SECONDS + colorChanges * COLOR_CHANGE_SECONDS;
   return {
     stitchCount,
     jumpCount,
@@ -92,7 +103,8 @@ export function planStats(plan: StitchPlan, spm: number = DEFAULT_SPM): PlanStat
     minY,
     maxX,
     maxY,
-    estimatedSeconds: (stitchCount / spm) * 60 + colorChanges * COLOR_CHANGE_SECONDS,
+    machineSeconds,
+    estimatedSeconds: machineSeconds * REAL_WORLD_FACTOR,
   };
 }
 

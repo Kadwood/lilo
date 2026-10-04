@@ -104,8 +104,8 @@ export const DEFAULTS = {
     stitchLengthMm: 3,
   },
   lettering: {
-    /** Narrowest satin column in custom-font lettering, by quality. [CAL] Standard 1.5 (thinner strokes run), Premium 1.0. */
-    customMinColumnMm: { standard: 1.5, premium: 1.0 },
+    /** Narrowest satin column in custom-font lettering. [CAL] Standard 1.5 (thinner strokes run). Premium 1.5 at 40 wt (a 1 mm column is too thin to look shiny and breaks thread); 1.0 only at 60 wt. Matches `SAFE_RANGES.satinWidth`. */
+    customMinColumnMm: { standard: 1.5, premium40: 1.5, premium60: 1.0 },
     /** Custom-font fills. LEGACY. */
     fillPullCompMm: 0.15,
     fillUnderlayMinAreaMm2: 6,

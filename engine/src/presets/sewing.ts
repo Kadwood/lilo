@@ -386,8 +386,11 @@ export function resolveSewingSetup(input: SewingSetupInput = {}): SewingSetup {
 /** The smallest letter (cap height, mm) that stays legible with this thread weight: 6 mm at 40 wt, 4 mm at 60 wt. */
 export const minLetterHeightFor = (threadWeight: ThreadWeight | undefined): number => THREAD_WEIGHTS[threadWeight === 60 ? 60 : 40].minLetterHeightMm;
 
-/** Narrowest satin column for custom-font lettering at a quality: 1.5 mm Standard, 1.0 mm Premium. */
-export const customMinColumnFor = (quality: Quality | undefined): number => DEFAULTS.lettering.customMinColumnMm[quality === "premium" ? "premium" : "standard"];
+/** Narrowest satin column for custom-font lettering: 1.5 mm, except Premium with 60 wt thread, which allows 1.0 mm. */
+export const customMinColumnFor = (quality: Quality | undefined, threadWeight?: ThreadWeight): number => {
+  const m = DEFAULTS.lettering.customMinColumnMm;
+  return quality === "premium" ? (threadWeight === 60 ? m.premium60 : m.premium40) : m.standard;
+};
 
 /**
  * Plain-English warning when letters are too small for the thread in the Sewing setup, or null. Applies to
