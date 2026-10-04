@@ -17,6 +17,8 @@ import {
  * what value each one has, how to change it, and whether it sits in the green band. Pure, so it is easy to test.
  */
 
+type SliderParam = SafeSliderParam;
+
 export interface SliderLimits {
   min: number;
   max: number;
@@ -33,9 +35,14 @@ export const SLIDER_LIMITS: Readonly<Record<SafeSliderParam, SliderLimits>> = {
   pullComp: { min: 0, max: 1, step: 0.05 },
 };
 
+/** Decimals to show for a parameter: 1 where its slider steps by 0.1 or more, else 2. */
+export const decimalsFor = (param: SliderParam): number => (SLIDER_LIMITS[param].step >= 0.1 ? 1 : 2);
+
+/** `v` rounded to what the parameter shows. */
+export const roundFor = (param: SliderParam, v: number): number => Number(v.toFixed(decimalsFor(param)));
+
 export const safeContextOf = (design: Pick<Design, "sewing"> | null | undefined): SafeContext => ({ threadWeight: design?.sewing?.threadWeight, fabric: design?.sewing?.fabric });
 
-type SliderParam = SafeSliderParam;
 
 const isRunSatin = (o: DesignObject): boolean => o.kind === "run" && o.params.type === "satin";
 const isPlainRun = (o: DesignObject): boolean => o.kind === "run" && ((o.params.type ?? (o.params.repeats === 3 ? "triple" : "single")) === "single" || o.params.type === "triple");

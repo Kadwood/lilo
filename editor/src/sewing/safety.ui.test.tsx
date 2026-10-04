@@ -4,13 +4,13 @@ import { act, cleanup, fireEvent, screen, waitFor, within } from "@testing-libra
 import { DEFAULT_FILL_PARAMS, recommendedMachineSpeed, planStats, type FillObject, type SatinObject } from "@lilo/engine/light";
 import { SafeSlider, formatDelta } from "../panels/SafeSlider";
 import { SettingsPanel } from "../panels/SettingsPanel";
-import { safetyNotes, safetyRows, setSafeValue } from "../panels/safety";
+import { decimalsFor, roundFor, safetyNotes, safetyRows, setSafeValue } from "../panels/safety";
 import { createMockPlatform } from "../platform/mock";
 import { setPlatform } from "../platform";
 import { ExportDialog } from "../shell/ExportDialog";
 import { lastEditor, renderEditor, testDesign } from "../test/helpers";
 import { BeforeYouSew, sewText, speedSentence } from "./BeforeYouSew";
-import { StitchSafetyCard } from "./StitchSafetyCard";
+import { rangeText, StitchSafetyCard } from "./StitchSafetyCard";
 import { resolveSewingSetup } from "@lilo/engine/light";
 
 const T = { timeout: 20_000 };
@@ -161,6 +161,22 @@ describe("Stitch safety card", () => {
     expect(d.objects[1].kind === "run" && d.objects[1].params.satin).toBeUndefined();
   });
 
+  it("rounds what it shows: 1 decimal for 0.1 steps, 2 otherwise (never 5.828)", async () => {
+    expect([decimalsFor("satinWidth"), decimalsFor("satinDensity"), decimalsFor("fillRowSpacing"), decimalsFor("pullComp")]).toEqual([1, 2, 2, 2]);
+    expect(roundFor("satinWidth", 5.828)).toBe(5.8);
+    expect(roundFor("fillRowSpacing", 0.46666)).toBe(0.47);
+    expect(rangeText({ param: "satinWidth", min: 4.72, max: 6.23 })).toBe("4.7 to 6.2 mm");
+    expect(rangeText({ param: "satinDensity", min: 0.4, max: 0.4 })).toBe("0.4 mm");
+    const d = twoFills();
+    (d.objects[0] as FillObject).params.rowSpacingMm = 0.4;
+    renderEditor(<StitchSafetyCard />, { design: d });
+    await loaded();
+    act(() => lastEditor!.actions.updateObjects(["f2"], "x", (o) => void (o.kind === "fill" && (o.params.rowSpacingMm = 0.4333333))));
+    act(() => lastEditor!.actions.updateObjects(["f1"], "x", (o) => void (o.kind === "fill" && (o.params.rowSpacingMm = 0.5))));
+    const box = screen.getByLabelText("Fill row spacing value") as HTMLInputElement;
+    expect(box.value).toBe("0.47"); // mean 0.46666...
+  });
+
   it("says nothing to check for an empty design", () => {
     renderEditor(<StitchSafetyCard />);
     expect(screen.getByText(/Nothing to check yet/)).toBeTruthy();
@@ -195,6 +211,7 @@ describe("Before you sew: speed", () => {
     const text = sewText({ name: "x", setup, hoop: d.hoop, threads: d.threads, facts: null, speed: { spm: sp.spm, reasons: sp.reasons, seconds: 60 } });
     expect(text).toContain(speedSentence(sp));
     expect(text).toMatch(/Max embroidery speed/);
+    expect(text).not.toMatch(/Recommended speed/);
   });
 });
 

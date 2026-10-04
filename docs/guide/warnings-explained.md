@@ -21,7 +21,7 @@ The design is bigger than the hoop's sewing area. The machine cannot sew what is
 
 ## Too dense
 
-Too many stitches land in the same 1 square millimetre. The thread may break or the cloth may pucker.
+Too many stitches pile up in a patch: more than 10 needle drops in each of two or more touching square millimetres, or more than 20 in one. A single spot where two lines cross is normal and is not flagged. The thread may break or the cloth may pucker.
 
 **Fix:** open the shape's settings and raise **Row spacing** (fills) or **Density** (satin). Read [Fixing sew-out problems](sewout-troubleshooting.md).
 

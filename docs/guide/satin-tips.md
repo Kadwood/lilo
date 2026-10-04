@@ -19,7 +19,7 @@ A **satin column** is stitches that cross from one edge to the other. It looks s
 
 - **Under 1.5 mm:** too thin. The stitches get tiny and can pile up. Use a **Triple** run instead.
 - **2 to 6 mm:** the sweet spot.
-- **Over 8 mm:** stitches get long and can snag. Lilo splits the column in two stitched halves, or you can use a fill.
+- **Over 5 mm:** stitches get long and can snag. Lilo splits the column in two stitched halves on its own, or you can use a fill. Past 8 mm it asks you about it.
 
 ## Density
 

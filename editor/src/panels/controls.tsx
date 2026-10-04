@@ -80,7 +80,8 @@ export function Field({ label, value, min, max, step, onChange, onDone, help, hi
   const id = useId();
   const scope = useHintScope();
   const hintId = hid ?? (scope ? hintIdFor(scope, label) : null);
-  const shown = digits !== undefined ? Number(value.toFixed(digits)) : value;
+  // never show more than 2 decimals (5.828 reads 5.83); `digits` asks for fewer
+  const shown = Number(value.toFixed(digits ?? 2));
   return (
     <div className="field-line" data-safe={safeStatus}>
       <label htmlFor={id} className="field-label">

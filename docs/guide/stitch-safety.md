@@ -61,6 +61,17 @@ These are for 40 wt thread on cloth you wear. 60 wt and towel move a few numbers
 
 Lilo also warns when a stitch is over 7 mm on cloth you wear. It still splits anything over 12.1 mm on its own. See [What the warnings mean](warnings-explained.md).
 
+## Lilo's own settings are always green
+
+A design made only with Lilo's settings, for any quality, thread weight and fabric, has no amber items. To keep it that way Lilo:
+
+- splits satin columns wider than 5 mm into halves, so no stitch passes 7 mm,
+- swaps a zig-zag underlay for edge and centre walks under columns that are wider than 5.5 mm,
+- keeps satin columns at 1.5 mm or wider with 40 wt thread (1 mm with 60 wt) and sews thinner strokes as a running stitch,
+- keeps satin spacing at or above 0.35 mm with 40 wt thread.
+
+The "too dense" warning now ignores a single 1 mm spot where two lines cross. That is normal. It still warns when thread piles up over two or more touching spots, or twice the limit in one spot.
+
 ## Letters and thin lines
 
 With 40 wt thread and Premium quality, custom-font letters now never use a satin column under 1.5 mm. Thinner strokes become a running stitch. A 1 mm column is too thin to look shiny, and it breaks thread. 60 wt thread still allows 1 mm.

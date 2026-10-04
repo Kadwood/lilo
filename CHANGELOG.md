@@ -16,6 +16,10 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 - **More honest sew time.** The time now counts thread cuts (7 seconds each) and colour changes (45 seconds each, up from 15), plus a quarter extra for real life. Before you sew shows the time at 850 and at the suggested speed.
 - **Two new warnings.** "Satin too thin" (under 1.5 mm with 40 wt thread, under 1 mm with 60 wt) and "A long stitch can snag" (over 7 mm on cloth you wear). Both are heads ups only.
 - Changed: with 40 wt thread and Premium quality, custom-font letters no longer use satin columns thinner than 1.5 mm. Thinner strokes, like a thin signature, become a running stitch. A 1 mm column is too thin to look shiny and it breaks thread. 60 wt still allows 1 mm.
+- **Lilo's own settings are always safe.** A design made only with Lilo's defaults, for any quality, thread weight and fabric (auto-digitize, click-to-stitch, lettering, the sample design), now shows no amber items. To get there: satin columns wider than 5 mm are split in halves, a zig-zag underlay is swapped for edge walks under very wide columns, Premium 40 wt hairlines are 1.5 mm (1.0 mm at 60 wt), thin built-in letter columns are widened to the safe width, and no font sews tighter than 0.35 mm (0.30 mm at 60 wt). Wide columns now use more stitches (the K logo goes from 1,365 to 2,275).
+- Changed: the "too dense" warning no longer fires for one square millimetre where two lines cross. It still fires for a patch of two or more touching spots, or a pile twice the limit.
+- Before you sew now gives one speed to set, not two. The fabric's usual range is part of the reasons under it.
+- Numbers in the sliders are rounded (5.8 mm, not 5.828 mm).
 - The manual has a new page, "Stitch safety and machine speed".
 - Fixed: PES files had a short stitch-block header. Brother machines showed only part of the design and sewed it wrong. Lilo now writes the full header, and still opens older Lilo files.
 - Fixed: large designs saved as XXX no longer lose stitches. A stitch of exactly 12.4 mm in one direction was turned into a jump, so it was not sewn.

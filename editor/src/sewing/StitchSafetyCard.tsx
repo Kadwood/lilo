@@ -1,14 +1,15 @@
 import { useId, useMemo } from "react";
 import { SAFE_RANGES } from "@lilo/engine/light";
 import { SafeSlider } from "../panels/SafeSlider";
-import { safetyRows, setSafeValue, type SafeRow } from "../panels/safety";
+import { roundFor, safetyRows, setSafeValue, type SafeRow } from "../panels/safety";
 import { useEditor } from "../state/store";
 import { Hint } from "../guide/Hint";
 
-const fmt = (n: number): string => String(Math.round(n * 100) / 100);
-
-/** "0.38 to 0.45 mm" when the shapes differ, else "0.4 mm". */
-export const rangeText = (r: Pick<SafeRow, "min" | "max">): string => (Math.abs(r.max - r.min) < 0.005 ? `${fmt(r.min)} mm` : `${fmt(r.min)} to ${fmt(r.max)} mm`);
+/** "0.38 to 0.45 mm" when the shapes differ, else "0.4 mm". Shown to what the slider steps by: 1 decimal for 0.1 steps, else 2. */
+export const rangeText = (r: Pick<SafeRow, "min" | "max" | "param">): string => {
+  const f = (n: number) => String(roundFor(r.param, n));
+  return f(r.min) === f(r.max) ? `${f(r.min)} mm` : `${f(r.min)} to ${f(r.max)} mm`;
+};
 
 function Row({ row }: { row: SafeRow }) {
   const { actions } = useEditor();
@@ -23,7 +24,7 @@ function Row({ row }: { row: SafeRow }) {
       <SafeSlider
         label={row.label}
         param={row.param}
-        value={row.mean}
+        value={roundFor(row.param, row.mean)}
         check={row.check}
         disabled={!canSet}
         note={note}
