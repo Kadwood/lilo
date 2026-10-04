@@ -30,7 +30,7 @@
   "panel.text": "Text panel",
   "panel.fonts": "Font lists",
   "panel.click-to-stitch": "Click to stitch panel",
-  "panel.sequencer": "Sequencer objects tab",
+  "panel.layers": "Sequencer layers tab",
   "panel.sequencer-colours": "Sequencer colours tab",
   "panel.sequencer-images": "Sequencer images tab",
   "panel.threads": "Thread picker",

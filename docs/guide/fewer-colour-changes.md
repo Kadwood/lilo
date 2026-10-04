@@ -41,4 +41,4 @@ Lilo's tray suggests a look at your colours when a design has more than 8 colour
 
 ## Related
 
-[Thread brands and matching](thread-brands-matching.md), [The sequencer](sequencer.md)
+[Thread brands and matching](thread-brands-matching.md), [Layers and sew order](layers.md)

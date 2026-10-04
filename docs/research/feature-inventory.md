@@ -30,7 +30,7 @@ Reshape, cut holes, start/end points, edit angle, map to path (repeat/count, rot
 ## Other
 - Dimensions: W/H fields, aspect lock, flip H/V, in/cm.
 - Lettering: satin blocks per glyph, 23 built-in fonts, size presets, custom fonts Pro.
-- Sequencer: shapes tab (reorder, rename, stitch count), colours tab (group to cut colour changes), images tab (reference images behind shapes).
+- Sequencer: layers tab (pictures and stitch layers as one sew-order list; hide, lock, rename, reorder, stitch count), colours tab (group to cut colour changes), images tab (reference images behind shapes).
 - Thread palette: 15,809 colours, 78 brands.
 - Project info: shapes, colour changes, stitches.
 - Import images: PNG, JPEG, SVG, EPS, WEBP, HEIC. Open existing machine files.

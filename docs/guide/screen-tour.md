@@ -47,7 +47,7 @@ Under the canvas. **Play**, scrub and change the speed. It also shows the totals
 ## Right column
 
 - **Sewing setup:** fabric, thread weight and quality. Read [Sewing setup](sewing-setup.md).
-- **Sequencer:** the order your shapes are sewn in. It has tabs for objects, colours, images and your threads. Read [The sequencer](sequencer.md).
+- **Sequencer:** the layers, in the order they are sewn (bottom first). It has tabs for layers, colours, images and your threads. Read [Layers and sew order](layers.md).
 
 ## The warnings tray
 
