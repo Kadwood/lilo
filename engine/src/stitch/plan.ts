@@ -24,7 +24,7 @@ export interface PlanStitch {
 }
 
 export interface PlanWarning {
-  code: "stitch-too-long" | "jump-split" | "outside-hoop" | "hoop-turned" | "density" | "object-failed" | "empty" | "thin-satin" | "long-stitch-snag";
+  code: "stitch-too-long" | "jump-split" | "outside-hoop" | "hoop-turned" | "density" | "object-failed" | "empty" | "thin-satin" | "long-stitch-snag" | "hidden-layer";
   message: string;
   /** Design object involved, if known. */
   objectId?: string;

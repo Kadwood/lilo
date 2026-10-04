@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { FORMATS, type FormatExt, type Origin, type PlanStats, type PlanWarning } from "@lilo/engine/light";
+import { FORMATS, hiddenLayerIds, isObjectVisible, type FormatExt, type Origin, type PlanStats, type PlanWarning } from "@lilo/engine/light";
 import { useEngine } from "../engine/context";
 import { BeforeYouSew } from "../sewing/BeforeYouSew";
 import { safetyNotes } from "../panels/safety";
@@ -280,7 +280,7 @@ export function ExportDialog({ onClose, onSaved }: { onClose: () => void; onSave
   return (
     <ExportPanel
       defaultName={state.projectName}
-      objects={design?.objects.filter((o) => o.visible !== false).length ?? 0}
+      objects={design ? design.objects.filter((o) => isObjectVisible(o, hiddenLayerIds(design))).length : 0}
       prepare={prepare}
       deps={[engine, design, planResult]}
       onClose={onClose}

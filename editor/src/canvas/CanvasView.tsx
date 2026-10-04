@@ -12,6 +12,7 @@ import { SAFE_MARGIN_MM } from "../hoops/autoPick";
 import { useEditor } from "../state/store";
 import { CanvasController, type PointerInput } from "./controller";
 import { MapDialog } from "./MapDialog";
+import { stackLayout } from "./layerStack";
 import { Overlay } from "./Overlay";
 import type { Scene, Placement } from "./scene";
 import { ShapeBar } from "./ShapeBar";
@@ -246,11 +247,27 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   }, [ready, state.source, state.placement, reference, plan]);
 
   // images the user placed behind the shapes
+  // stitch bands and the pictures between them, in layer order (a picture layer above a stitch layer draws over it)
+  const layout = useMemo(() => stackLayout(design, plan), [design, plan]);
+  const splitsKey = layout.splits.join(",");
   useEffect(() => {
     sceneRef.current?.setRefImages(
-      reference ? state.refImages.filter((r) => r.visible).map((r) => ({ src: r.src, x: r.x, y: r.y, widthMm: r.widthMm, heightMm: (r.widthMm * r.h) / Math.max(1, r.w), alpha: r.opacity })) : [],
+      reference
+        ? state.refImages
+            .filter((r) => r.visible && r.layerVisible)
+            .map((r) => ({
+              src: r.src,
+              x: r.x,
+              y: r.y,
+              widthMm: r.widthMm,
+              heightMm: (r.widthMm * r.h) / Math.max(1, r.w),
+              alpha: r.opacity * r.layerOpacity,
+              band: r.layerId ? (layout.pictureBand[r.layerId] ?? 0) : 0,
+            }))
+        : [],
     );
-  }, [ready, state.refImages, reference]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, state.refImages, reference, splitsKey, layout.pictureBand]);
 
   // thread thickness per object, so the realistic view shows triple, rope and satin as heavier thread
   const widthScale = useMemo(
@@ -266,9 +283,10 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   useEffect(() => {
     const s = sceneRef.current;
     if (!s) return;
-    s.setPlan(plan, { realistic, jumps, widthScale });
+    s.setPlan(plan, { realistic, jumps, widthScale }, layout.splits);
     s.setProgress(player.snapshot().index, false);
-  }, [ready, plan, realistic, jumps, widthScale, player]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, plan, realistic, jumps, widthScale, player, splitsKey]);
 
   // Player -> scene (imperative: this runs at 60 fps and must not re-render React).
   useEffect(() => {

@@ -20,9 +20,9 @@ vi.mock("../platform", async (orig) => {
 afterEach(cleanup);
 const T = { timeout: 20_000 };
 const loaded = () => waitFor(() => expect(lastEditor?.state.planResult).not.toBeNull(), T);
-const names = () => screen.getAllByRole("listitem").filter((li) => li.classList.contains("seq-row")).map((li) => li.querySelector(".seq-name")?.textContent ?? li.querySelector("input")?.getAttribute("aria-label"));
+const names = () => [...document.querySelectorAll("li.seq-row")].map((li) => li.querySelector(".seq-name")?.textContent ?? li.querySelector("input")?.getAttribute("aria-label"));
 
-describe("Sequencer: shapes tab", () => {
+describe("Sequencer: layers tab", () => {
   it("renames an object by double-clicking its name; Enter saves and it is undoable", async () => {
     renderEditor(<Sequencer />, { design: testDesign() });
     await loaded();
@@ -30,9 +30,9 @@ describe("Sequencer: shapes tab", () => {
     const input = screen.getByLabelText("Rename Frame");
     fireEvent.change(input, { target: { value: "Badge outline" } });
     fireEvent.keyDown(input, { key: "Enter" });
-    expect(names()).toEqual(["Badge outline", "Line", "Bar"]);
+    expect(names()).toEqual(["Bar", "Line", "Badge outline"]); // the list shows the last-sewn shape on top
     act(() => lastEditor!.actions.undo());
-    expect(names()).toEqual(["Frame", "Line", "Bar"]);
+    expect(names()).toEqual(["Bar", "Line", "Frame"]);
   });
 
   it("Escape cancels a rename", async () => {
@@ -42,7 +42,7 @@ describe("Sequencer: shapes tab", () => {
     const input = screen.getByLabelText("Rename Line");
     fireEvent.change(input, { target: { value: "Nope" } });
     fireEvent.keyDown(input, { key: "Escape" });
-    expect(names()).toEqual(["Frame", "Line", "Bar"]);
+    expect(names()).toEqual(["Bar", "Line", "Frame"]);
   });
 
   it("the gear shows the stitch count, node count and size", async () => {

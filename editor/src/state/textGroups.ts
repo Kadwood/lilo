@@ -1,4 +1,4 @@
-import { applyAffine, compose, objectBox, unionBox, type Affine, type Design, type DesignObject, type Pt, type TextBlock } from "@lilo/engine/light";
+import { applyAffine, compose, isObjectLocked, lockedLayerIds, objectBox, unionBox, type Affine, type Design, type DesignObject, type Pt, type TextBlock } from "@lilo/engine/light";
 
 /** Helpers for text blocks (lettering): objects of one block share `sourceText.group`. Pure, no store. */
 
@@ -57,9 +57,10 @@ function blockCentre(d: Design, b: TextBlock): Pt | null {
  */
 export function transformTextBlocks(d: Design, moved: ReadonlySet<string>, m: Affine): void {
   if (!d.textBlocks?.length) return;
+  const layerLocks = lockedLayerIds(d);
   d.textBlocks = d.textBlocks.map((b) => {
     const members = d.objects.filter((o) => o.sourceText?.group === b.id);
-    if (members.length === 0 || !members.every((o) => moved.has(o.id) && !o.locked)) return b;
+    if (members.length === 0 || !members.every((o) => moved.has(o.id) && !isObjectLocked(o, layerLocks))) return b;
     const c = blockCentre(d, b);
     if (!c) return b;
     const l = b.linear ?? IDENTITY_LINEAR;

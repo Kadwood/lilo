@@ -5,7 +5,7 @@ summary: "Keep a shelf of the spools you own, and make Lilo match pictures to th
 section: "threads"
 order: 2
 keywords: ["my threads", "shelf", "spools", "inventory", "own", "quantity", "notes", "import", "export", "json", "backup"]
-appContext: ["panel.my-threads", "panel.sequencer"]
+appContext: ["panel.my-threads"]
 status: "ready"
 ---
 
@@ -15,7 +15,7 @@ status: "ready"
 
 ## Open it
 
-In the sequencer on the right, open the **My Threads** tab.
+In the Sew order panel on the right, open the **My Threads** tab.
 
 ## Add spools
 

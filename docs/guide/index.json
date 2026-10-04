@@ -252,7 +252,7 @@
     "panel.toolbar"
    ],
    "status": "ready",
-   "words": 318,
+   "words": 324,
    "headings": [
     {
      "level": 2,
@@ -290,7 +290,7 @@
      "slug": "the-warnings-tray"
     }
    ],
-   "body": "# The screen at a glance\n\n![The editor with each area numbered](screenshots/editor-overview.png)\n\nThe editor has the same layout every time. Here is where things live.\n\n## Top of the window\n\n- **Views** (Home, Editor, Pixel art, Converter, Lilo Link) switch between the parts of the app. **Help** opens this guide.\n- The **top bar** holds the project menu, the project name, the **hoop** chooser, a search box (**⌘K**), **Export** and **Send**.\n- The **workflow strip** shows your five steps. Read [Helpers inside Lilo](learning-aids.md).\n\n## Left panel\n\nThis panel changes with what you have selected.\n\n- **Nothing selected:** **Auto-digitize** settings and the hoop.\n- **A shape selected:** its size, colour, stitch type and fill settings.\n- **Text tool or a word selected:** the lettering panel.\n- **Click to stitch tool:** the regions panel.\n\n## The canvas\n\nThe big middle area. It shows your hoop, a grid and your design. Zoom with scroll or pinch. Pan by holding **Space** and dragging. The small checkboxes in the corner switch the **Realistic**, **Grid**, **Reference** and **Jumps** views.\n\nWhen you select a shape, a small **shape bar** floats above it with actions like **Reshape**, **Cut hole**, **Knife** and **Duplicate**.\n\n## The toolbar\n\nThe floating bar at the bottom holds the drawing tools, **Undo**, **Redo** and your **drawing colour**. Read [Drawing tools](drawing-tools.md).\n\n## The stitch player\n\nUnder the canvas. **Play**, scrub and change the speed. It also shows the totals: stitches, size, colour changes and sewing time. Read [The stitch player](stitch-player.md).\n\n## Right column\n\n- **Sewing setup:** fabric, thread weight and quality. Read [Sewing setup](sewing-setup.md).\n- **Sequencer:** the order your shapes are sewn in. It has tabs for objects, colours, images and your threads. Read [The sequencer](sequencer.md).\n\n## The warnings tray\n\nWhen Lilo spots something that may sew badly, a small tray appears in the right-hand column, under the Sewing setup card. It is calm and never blocks you. Read [What the warnings mean](warnings-explained.md).\n"
+   "body": "# The screen at a glance\n\n![The editor with each area numbered](screenshots/editor-overview.png)\n\nThe editor has the same layout every time. Here is where things live.\n\n## Top of the window\n\n- **Views** (Home, Editor, Pixel art, Converter, Lilo Link) switch between the parts of the app. **Help** opens this guide.\n- The **top bar** holds the project menu, the project name, the **hoop** chooser, a search box (**⌘K**), **Export** and **Send**.\n- The **workflow strip** shows your five steps. Read [Helpers inside Lilo](learning-aids.md).\n\n## Left panel\n\nThis panel changes with what you have selected.\n\n- **Nothing selected:** **Auto-digitize** settings and the hoop.\n- **A shape selected:** its size, colour, stitch type and fill settings.\n- **Text tool or a word selected:** the lettering panel.\n- **Click to stitch tool:** the regions panel.\n\n## The canvas\n\nThe big middle area. It shows your hoop, a grid and your design. Zoom with scroll or pinch. Pan by holding **Space** and dragging. The small checkboxes in the corner switch the **Realistic**, **Grid**, **Reference** and **Jumps** views.\n\nWhen you select a shape, a small **shape bar** floats above it with actions like **Reshape**, **Cut hole**, **Knife** and **Duplicate**.\n\n## The toolbar\n\nThe floating bar at the bottom holds the drawing tools, **Undo**, **Redo** and your **drawing colour**. Read [Drawing tools](drawing-tools.md).\n\n## The stitch player\n\nUnder the canvas. **Play**, scrub and change the speed. It also shows the totals: stitches, size, colour changes and sewing time. Read [The stitch player](stitch-player.md).\n\n## Right column\n\n- **Sewing setup:** fabric, thread weight and quality. Read [Sewing setup](sewing-setup.md).\n- **Sew order:** the layers, in the order they are sewn (bottom first). It has tabs for layers, colours, images and your threads. Read [Layers and sew order](layers.md).\n\n## The warnings tray\n\nWhen Lilo spots something that may sew badly, a small tray appears in the right-hand column, under the Sewing setup card. It is calm and never blocks you. Read [What the warnings mean](warnings-explained.md).\n"
   },
   {
    "id": "basics-materials",
@@ -477,7 +477,7 @@
     "panel.digitize"
    ],
    "status": "ready",
-   "words": 431,
+   "words": 433,
    "headings": [
     {
      "level": 2,
@@ -500,7 +500,7 @@
      "slug": "if-the-result-looks-wrong"
     }
    ],
-   "body": "# Turn a picture into stitches\n\n**Digitizing** means turning a picture into stitch instructions. Lilo can do the whole thing in one go. This is called **Auto digitize**.\n\n## Open a picture\n\nUse **Digitize a picture…** on Home, or **Open image…** in the left panel. You can also drop a PNG, JPG, WEBP or SVG file onto the canvas.\n\nFlat, high-contrast pictures work best: a logo, a crest, a simple drawing. Photos with soft shading make messy embroidery, because thread cannot blend like pixels do.\n\n## The settings, top to bottom\n\n- **Colours** is how many thread colours to use, from 2 to 12. Fewer colours mean fewer thread changes and a faster sew. Start with the number of colours you see.\n- **Size (mm)** is the width and height of the finished design. Leave one box on **auto** and Lilo keeps the shape. Small details drop out below about 80 mm for fine serif logos, so size up if the hairlines vanish.\n- **Smallest region** drops tiny specks. A region smaller than this many square millimetres is merged away. Raise it if you see dust-like dots.\n- **Background** is **Remove** or **Keep**. **Remove** treats the picture's background colour as empty cloth. Choose **Keep** if the background is part of the design.\n- **Thread brand** picks the thread range to match against. Read [Thread brands and matching](thread-brands-matching.md).\n- **Quality**, **Thread weight** and **Fabric** make up the Sewing setup. Read [Standard or Premium](standard-vs-premium.md).\n- **Use my threads** matches colours to the spools you own first. Read [My Threads](my-threads.md).\n\nPress **Digitize** to run it again after you change a setting.\n\n## What Lilo does\n\n1. It shrinks the picture and removes the background.\n2. It reduces the picture to your chosen number of colours.\n3. It snaps each colour to the nearest real thread.\n4. It traces the shapes.\n5. It decides how to stitch each shape. Thin lines become a running stitch. Medium shapes become satin columns. Wide shapes become fills with underlay.\n6. It orders the shapes so the machine jumps as little as possible.\n\nEverything it makes is editable. Select any shape and change it.\n\n## If the result looks wrong\n\n- **Too many colours:** lower **Colours**.\n- **Missing thin lines:** make the design larger, or choose **Premium**, which sews fine strokes as narrow satin.\n- **Messy specks:** raise **Smallest region**.\n- **Wrong colours:** change the thread in the left panel after selecting a shape, or use the **Colours** tab in the sequencer to merge or swap.\n\nWhen you want control over which parts get stitched, use [Click to stitch](click-to-stitch.md).\n"
+   "body": "# Turn a picture into stitches\n\n**Digitizing** means turning a picture into stitch instructions. Lilo can do the whole thing in one go. This is called **Auto digitize**.\n\n## Open a picture\n\nUse **Digitize a picture…** on Home, or **Open image…** in the left panel. You can also drop a PNG, JPG, WEBP or SVG file onto the canvas.\n\nFlat, high-contrast pictures work best: a logo, a crest, a simple drawing. Photos with soft shading make messy embroidery, because thread cannot blend like pixels do.\n\n## The settings, top to bottom\n\n- **Colours** is how many thread colours to use, from 2 to 12. Fewer colours mean fewer thread changes and a faster sew. Start with the number of colours you see.\n- **Size (mm)** is the width and height of the finished design. Leave one box on **auto** and Lilo keeps the shape. Small details drop out below about 80 mm for fine serif logos, so size up if the hairlines vanish.\n- **Smallest region** drops tiny specks. A region smaller than this many square millimetres is merged away. Raise it if you see dust-like dots.\n- **Background** is **Remove** or **Keep**. **Remove** treats the picture's background colour as empty cloth. Choose **Keep** if the background is part of the design.\n- **Thread brand** picks the thread range to match against. Read [Thread brands and matching](thread-brands-matching.md).\n- **Quality**, **Thread weight** and **Fabric** make up the Sewing setup. Read [Standard or Premium](standard-vs-premium.md).\n- **Use my threads** matches colours to the spools you own first. Read [My Threads](my-threads.md).\n\nPress **Digitize** to run it again after you change a setting.\n\n## What Lilo does\n\n1. It shrinks the picture and removes the background.\n2. It reduces the picture to your chosen number of colours.\n3. It snaps each colour to the nearest real thread.\n4. It traces the shapes.\n5. It decides how to stitch each shape. Thin lines become a running stitch. Medium shapes become satin columns. Wide shapes become fills with underlay.\n6. It orders the shapes so the machine jumps as little as possible.\n\nEverything it makes is editable. Select any shape and change it.\n\n## If the result looks wrong\n\n- **Too many colours:** lower **Colours**.\n- **Missing thin lines:** make the design larger, or choose **Premium**, which sews fine strokes as narrow satin.\n- **Messy specks:** raise **Smallest region**.\n- **Wrong colours:** change the thread in the left panel after selecting a shape, or use the **Colours** tab in the Sew order panel to merge or swap.\n\nWhen you want control over which parts get stitched, use [Click to stitch](click-to-stitch.md).\n"
   },
   {
    "id": "click-to-stitch",
@@ -647,7 +647,7 @@
     "dialog.map-to-path"
    ],
    "status": "ready",
-   "words": 426,
+   "words": 438,
    "headings": [
     {
      "level": 2,
@@ -675,7 +675,7 @@
      "slug": "reorder-and-hide"
     }
    ],
-   "body": "# Editing shapes\n\nClick a shape and a small **shape bar** floats above it. It has one button per action. Disabled buttons are greyed out because they do not apply to what you selected.\n\n## The shape bar\n\n- **Reshape.** Move, add and delete points. Double-click a point to switch it between a corner and a curve. You can also double-click a shape to start.\n- **Cut hole.** Draw a closed shape inside a fill to cut it out. Use it for the hole in the letter \"O\" or a ring.\n- **Knife.** Drag a line across a shape to slice it in two.\n- **Start** and **End.** Click on the canvas to choose where sewing starts and ends. A green marker shows the start and a red one the end. A start near other shapes means fewer jumps.\n- **Angle.** Turn the stitch direction with a dial on the canvas. Only for fills.\n- **Map to path** (**P**). Repeat the selection along an open line. Read below.\n- **Outline** or **Fill.** Converts between an outlined shape and a filled one.\n- **Redwork.** Adds a running outline along every edge of the selection, routed to keep jumps short.\n- **Lock** or **Unlock.** Locks the selection so you cannot move or edit it by accident.\n- **Duplicate** (**⌘D**) and **Delete** (**Backspace**).\n\n## The left panel for a shape\n\nWith a shape selected, the left panel shows its settings: **Dimensions**, **Colour**, **Style**, then the stitch settings for its type. Read [Run types](run-types.md), [Underlay and pull compensation](underlay-and-pull.md) and [Satin tips](satin-tips.md).\n\nEvery change shows on the canvas straight away. Sliders merge into one undo step.\n\n## Several shapes at once\n\nSelect more than one shape and the panel edits all of them. The panel shows the settings of the first shape. Change one control and it applies to everyone selected.\n\n## Map to path\n\n**Map to path** places copies of a shape along an open line. Use it for a row of stars along a garment-bag strap crest, or small leaves along a vine.\n\n1. Select the shape and the open line together, then press **P**. Or select the shape, press **P** and choose a path afterwards.\n2. Set the **count** and **spacing** in the dialog.\n3. Apply it.\n\nThe copies stay linked. Use **Edit…** in the **Map to path** section of the left panel to change the count, or **Detach** to turn them into ordinary shapes.\n\n## Reorder and hide\n\nOpen the sequencer on the right to change sewing order, hide shapes or group by colour. Read [The sequencer](sequencer.md).\n"
+   "body": "# Editing shapes\n\nClick a shape and a small **shape bar** floats above it. It has one button per action. Disabled buttons are greyed out because they do not apply to what you selected.\n\n## The shape bar\n\n- **Reshape.** Move, add and delete points. Double-click a point to switch it between a corner and a curve. You can also double-click a shape to start.\n- **Cut hole.** Draw a closed shape inside a fill to cut it out. Use it for the hole in the letter \"O\" or a ring.\n- **Knife.** Drag a line across a shape to slice it in two.\n- **Start** and **End.** Click on the canvas to choose where sewing starts and ends. A green marker shows the start and a red one the end. A start near other shapes means fewer jumps.\n- **Angle.** Turn the stitch direction with a dial on the canvas. Only for fills.\n- **Map to path** (**P**). Repeat the selection along an open line. Read below.\n- **Outline** or **Fill.** Converts between an outlined shape and a filled one.\n- **Redwork.** Adds a running outline along every edge of the selection, routed to keep jumps short.\n- **Lock** or **Unlock.** Locks the selection so you cannot move or edit it by accident.\n- **Duplicate** (**⌘D**) and **Delete** (**Backspace**).\n\n## The left panel for a shape\n\nWith a shape selected, the left panel shows its settings: **Dimensions**, **Colour**, **Style**, then the stitch settings for its type. Read [Run types](run-types.md), [Underlay and pull compensation](underlay-and-pull.md) and [Satin tips](satin-tips.md).\n\nEvery change shows on the canvas straight away. Sliders merge into one undo step.\n\n## Several shapes at once\n\nSelect more than one shape and the panel edits all of them. The panel shows the settings of the first shape. Change one control and it applies to everyone selected.\n\n## Map to path\n\n**Map to path** places copies of a shape along an open line. Use it for a row of stars along a garment-bag strap crest, or small leaves along a vine.\n\n1. Select the shape and the open line together, then press **P**. Or select the shape, press **P** and choose a path afterwards.\n2. Set the **count** and **spacing** in the dialog.\n3. Apply it.\n\nThe copies stay linked. Use **Edit…** in the **Map to path** section of the left panel to change the count, or **Detach** to turn them into ordinary shapes.\n\n## Reorder and hide\n\nOpen the **Layers** tab in the Sew order panel on the right to change sewing order, hide or lock shapes and layers, or group by colour. Read [Layers and sew order](layers.md).\n"
   },
   {
    "id": "sizing-and-hoops",
@@ -1755,7 +1755,7 @@
     "panel.sequencer-colours"
    ],
    "status": "ready",
-   "words": 316,
+   "words": 318,
    "headings": [
     {
      "level": 2,
@@ -1793,7 +1793,7 @@
      "slug": "colours-on-screen-are-close-not-exact"
     }
    ],
-   "body": "# Thread brands and matching\n\nEmbroidery thread comes in **brands** and **lines**. Each has its own colour names and codes. Lilo has a catalogue of tens of thousands of real thread colours across many brands.\n\n## How matching works\n\nPictures have millions of colours. Thread has a few hundred per brand. When Lilo digitizes a picture, it finds the **nearest real thread** for each colour in the picture. It compares them the way the eye does, using a colour difference measure called CIEDE2000.\n\n## Choose a brand\n\nBefore you digitize, use **Thread brand** in the **Auto digitize** panel. Pick the range you own or can buy. The number in brackets is how many colours it holds.\n\n## Change a colour afterwards\n\n1. Select a shape.\n2. In the left panel, open **Colour**.\n3. Search or browse the picker, then click a thread.\n\nThe picker lists the Brother, Country and Brothread ranges first. Every change is one undo step.\n\n## Swap or merge colours\n\nOpen the **Colours** tab in the sequencer on the right.\n\n- **Swap** replaces a thread with another everywhere it is used.\n- **Merge into** folds one colour into another. Use it to cut down colour changes.\n- **Select** selects every object in that colour.\n- **Group by colour** reorders objects so each colour is sewn in one go.\n\nRead [Fewer colour changes](fewer-colour-changes.md).\n\n## Your own spools\n\n**My Threads** keeps the spools you own. Tick **Use my threads** in Auto digitize to match to them first. Read [My Threads](my-threads.md).\n\n## Colours in the machine file\n\nSome file formats keep thread colours (PES, JEF, VP3, XXX). Others do not (DST, EXP, U01). Without colours, your machine shows \"colour 1, colour 2\". Read [File formats](formats-reference.md).\n\n## Colours on screen are close, not exact\n\nScreens cannot show thread exactly. A thread chart or the real spool is the final judge. Many brands have printed or online charts.\n"
+   "body": "# Thread brands and matching\n\nEmbroidery thread comes in **brands** and **lines**. Each has its own colour names and codes. Lilo has a catalogue of tens of thousands of real thread colours across many brands.\n\n## How matching works\n\nPictures have millions of colours. Thread has a few hundred per brand. When Lilo digitizes a picture, it finds the **nearest real thread** for each colour in the picture. It compares them the way the eye does, using a colour difference measure called CIEDE2000.\n\n## Choose a brand\n\nBefore you digitize, use **Thread brand** in the **Auto digitize** panel. Pick the range you own or can buy. The number in brackets is how many colours it holds.\n\n## Change a colour afterwards\n\n1. Select a shape.\n2. In the left panel, open **Colour**.\n3. Search or browse the picker, then click a thread.\n\nThe picker lists the Brother, Country and Brothread ranges first. Every change is one undo step.\n\n## Swap or merge colours\n\nOpen the **Colours** tab in the Sew order panel on the right.\n\n- **Swap** replaces a thread with another everywhere it is used.\n- **Merge into** folds one colour into another. Use it to cut down colour changes.\n- **Select** selects every object in that colour.\n- **Group by colour** reorders objects so each colour is sewn in one go.\n\nRead [Fewer colour changes](fewer-colour-changes.md).\n\n## Your own spools\n\n**My Threads** keeps the spools you own. Tick **Use my threads** in Auto digitize to match to them first. Read [My Threads](my-threads.md).\n\n## Colours in the machine file\n\nSome file formats keep thread colours (PES, JEF, VP3, XXX). Others do not (DST, EXP, U01). Without colours, your machine shows \"colour 1, colour 2\". Read [File formats](formats-reference.md).\n\n## Colours on screen are close, not exact\n\nScreens cannot show thread exactly. A thread chart or the real spool is the final judge. Many brands have printed or online charts.\n"
   },
   {
    "id": "my-threads",
@@ -1815,11 +1815,10 @@
     "backup"
    ],
    "appContext": [
-    "panel.my-threads",
-    "panel.sequencer"
+    "panel.my-threads"
    ],
    "status": "ready",
-   "words": 226,
+   "words": 228,
    "headings": [
     {
      "level": 2,
@@ -1852,7 +1851,7 @@
      "slug": "related"
     }
    ],
-   "body": "# My Threads\n\n**My Threads** is your shelf of real spools. Lilo uses it so its colours match what is in your drawer.\n\n## Open it\n\nIn the sequencer on the right, open the **My Threads** tab.\n\n## Add spools\n\nThree ways:\n\n1. **From the catalogue.** Type a brand, code or name into the search box and press **Add** next to the result. Adding the same spool again raises its quantity.\n2. **By photo.** Read [Add a spool by photo](add-by-photo.md).\n3. **By hand.** Fill in **Brand**, **Line**, **Code** and **Name** for a spool Lilo does not know.\n\n## Look after the shelf\n\n- Change the **Quantity** of each spool.\n- Add **Notes**, like \"half used\" or \"bought at the fair\".\n- **Remove** a spool when it is empty.\n\n## Back up and move\n\n- **Export JSON…** saves your shelf to a file.\n- **Import JSON…** loads one back, on this or another computer.\n\nIf the shelf is empty on first open, you can restore a backup or **Start with an empty shelf**.\n\n## Use it when digitizing\n\nIn **Auto digitize**, turn on **Use my threads**. Lilo matches the picture's colours to the spools on your shelf first. The panel says how many spools it is matching to. If the shelf is empty, it falls back to the brand you chose.\n\n## Related\n\n[Thread brands and matching](thread-brands-matching.md)\n"
+   "body": "# My Threads\n\n**My Threads** is your shelf of real spools. Lilo uses it so its colours match what is in your drawer.\n\n## Open it\n\nIn the Sew order panel on the right, open the **My Threads** tab.\n\n## Add spools\n\nThree ways:\n\n1. **From the catalogue.** Type a brand, code or name into the search box and press **Add** next to the result. Adding the same spool again raises its quantity.\n2. **By photo.** Read [Add a spool by photo](add-by-photo.md).\n3. **By hand.** Fill in **Brand**, **Line**, **Code** and **Name** for a spool Lilo does not know.\n\n## Look after the shelf\n\n- Change the **Quantity** of each spool.\n- Add **Notes**, like \"half used\" or \"bought at the fair\".\n- **Remove** a spool when it is empty.\n\n## Back up and move\n\n- **Export JSON…** saves your shelf to a file.\n- **Import JSON…** loads one back, on this or another computer.\n\nIf the shelf is empty on first open, you can restore a backup or **Start with an empty shelf**.\n\n## Use it when digitizing\n\nIn **Auto digitize**, turn on **Use my threads**. Lilo matches the picture's colours to the spools on your shelf first. The panel says how many spools it is matching to. If the shelf is empty, it falls back to the brand you chose.\n\n## Related\n\n[Thread brands and matching](thread-brands-matching.md)\n"
   },
   {
    "id": "add-by-photo",
@@ -1874,7 +1873,7 @@
     "panel.my-threads"
    ],
    "status": "ready",
-   "words": 180,
+   "words": 182,
    "headings": [
     {
      "level": 2,
@@ -1902,7 +1901,7 @@
      "slug": "related"
     }
    ],
-   "body": "# Add a spool by photo\n\nYou can add a spool without typing its code. Lilo reads the label from a photo.\n\n## Steps\n\n1. Open the **My Threads** tab in the sequencer.\n2. Open **Add a spool by photo**.\n3. Choose a photo of the label. Take it in good light, close enough to read the code, with no glare.\n4. Lilo reads the text and suggests which thread it is.\n5. **Check the suggestion.** Then confirm.\n\nYou always confirm. Lilo never adds a spool on its own.\n\n## If Lilo reads it wrong\n\nReading text from a picture is not perfect. If the suggestion is wrong, search the catalogue by code, or fill in the spool by hand.\n\n## Tips for a good photo\n\n- Lay the spool on a plain surface.\n- Hold the camera square to the label.\n- Make sure the number and the brand name are both visible.\n- Avoid shiny reflections on the plastic.\n\n## Privacy\n\nThe photo is read on your computer. Lilo does not send it anywhere.\n\n## Related\n\n[My Threads](my-threads.md)\n"
+   "body": "# Add a spool by photo\n\nYou can add a spool without typing its code. Lilo reads the label from a photo.\n\n## Steps\n\n1. Open the **My Threads** tab in the Sew order panel.\n2. Open **Add a spool by photo**.\n3. Choose a photo of the label. Take it in good light, close enough to read the code, with no glare.\n4. Lilo reads the text and suggests which thread it is.\n5. **Check the suggestion.** Then confirm.\n\nYou always confirm. Lilo never adds a spool on its own.\n\n## If Lilo reads it wrong\n\nReading text from a picture is not perfect. If the suggestion is wrong, search the catalogue by code, or fill in the spool by hand.\n\n## Tips for a good photo\n\n- Lay the spool on a plain surface.\n- Hold the camera square to the label.\n- Make sure the number and the brand name are both visible.\n- Avoid shiny reflections on the plastic.\n\n## Privacy\n\nThe photo is read on your computer. Lilo does not send it anywhere.\n\n## Related\n\n[My Threads](my-threads.md)\n"
   },
   {
    "id": "stitch-player",
@@ -1928,7 +1927,7 @@
     "panel.player"
    ],
    "status": "ready",
-   "words": 276,
+   "words": 278,
    "headings": [
     {
      "level": 2,
@@ -1956,7 +1955,7 @@
      "slug": "related"
     }
    ],
-   "body": "# The stitch player\n\nThe **stitch player** is the bar under the canvas. It plays your design back the way the machine will sew it.\n\n![The stitch player with a colour change card](screenshots/player.png)\n\n## Controls\n\n- **Play** and **Pause** start and stop the playback.\n- **Scrub stitches** is the long slider. Drag it to jump to any point. Scrub to the start and press Play to watch from the beginning.\n- **Speed** runs from 1 times to 50 times. At 1 times the on-screen needle moves as fast as a real machine, about 850 stitches a minute.\n- **Auto-continue** waits a moment at each colour change and then carries on. Turn it off to stop at every one.\n\n## Colour changes\n\nWhen playback reaches a colour change it stops and shows a card: \"Swap to Brother 123 and the thread name\". It shows a swatch of the colour. Press **Continue** when you are ready. That is also how you will work at the machine: change the thread, then restart.\n\n## The totals\n\nThe line under the bar tells you:\n\n- **Stitches** so far out of the total.\n- The number of **colour changes**.\n- The design **size** in millimetres.\n- An **estimated sewing time**, worked out at 850 stitches a minute.\n\n## Why use it\n\n- Spot a long jump that would leave a thread across the design.\n- See whether the sewing order makes sense. Outlines sewn before fills can be covered up.\n- Check the time. Add a few minutes per colour change for the thread swap.\n\nPlaying the design ticks the **Preview** step in the workflow strip.\n\n## Related\n\n[Realistic view](realistic-view.md), [The sequencer](sequencer.md)\n"
+   "body": "# The stitch player\n\nThe **stitch player** is the bar under the canvas. It plays your design back the way the machine will sew it.\n\n![The stitch player with a colour change card](screenshots/player.png)\n\n## Controls\n\n- **Play** and **Pause** start and stop the playback.\n- **Scrub stitches** is the long slider. Drag it to jump to any point. Scrub to the start and press Play to watch from the beginning.\n- **Speed** runs from 1 times to 50 times. At 1 times the on-screen needle moves as fast as a real machine, about 850 stitches a minute.\n- **Auto-continue** waits a moment at each colour change and then carries on. Turn it off to stop at every one.\n\n## Colour changes\n\nWhen playback reaches a colour change it stops and shows a card: \"Swap to Brother 123 and the thread name\". It shows a swatch of the colour. Press **Continue** when you are ready. That is also how you will work at the machine: change the thread, then restart.\n\n## The totals\n\nThe line under the bar tells you:\n\n- **Stitches** so far out of the total.\n- The number of **colour changes**.\n- The design **size** in millimetres.\n- An **estimated sewing time**, worked out at 850 stitches a minute.\n\n## Why use it\n\n- Spot a long jump that would leave a thread across the design.\n- See whether the sewing order makes sense. Outlines sewn before fills can be covered up.\n- Check the time. Add a few minutes per colour change for the thread swap.\n\nPlaying the design ticks the **Preview** step in the workflow strip.\n\n## Related\n\n[Realistic view](realistic-view.md), [Layers and sew order](layers.md)\n"
   },
   {
    "id": "realistic-view",
@@ -2012,57 +2011,73 @@
    "body": "# Realistic view and view options\n\nThe small checkboxes in the corner of the canvas change what you see. They never change the stitches.\n\n## The four view options\n\n- **Realistic** draws each stitch as a shaded thread, with heavier thread for triple, rope and satin. It shows how the design will really look.\n- **Grid** shows a square grid on the canvas. Use it to line things up.\n- **Reference** shows your original picture behind the stitches, so you can compare them.\n- **Jumps** shows the thread that travels between shapes without sewing. These jumps are trimmed on the machine, but too many mean extra work.\n\nTurn **Realistic** off to see a clean plan. It is easier to read when you are checking spacing.\n\n## The hoop frame\n\nYou can also show the **hoop frame** with its clamp. Choose it in the **Hoop** section. It makes the preview look like the real hoop. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Zoom and pan\n\n- Scroll or pinch to zoom.\n- Press **⌘K** and choose **Fit to window** to see the whole design.\n- Hold **Space** and drag to pan.\n- **Actual size** (⌘0) shows the true millimetre size on your screen.\n\n## When to use which\n\n| You want to | Use |\n| --- | --- |\n| Judge how it will look on a jacket | **Realistic**, zoomed in |\n| Find holes between shapes | **Realistic** off |\n| Compare against the original logo | **Reference** on |\n| Cut thread trims | **Jumps** on |\n\nSwitching **Realistic** counts as a look at the preview, so it ticks the **Preview** step.\n\n## Related\n\n[The stitch player](stitch-player.md)\n"
   },
   {
-   "id": "sequencer",
-   "title": "The sequencer",
-   "summary": "Change the order shapes are sewn in, hide shapes, group by colour, and manage reference images.",
+   "id": "layers",
+   "title": "Layers and sew order",
+   "summary": "Pictures and stitch layers in one list. The list is the order the machine sews: bottom first, top last.",
    "section": "preview",
    "order": 3,
    "keywords": [
-    "sequencer",
-    "order",
+    "layers",
+    "layer",
+    "sew order",
     "sewing order",
+    "order",
     "reorder",
     "hide",
-    "show",
-    "colour blocks",
-    "objects",
-    "images",
-    "group by colour",
-    "details",
-    "rename"
+    "lock",
+    "opacity",
+    "merge",
+    "picture",
+    "reference image",
+    "stack",
+    "top",
+    "bottom"
    ],
    "appContext": [
-    "panel.sequencer",
-    "panel.sequencer-colours",
-    "panel.sequencer-images"
+    "panel.layers"
    ],
    "status": "ready",
-   "words": 274,
+   "words": 753,
    "headings": [
     {
      "level": 2,
-     "text": "Objects",
-     "slug": "objects"
+     "text": "Two kinds of layer",
+     "slug": "two-kinds-of-layer"
+    },
+    {
+     "level": 2,
+     "text": "What each layer row shows",
+     "slug": "what-each-layer-row-shows"
+    },
+    {
+     "level": 2,
+     "text": "Change the order",
+     "slug": "change-the-order"
     },
     {
      "level": 3,
-     "text": "Order matters",
-     "slug": "order-matters"
+     "text": "Why order matters",
+     "slug": "why-order-matters"
     },
     {
      "level": 2,
-     "text": "Colours",
-     "slug": "colours"
+     "text": "Hidden layers are not sewn",
+     "slug": "hidden-layers-are-not-sewn"
     },
     {
      "level": 2,
-     "text": "Images",
-     "slug": "images"
+     "text": "Buttons under the banner",
+     "slug": "buttons-under-the-banner"
     },
     {
      "level": 2,
-     "text": "My Threads",
-     "slug": "my-threads"
+     "text": "Keyboard",
+     "slug": "keyboard"
+    },
+    {
+     "level": 2,
+     "text": "Old files",
+     "slug": "old-files"
     },
     {
      "level": 2,
@@ -2070,7 +2085,7 @@
      "slug": "related"
     }
    ],
-   "body": "# The sequencer\n\nThe **sequencer** is the panel on the right. It lists your shapes in the order the machine will sew them. It has four tabs.\n\n## Objects\n\nEach row is a shape. Rows are grouped into **colour blocks**. A colour block is a run of shapes that use the same thread, so the machine does not change thread inside it.\n\n- **Move up** and **Move down** change the sewing order.\n- **Hide** takes a shape off the canvas and out of the file. Use it to check one layer at a time.\n- Double-click a name to **rename** it.\n- **Details** shows stitch and point counts.\n- Each colour block can move up or down as a whole.\n\n### Order matters\n\nSew big fills first, then borders, then details on top. If a fill is sewn after its outline, the fill covers it.\n\n## Colours\n\nThe **Colours** tab lists each thread and how many objects and stitches use it.\n\n- **Group by colour** reorders objects so each colour is sewn once. It cuts thread changes.\n- **Merge into** folds a colour into another.\n- **Swap** replaces a thread with a different one.\n- **Select** selects every object of that colour.\n\nRead [Fewer colour changes](fewer-colour-changes.md).\n\n## Images\n\nThe **Images** tab holds reference pictures. They are not stitched.\n\n- **Add image…** puts a picture behind the design to trace over or compare to.\n- Set the **opacity** and **width**.\n- **Lock** so you cannot drag it by accident. **Hide** and **Remove** work as you expect.\n\n## My Threads\n\nThe fourth tab is your shelf of spools. Read [My Threads](my-threads.md).\n\n## Related\n\n[The stitch player](stitch-player.md)\n"
+   "body": "# Layers and sew order\n\nThe **Layers** tab is in the Sew order panel on the right. It holds your pictures and your stitches in one list. Think of a stack of paper. The paper at the bottom goes down first. The paper on top goes down last, so it sits on top.\n\n**The list is the sew order. The bottom layer sews first. The top layer sews last.**\n\nA banner at the top of the panel says the same thing: \"Bottom sews first. Top sews last and sits on top.\"\n\n## Two kinds of layer\n\n- A **stitch layer** holds shapes. Lilo sews them.\n- A **picture layer** holds reference images. Lilo never sews them. They are there to trace over or compare to.\n\nA new design starts with one stitch layer called **Stitches**. Add a picture and Lilo makes a **Picture** layer under it.\n\n## What each layer row shows\n\n- The **eye** shows or hides the layer.\n- The **padlock** locks it. Nothing in a locked layer can be picked on the canvas or changed.\n- A small **icon** tells you if it is a stitch layer or a picture layer.\n- The **name**. Double-click it to rename the layer, or press F2.\n- A **sew range**, like \"sews 4–7\". That means the shapes in this layer are the 4th to the 7th things the machine sews.\n- **Up** and **down** arrows move the layer. Up sews it later. Down sews it earlier.\n- On a picture layer, an **opacity** slider. Lower it so your stitches stay easy to see.\n- The little arrow on the left opens or closes the layer.\n\nOpen a stitch layer to see its shapes. Each shape has its own **sew number**. The top of the list sews last, here too.\n\n## Change the order\n\n1. Drag a shape up or down. Drop it on another shape, or on a layer to put it at the end of that layer.\n2. Drag a layer by its name to move the whole layer.\n3. Or use the keyboard. Click a row, then press **Alt + Up** or **Alt + Down**.\n\nEvery move is one undo step. Pictures only go into picture layers. Shapes only go into stitch layers.\n\n### Why order matters\n\nSew big fills first, then borders, then small details on top. If a fill is sewn after its outline, the fill covers the outline. Put the fill in a lower layer and the outline in a higher one.\n\n## Hidden layers are not sewn\n\nHiding a **stitch layer** takes it out of the file too. That is how you check one part of a design at a time. It also means a forgotten hidden layer is missing from your sewing. So Lilo tells you:\n\n- The Export and Send windows list \"1 layer is hidden — it won't be sewn\", with its name.\n- The Before you sew card says it too.\n- The stitch count, the time and the thread list only count layers you can see.\n\nHiding a **picture layer** changes nothing in the file.\n\n## Buttons under the banner\n\n- **New stitch layer** and **New picture layer** add an empty layer above the one you have selected.\n- **Add image…** puts a picture into the selected picture layer. If there is no picture layer yet, Lilo makes one.\n- **Delete layer** removes the selected layer. If it has things in it, Lilo asks first. You can undo it.\n- **Merge down** folds the selected layer into the layer below it. Both must be the same kind. The sew order does not change.\n\n## Keyboard\n\n| Key | What it does |\n|---|---|\n| Up, Down | Move between rows |\n| Left, Right | Close or open a layer |\n| Space | Show or hide the row |\n| L | Lock or unlock a layer |\n| Enter | Select the row |\n| F2 | Rename |\n| Alt + Up, Alt + Down | Move the row. Up sews later |\n\n## Old files\n\nA project from Lilo 1.2 or earlier opens with its pictures in a **Picture** layer and its shapes in a **Stitches** layer. The shapes keep their order, so the stitches come out exactly the same. When you save, the file is in the new format. An older Lilo cannot open it. It says the project was made with a newer Lilo.\n\n## Related\n\n[The Sew order panel](sequencer.md), [The stitch player](stitch-player.md), [Fewer colour changes](fewer-colour-changes.md)\n"
   },
   {
    "id": "fewer-colour-changes",
@@ -2095,7 +2110,7 @@
     "panel.warnings"
    ],
    "status": "ready",
-   "words": 244,
+   "words": 248,
    "headings": [
     {
      "level": 2,
@@ -2133,7 +2148,59 @@
      "slug": "related"
     }
    ],
-   "body": "# Fewer colour changes\n\nA single-needle home machine stops at every colour change. You swap the thread by hand, thread the needle and restart. A design with 12 colour changes can take longer to swap than to sew.\n\nThe stitch player counts them, and the warnings tray tells you when there are many.\n\n## Four ways to cut them\n\n### 1. Use fewer colours when you digitize\n\nIn **Auto digitize**, lower **Colours**. A logo that looks fine with 4 colours does not need 8.\n\n### 2. Merge similar colours\n\nOpen the **Colours** tab in the sequencer. Pick **Merge into** on a colour that is close to another. Every shape in the first colour joins the second.\n\n### 3. Group by colour\n\nIf the same thread is used in several places, the machine may swap away and back. Press **Group by colour** in the **Colours** tab. Lilo reorders the objects so each colour is sewn in one block.\n\nCheck the new order in the stitch player. Sewing order affects what covers what.\n\n### 4. Reuse a thread\n\nUse one thread for two roles. For a garment-bag crest, sew the outline and the lettering in the same gold. That is one swap saved.\n\n## What counts as many\n\nLilo's tray suggests a look at your colours when a design has more than 8 colour changes. That is a guide, not a rule. A rich crest may need more.\n\n## Related\n\n[Thread brands and matching](thread-brands-matching.md), [The sequencer](sequencer.md)\n"
+   "body": "# Fewer colour changes\n\nA single-needle home machine stops at every colour change. You swap the thread by hand, thread the needle and restart. A design with 12 colour changes can take longer to swap than to sew.\n\nThe stitch player counts them, and the warnings tray tells you when there are many.\n\n## Four ways to cut them\n\n### 1. Use fewer colours when you digitize\n\nIn **Auto digitize**, lower **Colours**. A logo that looks fine with 4 colours does not need 8.\n\n### 2. Merge similar colours\n\nOpen the **Colours** tab in the Sew order panel. Pick **Merge into** on a colour that is close to another. Every shape in the first colour joins the second.\n\n### 3. Group by colour\n\nIf the same thread is used in several places, the machine may swap away and back. Press **Group by colour** in the **Colours** tab. Lilo reorders the objects so each colour is sewn in one block.\n\nCheck the new order in the stitch player. Sewing order affects what covers what.\n\n### 4. Reuse a thread\n\nUse one thread for two roles. For a garment-bag crest, sew the outline and the lettering in the same gold. That is one swap saved.\n\n## What counts as many\n\nLilo's tray suggests a look at your colours when a design has more than 8 colour changes. That is a guide, not a rule. A rich crest may need more.\n\n## Related\n\n[Thread brands and matching](thread-brands-matching.md), [Layers and sew order](layers.md)\n"
+  },
+  {
+   "id": "sequencer",
+   "title": "The Sew order panel",
+   "summary": "The panel on the right: Layers (the sew order), Colours, Images and My Threads.",
+   "section": "preview",
+   "order": 5,
+   "keywords": [
+    "sequencer",
+    "sew order",
+    "colour blocks",
+    "objects",
+    "images",
+    "group by colour",
+    "details",
+    "tabs",
+    "panel"
+   ],
+   "appContext": [
+    "panel.sequencer-colours",
+    "panel.sequencer-images"
+   ],
+   "status": "ready",
+   "words": 285,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Layers",
+     "slug": "layers"
+    },
+    {
+     "level": 2,
+     "text": "Colours",
+     "slug": "colours"
+    },
+    {
+     "level": 2,
+     "text": "Images",
+     "slug": "images"
+    },
+    {
+     "level": 2,
+     "text": "My Threads",
+     "slug": "my-threads"
+    },
+    {
+     "level": 2,
+     "text": "Related",
+     "slug": "related"
+    }
+   ],
+   "body": "# The Sew order panel\n\nThe **Sew order** panel is on the right. It has four tabs.\n\n## Layers\n\nThe **Layers** tab lists your pictures and your shapes in the order the machine sews them: the bottom sews first, the top sews last. You can hide, lock, rename and reorder layers and the shapes inside them. Read [Layers and sew order](layers.md).\n\nInside a layer, shapes that use the same thread sit together in a **colour block**, so the machine does not change thread inside it.\n\n- **Details** (the cog on a shape) shows its sew number, stitch and point counts.\n- Each colour block can move up or down as a whole.\n\n## Colours\n\nThe **Colours** tab lists each thread and how many objects and stitches use it.\n\n- **Group by colour** reorders objects so each colour is sewn once inside its layer. It cuts thread changes.\n- **Merge into** folds a colour into another.\n- **Swap** replaces a thread with a different one.\n- **Select** selects every object of that colour.\n\nRead [Fewer colour changes](fewer-colour-changes.md).\n\n## Images\n\nThe **Images** tab holds the settings of your reference pictures. They are not stitched. They also appear in the **Layers** tab, in their picture layer.\n\n- **Add image…** puts a picture behind the design to trace over or compare to. It goes into the selected picture layer.\n- Set the **opacity** and **width** of each picture. A picture layer has its own opacity too, and the two multiply.\n- **Lock** so you cannot drag it by accident. **Hide** and **Remove** work as you expect.\n\n## My Threads\n\nThe fourth tab is your shelf of spools. Read [My Threads](my-threads.md).\n\n## Related\n\n[Layers and sew order](layers.md), [The stitch player](stitch-player.md)\n"
   },
   {
    "id": "lilo-link-wifi",

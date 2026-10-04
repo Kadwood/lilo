@@ -97,7 +97,7 @@ describe("journey d: click to stitch and My Threads", () => {
       await j.shot("8-three-ways");
 
       // use my threads in Auto digitize: every colour of the result is a spool from the shelf
-      await page.getByRole("tab", { name: "Shapes" }).click();
+      await page.getByRole("tab", { name: "Layers" }).click();
       await page.keyboard.press("Escape"); // nothing selected: the Auto digitize panel is back
       await page.getByLabel("Use my threads").check();
       await page.getByRole("button", { name: "Digitize", exact: true }).click();

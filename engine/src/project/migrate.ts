@@ -1,12 +1,20 @@
-import { validateDesign } from "../model";
+import { migrateDesignToLayers, validateDesign, type Design } from "../model";
 import { isUsableHoop, normalizeHoop } from "../hoops";
 import { importShelf, ShelfError } from "../threads/shelf";
 import { validatePixelArt } from "../pixelart/grid";
 import { PROJECT_FORMAT, PROJECT_VERSION, ProjectError, type ProjectDoc } from "./types";
 
-/** `MIGRATIONS[n]` upgrades a version-n document to version n+1. Empty until the format first changes. */
+/** `MIGRATIONS[n]` upgrades a version-n document to version n+1. */
 export type Migration = (doc: Record<string, unknown>) => Record<string, unknown>;
-export const MIGRATIONS: Record<number, Migration> = {};
+export const MIGRATIONS: Record<number, Migration> = {
+  // 1 -> 2 (Lilo 1.3, layers): the pictures go in a "Picture" layer at the bottom and every shape in a "Stitches"
+  // layer on top. The objects keep their order, so the stitches come out exactly the same.
+  1: (doc) => {
+    const d = doc.design;
+    if (!isObj(d) || !Array.isArray(d.threads) || !Array.isArray(d.objects)) return doc; // damaged: checkDoc reports it
+    return { ...doc, design: migrateDesignToLayers(d as unknown as Design) };
+  },
+};
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 

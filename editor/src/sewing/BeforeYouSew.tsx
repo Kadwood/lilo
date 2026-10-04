@@ -1,5 +1,5 @@
 import { useId, useMemo, useState } from "react";
-import { DEFAULT_SPM, planStats, recommendedMachineSpeed, recommendedSpeed, type Design, type Hoop, type SewingSetup, type Thread } from "@lilo/engine/light";
+import { DEFAULT_SPM, hiddenLayerIds, isObjectVisible, planStats, recommendedMachineSpeed, recommendedSpeed, type Design, type Hoop, type SewingSetup, type Thread } from "@lilo/engine/light";
 import { useHoop } from "../hoops/autoPick";
 import { fmtSize } from "../hoops/format";
 import { formatDuration } from "../state/player";
@@ -14,8 +14,9 @@ export function threadsInSewingOrder(design: Design | null): Thread[] {
   const byId = new Map(design.threads.map((t) => [t.id, t]));
   const out: Thread[] = [];
   let last: string | null = null;
+  const hidden = hiddenLayerIds(design);
   for (const o of design.objects) {
-    if (o.visible === false || o.threadId === last) continue;
+    if (!isObjectVisible(o, hidden) || o.threadId === last) continue;
     const t = byId.get(o.threadId);
     if (t) out.push(t);
     last = o.threadId;
@@ -102,6 +103,7 @@ export function BeforeYouSew() {
     const r = recommendedMachineSpeed(design, setup.input, planResult);
     return { spm: r.spm, reasons: r.reasons, seconds: planStats(planResult.plan, r.spm).estimatedSeconds };
   }, [design, planResult, setup.input]);
+  const hiddenLayerNote = planResult?.warnings.find((w) => w.code === "hidden-layer")?.message ?? null;
   const all = [...items.setup, items.hoop, ...items.threads];
   const done = all.filter((i) => ticked.has(i.id)).length;
 
@@ -147,6 +149,11 @@ export function BeforeYouSew() {
       {copied && (
         <p className={`small ${copied === "failed" ? "error" : "muted"}`} role="status">
           {copied === "ok" ? "Copied." : "Could not copy: select the list and copy it by hand."}
+        </p>
+      )}
+      {hiddenLayerNote && (
+        <p className="warnings-inline small" role="status">
+          {hiddenLayerNote}
         </p>
       )}
       <dl className="stats before-sew-stats" aria-label="Sewing facts">

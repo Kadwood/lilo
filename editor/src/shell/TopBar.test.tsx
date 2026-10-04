@@ -33,7 +33,7 @@ describe("editor shell", () => {
   it("renders the frame regions", () => {
     setPlatform(fakePlatform());
     renderEditor(<EditorShell />);
-    for (const name of ["Settings", "Canvas", "Tools", "Sequencer"]) {
+    for (const name of ["Settings", "Canvas", "Tools", "Sew order"]) {
       expect(screen.getByLabelText(name)).toBeTruthy();
     }
     expect((screen.getByLabelText("Project name") as HTMLInputElement).value).toBe("Untitled design");

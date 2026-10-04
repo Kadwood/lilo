@@ -82,7 +82,7 @@ describe("journey f: hoops and the Sewing setup", () => {
       await page.getByRole("button", { name: "Fit", exact: true }).click();
 
       // ---- Sewing setup: a change updates auto shapes but keeps what the user set by hand ----------
-      const rows = page.getByRole("complementary", { name: "Sequencer" }).locator("li li");
+      const rows = page.getByRole("complementary", { name: "Sew order" }).locator("li.seq-row");
       await rows.first().click(); // select the first shape
       const pull = page.getByRole("spinbutton", { name: "Pull compensation value" });
       await pull.waitFor();

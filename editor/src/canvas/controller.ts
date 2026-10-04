@@ -2,11 +2,16 @@ import type { StoreApi } from "zustand/vanilla";
 import {
   DEFAULT_RUN_PARAMS,
   deleteNode,
+  emptyDesign,
   distToPolyline,
   editRings,
   ellipseNodes,
   flattenNodes,
+  hiddenLayerIds,
   hitObject,
+  isObjectLocked,
+  isObjectVisible,
+  lockedLayerIds,
   hitRegion,
   insertNodeNear,
   makeFill,
@@ -152,6 +157,17 @@ export class CanvasController {
   private px(n: number): number {
     return n / this.deps.getView().zoom;
   }
+  /** Locked on its own or by its layer. */
+  private isLocked(o: DesignObject): boolean {
+    return isObjectLocked(o, lockedLayerIds(this.s.design ?? emptyDesign()));
+  }
+  /** Can the pointer pick it: drawn (not hidden itself or by its layer) and not in a locked layer. */
+  private pickable(): (o: DesignObject) => boolean {
+    const d = this.s.design ?? emptyDesign();
+    const hidden = hiddenLayerIds(d);
+    const locked = lockedLayerIds(d);
+    return (o) => isObjectVisible(o, hidden) && !(o.layerId && locked.has(o.layerId));
+  }
   private selected(): DesignObject[] {
     const s = this.s;
     const set = new Set(s.selectedIds);
@@ -179,7 +195,7 @@ export class CanvasController {
     const s = this.s;
     if (s.tool !== "select" || s.mode !== "none") return null;
     const box = selectionBox(s.design, s.selectedIds);
-    if (!box || this.selected().every((o) => o.locked)) return null;
+    if (!box || this.selected().every((o) => this.isLocked(o))) return null;
     const p = this.mm(i);
     const r = this.px(HANDLE_PX + 2);
     const rot = rotateHandlePoint(box, this.px(ROTATE_OFFSET_PX));
@@ -278,7 +294,8 @@ export class CanvasController {
         // where new text will be placed.
         if (i.button !== 0) return;
         const d = s.design;
-        const hit = d ? [...d.objects].reverse().find((o) => o.sourceText && hitObject(o, p, this.px(PICK_PX))) : undefined;
+        const pick = this.pickable();
+        const hit = d ? [...d.objects].reverse().find((o) => o.sourceText && pick(o) && hitObject(o, p, this.px(PICK_PX))) : undefined;
         if (hit) this.a.setSelection([hit.id]);
         else {
           this.a.setSelection([]);
@@ -320,7 +337,7 @@ export class CanvasController {
       const o = sel[0];
       for (const which of ["start", "end"] as const) {
         const at = which === "start" ? o.startPoint : o.endPoint;
-        if (at && dist(p, at) <= this.px(NODE_PX + 2) && !o.locked) {
+        if (at && dist(p, at) <= this.px(NODE_PX + 2) && !this.isLocked(o)) {
           this.drag = { kind: "marker", id: o.id, which, at };
           this.changed();
           return;
@@ -329,7 +346,7 @@ export class CanvasController {
     }
 
     // the movable centre of a centred pattern
-    if (sel.length === 1 && sel[0].kind === "fill" && !sel[0].locked && i.button === 0) {
+    if (sel.length === 1 && sel[0].kind === "fill" && !this.isLocked(sel[0]) && i.button === 0) {
       const c = this.patternCentre(sel[0]);
       if (c && dist(p, c) <= this.px(NODE_PX + 3)) {
         this.drag = { kind: "marker", id: sel[0].id, which: "center", at: c };
@@ -340,7 +357,8 @@ export class CanvasController {
 
     // objects, topmost first
     const tol = this.px(PICK_PX);
-    const hit = design ? [...design.objects].reverse().find((o) => hitObject(o, p, tol)) : undefined;
+    const pick = this.pickable();
+    const hit = design ? [...design.objects].reverse().find((o) => pick(o) && hitObject(o, p, tol)) : undefined;
     if (hit) {
       if (i.detail >= 2 && i.button === 0) {
         this.a.setSelection([hit.id]);
@@ -361,7 +379,7 @@ export class CanvasController {
     }
 
     // reference images behind the shapes
-    const img = [...s.refImages].reverse().find((r) => r.visible && !r.locked && s.view.reference && this.inImage(r, p));
+    const img = [...s.refImages].reverse().find((r) => r.visible && r.layerVisible && !r.locked && !r.layerLocked && s.view.reference && this.inImage(r, p));
     if (img) {
       this.a.selectRefImage(img.id);
       this.drag = { kind: "image", id: img.id, from: p, orig: [img.x, img.y] };
@@ -478,7 +496,8 @@ export class CanvasController {
           if (!d.additive) this.a.setSelection([]);
           this.a.selectRefImage(null);
         } else {
-          const ids = (s.design?.objects ?? []).filter((o) => o.visible !== false && objectTouchesBox(o, box)).map((o) => o.id);
+          const pick = this.pickable();
+          const ids = (s.design?.objects ?? []).filter((o) => pick(o) && objectTouchesBox(o, box)).map((o) => o.id);
           this.a.setSelection(d.additive ? [...new Set([...s.selectedIds, ...ids])] : ids);
         }
         break;
@@ -587,7 +606,7 @@ export class CanvasController {
     return s.threadId ?? s.design?.threads[0]?.id ?? defaultThread().id;
   }
   private newId(): string {
-    return makeIdGen(this.s.design ?? { version: 1, unitsMm: 1, hoop: { name: "", widthMm: 0, heightMm: 0 }, threads: [], objects: [] })();
+    return makeIdGen(this.s.design ?? emptyDesign())();
   }
   /** A finished shape returns to the Select tool, so its handles and shape actions are right there. */
   private created(): void {
@@ -693,7 +712,7 @@ export class CanvasController {
 
   // ---- reshape --------------------------------------------------------------------------------
   private reshapeDown(i: PointerInput, p: Pt, o: DesignObject): void {
-    if (o.locked) return;
+    if (this.isLocked(o)) return;
     const rings = editRings(o);
     const r = this.px(NODE_PX + 2);
     // nodes first
@@ -755,7 +774,7 @@ export class CanvasController {
   private setAngleFromPointer(p: Pt, snap: boolean): void {
     const c = this.dialCentre();
     const o = this.selected().find((x) => x.kind === "fill");
-    if (!c || !o || o.locked) return;
+    if (!c || !o || this.isLocked(o)) return;
     let deg = (Math.atan2(p[1] - c[1], p[0] - c[0]) * 180) / Math.PI;
     if (snap) deg = Math.round(deg / 15) * 15;
     deg = Math.round(deg * 10) / 10;

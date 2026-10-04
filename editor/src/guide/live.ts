@@ -1,4 +1,4 @@
-import { minLetterHeightFor, objectBox, type Design, type DesignObject, type Hoop } from "@lilo/engine/light";
+import { hiddenLayerIds, isObjectVisible, minLetterHeightFor, objectBox, type Design, type DesignObject, type Hoop } from "@lilo/engine/light";
 import { pickFor } from "../hoops/autoPick";
 import { rememberHoop } from "../state/hoopStore";
 import { setHoopView } from "../state/hoopViewStore";
@@ -23,8 +23,9 @@ const SATIN_DEFAULT_RUN_WIDTH = 2.5;
 /** A satin column wider than `maxMm` that has no split turned on. */
 export function wideSatin(design: Design, maxMm: number): DesignObject[] {
   const out: DesignObject[] = [];
+  const hidden = hiddenLayerIds(design);
   for (const o of design.objects) {
-    if (o.visible === false) continue;
+    if (!isObjectVisible(o, hidden)) continue;
     if (o.kind === "satin") {
       if ((o.params.widthMm ?? 0) > maxMm && !((o.params.splitMaxWidthMm ?? 0) > 0)) out.push(o);
     } else if (o.kind === "run" && o.params.type === "satin") {
@@ -37,8 +38,9 @@ export function wideSatin(design: Design, maxMm: number): DesignObject[] {
 
 /** Filled shapes whose narrowest side is under `minMm`. Text is left alone (lettering has its own checks). */
 export function tinyFills(design: Design, minMm: number): DesignObject[] {
+  const hidden = hiddenLayerIds(design);
   return design.objects.filter((o) => {
-    if (o.kind !== "fill" || o.visible === false || o.sourceText) return false;
+    if (o.kind !== "fill" || !isObjectVisible(o, hidden) || o.sourceText) return false;
     const b = objectBox(o);
     return !!b && Math.min(b.maxX - b.minX, b.maxY - b.minY) < minMm;
   });

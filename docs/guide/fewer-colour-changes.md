@@ -23,7 +23,7 @@ In **Auto digitize**, lower **Colours**. A logo that looks fine with 4 colours d
 
 ### 2. Merge similar colours
 
-Open the **Colours** tab in the sequencer. Pick **Merge into** on a colour that is close to another. Every shape in the first colour joins the second.
+Open the **Colours** tab in the Sew order panel. Pick **Merge into** on a colour that is close to another. Every shape in the first colour joins the second.
 
 ### 3. Group by colour
 
@@ -41,4 +41,4 @@ Lilo's tray suggests a look at your colours when a design has more than 8 colour
 
 ## Related
 
-[Thread brands and matching](thread-brands-matching.md), [The sequencer](sequencer.md)
+[Thread brands and matching](thread-brands-matching.md), [Layers and sew order](layers.md)

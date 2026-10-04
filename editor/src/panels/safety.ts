@@ -2,6 +2,10 @@ import {
   checkSafe,
   DEFAULT_FILL_PARAMS,
   DEFAULT_SATIN_PARAMS,
+  hiddenLayerIds,
+  isObjectLocked,
+  isObjectVisible,
+  lockedLayerIds,
   safeRangeFor,
   SAFE_SLIDER_PARAMS,
   satinWidthOf,
@@ -135,7 +139,10 @@ const ROW_LABEL: Record<SliderParam, string> = {
 export function safetyRows(design: Design | null): SafeRow[] {
   if (!design) return [];
   const ctx = safeContextOf(design);
-  const visible = design.objects.filter((o) => o.visible !== false);
+  // only shapes that will be sewn: hidden shapes and hidden layers are left out
+  const hidden = hiddenLayerIds(design);
+  const locked = lockedLayerIds(design);
+  const visible = design.objects.filter((o) => isObjectVisible(o, hidden));
   const rows: SafeRow[] = [];
   for (const param of SAFE_SLIDER_PARAMS as readonly SliderParam[]) {
     const items = visible.flatMap((o) => {
@@ -156,7 +163,7 @@ export function safetyRows(design: Design | null): SafeRow[] {
       param,
       label: ROW_LABEL[param],
       ids: items.map((i) => i.o.id),
-      settableIds: items.filter((i) => safeSettable(i.o, param)).map((i) => i.o.id),
+      settableIds: items.filter((i) => !isObjectLocked(i.o, locked) && safeSettable(i.o, param)).map((i) => i.o.id),
       min: Math.min(...values),
       max: Math.max(...values),
       mean: values.reduce((a, b) => a + b, 0) / values.length,

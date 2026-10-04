@@ -60,7 +60,7 @@
         { "id": "look", "target": "canvas", "title": "Look it over", "body": "Your design is on the canvas. Scroll to zoom, hold Space and drag to pan.", "advanceOn": { "type": "next" }, "guideId": "screen-tour" },
         { "id": "hoop", "target": "hoop-chip", "title": "Check the hoop", "body": "Make sure the design fits the hoop on your machine.", "advanceOn": { "type": "next" }, "guideId": "sizing-and-hoops" },
         { "id": "sewing", "target": "sewing-chip", "title": "Check the sewing setup", "body": "Open this card to confirm the fabric and thread weight still match your job.", "advanceOn": { "type": "state", "cond": "sewing-open" }, "guideId": "sewing-setup" },
-        { "id": "order", "target": "sequencer", "title": "Check the order", "body": "This lists your shapes in sewing order, grouped by colour. Move them up or down here.", "advanceOn": { "type": "next" }, "guideId": "sequencer" },
+        { "id": "order", "target": "sequencer", "title": "Check the order", "body": "The Layers tab is your sewing order. The bottom layer sews first and the top layer sews last. Drag layers and shapes to change it.", "advanceOn": { "type": "next" }, "guideId": "layers" },
         { "id": "play", "target": "player-play", "title": "Watch it sew", "body": "Press Play to see the whole design stitched.", "advanceOn": { "type": "state", "cond": "played" }, "guideId": "stitch-player" },
         { "id": "send", "target": "topbar-send", "title": "Send or export", "body": "Send over Wi-Fi, or Export a file for a USB stick. Open either.", "advanceOn": { "type": "state", "cond": "dialog:any" }, "guideId": "send-a-design" }
       ]

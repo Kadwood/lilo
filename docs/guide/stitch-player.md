@@ -45,4 +45,4 @@ Playing the design ticks the **Preview** step in the workflow strip.
 
 ## Related
 
-[Realistic view](realistic-view.md), [The sequencer](sequencer.md)
+[Realistic view](realistic-view.md), [Layers and sew order](layers.md)

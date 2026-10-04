@@ -442,3 +442,37 @@ describe("shape actions", () => {
     expect(t.objs()).toHaveLength(1); // the path isn't added as an object
   });
 });
+
+describe("layers", () => {
+  const layered = (locked: boolean, visible: boolean) => {
+    const t = setup([{ ...sq("a"), layerId: "L1" }, { ...sq("b", 30, 0), layerId: "L2" }]);
+    const d = t.core.store.getState().design!;
+    t.core.store.setState({
+      design: {
+        ...d,
+        layers: [
+          { id: "L1", name: "One", kind: "stitch", visible: true, locked: false },
+          { id: "L2", name: "Two", kind: "stitch", visible, locked },
+        ],
+      },
+    });
+    return t;
+  };
+
+  it("a click does not pick a shape in a locked layer", () => {
+    const t = layered(true, true);
+    t.click(35, 5);
+    expect(t.st().selectedIds).toEqual([]);
+    t.click(5, 5);
+    expect(t.st().selectedIds).toEqual(["a"]);
+  });
+
+  it("a box does not pick shapes in a locked or hidden layer", () => {
+    const locked = layered(true, true);
+    locked.drag(-5, -5, 50, 15);
+    expect(locked.st().selectedIds).toEqual(["a"]);
+    const hidden = layered(false, false);
+    hidden.drag(-5, -5, 50, 15);
+    expect(hidden.st().selectedIds).toEqual(["a"]);
+  });
+});

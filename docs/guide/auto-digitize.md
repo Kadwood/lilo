@@ -47,6 +47,6 @@ Everything it makes is editable. Select any shape and change it.
 - **Too many colours:** lower **Colours**.
 - **Missing thin lines:** make the design larger, or choose **Premium**, which sews fine strokes as narrow satin.
 - **Messy specks:** raise **Smallest region**.
-- **Wrong colours:** change the thread in the left panel after selecting a shape, or use the **Colours** tab in the sequencer to merge or swap.
+- **Wrong colours:** change the thread in the left panel after selecting a shape, or use the **Colours** tab in the Sew order panel to merge or swap.
 
 When you want control over which parts get stitched, use [Click to stitch](click-to-stitch.md).

@@ -7,7 +7,7 @@ import { Sequencer } from "./Sequencer";
 afterEach(cleanup);
 const T = { timeout: 20_000 };
 
-const names = () => screen.getAllByRole("listitem").filter((li) => li.classList.contains("seq-row")).map((li) => li.querySelector(".seq-name")!.textContent);
+const names = () => [...document.querySelectorAll("li.seq-row")].map((li) => li.querySelector(".seq-name")!.textContent);
 const loaded = () => waitFor(() => expect(lastEditor?.state.planResult).not.toBeNull(), T);
 
 describe("Sequencer", () => {
@@ -16,7 +16,7 @@ describe("Sequencer", () => {
     await loaded();
     expect(screen.getByText(/3 objects · 2 colour blocks/)).toBeTruthy();
     expect(screen.getByText("Brother 800")).toBeTruthy(); // red group heading
-    expect(names()).toEqual(["Frame", "Line", "Bar"]);
+    expect(names()).toEqual(["Bar", "Line", "Frame"]); // last sewn on top, like the layers
     const row = screen.getByText("Frame").closest("li")!;
     expect(within(row).getByText("Fill")).toBeTruthy();
     expect(Number(within(row).getByTitle("stitches").textContent!.replace(/,/g, ""))).toBeGreaterThan(100);
@@ -42,20 +42,22 @@ describe("Sequencer", () => {
     expect(screen.getByText("Frame").closest("li")!.className).toMatch(/hidden/);
   });
 
-  it("reorders objects with the arrow buttons and recomputes the plan", async () => {
+  it("reorders objects with the arrow buttons (up sews later) and recomputes the plan", async () => {
     renderEditor(<Sequencer />, { design: testDesign() });
     await loaded();
     fireEvent.click(screen.getByLabelText("Move Line up"));
-    expect(names()).toEqual(["Line", "Frame", "Bar"]);
-    expect((screen.getByLabelText("Move Line up") as HTMLButtonElement).disabled).toBe(true);
-    await waitFor(() => expect(lastEditor!.state.planResult!.plan.stitches[0].objectIndex).toBe(0), T);
+    expect(names()).toEqual(["Line", "Bar", "Frame"]);
+    expect(lastEditor!.state.design!.objects.map((o) => o.id)).toEqual(["f1", "s1", "r1"]);
+    expect((screen.getByLabelText("Move Line up") as HTMLButtonElement).disabled).toBe(true); // already the last one sewn
+    await waitFor(() => expect(lastEditor!.state.planResult!.plan.stitches.filter((s) => s.objectIndex >= 0).pop()!.objectIndex).toBe(2), T);
+    expect(lastEditor!.state.design!.objects[2].id).toBe("r1");
   });
 
   it("moves a whole colour block", async () => {
     renderEditor(<Sequencer />, { design: testDesign() });
     await loaded();
-    fireEvent.click(screen.getByLabelText("Move Red block up"));
-    expect(names()).toEqual(["Bar", "Frame", "Line"]);
+    fireEvent.click(screen.getByLabelText("Move Blue block up")); // up = sews later
+    expect(names()).toEqual(["Line", "Frame", "Bar"]);
     await waitFor(() => expect(lastEditor!.state.planResult!.plan.threads.map((t) => t.name)).toEqual(["Red", "Blue"]), T);
   });
 
@@ -66,13 +68,15 @@ describe("Sequencer", () => {
     const frame = screen.getByText("Frame").closest("li")!;
     const dt = { setData: () => {}, effectAllowed: "" } as unknown as DataTransfer;
     fireEvent.dragStart(bar, { dataTransfer: dt });
-    // dropping on the top half of the first row puts the dragged object before it
-    frame.getBoundingClientRect = () => ({ top: 0, height: 20, bottom: 20, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON() {} });
+    // the list is shown last-sewn first, so the lower half of a row means "sews just before it"
+    // (jsdom drag events carry no clientY, so the row is placed far above the pointer: the pointer is in its lower half)
+    frame.getBoundingClientRect = () => ({ top: -100, height: 20, bottom: -80, left: 0, right: 100, width: 100, x: 0, y: -100, toJSON() {} });
     await act(async () => {
-      fireEvent.dragOver(frame, { dataTransfer: dt, clientY: 2 });
-      fireEvent.drop(frame, { dataTransfer: dt, clientY: 2 });
+      fireEvent.dragOver(frame, { dataTransfer: dt });
+      fireEvent.drop(frame, { dataTransfer: dt });
     });
-    expect(names()).toEqual(["Bar", "Frame", "Line"]);
+    expect(lastEditor!.state.design!.objects.map((o) => o.id)).toEqual(["s1", "f1", "r1"]);
+    expect(names()).toEqual(["Line", "Frame", "Bar"]);
   });
 
   it("shows a placeholder before anything is digitized", () => {

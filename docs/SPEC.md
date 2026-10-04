@@ -99,7 +99,7 @@ Pipeline, each step visible and animated:
   - Shows stitch count, time estimate at 850 spm, thread changes.
 - **Realistic view:** shaded thread rendering (WebGL).
 - **Sequencer:**
-  - Shapes tab: reorder, rename, stitch count.
+  - Layers tab (v1.3, replaces the Shapes tab): pictures and stitch layers in one list that is the sew order (bottom first), with hide, lock, rename, opacity, reorder, merge down and sew numbers.
   - Colours tab: group by colour.
   - Images tab: reference images.
 

@@ -102,7 +102,7 @@ Nav tabs: **Home**, **Editor**, **Pixel art**, **Converter**, **Lilo Link** (`ed
   No second trace. State: `state.trace`, `stitchRegions` in `editorStore.ts`; hit-test and
   region-to-object in `engine/src/clickstitch.ts`.
 - **Threads**: the picker reaches all 75 lines (brand, line, search; lines load on demand). **My
-  Threads** (Sequencer > Threads) holds the spools you own: add from the catalogue, by photo (Apple
+  Threads** (Sew order > Threads) holds the spools you own: add from the catalogue, by photo (Apple
   Vision OCR, ranked candidates, you confirm) or by hand; quantity, notes, JSON import/export. It is
   saved by two restricted Rust commands to `~/Documents/Lilo/my-threads.json`. "Use my threads" in
   Auto digitize snaps to the shelf first.

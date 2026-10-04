@@ -784,3 +784,128 @@ button.primary:hover:not(:disabled) {
   background: var(--accent);
   filter: brightness(1.12);
 }
+
+/* ---- layers panel (Sequencer > Layers) ------------------------------------------------------- */
+.layers-banner {
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 12px;
+  font-weight: 600;
+}
+.layer-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0;
+}
+.layer-tools button {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+.layer-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-left: 3px solid #d98e04;
+  border-radius: 6px;
+}
+.layer-confirm p {
+  flex-basis: 100%;
+  margin: 0;
+}
+.layer-tree {
+  margin-top: 6px;
+}
+.layer-tree .layer {
+  margin-bottom: 6px;
+}
+.layer-head {
+  flex-wrap: wrap;
+  cursor: pointer;
+}
+.layer-head.active {
+  outline: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.layer-head.drop-into {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.layer-kind {
+  color: var(--muted);
+  font-size: 12px;
+}
+.layer-range {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.layer-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-basis: 100%;
+  margin-left: 24px;
+}
+.layer-opacity {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 40px;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+.layer-children {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+}
+.layer-empty {
+  margin-left: 24px;
+  padding: 2px 6px;
+}
+.layer-hidden > .layer-head .seq-name,
+.layer-hidden > .layer-head .layer-kind {
+  opacity: 0.5;
+}
+.layer-locked > .layer-head .seq-name::after {
+  content: " (locked)";
+  color: var(--muted);
+  font-weight: 400;
+}
+.seq-num {
+  min-width: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+/* keyboard focus on a tree row: a clear ring, on the layer's head for a layer row */
+.layer-tree [role="treeitem"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.layer-tree li[role="treeitem"].layer:focus-visible {
+  outline: none;
+}
+.layer-tree li[role="treeitem"].layer:focus-visible > .layer-head {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* calmer rows: the move arrows of a shape or colour block show on hover or keyboard focus (drag, or Alt+arrows, work any time) */
+.row-move {
+  visibility: hidden;
+}
+.seq-row:hover .row-move,
+.seq-row:focus .row-move,
+.seq-row:focus-within .row-move,
+.seq-group-head:hover .row-move,
+.seq-group-head:focus-within .row-move {
+  visibility: visible;
+}
