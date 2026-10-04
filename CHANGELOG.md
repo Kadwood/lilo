@@ -12,6 +12,7 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 - Fixed: large designs saved as XXX no longer lose stitches. A stitch of exactly 12.4 mm in one direction was turned into a jump, so it was not sewn.
 - Every export format (PES, PEC, DST, EXP, JEF, VP3, XXX, U01, TBF, HUS, G-code) is now checked against an independent reader (pyembroidery) on every change. VIP has no independent reader and is checked only by Lilo itself.
 - **Menus and pop-ups no longer hide behind the top bar.** The Appearance pop-up, the File menu and the drawing-colour picker now sit on top of everything.
+- Recent projects now include files you opened or saved anywhere, not just Documents/Lilo.
 
 ## [1.1.0] - 2026-10-04
 

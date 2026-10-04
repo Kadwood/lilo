@@ -271,6 +271,8 @@ export function createProjectManager(deps: ProjectDeps) {
           recovered = true;
         }
         await apply(loaded.project, file.path || null);
+        // remember it for Home's Recent list; failing to must never fail the open
+        if (file.path) void deps.platform().recordRecent(file.path).catch(() => {});
         if (recovered) set({ dirty: true, notice: { kind: "ok", text: "Opened the copy from the previous save. Save to replace the damaged file." } });
         else if (loaded.warnings.length) set({ notice: { kind: "ok", text: loaded.warnings.join(" ") } });
       }).catch((e) => (e instanceof CancelledOpen ? false : fail(e))),

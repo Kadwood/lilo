@@ -204,6 +204,10 @@ export const tauriPlatform: Platform = {
     return invoke<OcrLine[]>("ocr_image", bytes);
   },
 
+  recordRecent(path) {
+    return invoke<void>("record_recent", { path });
+  },
+
   listRecentProjects(limit) {
     return invoke<RecentProject[]>("list_recent_projects", { limit });
   },

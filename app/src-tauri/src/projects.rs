@@ -8,7 +8,7 @@
 //!   folder (the editor's file-system scope is otherwise limited to dialog-picked paths, which are
 //!   forgotten at restart).
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -34,11 +34,26 @@ pub struct RecentProject {
     pub size_bytes: u64,
 }
 
+/// Name of the persistent recents file in the app data folder.
+pub const RECENTS_FILE: &str = "recents.json";
+/// Most paths kept in the recents file.
+pub const MAX_RECENTS: usize = 50;
+
+/// One remembered project: where it is and when the user last opened or saved it.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RecentEntry {
+    pub path: String,
+    pub opened_at: u64,
+}
+
 /// Paths the editor may read and write besides the default folder: files the OS asked us to open.
 #[derive(Default)]
 pub struct OpenFiles {
     pending: Mutex<Vec<String>>,
     announced: Mutex<HashSet<PathBuf>>,
+    /// Serialises read-modify-write of the recents file.
+    recents_lock: Mutex<()>,
 }
 
 pub fn is_project_path(p: &Path) -> bool {
@@ -60,6 +75,111 @@ pub fn ensure_dir(dir: &Path) -> std::io::Result<()> {
     std::fs::create_dir_all(dir)
 }
 
+fn now_ms() -> u64 {
+    std::time::SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_millis() as u64).unwrap_or(0)
+}
+
+/// The gallery row for one `.lilo` file; `None` for hidden files, non-files and other extensions.
+fn project_info(path: &Path, meta: &std::fs::Metadata) -> Option<RecentProject> {
+    let name = path.file_stem()?.to_str()?.to_string();
+    if name.starts_with('.') || !is_project_path(path) || !meta.is_file() {
+        return None;
+    }
+    let modified_ms = meta
+        .modified()
+        .ok()
+        .and_then(|m| m.duration_since(UNIX_EPOCH).ok())
+        .map(|d| d.as_millis() as u64)
+        .unwrap_or(0);
+    Some(RecentProject { path: path.to_str()?.to_string(), name, modified_ms, size_bytes: meta.len() })
+}
+
+/// The recents file in the app data folder (not created).
+fn recents_file(app: &tauri::AppHandle) -> Option<PathBuf> {
+    app.path().app_data_dir().ok().map(|d| d.join(RECENTS_FILE))
+}
+
+/// The remembered projects, newest first. A missing or damaged file is an empty list.
+pub fn read_recents(file: &Path) -> Vec<RecentEntry> {
+    let Ok(text) = std::fs::read_to_string(file) else {
+        return Vec::new();
+    };
+    serde_json::from_str::<Vec<RecentEntry>>(&text).unwrap_or_default()
+}
+
+/// Put `path` at the top of the recents file (deduped, capped), written through a temp file + rename.
+pub fn record_in(file: &Path, path: &Path, now: u64) -> std::io::Result<()> {
+    let Some(text) = path.to_str() else {
+        return Ok(());
+    };
+    let mut list = read_recents(file);
+    list.retain(|e| e.path != text);
+    list.insert(0, RecentEntry { path: text.to_string(), opened_at: now });
+    list.truncate(MAX_RECENTS);
+    if let Some(dir) = file.parent() {
+        std::fs::create_dir_all(dir)?;
+    }
+    let tmp = file.with_extension("json.tmp");
+    std::fs::write(&tmp, serde_json::to_vec(&list).map_err(std::io::Error::other)?)?;
+    std::fs::rename(&tmp, file)
+}
+
+fn record(app: &tauri::AppHandle, path: &Path) {
+    let Some(file) = recents_file(app) else {
+        return;
+    };
+    let state = app.state::<OpenFiles>();
+    let _guard = state.recents_lock.lock().unwrap();
+    if let Err(error) = record_in(&file, path, now_ms()) {
+        tracing::warn!(%error, "Could not update the recent projects list");
+    }
+}
+
+/// Is `resolved` (a resolved `.lilo` path) one that exists and is listed in the recents `file`?
+pub fn in_recents_file(file: &Path, resolved: &Path) -> bool {
+    if !is_project_path(resolved) || !resolved.is_file() {
+        return false;
+    }
+    read_recents(file)
+        .iter()
+        .any(|e| is_project_path(Path::new(&e.path)) && Path::new(&e.path).canonicalize().is_ok_and(|c| c == resolved))
+}
+
+fn in_recents(app: &tauri::AppHandle, resolved: &Path) -> bool {
+    recents_file(app).is_some_and(|f| in_recents_file(&f, resolved))
+}
+
+/// Recents merged with the default-folder scan: one row per file, vanished files dropped, newest
+/// first (by the later of "last opened" and "last modified"), at most `limit`.
+pub fn merge_recents(scanned: Vec<RecentProject>, recents: &[RecentEntry], limit: usize) -> Vec<RecentProject> {
+    let mut rows: Vec<(u64, RecentProject)> = Vec::new();
+    let mut seen: HashSet<PathBuf> = HashSet::new();
+    let mut add = |path: &Path, opened: u64, known: Option<RecentProject>| {
+        let key = path.canonicalize().unwrap_or_else(|_| path.to_path_buf());
+        if !seen.insert(key) {
+            return;
+        }
+        let info = known.or_else(|| {
+            let meta = std::fs::metadata(path).ok()?;
+            project_info(path, &meta)
+        });
+        if let Some(info) = info {
+            rows.push((opened.max(info.modified_ms), info));
+        }
+    };
+    for e in recents {
+        let p = PathBuf::from(&e.path);
+        let known = scanned.iter().find(|s| s.path == e.path).cloned();
+        add(&p, e.opened_at, known);
+    }
+    for s in &scanned {
+        add(Path::new(&s.path), 0, Some(s.clone()));
+    }
+    rows.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| a.1.name.cmp(&b.1.name)));
+    rows.truncate(limit);
+    rows.into_iter().map(|(_, r)| r).collect()
+}
+
 /// The `.lilo` files directly inside `dir`, newest first, at most `limit`. Hidden files, folders and
 /// other extensions are ignored; an unreadable folder is an empty list.
 pub fn scan_projects(dir: &Path, limit: usize) -> Vec<RecentProject> {
@@ -69,27 +189,8 @@ pub fn scan_projects(dir: &Path, limit: usize) -> Vec<RecentProject> {
     let mut found: Vec<RecentProject> = read
         .filter_map(Result::ok)
         .filter_map(|entry| {
-            let path = entry.path();
-            let name = path.file_stem()?.to_str()?.to_string();
-            if name.starts_with('.') || !is_project_path(&path) {
-                return None;
-            }
             let meta = entry.metadata().ok()?;
-            if !meta.is_file() {
-                return None;
-            }
-            let modified_ms = meta
-                .modified()
-                .ok()
-                .and_then(|m| m.duration_since(UNIX_EPOCH).ok())
-                .map(|d| d.as_millis() as u64)
-                .unwrap_or(0);
-            Some(RecentProject {
-                path: path.to_str()?.to_string(),
-                name,
-                modified_ms,
-                size_bytes: meta.len(),
-            })
+            project_info(&entry.path(), &meta)
         })
         .collect();
     found.sort_by(|a, b| b.modified_ms.cmp(&a.modified_ms).then_with(|| a.name.cmp(&b.name)));
@@ -164,7 +265,8 @@ pub fn allow_project_path(app: tauri::AppHandle, path: String) -> Result<(), Str
     Ok(())
 }
 
-/// May the editor touch `path`? Only `.lilo` files in the default folder or ones the OS opened for us.
+/// May the editor touch `path`? Only `.lilo` files in the default folder, ones the OS opened for us,
+/// or existing ones in the recents file (so a recent from a previous session still opens).
 fn allowed(app: &tauri::AppHandle, path: &Path) -> Result<PathBuf, String> {
     let resolved = resolve(path)?;
     let in_default = projects_dir(app)
@@ -172,7 +274,7 @@ fn allowed(app: &tauri::AppHandle, path: &Path) -> Result<PathBuf, String> {
         .and_then(|d| d.canonicalize().ok())
         .is_some_and(|d| resolved.starts_with(d));
     let announced = app.state::<OpenFiles>().announced.lock().unwrap().contains(&resolved);
-    if in_default || announced {
+    if in_default || announced || in_recents(app, &resolved) {
         Ok(resolved)
     } else {
         Err("That file wasn't opened from Lilo's projects folder.".into())
@@ -181,10 +283,20 @@ fn allowed(app: &tauri::AppHandle, path: &Path) -> Result<PathBuf, String> {
 
 #[tauri::command]
 pub fn list_recent_projects(app: tauri::AppHandle, limit: Option<usize>) -> Vec<RecentProject> {
-    match projects_dir(&app) {
-        Ok(dir) => scan_projects(&dir, limit.unwrap_or(24).min(200)),
-        Err(_) => Vec::new(),
+    let limit = limit.unwrap_or(24).min(200);
+    let scanned = projects_dir(&app).map(|d| scan_projects(&d, 200)).unwrap_or_default();
+    let recents = recents_file(&app).map(|f| read_recents(&f)).unwrap_or_default();
+    merge_recents(scanned, &recents, limit)
+}
+
+/// The editor opened this project successfully: remember it. Only paths the editor may already touch.
+#[tauri::command]
+pub fn record_recent(app: tauri::AppHandle, path: String) -> Result<(), String> {
+    let resolved = allowed(&app, Path::new(&path))?;
+    if resolved.is_file() {
+        record(&app, &resolved);
     }
+    Ok(())
 }
 
 /// The default projects folder (created if missing), for the editor's "Save" dialog default.
@@ -224,6 +336,7 @@ pub async fn write_project_file(app: tauri::AppHandle, request: tauri::ipc::Requ
         .to_string();
     let decoded = percent_decode(&raw);
     let path = allowed(&app, Path::new(&decoded))?;
+    let remember = path.clone();
     let tauri::ipc::InvokeBody::Raw(bytes) = request.body() else {
         return Err("Expected the project bytes as the request body.".into());
     };
@@ -234,7 +347,9 @@ pub async fn write_project_file(app: tauri::AppHandle, request: tauri::ipc::Requ
     tokio::task::spawn_blocking(move || crate::fsutil::durable_write(&path, &bytes, crate::fsutil::looks_like_zip))
         .await
         .map_err(|e| format!("Could not save: {e}"))?
-        .map_err(|e| format!("Could not save: {e}"))
+        .map_err(|e| format!("Could not save: {e}"))?;
+    record(&app, &remember);
+    Ok(())
 }
 
 /// The previous save of a project (`<name>.lilo.bak`), for when the file itself is damaged.
@@ -405,5 +520,83 @@ mod tests {
         assert_eq!(percent_decode("100%"), "100%");
         assert_eq!(percent_decode("%zz"), "%zz");
         assert_eq!(percent_decode("%E2%9C%93.lilo"), "\u{2713}.lilo");
+    }
+
+    #[test]
+    fn records_newest_first_deduped_and_capped() {
+        let dir = scratch("rec");
+        let file = dir.join("data").join(RECENTS_FILE);
+        record_in(&file, Path::new("/a.lilo"), 1).unwrap();
+        record_in(&file, Path::new("/b.lilo"), 2).unwrap();
+        record_in(&file, Path::new("/a.lilo"), 3).unwrap();
+        let list = read_recents(&file);
+        assert_eq!(list.iter().map(|e| e.path.as_str()).collect::<Vec<_>>(), ["/a.lilo", "/b.lilo"]);
+        assert_eq!(list[0].opened_at, 3);
+        for n in 0..(MAX_RECENTS as u64 + 10) {
+            record_in(&file, Path::new(&format!("/p{n}.lilo")), 10 + n).unwrap();
+        }
+        let list = read_recents(&file);
+        assert_eq!(list.len(), MAX_RECENTS);
+        assert_eq!(list[0].path, format!("/p{}.lilo", MAX_RECENTS as u64 + 9));
+        assert!(!file.with_extension("json.tmp").exists());
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn a_missing_or_corrupt_recents_file_is_empty() {
+        let dir = scratch("corrupt");
+        let file = dir.join(RECENTS_FILE);
+        assert!(read_recents(&file).is_empty());
+        std::fs::write(&file, b"{not json").unwrap();
+        assert!(read_recents(&file).is_empty());
+        // and recording over it recovers
+        record_in(&file, Path::new("/a.lilo"), 1).unwrap();
+        assert_eq!(read_recents(&file).len(), 1);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn merges_recents_with_the_scan_and_drops_missing_files() {
+        let docs = scratch("merge-docs");
+        let elsewhere = scratch("merge-else");
+        touch(&docs, "in-docs.lilo", 5000, b"a");
+        touch(&elsewhere, "outside.lilo", 9000, b"bb");
+        touch(&elsewhere, "recent.lilo", 9000, b"cc");
+        touch(&elsewhere, "notes.txt", 9000, b"x");
+        let p = |d: &Path, n: &str| d.join(n).to_str().unwrap().to_string();
+        let now = now_ms();
+        let recents = vec![
+            RecentEntry { path: p(&elsewhere, "recent.lilo"), opened_at: now },
+            RecentEntry { path: p(&elsewhere, "gone.lilo"), opened_at: now },
+            RecentEntry { path: p(&elsewhere, "notes.txt"), opened_at: now },
+            RecentEntry { path: p(&docs, "in-docs.lilo"), opened_at: now - 1000 },
+            RecentEntry { path: p(&elsewhere, "outside.lilo"), opened_at: 0 },
+        ];
+        let merged = merge_recents(scan_projects(&docs, 10), &recents, 10);
+        assert_eq!(merged.iter().map(|r| r.name.as_str()).collect::<Vec<_>>(), ["recent", "in-docs", "outside"]);
+        assert_eq!(merge_recents(scan_projects(&docs, 10), &recents, 2).len(), 2);
+        // with no recents it is just the scan
+        assert_eq!(merge_recents(scan_projects(&docs, 10), &[], 10).len(), 1);
+        std::fs::remove_dir_all(docs).unwrap();
+        std::fs::remove_dir_all(elsewhere).unwrap();
+    }
+
+    #[test]
+    fn recents_only_allow_existing_lilo_files() {
+        let dir = scratch("allow");
+        touch(&dir, "ok.lilo", 1, b"x");
+        touch(&dir, "secret.txt", 1, b"x");
+        let dir = dir.canonicalize().unwrap();
+        let file = dir.join(RECENTS_FILE);
+        for name in ["ok.lilo", "secret.txt", "gone.lilo"] {
+            record_in(&file, &dir.join(name), 1).unwrap();
+        }
+        assert!(in_recents_file(&file, &dir.join("ok.lilo")));
+        assert!(!in_recents_file(&file, &dir.join("secret.txt")));
+        assert!(!in_recents_file(&file, &dir.join("gone.lilo")));
+        // a real .lilo that was never recorded is not allowed
+        touch(&dir, "other.lilo", 1, b"x");
+        assert!(!in_recents_file(&file, &dir.join("other.lilo")));
+        std::fs::remove_dir_all(dir).unwrap();
     }
 }

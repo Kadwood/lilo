@@ -116,8 +116,10 @@ export interface Platform {
    * "unsupported" where the OS has no recogniser (everything but macOS, and the browser).
    */
   ocrImage(bytes: Uint8Array): Promise<OcrLine[]>;
-  /** `.lilo` projects in the default folder (`~/Documents/Lilo`), newest first. */
+  /** Projects the user opened or saved anywhere, plus those in `~/Documents/Lilo`, newest first. */
   listRecentProjects(limit?: number): Promise<RecentProject[]>;
+  /** Remember a project the user just opened (the desktop remembers saves by itself). */
+  recordRecent(path: string): Promise<void>;
   /**
    * Called for every project the OS opens in Lilo: first any that arrived before this call (a
    * double-click that launched the app), then each later one. Returns the unsubscribe function.
