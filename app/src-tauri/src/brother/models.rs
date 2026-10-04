@@ -76,3 +76,71 @@ pub struct SewingResponse {
     /// Files currently in machine memory (names assigned by the machine).
     pub files: Vec<String>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn full_info_parses() {
+        let json = r#"{
+            "model": 56, "type": 2, "oem": 1, "version": "1.73",
+            "machine-id": "abc", "serial": "U12345", "name": "BETTY",
+            "apis": {"pedxml": {"version": 3}, "other": {}},
+            "features": {"embwidth": 1600, "embheight": 2000, "needles": 1, "postsize": 3145728}
+        }"#;
+        let info: BrotherInfo = serde_json::from_str(json).unwrap();
+        assert_eq!(info.model, Some(56));
+        assert_eq!(info.machine_type, Some(2));
+        assert_eq!(info.machine_id.as_deref(), Some("abc"));
+        assert_eq!(info.name.as_deref(), Some("BETTY"));
+        assert_eq!(info.apis["pedxml"].version, 3);
+        assert_eq!(info.apis["other"].version, 0, "api version defaults to 0");
+        assert_eq!(info.features.embwidth, Some(1600));
+        assert_eq!(info.features.postsize, Some(3_145_728));
+        assert!(info.supports_pedxml());
+    }
+
+    #[test]
+    fn empty_object_parses_with_defaults() {
+        let info: BrotherInfo = serde_json::from_str("{}").unwrap();
+        assert!(info.model.is_none() && info.name.is_none() && info.version.is_none());
+        assert!(info.apis.is_empty());
+        assert!(info.features.postsize.is_none() && info.features.needles.is_none());
+        assert!(!info.supports_pedxml());
+    }
+
+    #[test]
+    fn unknown_extra_fields_are_ignored() {
+        let json = r#"{"model": 1, "wifi": {"ssid": "x"}, "future": [1,2,3],
+            "apis": {"pedxml": {"version": 1, "extra": true}},
+            "features": {"needles": 6, "mystery": "yes"}}"#;
+        let info: BrotherInfo = serde_json::from_str(json).unwrap();
+        assert!(info.supports_pedxml());
+        assert_eq!(info.features.needles, Some(6));
+        assert!(info.features.embwidth.is_none());
+    }
+
+    #[test]
+    fn non_brother_responder_has_no_pedxml() {
+        let json = r#"{"name": "My Printer", "apis": {"ipp": {"version": 2}}}"#;
+        let info: BrotherInfo = serde_json::from_str(json).unwrap();
+        assert!(!info.supports_pedxml());
+    }
+
+    #[test]
+    fn null_optionals_parse() {
+        let json = r#"{"model": null, "name": null, "features": {"postsize": null}}"#;
+        let info: BrotherInfo = serde_json::from_str(json).unwrap();
+        assert!(info.model.is_none() && info.features.postsize.is_none());
+    }
+
+    #[test]
+    fn wrong_types_and_non_objects_are_errors_not_panics() {
+        assert!(serde_json::from_str::<BrotherInfo>(r#"{"model": "fifty"}"#).is_err());
+        assert!(serde_json::from_str::<BrotherInfo>(r#"{"features": {"postsize": -1}}"#).is_err());
+        assert!(serde_json::from_str::<BrotherInfo>("[]").is_err());
+        assert!(serde_json::from_str::<BrotherInfo>("<html>nope</html>").is_err());
+        assert!(serde_json::from_str::<BrotherInfo>("").is_err());
+    }
+}
