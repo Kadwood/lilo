@@ -9,7 +9,9 @@ import { transcode } from "./transcode";
 import type { EmbPattern } from "./types";
 
 export function writeXxx(pattern: EmbPattern): Uint8Array {
-  const p = transcode(pattern, { maxStitch: 124, maxJump: 124, fullJump: false, threadChange: "colorChange" });
+  // 123, not 124: the short form below is strict (|d| < 124), so a leg of exactly 124 would be written
+  // long-form (0x7D) and read back as a JUMP.
+  const p = transcode(pattern, { maxStitch: 123, maxJump: 124, fullJump: false, threadChange: "colorChange" });
   if (p.stitches.length < 2) throw new FormatError("Nothing to export: the design has no stitches.");
   const w = new ByteWriter();
   const last = p.stitches[p.stitches.length - 1];

@@ -110,6 +110,7 @@ Pipeline, each step visible and animated:
   - SVG → PES
   - PNG/JPG → PES
   - Embroidery file A → B (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF; G-code is write-only)
+  - Every format except VIP is checked against pyembroidery (an independent reader) on every change: `engine/test/formats-crosscheck.test.ts`, run in CI with `XCHECK_REQUIRED=1`. VIP has no independent reader, so it is self-tested only (Lilo's own round trip).
 - **Import** existing embroidery files to view/edit as manual stitches.
 - **Export:** PES (v1 default; v6 if stitchjs/pyembroidery port needed), DST, JEF, VP3, EXP + PNG image.
   - Origin point picker (3×3).

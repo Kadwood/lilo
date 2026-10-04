@@ -274,7 +274,7 @@
    ],
    "colours": true,
    "lilo": "read+write",
-   "note": "Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader or real VIP file was available to check it, so treat it as untested on machines."
+   "note": "Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader (pyembroidery has none) or real VIP file was available to check it, so it is checked only by Lilo's own round trip. Treat it as untested on machines."
   },
   {
    "ext": "gcode",
