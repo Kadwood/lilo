@@ -1,4 +1,4 @@
-import { objectPoints, type Design, type DesignObject } from "@lilo/engine/light";
+import { hiddenLayerIds, isObjectVisible, objectPoints, type Design, type DesignObject } from "@lilo/engine/light";
 import type { Timeline } from "./timeline";
 
 const fmt = (n: number) => Math.round(n * 1000) / 1000;
@@ -27,10 +27,11 @@ export function outlinePath(o: DesignObject): string {
  */
 export function TraceOutlines({ design, timeline }: { design: Design; timeline: Timeline }) {
   const layerOf = new Map(design.threads.map((t, i) => [t.id, i]));
+  const hidden = hiddenLayerIds(design);
   return (
     <g className="trace-outlines" style={{ animationDelay: `${timeline.traceEnd}s` }}>
       {design.objects.map((o) => {
-        if (o.visible === false) return null;
+        if (!isObjectVisible(o, hidden)) return null;
         const layer = layerOf.get(o.threadId) ?? 0;
         const hex = design.threads[layer]?.hex ?? "#000";
         return (

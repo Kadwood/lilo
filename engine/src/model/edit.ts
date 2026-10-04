@@ -106,6 +106,7 @@ export function fillToOutline(o: FillObject): RunObject {
     threadId: o.threadId,
     visible: o.visible,
     locked: o.locked,
+    ...(o.layerId ? { layerId: o.layerId } : {}),
     geometry: { path: o.geometry.shell, closed: true, nodes },
     params: { ...DEFAULT_RUN_PARAMS },
   };
@@ -121,6 +122,7 @@ export function outlineToFill(o: RunObject): FillObject | null {
     threadId: o.threadId,
     visible: o.visible,
     locked: o.locked,
+    ...(o.layerId ? { layerId: o.layerId } : {}),
     geometry: { shell: o.geometry.path, holes: [], ...(o.geometry.nodes ? { shellNodes: o.geometry.nodes } : {}) },
     params: { ...DEFAULT_FILL_PARAMS },
   };

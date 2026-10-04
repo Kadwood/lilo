@@ -17,6 +17,18 @@ export interface Theme {
   frameEdge?: number;
 }
 
+/** One picture to draw (see `Scene.setRefImages`). */
+export interface RefSprite {
+  src: HTMLCanvasElement | HTMLImageElement;
+  x: number;
+  y: number;
+  widthMm: number;
+  heightMm: number;
+  alpha: number;
+  /** How many stitch bands are under it. Default 0: behind all the stitches. */
+  band?: number;
+}
+
 export interface Placement {
   /** mm per source pixel. */
   scale: number;
@@ -37,9 +49,17 @@ export class Scene {
   private hoopG = new Graphics();
   private reference = new Sprite();
   private quant = new Sprite();
-  /** Reference images the user placed behind the shapes (Sequencer > Images). */
-  private refLayer = new Container();
-  readonly stitches = new StitchLayer();
+  /**
+   * Pictures and stitches in layer order: picture group 0, stitch band 0, picture group 1, band 1, ... A picture
+   * layer above a stitch layer draws over it. With no picture between, there is one band, as before.
+   */
+  private stack = new Container();
+  private bands: StitchLayer[] = [new StitchLayer()];
+  private picGroups: Container[] = [new Container(), new Container()];
+  /** Plan index where each band starts / ends. */
+  private bandRanges: [number, number][] = [[0, 0]];
+  private refList: RefSprite[] = [];
+  private stitchAlpha = 1;
   private highlightG = new Graphics();
   private needleG = new Graphics();
   private view: View = { x: 0, y: 0, zoom: 8 };
@@ -57,7 +77,8 @@ export class Scene {
     this.reference.visible = false;
     this.quant.visible = false;
     this.needleG.visible = false;
-    this.world.addChild(this.grid, this.hoopG, this.refLayer, this.reference, this.quant, this.stitches.container, this.highlightG, this.needleG);
+    this.layoutStack();
+    this.world.addChild(this.grid, this.hoopG, this.reference, this.quant, this.stack, this.highlightG, this.needleG);
     app.stage.addChild(this.world);
   }
 
@@ -96,7 +117,7 @@ export class Scene {
     this.view = view;
     this.world.position.set(view.x, view.y);
     this.world.scale.set(view.zoom);
-    this.stitches.setViewRect(visibleRect(view, this.width, this.height), view.zoom); // off-screen chunks are not drawn
+    for (const b of this.bands) b.setViewRect(visibleRect(view, this.width, this.height), view.zoom); // off-screen chunks are not drawn
     this.redrawBackdrop();
     this.drawHighlight();
     this.needleG.scale.set(1 / view.zoom);
@@ -170,21 +191,50 @@ export class Scene {
     this.reference.alpha = a;
   }
 
-  /** Reference images, bottom first. Sprites are reused when the list keeps its size. */
-  setRefImages(list: { src: HTMLCanvasElement | HTMLImageElement; x: number; y: number; widthMm: number; heightMm: number; alpha: number }[]): void {
-    while (this.refLayer.children.length > list.length) this.refLayer.removeChildAt(this.refLayer.children.length - 1).destroy();
-    list.forEach((r, i) => {
-      let sp = this.refLayer.children[i] as Sprite | undefined;
-      if (!sp) {
-        sp = new Sprite();
-        this.refLayer.addChild(sp);
-      }
-      const tex = this.texture(r.src);
-      if (sp.texture !== tex) sp.texture = tex;
-      sp.width = r.widthMm;
-      sp.height = r.heightMm;
-      sp.position.set(r.x, r.y);
-      sp.alpha = r.alpha;
+  /** Picture groups and stitch bands, bottom to top. */
+  private layoutStack(): void {
+    this.stack.removeChildren();
+    this.bands.forEach((b, k) => this.stack.addChild(this.picGroups[k], b.container));
+    this.stack.addChild(this.picGroups[this.bands.length]);
+  }
+
+  /** Make exactly `n` stitch bands (and `n + 1` picture groups around them). */
+  private ensureBands(n: number): void {
+    const count = Math.max(1, n);
+    while (this.bands.length < count) this.bands.push(new StitchLayer());
+    while (this.bands.length > count) {
+      const b = this.bands.pop()!;
+      b.clear();
+      b.container.destroy();
+    }
+    while (this.picGroups.length < count + 1) this.picGroups.push(new Container());
+    while (this.picGroups.length > count + 1) this.picGroups.pop()!.destroy({ children: true });
+    this.layoutStack();
+  }
+
+  /**
+   * Pictures, bottom first. `band` is how many stitch bands sit under a picture (0 = behind all the stitches); a
+   * picture groups with the others of its band. Sprites are reused while the list keeps its shape.
+   */
+  setRefImages(list: RefSprite[]): void {
+    this.refList = list;
+    const groups = this.picGroups;
+    groups.forEach((g, k) => {
+      const mine = list.filter((r) => Math.min(r.band ?? 0, groups.length - 1) === k);
+      while (g.children.length > mine.length) g.removeChildAt(g.children.length - 1).destroy();
+      mine.forEach((r, i) => {
+        let sp = g.children[i] as Sprite | undefined;
+        if (!sp) {
+          sp = new Sprite();
+          g.addChild(sp);
+        }
+        const tex = this.texture(r.src);
+        if (sp.texture !== tex) sp.texture = tex;
+        sp.width = r.widthMm;
+        sp.height = r.heightMm;
+        sp.position.set(r.x, r.y);
+        sp.alpha = r.alpha;
+      });
     });
   }
 
@@ -212,19 +262,31 @@ export class Scene {
     this.quant.visible = a > 0.001 && this.quant.texture !== Texture.EMPTY;
   }
 
-  setPlan(plan: StitchPlan | null, style: StitchStyle): void {
+  /** `splits`: plan indices where stitch band 1, 2, ... start (a picture layer sits between two bands). */
+  setPlan(plan: StitchPlan | null, style: StitchStyle, splits: readonly number[] = []): void {
     this.plan = plan;
-    this.stitches.setViewRect(visibleRect(this.view, this.width, this.height), this.view.zoom);
-    this.stitches.setPlan(plan, style);
+    const total = plan?.stitches.length ?? 0;
+    const starts = [0, ...splits.map((x) => Math.min(Math.max(0, x), total))];
+    this.ensureBands(starts.length);
+    this.bandRanges = starts.map((a, k) => [a, k + 1 < starts.length ? Math.max(a, starts[k + 1]) : total]);
+    const rect = visibleRect(this.view, this.width, this.height);
+    this.bands.forEach((b, k) => {
+      const [a, e] = this.bandRanges[k];
+      b.setViewRect(rect, this.view.zoom);
+      b.setPlan(plan ? { ...plan, stitches: starts.length === 1 ? plan.stitches : plan.stitches.slice(a, e) } : null, style);
+      b.container.alpha = this.stitchAlpha;
+    });
+    this.setRefImages(this.refList); // the number of bands may have changed
   }
 
   setStitchAlpha(a: number): void {
-    this.stitches.container.alpha = a;
+    this.stitchAlpha = a;
+    for (const b of this.bands) b.container.alpha = a;
   }
 
   /** Reveal the first `count` stitches and put the needle at the last one. */
   setProgress(count: number, showNeedle: boolean): void {
-    this.stitches.setProgress(count);
+    this.bands.forEach((b, k) => b.setProgress(Math.max(0, Math.min(count - this.bandRanges[k][0], this.bandRanges[k][1] - this.bandRanges[k][0]))));
     const list = this.plan?.stitches;
     if (!list || !showNeedle || count <= 0) {
       this.needleG.visible = false;
@@ -282,7 +344,7 @@ export class Scene {
 
   destroy(): void {
     this.destroyed = true;
-    this.stitches.clear();
+    for (const b of this.bands) b.clear();
     this.app.destroy({ removeView: true }, { children: true });
   }
 }

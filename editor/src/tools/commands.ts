@@ -145,7 +145,7 @@ export function buildCommands({ state, actions, openImage, fit, app, extra }: Co
   for (const h of HOOPS) add({ id: `hoop.${h.name}`, group: "View", label: `Hoop: ${h.name}`, keywords: "nv2700 size", run: () => actions.setHoop(h) });
   add({ id: "view.seq.images", group: "View", label: "Sequencer: reference images", run: () => actions.setSeqTab("images") });
   add({ id: "view.seq.colours", group: "View", label: "Sequencer: colours", run: () => actions.setSeqTab("colours") });
-  add({ id: "view.seq.shapes", group: "View", label: "Sequencer: shapes", run: () => actions.setSeqTab("shapes") });
+  add({ id: "view.seq.layers", group: "View", label: "Sequencer: layers", run: () => actions.setSeqTab("layers") });
 
   add({ id: "file.open", group: "File", label: "Open image to auto-digitize…", keywords: "import png jpg svg", run: openImage });
   add({ id: "file.export", group: "File", label: "Export…", keywords: "pes dst jef save", enabled: (state.planResult?.stats.stitchCount ?? 0) > 0, run: () => actions.setDialog("export") });

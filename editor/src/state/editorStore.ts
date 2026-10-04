@@ -17,6 +17,12 @@ import {
   emptyDesign,
   ensureThread,
   fillToOutline,
+  hiddenLayerIds,
+  isObjectLocked,
+  isObjectVisible,
+  lockedLayerIds,
+  makeLayer,
+  normalizeLayers,
   flipH,
   flipV,
   getCatalogue,
@@ -37,6 +43,7 @@ import {
   type DesignImage,
   type DesignObject,
   type Hoop,
+  type Layer,
   type MapToPathOptions,
   type Pt,
   type RegionStitchSettings,
@@ -130,6 +137,12 @@ export interface RefImage {
   opacity: number;
   locked: boolean;
   visible: boolean;
+  /** The picture layer it sits in, and that layer's switches (they combine with the image's own). */
+  layerId: string | null;
+  layerVisible: boolean;
+  layerLocked: boolean;
+  /** The layer's opacity (1 when unset); multiplies `opacity`. */
+  layerOpacity: number;
 }
 
 /** What the shape actions are doing right now (the contextual toolbar sets these). */
@@ -149,7 +162,7 @@ export interface MapDraft {
 
 export type Dialog = "export" | "send" | "history" | null;
 
-export type SeqTab = "shapes" | "colours" | "images" | "threads";
+export type SeqTab = "layers" | "colours" | "images" | "threads";
 
 export interface EditorState {
   projectName: string;
@@ -181,6 +194,8 @@ export interface EditorState {
   redoLabel: string | null;
   refImages: RefImage[];
   selectedImageId: string | null;
+  /** The layer new shapes and pictures go into (Layers panel). Null: the top stitch layer / the lowest picture layer. */
+  activeLayerId: string | null;
   seqTab: SeqTab;
   paletteOpen: boolean;
   /** Which top-level dialog is open (opened from the top bar or the command palette). */
@@ -233,7 +248,8 @@ export const initialState: EditorState = {
   redoLabel: null,
   refImages: [],
   selectedImageId: null,
-  seqTab: "shapes",
+  activeLayerId: null,
+  seqTab: "layers",
   paletteOpen: false,
   dialog: null,
   mapDraft: null,
@@ -302,6 +318,8 @@ export interface EditorActions {
   digitize(): Promise<void>;
   reorderObject(from: number, before: number): void;
   reorderGroup(group: number, before: number): void;
+  /** Move the shapes at these `design.objects` indices (kept in their order) to just before the one at `before` (`objects.length` = the end). Stays inside their layers. */
+  moveObjectBlock(indices: readonly number[], before: number): void;
   toggleObject(id: string, visible: boolean): void;
   toggleGroup(group: number, visible: boolean): void;
   /**
@@ -381,6 +399,26 @@ export interface EditorActions {
   /** Remove every object (the automatic result) so click-to-stitch can start from the bare trace: one undo step. */
   clearStitches(): void;
 
+  // ---- layers (the Layers panel: the list IS the sew order, bottom first) ----------------------
+  setActiveLayer(id: string | null): void;
+  /** A new empty layer above the active one (or on top). Returns its id. */
+  addLayer(kind: Layer["kind"]): string | null;
+  /** Remove a layer and everything in it: one undo step. */
+  deleteLayer(id: string): void;
+  renameLayer(id: string, name: string): void;
+  setLayerVisible(id: string, visible: boolean): void;
+  setLayerLocked(id: string, locked: boolean): void;
+  /** Picture layers only. Merges into one undo step while you drag the slider. */
+  setLayerOpacity(id: string, opacity: number): void;
+  /** Put the layer at position `to` of `design.layers` (bottom first). Its shapes follow, so the sew order changes with it. */
+  moveLayer(id: string, to: number): void;
+  /** Fold a layer into the one directly below it (same kind). The sew order stays the same. */
+  mergeLayerDown(id: string): void;
+  /** Move shapes into a stitch layer: before the shape `beforeId` (sews earlier than it), or at the end of the layer (sews last). */
+  moveObjectsToLayer(ids: readonly string[], layerId: string, beforeId?: string | null): void;
+  /** Same for a picture: into a picture layer, before the picture `beforeId` or on top of its layer. */
+  moveImageToLayer(imageId: string, layerId: string, beforeId?: string | null): void;
+
   // ---- reference images (part of the design: saved in the project, undoable) -------------------
   addRefImage(file: { name: string; bytes: Uint8Array; type?: string }): Promise<void>;
   updateRefImage(id: string, patch: Partial<Omit<RefImage, "id" | "src">>): void;
@@ -438,6 +476,21 @@ export function selectionBox(design: Design | null, ids: readonly string[]): Box
   return unionBox(design.objects.filter((o) => set.has(o.id)).map(objectBox));
 }
 
+/** Write what `normalizeLayers` decided into a draft, touching only what changed so the undo patches stay small. */
+function applyNormalized(d: Design, fixed: Design): void {
+  if (JSON.stringify(d.layers) !== JSON.stringify(fixed.layers)) d.layers = (fixed.layers ?? []).map((l) => ({ ...l }));
+  const sameOrder = (a: readonly { id: string }[], b: readonly { id: string }[]) => a.length === b.length && a.every((x, i) => x.id === b[i].id);
+  if (!sameOrder(d.objects, fixed.objects)) d.objects = fixed.objects;
+  else fixed.objects.forEach((o, i) => void (d.objects[i].layerId !== o.layerId && (d.objects[i].layerId = o.layerId)));
+  if (fixed.images && d.images) {
+    if (!sameOrder(d.images, fixed.images)) d.images = fixed.images;
+    else fixed.images.forEach((m, i) => void (d.images![i].layerId !== m.layerId && (d.images![i].layerId = m.layerId)));
+  }
+}
+
+/** Same ids in the same order. */
+const sameIds = (a: readonly { id: string }[], b: readonly { id: string }[]) => a.length === b.length && a.every((x, i) => x.id === b[i].id);
+
 export function createEditorStore(engine: EngineClient): EditorStore {
   const store = createStore<EditorState>(() => ({ ...initialState }));
   const get = store.getState;
@@ -475,18 +528,25 @@ export function createEditorStore(engine: EngineClient): EditorStore {
   }
   const assets = new Map<string, ImageAsset>();
   let refsFor: DesignImage[] | undefined;
+  let refsLayersFor: Layer[] | undefined;
   let refsMemo: RefImage[] = [];
   let refsAssets = -1;
   let assetVersion = 0;
   /** `state.refImages` for a design: the same array while neither the placements nor the pixels change. */
   const refsOf = (design: Design | null): RefImage[] => {
     const list = design?.images;
-    if (list === refsFor && refsAssets === assetVersion) return refsMemo;
+    const layers = design?.layers;
+    if (list === refsFor && layers === refsLayersFor && refsAssets === assetVersion) return refsMemo;
     refsFor = list;
+    refsLayersFor = layers;
     refsAssets = assetVersion;
+    const layerById = new Map((layers ?? []).map((l) => [l.id, l]));
     refsMemo = (list ?? []).flatMap((m) => {
       const a = assets.get(m.id);
-      return a ? [{ id: m.id, name: m.name, src: a.src, w: m.w, h: m.h, x: m.x, y: m.y, widthMm: m.widthMm, opacity: m.opacity, locked: m.locked, visible: m.visible }] : [];
+      const l = m.layerId ? layerById.get(m.layerId) : undefined;
+      return a
+        ? [{ id: m.id, name: m.name, src: a.src, w: m.w, h: m.h, x: m.x, y: m.y, widthMm: m.widthMm, opacity: m.opacity, locked: m.locked, visible: m.visible, layerId: m.layerId ?? null, layerVisible: l?.visible !== false, layerLocked: l?.locked === true, layerOpacity: l?.opacity ?? 1 }]
+        : [];
     });
     return refsMemo;
   };
@@ -525,10 +585,13 @@ export function createEditorStore(engine: EngineClient): EditorStore {
   const setSel = (rawIds: string[], extra: Partial<EditorState> = {}) => {
     const ids = expandTextGroups(get().design, rawIds);
     const same = ids.length === get().selectedIds.length && ids.every((i, k) => i === get().selectedIds[k]);
+    const last = ids[ids.length - 1];
+    const layerId = last ? get().design?.objects.find((o) => o.id === last)?.layerId : undefined;
     set({
       selectedIds: ids,
-      selectedId: ids[ids.length - 1] ?? null,
+      selectedId: last ?? null,
       ...(same ? {} : { mode: "none" as ShapeMode }),
+      ...(layerId ? { activeLayerId: layerId } : {}),
       ...extra,
     });
   };
@@ -545,8 +608,20 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       design = emptyDesign();
       set({ design });
     }
-    const [next, patches, inverse] = produceWithPatches(design, recipe);
-    if (patches.length === 0) return false;
+    const [next1, patches1, inverse1] = produceWithPatches(design, recipe);
+    if (patches1.length === 0) return false;
+    // keep `design.objects` grouped by layer (new shapes land in the active layer); same undo step
+    let next = next1;
+    let patches = patches1;
+    let inverse = inverse1;
+    const active = get().activeLayerId;
+    const fixed = normalizeLayers(next1, { stitchLayerId: active, pictureLayerId: active });
+    if (fixed !== next1) {
+      const [n2, p2, i2] = produceWithPatches(next1, (d) => applyNormalized(d, fixed));
+      next = n2;
+      patches = [...patches1, ...p2];
+      inverse = [...i2, ...inverse1];
+    }
     const selBefore = get().selectedIds;
     const selAfter = typeof opts.select === "function" ? opts.select() : (opts.select ?? existing(next, selBefore));
     const now = Date.now();
@@ -622,10 +697,13 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       resetHistory();
       planId++; // a pending re-stitch of the previous design is now moot
       // a fresh result replaces the stitches, not the pictures the user placed behind them
-      const images = get().design?.images;
+      const old = get().design;
+      const images = old?.images;
+      // the pictures and the layers (names, hidden, locked) belong to the user; the new shapes go in the top stitch layer
+      const kept = { ...result.design, ...(images?.length ? { images } : {}), ...(old?.layers ? { layers: old.layers } : {}) };
       set((s) => ({
         status: { kind: "idle" },
-        ...designState(images?.length ? { ...result.design, images } : result.design),
+        ...designState(normalizeLayers(kept, { stitchLayerId: s.activeLayerId })),
         planResult: { plan: result.plan, stats: result.stats, warnings: result.warnings },
         palette: result.palette,
         placement: { imageToMm: result.imageToMm, origin: result.imageOrigin, width: result.imageWidth, height: result.imageHeight },
@@ -636,6 +714,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
         pendingRegions: [],
       }));
       setSel([]);
+      // the plan above was made without the layers: a hidden layer must leave it
+      if (old?.layers?.some((l) => !l.visible)) schedulePlan(true);
     } catch (e) {
       if (id === runId) set({ status: { kind: "error", message: errMsg(e) } });
     }
@@ -658,7 +738,13 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     setView: (patch) => set((s) => ({ view: { ...s.view, ...patch } })),
     select: (id) => setSel(id ? [id] : []),
     setSelection: (ids) => setSel(existing(get().design, ids)),
-    selectAll: () => setSel((get().design?.objects ?? []).filter((o) => o.visible !== false).map((o) => o.id)),
+    selectAll() {
+      const d = get().design;
+      if (!d) return setSel([]);
+      const hidden = hiddenLayerIds(d);
+      const locked = lockedLayerIds(d);
+      setSel(d.objects.filter((o) => isObjectVisible(o, hidden) && !(o.layerId && locked.has(o.layerId))).map((o) => o.id));
+    },
 
     async importFile(file) {
       const id = ++runId;
@@ -683,14 +769,24 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     reorderObject(from, before) {
       const d = get().design;
       if (!d) return;
-      const next = moveObject(d, from, before);
-      if (next !== d) commit("Reorder", (draft) => void (draft.objects = next.objects));
+      const next = normalizeLayers(moveObject(d, from, before)); // a move out of its layer is undone by the layer rule
+      if (next !== d && !sameIds(next.objects, d.objects)) commit("Reorder", (draft) => void (draft.objects = next.objects));
+    },
+    moveObjectBlock(indices, before) {
+      const d = get().design;
+      if (!d || indices.length === 0) return;
+      const set = new Set(indices);
+      const moving = d.objects.filter((_, i) => set.has(i));
+      const rest = d.objects.filter((_, i) => !set.has(i));
+      const at = Math.max(0, Math.min(rest.length, before - indices.filter((i) => i < before).length));
+      const objects = normalizeLayers({ ...d, objects: [...rest.slice(0, at), ...moving, ...rest.slice(at)] }).objects;
+      if (!sameIds(objects, d.objects)) commit("Reorder", (draft) => void (draft.objects = objects));
     },
     reorderGroup(group, before) {
       const d = get().design;
       if (!d) return;
-      const next = moveGroup(d, group, before);
-      if (next !== d) commit("Reorder colour block", (draft) => void (draft.objects = next.objects));
+      const next = normalizeLayers(moveGroup(d, group, before));
+      if (next !== d && !sameIds(next.objects, d.objects)) commit("Reorder colour block", (draft) => void (draft.objects = next.objects));
     },
     toggleObject(id, visible) {
       const d = get().design;
@@ -700,7 +796,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const d = get().design;
       if (d) commit(visible ? "Show colour block" : "Hide colour block", (draft) => void (draft.objects = setGroupVisible(d, group, visible).objects));
     },
-    async loadDesign(design, opts = {}) {
+    async loadDesign(raw, opts = {}) {
+      const design = normalizeLayers(raw);
       const planResult = await engine.plan(design);
       // a new document: the old one's picture to digitize and reference pixels don't carry over
       decoded = null;
@@ -732,6 +829,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
         trace: null,
         regionObjects: {},
         pendingRegions: [],
+        activeLayerId: null,
         ...(opts.name !== undefined ? { projectName: opts.name } : {}),
       });
       setSel([]);
@@ -825,7 +923,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
         label,
         (d) => {
           transformTextBlocks(d, set, m);
-          d.objects = d.objects.map((o) => (set.has(o.id) && !o.locked ? transformObject(o, m) : o));
+          const layerLocks = lockedLayerIds(d);
+          d.objects = d.objects.map((o) => (set.has(o.id) && !isObjectLocked(o, layerLocks) ? transformObject(o, m) : o));
         },
         opts,
       );
@@ -881,7 +980,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const ids = new Set(get().selectedIds);
       if (ids.size === 0) return;
       commit("Delete", (d) => {
-        d.objects = d.objects.filter((o) => !ids.has(o.id) || o.locked);
+        const layerLocks = lockedLayerIds(d);
+        d.objects = d.objects.filter((o) => !ids.has(o.id) || isObjectLocked(o, layerLocks));
         pruneTextBlocks(d);
       });
     },
@@ -924,8 +1024,9 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       const objs = selectedObjects();
       if (objs.length === 0) return;
       commit("Convert outline / fill", (d) => {
+        const layerLocks = lockedLayerIds(d);
         d.objects = d.objects.map((o) => {
-          if (!objs.some((s) => s.id === o.id) || o.locked) return o;
+          if (!objs.some((s) => s.id === o.id) || isObjectLocked(o, layerLocks)) return o;
           if (o.kind === "fill") return fillToOutline(o);
           if (o.kind === "run") return outlineToFill(o) ?? o;
           return o;
@@ -950,8 +1051,10 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     },
     async knife(a, b) {
       const d = get().design;
-      const targets = selectedObjects().filter((o) => !o.locked);
-      if (!d || targets.length === 0) return;
+      if (!d) return;
+      const layerLocks = lockedLayerIds(d);
+      const targets = selectedObjects().filter((o) => !isObjectLocked(o, layerLocks));
+      if (targets.length === 0) return;
       // New piece ids must not collide across objects, so each call starts past the last one's ids.
       let n = Number(makeIdGen(d)().slice(1));
       const results: { id: string; pieces: DesignObject[] }[] = [];
@@ -974,7 +1077,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     },
     async cutHole(hole) {
       const d = get().design;
-      const target = selectedObjects().find((o) => o.kind === "fill" && !o.locked);
+      const layerLocks = d ? lockedLayerIds(d) : new Set<string>();
+      const target = selectedObjects().find((o) => o.kind === "fill" && !isObjectLocked(o, layerLocks));
       if (!d || !target || target.kind !== "fill") return;
       const first = Number(makeIdGen(d)().slice(1));
       const pieces = await engine.shapeOp({ op: "cutHole", object: target, hole, firstId: first });
@@ -1107,7 +1211,7 @@ export function createEditorStore(engine: EngineClient): EditorStore {
           if (!list) return;
           const i = list.findIndex((r) => r.id === id);
           const j = i + dir;
-          if (i < 0 || j < 0 || j >= list.length) return;
+          if (i < 0 || j < 0 || j >= list.length || list[i].layerId !== list[j].layerId) return; // stays inside its layer
           [list[i], list[j]] = [list[j], list[i]];
         },
         { noPlan: true },
@@ -1169,7 +1273,159 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       set({ regionObjects: {} });
     },
 
-    selectRefImage: (id) => set({ selectedImageId: id }),
+    selectRefImage(id) {
+      const layerId = id ? get().design?.images?.find((m) => m.id === id)?.layerId : undefined;
+      set({ selectedImageId: id, ...(layerId ? { activeLayerId: layerId } : {}) });
+    },
+
+    // ---- layers --------------------------------------------------------------------------------
+    setActiveLayer: (activeLayerId) => set({ activeLayerId }),
+    addLayer(kind) {
+      const d = get().design ?? emptyDesign();
+      const layers = d.layers ?? normalizeLayers(d).layers ?? [];
+      const layer = makeLayer(layers, kind);
+      const activeAt = layers.findIndex((l) => l.id === get().activeLayerId);
+      const at = activeAt >= 0 ? activeAt + 1 : layers.length; // above the active layer, else on top
+      commit(
+        kind === "stitch" ? "New stitch layer" : "New picture layer",
+        (dd) => {
+          dd.layers = dd.layers ?? layers.map((l) => ({ ...l }));
+          dd.layers.splice(at, 0, layer);
+        },
+        { noPlan: true },
+      );
+      set({ activeLayerId: layer.id });
+      return layer.id;
+    },
+    deleteLayer(id) {
+      commit(
+        "Delete layer",
+        (d) => {
+          if (!d.layers?.some((l) => l.id === id)) return;
+          d.layers = d.layers.filter((l) => l.id !== id);
+          d.objects = d.objects.filter((o) => o.layerId !== id);
+          if (d.images) d.images = d.images.filter((m) => m.layerId !== id);
+          pruneTextBlocks(d);
+        },
+      );
+      if (get().activeLayerId === id) set({ activeLayerId: null });
+    },
+    renameLayer(id, name) {
+      const n = name.trim();
+      if (!n) return;
+      commit("Rename layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.name = n)), { noPlan: true });
+    },
+    setLayerVisible(id, visible) {
+      const kind = get().design?.layers?.find((l) => l.id === id)?.kind;
+      commit(visible ? "Show layer" : "Hide layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.visible = visible)), { noPlan: kind === "picture" });
+    },
+    setLayerLocked(id, locked) {
+      commit(locked ? "Lock layer" : "Unlock layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.locked = locked)), { noPlan: true });
+    },
+    setLayerOpacity(id, opacity) {
+      const v = Math.min(1, Math.max(0, opacity));
+      commit(
+        "Layer opacity",
+        (d) => {
+          const l = d.layers?.find((x) => x.id === id);
+          if (l && l.kind === "picture") l.opacity = v;
+        },
+        { merge: `layer:${id}:opacity`, noPlan: true },
+      );
+    },
+    moveLayer(id, to) {
+      const d = get().design;
+      const list = d?.layers;
+      if (!d || !list) return;
+      const from = list.findIndex((l) => l.id === id);
+      const target = Math.max(0, Math.min(list.length - 1, to));
+      if (from < 0 || from === target) return;
+      const layers = list.map((l) => ({ ...l }));
+      const [moved] = layers.splice(from, 1);
+      layers.splice(target, 0, moved);
+      const next = normalizeLayers({ ...d, layers });
+      commit("Move layer", (dd) => {
+        dd.layers = next.layers;
+        dd.objects = next.objects;
+        if (next.images) dd.images = next.images;
+      });
+    },
+    mergeLayerDown(id) {
+      const d = get().design;
+      const layers = d?.layers;
+      const i = layers?.findIndex((l) => l.id === id) ?? -1;
+      if (!d || !layers || i < 1) return;
+      const top = layers[i];
+      const below = layers[i - 1];
+      if (top.kind !== below.kind) return;
+      commit("Merge layer down", (dd) => {
+        for (const o of dd.objects) {
+          if (o.layerId !== top.id) continue;
+          o.layerId = below.id;
+          // what was hidden or locked by its layer stays hidden or locked on its own
+          if (!top.visible) o.visible = false;
+          if (top.locked) o.locked = true;
+        }
+        for (const m of dd.images ?? []) {
+          if (m.layerId !== top.id) continue;
+          m.layerId = below.id;
+          if (!top.visible) m.visible = false;
+          if (top.locked) m.locked = true;
+          const keep = (m.opacity * (top.opacity ?? 1)) / Math.max(0.05, below.opacity ?? 1);
+          m.opacity = Math.min(1, Math.max(0.05, keep));
+        }
+        dd.layers = dd.layers!.filter((l) => l.id !== top.id);
+      });
+      set({ activeLayerId: below.id });
+    },
+    moveObjectsToLayer(ids, layerId, beforeId = null) {
+      const d = get().design;
+      if (!d || d.layers?.find((l) => l.id === layerId)?.kind !== "stitch") return;
+      const want = new Set(ids);
+      commit("Move to layer", (dd) => {
+        const moving = dd.objects.filter((o) => want.has(o.id));
+        if (moving.length === 0) return;
+        const rest = dd.objects.filter((o) => !want.has(o.id));
+        for (const o of moving) o.layerId = layerId;
+        // "before the shape that is itself moving" means before the next one that stays
+        let anchor = beforeId;
+        if (anchor && want.has(anchor)) {
+          let k = dd.objects.findIndex((o) => o.id === anchor);
+          while (k < dd.objects.length && want.has(dd.objects[k].id)) k++;
+          anchor = dd.objects[k]?.id ?? null;
+        }
+        let at = anchor ? rest.findIndex((o) => o.id === anchor) : -1;
+        if (at < 0) {
+          let last = -1;
+          rest.forEach((o, k) => void (o.layerId === layerId && (last = k)));
+          at = last >= 0 ? last + 1 : rest.length;
+        }
+        dd.objects = [...rest.slice(0, at), ...moving, ...rest.slice(at)];
+      });
+    },
+    moveImageToLayer(imageId, layerId, beforeId = null) {
+      const d = get().design;
+      if (!d || d.layers?.find((l) => l.id === layerId)?.kind !== "picture") return;
+      commit(
+        "Move picture to layer",
+        (dd) => {
+          const list = dd.images ?? [];
+          const m = list.find((x) => x.id === imageId);
+          if (!m) return;
+          const rest = list.filter((x) => x.id !== imageId);
+          m.layerId = layerId;
+          const anchor = beforeId === imageId ? (list[list.findIndex((x) => x.id === imageId) + 1]?.id ?? null) : beforeId;
+          let at = anchor ? rest.findIndex((x) => x.id === anchor) : -1;
+          if (at < 0) {
+            let last = -1;
+            rest.forEach((x, k) => void (x.layerId === layerId && (last = k)));
+            at = last >= 0 ? last + 1 : rest.length;
+          }
+          dd.images = [...rest.slice(0, at), m, ...rest.slice(at)];
+        },
+        { noPlan: true },
+      );
+    },
   };
 
   return {
