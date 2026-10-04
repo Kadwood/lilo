@@ -97,12 +97,31 @@ export function readPes(bytes: Uint8Array): PesData {
     return { stitches, end: i };
   };
 
-  // Standard layout: 16 header bytes before the stitch stream; some writers add 4 offset bytes
-  // (stitchjs). Pick whichever one ends exactly where the thumbnails begin.
-  let result = decode(blockStart + 16);
-  if (result.end !== blockEnd) {
-    const alt = decode(blockStart + 20);
-    if (alt.end === blockEnd) result = alt;
+  // Standard layout: a 20-byte header before the stitch stream, ending in two big-endian words
+  // `0x9000 | -minX` and `0x9000 | -minY` (0.1 mm). Lilo v1.0/v1.1 wrote only 16 bytes, so those
+  // 4 bytes are really the first stitch. Both layouts end at the same place, so tell them apart by
+  // checking the two words against the bounds of the +20 decode.
+  const isStd = (r: { stitches: PesStitch[]; end: number }) => {
+    if (r.end !== blockEnd) return false;
+    let lx = Infinity;
+    let ly = Infinity;
+    for (const s of r.stitches) {
+      if (s.type !== "stitch") continue;
+      lx = Math.min(lx, s.x);
+      ly = Math.min(ly, s.y);
+    }
+    if (!Number.isFinite(lx)) return true;
+    const wx = ((bytes[blockStart + 16] << 8) | bytes[blockStart + 17]) & 0xfff;
+    const wy = ((bytes[blockStart + 18] << 8) | bytes[blockStart + 19]) & 0xfff;
+    const ex = -Math.round(lx * 10) & 0xfff;
+    const ey = -Math.round(ly * 10) & 0xfff;
+    const near = (a: number, b: number) => Math.min((a - b) & 0xfff, (b - a) & 0xfff) <= 2;
+    return near(wx, ex) && near(wy, ey);
+  };
+  let result = decode(blockStart + 20);
+  if (!isStd(result)) {
+    const old = decode(blockStart + 16);
+    if (old.end === blockEnd) result = old;
   }
 
   let minX = Infinity;

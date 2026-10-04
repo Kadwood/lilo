@@ -8,6 +8,8 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
+- Fixed: PES files had a short stitch-block header. Brother machines showed only part of the design and sewed it wrong. Lilo now writes the full header, and still opens older Lilo files.
+
 ## [1.1.0] - 2026-10-04
 
 Help when you need it.
