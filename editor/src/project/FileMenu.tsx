@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useApp } from "../app/AppContext";
 import { openImagePicker } from "../app/openImage";
 import { useEditor } from "../state/store";
+import { AnchoredPopover } from "../shell/AnchoredPopover";
 import { useProject, useProjectState } from "./ProjectProvider";
 
 interface Item {
@@ -56,11 +57,6 @@ export function FileMenu({ children }: { children?: ReactNode }) {
     if (!open) return;
     setIndex(actionable[0] ?? 0);
     menu.current?.focus();
-    const away = (e: MouseEvent) => {
-      if (!menu.current?.contains(e.target as Node) && !button.current?.contains(e.target as Node)) setOpen(false);
-    };
-    window.addEventListener("mousedown", away);
-    return () => window.removeEventListener("mousedown", away);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -86,6 +82,7 @@ export function FileMenu({ children }: { children?: ReactNode }) {
         File
       </button>
       {open && (
+        <AnchoredPopover anchor={button} onClose={() => close()}>
         <ul
           ref={menu}
           className="menu"
@@ -117,6 +114,7 @@ export function FileMenu({ children }: { children?: ReactNode }) {
             ),
           )}
         </ul>
+        </AnchoredPopover>
       )}
       {children}
     </div>

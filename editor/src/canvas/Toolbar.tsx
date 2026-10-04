@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
+import { AnchoredPopover } from "../shell/AnchoredPopover";
 import { TOOLS, type ToolId } from "../tools/registry";
 import { ThreadPicker } from "../panels/ThreadPicker";
 import { hintById } from "../guide/data";
@@ -99,6 +100,7 @@ function toolTitle(id: string, label: string, key: string, help: string): string
 export function Toolbar() {
   const { state, actions } = useEditor();
   const [pick, setPick] = useState(false);
+  const colourRef = useRef<HTMLDivElement>(null);
   const t = (state.threadId && (state.design?.threads.find((x) => x.id === state.threadId) ?? findThread(state.threadId))) || state.design?.threads[0] || defaultThread();
   return (
     // mouse clicks shouldn't leave focus on a button: Space must keep panning afterwards
@@ -132,22 +134,24 @@ export function Toolbar() {
       </button>
       <span className="toolbar-sep" aria-hidden="true" />
       <HintList ids={[...TOOLS.map((t) => `tool.${t.id}`), "tool.undo", "tool.redo", "tool.drawing-colour"]} label="Help: what each tool does" guideId="drawing-tools" name="tool.toolbar-help" />
-      <div className="toolbar-colour">
+      <div className="toolbar-colour" ref={colourRef}>
         <button className="tool colour" aria-label="Drawing colour" aria-expanded={pick} title={`Drawing colour: ${t.brand} ${t.code} ${t.name}`} onClick={() => setPick((v) => !v)}>
           <span className="swatch" style={{ background: t.hex }} aria-hidden="true" />
         </button>
         {pick && (
-          <div className="popover up">
-            <ThreadPicker
-              current={t.id}
-              onPick={(th) => {
-                // with shapes selected the swatch recolours them; otherwise it sets the drawing colour
-                if (state.selectedIds.length > 0) actions.setObjectThread(state.selectedIds, th);
-                else actions.setThread(th.id);
-                setPick(false);
-              }}
-            />
-          </div>
+          <AnchoredPopover anchor={colourRef} align="end" placement="above" onClose={() => setPick(false)}>
+            <div className="popover">
+              <ThreadPicker
+                current={t.id}
+                onPick={(th) => {
+                  // with shapes selected the swatch recolours them; otherwise it sets the drawing colour
+                  if (state.selectedIds.length > 0) actions.setObjectThread(state.selectedIds, th);
+                  else actions.setThread(th.id);
+                  setPick(false);
+                }}
+              />
+            </div>
+          </AnchoredPopover>
         )}
       </div>
     </div>

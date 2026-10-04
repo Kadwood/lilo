@@ -3,7 +3,7 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 6;
+  z-index: var(--z-canvas-float);
   width: 272px;
   max-height: calc(100% - 16px);
   display: flex;

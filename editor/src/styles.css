@@ -461,7 +461,7 @@ button.primary {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
-  z-index: 5;
+  z-index: var(--z-canvas-hud);
 }
 .swap-text {
   display: flex;
@@ -709,7 +709,7 @@ button.icon.off {
 
 .dialog-backdrop {
   position: fixed;
-  z-index: 100; /* above the canvas and the swap card */
+  z-index: var(--z-dialog); /* above the canvas and the swap card */
   inset: 0;
   display: grid;
   place-items: center;
