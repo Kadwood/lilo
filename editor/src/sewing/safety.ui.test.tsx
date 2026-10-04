@@ -105,6 +105,25 @@ describe("Stitch safety card", () => {
     expect(safetyRows(null)).toEqual([]);
   });
 
+  it("leaves out hidden layers and never changes shapes in a locked layer", () => {
+    const d = twoFills(); // fills: d.objects[0] and "f2"
+    const hiddenFill = d.objects[0].id;
+    const layered = {
+      ...d,
+      layers: [
+        { id: "hid", name: "Hidden", kind: "stitch" as const, visible: false, locked: false },
+        { id: "lck", name: "Locked", kind: "stitch" as const, visible: true, locked: true },
+        { id: "rest", name: "Rest", kind: "stitch" as const, visible: true, locked: false },
+      ],
+      objects: d.objects.map((o) => ({ ...o, layerId: o.id === hiddenFill ? "hid" : o.id === "f2" ? "lck" : "rest" })),
+    };
+    const row = safetyRows(layered).find((r) => r.param === "fillRowSpacing")!;
+    expect(row.ids).toEqual(["f2"]); // the hidden-layer fill isn't sewn, so it isn't listed
+    expect(row.settableIds).toEqual([]); // f2 sits in a locked layer
+    const open = safetyRows({ ...layered, layers: layered.layers.map((l) => ({ ...l, locked: false })) }).find((r) => r.param === "fillRowSpacing")!;
+    expect(open.settableIds).toEqual(["f2"]);
+  });
+
   it("shows a range across shapes and the worst status", async () => {
     renderEditor(<StitchSafetyCard />, { design: twoFills() });
     await loaded();
