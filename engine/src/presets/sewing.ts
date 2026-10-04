@@ -356,10 +356,10 @@ export function resolveSewingSetup(input: SewingSetupInput = {}): SewingSetup {
     pullCompFactor: fe.pullCompFactor,
     underlayBias: fe.underlayBias,
     zigzagUnderlay: fe.zigzagUnderlay,
-    // [CAL] split above 8 mm (hard cap 12.1); [HS-CHEAT] sweet spot 2-9 mm.
-    splitMaxWidthMm: premium ? DEFAULTS.satin.splitMm : null,
+    // [CAL] split above 8 mm (hard cap 12.1); Lilo splits earlier (`DEFAULTS.satin.splitMm`) so legs stay under 7 mm. Both qualities.
+    splitMaxWidthMm: DEFAULTS.satin.splitMm,
     shortStitches: premium,
-    junctionOverlapMm: premium ? DEFAULTS.satin.junctionOverlapMm : null,
+    junctionOverlapMm: DEFAULTS.satin.junctionOverlapMm,
     fill,
   };
 

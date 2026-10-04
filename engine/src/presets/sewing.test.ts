@@ -74,7 +74,8 @@ describe("sewing presets: the table", () => {
     expect(s.engine.satinMode).toBe("legacy");
     expect(s.engine.minSatinWidthMm).toBe(1.5);
     expect(s.engine.hairlinesAsSatin).toBe(false);
-    expect(s.engine.junctionOverlapMm).toBeNull();
+    expect(s.engine.junctionOverlapMm).toBe(0.3); // both qualities trim columns that meet (fewer stacked stitches)
+    expect(s.engine.splitMaxWidthMm).toBe(5);
     expect(s.engine.fill).toEqual({ pullCompMm: 0.2 });
   });
 
@@ -85,15 +86,15 @@ describe("sewing presets: the table", () => {
     expect(resolveSewingSetup({ fabric: "cap" }).engine.fabric).toBe("twill");
   });
 
-  it("premium 40 wt woven: 1.0 mm minimum column, density 0.45 / 0.38 / 0.42 by width", () => {
+  it("premium 40 wt woven: 1.5 mm minimum column, density 0.45 / 0.38 / 0.42 by width", () => {
     const e = resolveSewingSetup({ quality: "premium", threadWeight: 40, fabric: "woven" }).engine;
-    expect(e.minSatinWidthMm).toBe(1);
+    expect(e.minSatinWidthMm).toBe(1.5);
     expect(e.satinDensityNarrowMm).toBe(0.45);
     expect(e.satinDensityMediumMm).toBe(0.38);
     expect(e.satinDensityWideMm).toBe(0.42);
     expect(e.hairlinesAsSatin).toBe(true);
     expect(e.satinMode).toBe("width-scaled");
-    expect(e.splitMaxWidthMm).toBe(8);
+    expect(e.splitMaxWidthMm).toBe(5);
     expect(e.fill.underlays?.[0].spacingMm).toBe(3.5);
     expect(e.fill.stitchLengthMm).toBe(4);
     expect(e.fill.edgeWalk).toBeDefined();

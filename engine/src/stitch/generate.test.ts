@@ -83,11 +83,21 @@ describe("validatePlan", () => {
 
   it("warns when the design does not fit the hoop and when it is too dense", () => {
     const stitches = [];
-    for (let i = 0; i < 12; i++) stitches.push({ x: 0.5, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 });
+    // 12 drops in each of two touching 1 mm cells: a patch of piled-up thread
+    for (let i = 0; i < 12; i++) stitches.push({ x: 0.5, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 }, { x: 1.5, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 });
     stitches.push({ x: 200, y: 0.5, type: "jump" as const, threadIndex: 0, objectIndex: 0 });
     stitches.push({ x: 200, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 });
     const { warnings } = validatePlan({ threads: [blue], warnings: [], stitches }, { name: "tiny", widthMm: 100, heightMm: 100 }, { minStitchMm: 0 }); // stacked drops, so don't merge them
     expect(warnings.map((w) => w.code).sort()).toEqual(["density", "outside-hoop"]);
+  });
+
+  it("one crossing cell is not a density warning, but a patch or a pile twice the limit is", () => {
+    const at = (x: number, n: number) => Array.from({ length: n }, () => ({ x, y: 0.5, type: "stitch" as const, threadIndex: 0, objectIndex: 0 }));
+    const run = (stitches: ReturnType<typeof at>) => validatePlan({ threads: [blue], warnings: [], stitches }, DEFAULT_HOOP, { minStitchMm: 0, lockStitchMm: 0 }).warnings.map((w) => w.code);
+    expect(run(at(0.5, 13))).not.toContain("density"); // two lines crossing
+    expect(run(at(0.5, 21))).toContain("density"); // a pile
+    expect(run([...at(0.5, 11), ...at(1.5, 11)])).toContain("density"); // a patch
+    expect(run([...at(0.5, 11), ...at(5.5, 11)])).not.toContain("density"); // two separate crossings
   });
 
   it("warns on an empty plan", () => {

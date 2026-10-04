@@ -1,15 +1,15 @@
 {
   "k-logo": {
     "objects": 6,
-    "stitches": 1365,
+    "stitches": 2275,
     "colorChanges": 1,
-    "pesSha256": "012faff7888d0edd02450f6bcaa53cb122c543316d1199ec527cdb0dce609c7a"
+    "pesSha256": "e18be09379aec639a4f12e0aa9033656316a9e671f7fdea303f84f33dff93b5e"
   },
   "badge": {
     "objects": 4,
-    "stitches": 3795,
+    "stitches": 4662,
     "colorChanges": 2,
-    "pesSha256": "b7d6100d2b1edfd2fbf77a5d94a0d79fadba0bf779312b37ffda151c9cdaf3c2"
+    "pesSha256": "90f7a63bb2def25939e481cc097358335b807901dba45275cfb5fbeb36501f0b"
   },
   "thin-lines": {
     "objects": 6,

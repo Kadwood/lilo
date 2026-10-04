@@ -6,6 +6,8 @@ import { type SatinUnderlay,
   type DesignObject,
   type Pt,
 } from "../model";
+import { DEFAULTS } from "../presets/defaults";
+import { safeRangeFor, safeUnderlayFor, stripMaxWidthMm, stripWidthMm, thinSatinMinMm, widenStripTo } from "../presets/safety";
 import { customMinColumnFor } from "../presets/sewing";
 import { railsToStrip, stripWidths, toPts } from "./satin";
 import type { Glyph, LetterCase, LiloFont } from "./types";
@@ -507,13 +509,17 @@ export function layoutText(text: string, fontOrTypeface: LiloFont | Typeface, op
       sourceText: { group: prefix, char: g.char, line, index: g.index },
     };
     switch (e.k) {
-      case "satin":
+      case "satin": {
+        // built-in fonts can have columns a hair under the thread's safe width at their smallest height: widen, never sew thin
+        const strip = widenStripTo(e.strip, thinSatinMinMm(opts.sewing?.threadWeight)) as Pt[];
         return {
           ...base,
           kind: "satin",
-          geometry: { strip: e.strip },
-          params: { densityMm: e.density, widthMm: Math.round(e.widthMm * 10) / 10, pullCompMm: e.pull, underlay: e.underlay },
+          geometry: { strip },
+          // some fonts ship 0.30 mm: never tighter than the safe floor for the thread (0.35 at 40 wt, 0.30 at 60 wt)
+          params: { densityMm: Math.max(e.density, safeRangeFor("satinDensity", { threadWeight: opts.sewing?.threadWeight }).min ?? 0), widthMm: Math.round(stripWidthMm(strip) * 10) / 10, pullCompMm: e.pull, underlay: safeUnderlayFor(e.underlay, stripMaxWidthMm(strip)), splitMaxWidthMm: DEFAULTS.satin.splitMm },
         };
+      }
       case "fill":
         return {
           ...base,

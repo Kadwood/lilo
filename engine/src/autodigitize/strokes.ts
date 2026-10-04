@@ -345,8 +345,8 @@ export function strokePlan(part: Poly, opts: StrokeOptions): StrokePlan | null {
       const s = branchToStrip(b, edges);
       if (!s) continue;
       const sw = median(stripWidths(s));
-      // Rays can hit the outline sooner than the skeleton's radius suggests (serifs, junction mouths).
-      if (sw < opts.minSatinMm * 0.9) asRun(b, false);
+      // No slack: a column under `minSatinMm` is thinner than the thread can cover (`thin-satin`), so it is a run.
+      if (sw < opts.minSatinMm) asRun(b, false);
       else satins.push({ strip: s, widthMm: sw });
     }
   }

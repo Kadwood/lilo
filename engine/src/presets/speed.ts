@@ -65,6 +65,6 @@ export function recommendedMachineSpeed(
   if (design.threads.some((t) => used.has(t.id) && isMetallic(t))) cap(SPEED_CAPS.metallic, "metallic thread");
   if (plan.warnings.some((w) => w.code === "density")) cap(SPEED_CAPS.dense, "very dense stitching");
 
-  if (reasons.length === 0) reasons.push(`suits ${fabric} cloth`);
+  if (reasons.length === 0) reasons.push(`a good speed for ${fabric} cloth`);
   return { spm, reasons };
 }

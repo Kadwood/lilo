@@ -14,7 +14,7 @@ describe("recommendedMachineSpeed", () => {
   it("starts from the middle of the fabric's range when nothing slows it down", () => {
     const r = recommendedMachineSpeed(d([fill(), satin(3)]), { fabric: "suiting", threadWeight: 40 }, noWarn);
     expect(r.spm).toBe(recommendedSpeed("suiting", 40).estimateSpm);
-    expect(r.reasons).toEqual(["suits suiting cloth"]);
+    expect(r.reasons).toEqual(["a good speed for suiting cloth"]);
   });
   it("thin satin (under 2 mm) caps at 450", () => {
     const r = recommendedMachineSpeed(d([satin(1.5)]), { fabric: "twill", threadWeight: 40 }, noWarn);

@@ -44,7 +44,7 @@ export const SAFE_RANGES: Readonly<Record<SafeParam, SafeRange>> = {
     reasonLow: "Too thin to look shiny. Stitches pile up and can break the thread. Use a running stitch instead.",
     reasonHigh: "Long loose stitches can snag on things.",
     source: "lilo-default",
-    sourceNote: "The 1.5 mm floor (1.0 mm for 60 wt thread) matches the calibration table. The 10 mm top is a Lilo default. Columns wider than 8 mm are split.",
+    sourceNote: "The 1.5 mm floor (1.0 mm for 60 wt thread) matches the calibration table. The 10 mm top is a Lilo default. Lilo splits columns wider than 5 mm into halves.",
   },
   satinDensity: {
     label: "Satin spacing",
@@ -172,14 +172,13 @@ export function checkSafe(param: SafeParam, value: number, ctx: SafeContext = {}
 
 // ---- satin widths in a design ------------------------------------------------------------------------
 
-/** The typical width of a satin strip (`[l0, r0, l1, r1, ...]`): the median, so tapered ends do not count as thin. */
+/** The typical width of a satin strip (`[l0, r0, l1, r1, ...]`): the median (the upper one when there is an even number of rungs, as the digitizer measures), so tapered ends do not count as thin. */
 export function stripWidthMm(strip: readonly (readonly [number, number])[]): number {
   const w: number[] = [];
   for (let i = 0; i + 1 < strip.length; i += 2) w.push(Math.hypot(strip[i][0] - strip[i + 1][0], strip[i][1] - strip[i + 1][1]));
   if (w.length === 0) return 0;
   w.sort((a, b) => a - b);
-  const m = w.length >> 1;
-  return w.length % 2 ? w[m] : (w[m - 1] + w[m]) / 2;
+  return w[w.length >> 1];
 }
 
 /** The width a satin-style object is sewn at, or null when it is not a satin column. */
@@ -203,6 +202,48 @@ export function thinSatins(design: Pick<Design, "objects" | "sewing">): ThinSati
     if (o.visible === false) continue;
     const w = satinWidthOf(o);
     if (w !== null && w > 0 && w < min - EPS) out.push({ id: o.id, name: o.name, widthMm: w });
+  }
+  return out;
+}
+
+// ---- zig-zag underlay and the 7 mm snag limit --------------------------------------------------------
+
+/** A zig-zag underlay leg runs across the whole column. Wider than this (mm, widest rung), the leg plus pull and slant passes 7 mm. */
+export const ZIGZAG_UNDERLAY_MAX_WIDTH_MM = 5.5;
+
+/** The widest rung of a satin strip (`[l0, r0, l1, r1, ...]`), mm. */
+export function stripMaxWidthMm(strip: readonly (readonly [number, number])[]): number {
+  let m = 0;
+  for (let i = 0; i + 1 < strip.length; i += 2) m = Math.max(m, Math.hypot(strip[i][0] - strip[i + 1][0], strip[i][1] - strip[i + 1][1]));
+  return m;
+}
+
+/**
+ * The underlay a column can safely have: a column whose widest rung is over `ZIGZAG_UNDERLAY_MAX_WIDTH_MM`
+ * swaps its zig-zag for edge and centre walks, so no underlay stitch is longer than 7 mm.
+ */
+export function safeUnderlayFor<U extends string>(underlay: U, maxWidthMm: number): U | "contour" | "center-contour" {
+  if (maxWidthMm <= ZIGZAG_UNDERLAY_MAX_WIDTH_MM) return underlay;
+  if (underlay === "zigzag") return "contour";
+  if (underlay === "contour-zigzag" || underlay === "double-zigzag") return "center-contour";
+  return underlay;
+}
+
+/**
+ * A strip no thinner than `minMm` (its typical width, see `stripWidthMm`): every rung is scaled about its
+ * middle by the same amount, so a taper stays a taper. Returns the strip itself when it is wide enough.
+ */
+export function widenStripTo<P extends readonly [number, number]>(strip: readonly P[], minMm: number): P[] | readonly P[] {
+  const w = stripWidthMm(strip);
+  if (w <= 0 || w >= minMm - EPS) return strip;
+  const k = minMm / w;
+  const out: P[] = [];
+  for (let i = 0; i + 1 < strip.length; i += 2) {
+    const [lx, ly] = strip[i];
+    const [rx, ry] = strip[i + 1];
+    const mx = (lx + rx) / 2;
+    const my = (ly + ry) / 2;
+    out.push([mx + (lx - mx) * k, my + (ly - my) * k] as unknown as P, [mx + (rx - mx) * k, my + (ry - my) * k] as unknown as P);
   }
   return out;
 }

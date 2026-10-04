@@ -16,6 +16,7 @@ import {
 import { nearestThread, toDesignThread, type ThreadEntry } from "../threads";
 import type { Region } from "./regions";
 import { AUTODIGITIZE_STROKES, smoothPath, strokePlan, type StrokeOptions } from "./strokes";
+import { safeUnderlayFor, stripMaxWidthMm } from "../presets/safety";
 import { satinParamsFor } from "./profile";
 import { DEFAULTS } from "../presets/defaults";
 import { markAutoParams, resolveSewingSetup, type SewingEngineParams } from "../presets";
@@ -245,6 +246,9 @@ export function regionsToDesign(regions: Region[], threads: readonly ThreadEntry
     const n = plan.satins.length + plan.runs.length;
     for (const s of plan.satins) {
       const satinParams: SatinParams = satinParamsFor(s.widthMm, sew ?? STANDARD_SEWING);
+      // a zig-zag underlay leg runs across the widest rung: past 5.5 mm it would pass 7 mm, so walk the edges instead
+      const ul = safeUnderlayFor(satinParams.underlay, stripMaxWidthMm(s.strip));
+      if (ul !== satinParams.underlay) satinParams.underlay = ul;
       const first = mid(s.strip[0], s.strip[1]);
       const last = mid(s.strip[s.strip.length - 2], s.strip[s.strip.length - 1]);
       drafts.push({

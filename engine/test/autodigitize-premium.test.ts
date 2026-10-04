@@ -56,19 +56,19 @@ describe("Premium auto-digitize on the DOVE wordmark", () => {
   it("hairlines become narrow satin at the minimum width, not faint single runs", async () => {
     const std = await run(80, { quality: "standard" });
     const prm = await run(80, { quality: "premium" });
-    const narrow = satins(prm.design).filter((s) => s.params.widthMm <= 1);
+    const narrow = satins(prm.design).filter((s) => s.params.widthMm <= 1.6);
     expect(narrow.length).toBeGreaterThan(0);
     // Standard sews them as runs; premium keeps at most a few triple-run stubs.
     expect(objectCounts(std.design).run).toBeGreaterThan(objectCounts(prm.design).run);
     for (const o of prm.design.objects) if (o.kind === "run") expect(o.params.repeats).toBe(3);
-    // The narrowest premium column is the 1.0 mm minimum (40 wt).
+    // The narrowest premium column is the 1.5 mm minimum (40 wt): the safe width for the thread.
     const widths = satins(prm.design).map((s) => s.params.widthMm);
-    expect(Math.min(...widths)).toBeGreaterThanOrEqual(0.9 - 1e-9); // columns may measure up to 10 % under the minimum
+    expect(Math.min(...widths)).toBeGreaterThanOrEqual(1.45 - 1e-9); // widthMm is rounded to 0.1
   });
 
   it("thread weight and the explicit minSatinWidthMm move the minimum column", async () => {
     const fine = await run(80, { quality: "premium", threadWeight: 60 });
-    expect(Math.min(...satins(fine.design).map((s) => s.params.widthMm))).toBeGreaterThanOrEqual(0.8 - 1e-9);
+    expect(Math.min(...satins(fine.design).map((s) => s.params.widthMm))).toBeGreaterThanOrEqual(0.95 - 1e-9); // 60 wt: 1.0 mm
     const forced = await run(80, { quality: "premium", minSatinWidthMm: 1.2 });
     expect(Math.min(...satins(forced.design).map((s) => s.params.widthMm))).toBeGreaterThanOrEqual(1.2 - 1e-9);
   });

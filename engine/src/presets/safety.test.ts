@@ -74,7 +74,7 @@ describe("satin widths in a design", () => {
   it("measures a strip by its median, so tapered ends do not count", () => {
     expect(stripWidthMm(strip(2))).toBeCloseTo(2);
     const tapered = [[0, 0], [0, 0.1], [2, 0], [2, 2], [4, 0], [4, 2], [6, 0], [6, 0.1]] as [number, number][];
-    expect(stripWidthMm(tapered)).toBeCloseTo(1.05, 1);
+    expect(stripWidthMm(tapered)).toBeCloseTo(2, 1); // the upper median: the tapered ends do not count
     expect(stripWidthMm([])).toBe(0);
   });
   it("reads run-type satin from its width", () => {

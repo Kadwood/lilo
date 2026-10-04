@@ -11,6 +11,8 @@ export const TRIM_JUMP_MM = DEFAULTS.limits.trimJumpMm;
 const MAX_JUMP_MM = DEFAULTS.limits.maxJumpMm;
 /** Needle penetrations per 1 mm^2 cell above which fabric tends to pucker or thread breaks. */
 export const DENSITY_WARN_PER_MM2 = DEFAULTS.limits.densityWarnPerMm2;
+/** Touching 1 mm cells over the limit that make a patch worth a warning (one cell is just a crossing). */
+export const DENSE_PATCH_CELLS = 2;
 /** Needle drops closer than this to the previous one are merged away (thread piles up and can snap). */
 export const MIN_STITCH_MM = DEFAULTS.limits.minStitchMm;
 /** Premium quality merges needle drops closer than this. */
@@ -130,12 +132,38 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
       worstCell = key;
     }
   }
-  for (const n of cells.values()) if (n > densityMax) overCount++;
+  // A single 1 mm cell over the limit is where two lines or columns cross, which every design has. A patch
+  // (two or more touching cells), or one cell at twice the limit, is thread piled up: warn on those.
+  const dense = new Set<string>();
+  for (const [key, n] of cells) if (n > densityMax) dense.add(key);
+  const seen = new Set<string>();
+  for (const start of dense) {
+    if (seen.has(start)) continue;
+    const stack = [start];
+    seen.add(start);
+    let size = 0;
+    let peak = 0;
+    while (stack.length) {
+      const k = stack.pop()!;
+      size++;
+      peak = Math.max(peak, cells.get(k)!);
+      const [x, y] = k.split(",").map(Number);
+      for (let dx = -1; dx <= 1; dx++)
+        for (let dy = -1; dy <= 1; dy++) {
+          const q = `${x + dx},${y + dy}`;
+          if (dense.has(q) && !seen.has(q)) {
+            seen.add(q);
+            stack.push(q);
+          }
+        }
+    }
+    if (size >= DENSE_PATCH_CELLS || peak > 2 * densityMax) overCount++;
+  }
   if (overCount > 0) {
     const [cx, cy] = worstCell.split(",");
     warnings.push({
       code: "density",
-      message: `${overCount} area${overCount === 1 ? "" : "s"} of 1 mm² have more than ${densityMax} needle drops (worst ${worst} near ${cx}, ${cy} mm). Thread may break or the fabric pucker.`,
+      message: `${overCount} area${overCount === 1 ? "" : "s"} of thread piled up: more than ${densityMax} needle drops in a square millimetre (worst ${worst} near ${cx}, ${cy} mm). Thread may break or the fabric pucker.`,
     });
   }
 
