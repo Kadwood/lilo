@@ -25,6 +25,8 @@ const EXPECT: Record<string, Expectation> = {
   "thin-lines": { objects: [3, 14], threads: ["Black"], kinds: ["satin", "run"] },
 };
 
+// UPDATE_GOLDEN rewrites golden.json from whatever the writers produce now, so it blesses bugs too.
+// Only run it AFTER test/formats-crosscheck.test.ts passes against pyembroidery (XCHECK_PYTHON=... XCHECK_REQUIRED=1).
 const golden: Record<string, { objects: number; stitches: number; colorChanges: number; pesSha256: string }> = existsSync(goldenPath)
   ? JSON.parse(readFileSync(goldenPath, "utf8"))
   : {};

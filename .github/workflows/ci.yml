@@ -40,7 +40,16 @@ jobs:
           LILO_FONTS_CACHE: ${{ runner.temp }}/lilo-fonts-cache
       - run: pnpm fonts:check
       - run: pnpm typecheck
+      # Every export format is cross-checked against pyembroidery (an independent reader), so Lilo's
+      # writers are not only tested by Lilo's own readers. XCHECK_REQUIRED=1 makes a missing
+      # pyembroidery a failure instead of a silent skip.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyembroidery==1.5.1
       - run: pnpm -r test
+        env:
+          XCHECK_REQUIRED: "1"
       - run: pnpm --filter editor build
 
   # The browser journeys (editor/e2e) take about 8 minutes, so they are opt-in: run this workflow by hand

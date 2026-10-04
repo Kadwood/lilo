@@ -78,6 +78,22 @@ describe("embroidery formats", () => {
     }
   });
 
+  it("XXX: a 12.4 mm leg on either axis stays a stitch (124 units used to be written long-form and read back as a jump)", () => {
+    // legs of exactly 12.4 mm along x, along y and diagonally, in both directions
+    const steps: [number, number][] = [[-6.2, -6.2], [6.2, -6.2], [6.2, 6.2], [-6.2, 6.2], [-6.2, -6.2], [6.2, 6.2], [-6.2, 6.2], [6.2, -6.2]];
+    const plan: StitchPlan = {
+      threads: [{ id: "t", brand: "Test", code: "1", name: "Thread", hex: "#112233" }],
+      stitches: [
+        { x: -6.2, y: -6.2, type: "jump", threadIndex: 0, objectIndex: 0 },
+        ...steps.map(([x, y]) => ({ x, y, type: "stitch" as const, threadIndex: 0, objectIndex: 0 })),
+      ],
+      warnings: [],
+    };
+    const back = readEmbroidery(writeEmbroidery(plan, "xxx"), "xxx").plan;
+    // a long-form move reads back as a jump, which drops the needle: every planned needle must survive
+    expect(needles(back)).toEqual(needles(plan));
+  });
+
   it("convert() goes A to B and says what was lost", () => {
     const plan = samplePlan();
     const pes = writeEmbroidery(plan, "pes");

@@ -45,7 +45,7 @@ Lilo reads and writes 11 formats and writes 1 more. File-format round trips are 
 | .tap | Happy TAP | Happy | no | not supported | Happy's own format. DST covers the machine. |
 | .100 | Toyota 100 / 10o | Toyota | no | not supported | Toyota native. DST covers the machine. |
 | .zxy | ZSK ZXY / DSZ | ZSK | no | not supported | ZSK's own formats. DST covers the machine. |
-| .vip | Husqvarna / Pfaff VIP | Husqvarna Viking, Pfaff | yes | read + write | Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader or real VIP file was available to check it, so treat it as untested on machines. |
+| .vip | Husqvarna / Pfaff VIP | Husqvarna Viking, Pfaff | yes | read + write | Pfaff and Viking format with exact RGB colours. Written to the layout in Jason Weiler's notes and libembroidery; the short record before the stitch data is taken from libembroidery's unfinished writer, and no independent reader (pyembroidery has none) or real VIP file was available to check it, so it is checked only by Lilo's own round trip. Treat it as untested on machines. |
 | .gcode | G-code | CNC and plotter tools | no | write only | Not a machine format: a stitch path for CNC, plotter and DIY tools, written as pyembroidery writes it (G00 moves, M00 pause at each colour change, M30 end). Write only: there is nothing to open. |
 
 ## Machines by brand
