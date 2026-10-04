@@ -8,6 +8,8 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-05
+
 - **Layers.** The right-hand panel now has a **Layers** tab where pictures and stitch layers sit in one list. The list is the order the machine sews: the bottom layer sews first and the top layer sews last, so it sits on top. Each layer has an eye (show or hide), a padlock, a name you can change, and a "sews 4–7" note that says where it falls in the order. Picture layers have an opacity slider.
 - Drag shapes between layers, drag layers to reorder them, or click a row and press Alt with the up or down arrow. Every move is one undo step. Use **New stitch layer**, **New picture layer**, **Delete layer** and **Merge down** under the banner. The whole tab works from the keyboard (arrows, Space to show or hide, L to lock, F2 to rename).
 - A **hidden stitch layer is not sewn**. Lilo leaves it out of every exported or sent file, and the stitch count, time and thread list ignore it. Export, Send and Before You Sew all warn you: "1 layer is hidden — it won't be sewn".
