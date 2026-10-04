@@ -349,8 +349,10 @@
   align-items: center;
   min-width: 0;
 }
+/* the browser paints the slider track itself, so the band sits on top of it: thin, see-through, and never takes a click */
 .safe-band {
   position: absolute;
+  z-index: 1;
   top: 50%;
   height: 8px;
   transform: translateY(-50%);
@@ -361,7 +363,6 @@
 }
 .safe-track input[type="range"] {
   position: relative;
-  background: transparent;
 }
 .safe-dot {
   display: inline-block;
