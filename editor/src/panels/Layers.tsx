@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { editRings, objectBox, sewOrder, type Design, type DesignImage, type DesignObject, type Layer } from "@lilo/engine/light";
+import { IMPORT_EXTENSIONS } from "../io/decode";
+import { getPlatform } from "../platform";
 import { useEditor } from "../state/store";
 import { groupObjects } from "../state/reorder";
 import { Hint } from "../guide/Hint";
@@ -131,6 +133,16 @@ export function LayersPanel() {
   const endDrag = () => {
     setDrag(null);
     setMark(null);
+  };
+
+  /** Add a picture: it goes into the selected picture layer (or the lowest one). */
+  const addImage = async () => {
+    try {
+      const f = await getPlatform().openFile({ extensions: IMPORT_EXTENSIONS });
+      if (f) await actions.addRefImage({ name: f.name, bytes: f.bytes });
+    } catch (e) {
+      console.error("Add image failed", e);
+    }
   };
 
   // ---- moves ----
@@ -652,6 +664,9 @@ export function LayersPanel() {
         <button onClick={() => actions.addLayer("picture")} title="Add an empty layer for pictures above the selected one">
           New picture layer
         </button>
+        <button onClick={() => void addImage()} title="Add a picture to the selected picture layer. Pictures are not stitched.">
+          Add image…
+        </button>
         <button
           disabled={!canDelete}
           title="Delete the selected layer"
@@ -750,15 +765,17 @@ export function LayersPanel() {
                   {l.kind === "stitch" ? "≋" : "▣"}
                 </span>
                 <EditableText value={l.name} label={`layer ${l.name}`} editing={renaming === key} onStart={() => setRenaming(key)} onDone={(n) => (setRenaming(null), n && actions.renameLayer(l.id, n))} />
-                <span className="layer-range" title="Where this layer sits in the sew order">
-                  {sewRangeText(l, range)}
-                </span>
                 <button tabIndex={-1} className="icon" aria-label={`Move layer ${l.name} up`} title="Sew later (on top)" disabled={i === layers.length - 1} onClick={(e) => (e.stopPropagation(), moveLayerBy(l.id, 1))}>
                   ▲
                 </button>
                 <button tabIndex={-1} className="icon" aria-label={`Move layer ${l.name} down`} title="Sew earlier (underneath)" disabled={i === 0} onClick={(e) => (e.stopPropagation(), moveLayerBy(l.id, -1))}>
                   ▼
                 </button>
+                <div className="layer-sub">
+                <span className="layer-range" title="Where this layer sits in the sew order">
+                  {sewRangeText(l, range)}
+                </span>
+
                 {l.kind === "picture" && (
                   <label className="layer-opacity" onClick={(e) => e.stopPropagation()}>
                     <span className="sr-only">{l.name} opacity</span>
@@ -778,6 +795,7 @@ export function LayersPanel() {
                     <output>{Math.round((l.opacity ?? 1) * 100)}%</output>
                   </label>
                 )}
+                </div>
               </div>
               {!isCollapsed && (
                 <ul role="group" className="layer-children">

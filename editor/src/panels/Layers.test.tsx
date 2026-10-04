@@ -81,6 +81,17 @@ describe("Layers panel", () => {
     expect(layersOf().map((l) => l.name)).toEqual(["Back", "Front"]);
   });
 
+  it("the layer you click stays active through later edits of a shape that is selected", async () => {
+    renderEditor(<Sequencer />, { design: twoLayerDesign() });
+    await loaded();
+    act(() => lastEditor!.actions.select("s1")); // a Front shape is selected: Front is active
+    expect(lastEditor!.state.activeLayerId).toBe("front");
+    fireEvent.click(screen.getByText("Back"));
+    expect(lastEditor!.state.activeLayerId).toBe("back");
+    act(() => lastEditor!.actions.rename("s1", "Renamed"));
+    expect(lastEditor!.state.activeLayerId).toBe("back");
+  });
+
   it("new shapes land in the active layer", async () => {
     renderEditor(<Sequencer />, { design: twoLayerDesign() });
     await loaded();

@@ -845,13 +845,19 @@ button.primary:hover:not(:disabled) {
   font-size: 11px;
   white-space: nowrap;
 }
+.layer-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-basis: 100%;
+  margin-left: 24px;
+}
 .layer-opacity {
   display: grid;
+  flex: 1;
   grid-template-columns: 1fr 40px;
   align-items: center;
   gap: 6px;
-  flex-basis: 100%;
-  margin-left: 24px;
   font-size: 11px;
 }
 .layer-children {

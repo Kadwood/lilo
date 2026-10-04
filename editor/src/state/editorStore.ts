@@ -591,7 +591,8 @@ export function createEditorStore(engine: EngineClient): EditorStore {
       selectedIds: ids,
       selectedId: last ?? null,
       ...(same ? {} : { mode: "none" as ShapeMode }),
-      ...(layerId ? { activeLayerId: layerId } : {}),
+      // the active layer follows what you pick, but a re-selection of the same shapes (every edit) must not undo a click on a layer
+      ...(layerId && !same ? { activeLayerId: layerId } : {}),
       ...extra,
     });
   };

@@ -61,7 +61,8 @@ Hiding a **picture layer** changes nothing in the file.
 
 ## Buttons under the banner
 
-- **New stitch layer** and **New picture layer** add an empty layer above the one you have selected. A picture you add goes into the selected picture layer.
+- **New stitch layer** and **New picture layer** add an empty layer above the one you have selected.
+- **Add image…** puts a picture into the selected picture layer. If there is no picture layer yet, Lilo makes one.
 - **Delete layer** removes the selected layer. If it has things in it, Lilo asks first. You can undo it.
 - **Merge down** folds the selected layer into the layer below it. Both must be the same kind. The sew order does not change.
 
