@@ -48,4 +48,4 @@ The copies stay linked. Use **Edit…** in the **Map to path** section of the le
 
 ## Reorder and hide
 
-Open the **Layers** tab in the sequencer on the right to change sewing order, hide or lock shapes and layers, or group by colour. Read [Layers and sew order](layers.md).
+Open the **Layers** tab in the Sew order panel on the right to change sewing order, hide or lock shapes and layers, or group by colour. Read [Layers and sew order](layers.md).

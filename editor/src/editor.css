@@ -897,3 +897,15 @@ button.primary:hover:not(:disabled) {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
+
+/* calmer rows: the move arrows of a shape or colour block show on hover or keyboard focus (drag, or Alt+arrows, work any time) */
+.row-move {
+  visibility: hidden;
+}
+.seq-row:hover .row-move,
+.seq-row:focus .row-move,
+.seq-row:focus-within .row-move,
+.seq-group-head:hover .row-move,
+.seq-group-head:focus-within .row-move {
+  visibility: visible;
+}

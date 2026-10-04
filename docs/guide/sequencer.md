@@ -1,17 +1,17 @@
 ---
 id: "sequencer"
-title: "The sequencer"
+title: "The Sew order panel"
 summary: "The panel on the right: Layers (the sew order), Colours, Images and My Threads."
 section: "preview"
 order: 5
-keywords: ["sequencer", "colour blocks", "objects", "images", "group by colour", "details", "tabs", "panel"]
+keywords: ["sequencer", "sew order", "colour blocks", "objects", "images", "group by colour", "details", "tabs", "panel"]
 appContext: ["panel.sequencer-colours", "panel.sequencer-images"]
 status: "ready"
 ---
 
-# The sequencer
+# The Sew order panel
 
-The **sequencer** is the panel on the right. It has four tabs.
+The **Sew order** panel is on the right. It has four tabs.
 
 ## Layers
 

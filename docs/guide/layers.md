@@ -11,7 +11,7 @@ status: "ready"
 
 # Layers and sew order
 
-The **Layers** tab is in the sequencer on the right. It holds your pictures and your stitches in one list. Think of a stack of paper. The paper at the bottom goes down first. The paper on top goes down last, so it sits on top.
+The **Layers** tab is in the Sew order panel on the right. It holds your pictures and your stitches in one list. Think of a stack of paper. The paper at the bottom goes down first. The paper on top goes down last, so it sits on top.
 
 **The list is the sew order. The bottom layer sews first. The top layer sews last.**
 
@@ -84,4 +84,4 @@ A project from Lilo 1.2 or earlier opens with its pictures in a **Picture** laye
 
 ## Related
 
-[The sequencer](sequencer.md), [The stitch player](stitch-player.md), [Fewer colour changes](fewer-colour-changes.md)
+[The Sew order panel](sequencer.md), [The stitch player](stitch-player.md), [Fewer colour changes](fewer-colour-changes.md)

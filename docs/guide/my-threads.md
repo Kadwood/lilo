@@ -15,7 +15,7 @@ status: "ready"
 
 ## Open it
 
-In the sequencer on the right, open the **My Threads** tab.
+In the Sew order panel on the right, open the **My Threads** tab.
 
 ## Add spools
 

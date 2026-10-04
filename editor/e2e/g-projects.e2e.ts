@@ -15,7 +15,7 @@ async function drawRect(page: Page, c: P, x0: number, y0: number, x1: number, y1
   await page.mouse.up();
   await page.waitForTimeout(400);
 }
-const objectCount = async (page: Page): Promise<number> => Number(/(\d+) objects?/.exec(await page.getByRole("complementary", { name: "Sequencer" }).innerText())?.[1] ?? 0);
+const objectCount = async (page: Page): Promise<number> => Number(/(\d+) objects?/.exec(await page.getByRole("complementary", { name: "Sew order" }).innerText())?.[1] ?? 0);
 const menu = async (page: Page, item: string | RegExp) => {
   await page.getByRole("button", { name: "File", exact: true }).click();
   await page.getByRole("menuitem", { name: item }).click();

@@ -31,7 +31,7 @@ The picker lists the Brother, Country and Brothread ranges first. Every change i
 
 ## Swap or merge colours
 
-Open the **Colours** tab in the sequencer on the right.
+Open the **Colours** tab in the Sew order panel on the right.
 
 - **Swap** replaces a thread with another everywhere it is used.
 - **Merge into** folds one colour into another. Use it to cut down colour changes.

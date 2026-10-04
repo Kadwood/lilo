@@ -401,7 +401,7 @@ export function LayersPanel() {
         </button>
         <button
           tabIndex={-1}
-          className="icon"
+          className="icon row-move"
           aria-label={`Move ${o.name} up`}
           title="Sew later"
           disabled={isLast}
@@ -414,7 +414,7 @@ export function LayersPanel() {
         </button>
         <button
           tabIndex={-1}
-          className="icon"
+          className="icon row-move"
           aria-label={`Move ${o.name} down`}
           title="Sew earlier"
           disabled={isFirst}
@@ -526,7 +526,7 @@ export function LayersPanel() {
           </span>
           <button
             tabIndex={-1}
-            className="icon"
+            className="icon row-move"
             aria-label={`Move ${t?.name ?? "colour"} block up`}
             title="Sew this colour block later"
             disabled={!later}
@@ -536,7 +536,7 @@ export function LayersPanel() {
           </button>
           <button
             tabIndex={-1}
-            className="icon"
+            className="icon row-move"
             aria-label={`Move ${t?.name ?? "colour"} block down`}
             title="Sew this colour block earlier"
             disabled={!earlier}

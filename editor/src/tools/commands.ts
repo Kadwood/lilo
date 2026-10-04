@@ -1,4 +1,4 @@
-import { FILL_PATTERNS, HOOPS, PLACEMENT_GUIDES, patternInfo, type RunType } from "@lilo/engine/light";
+import { FILL_PATTERNS, HOOPS, isObjectLocked, lockedLayerIds, PLACEMENT_GUIDES, patternInfo, type RunType } from "@lilo/engine/light";
 import { clearGuides, hoopViewStore, setHoopView } from "../state/hoopViewStore";
 import type { EditorActions, EditorState, ShapeMode } from "../state/editorStore";
 import type { AppApi } from "../app/AppContext";
@@ -45,7 +45,8 @@ export function buildCommands({ state, actions, openImage, fit, app, extra }: Co
   const single = objs.length === 1;
   const fills = objs.filter((o) => o.kind === "fill");
   const runs = objs.filter((o) => o.kind === "run");
-  const unlocked = has && !objs.every((o) => o.locked);
+  const layerLocks = state.design ? lockedLayerIds(state.design) : new Set<string>();
+  const unlocked = has && !objs.every((o) => isObjectLocked(o, layerLocks));
   const closedish = has && objs.every((o) => o.kind === "fill" || (o.kind === "run" && o.geometry.closed && o.params.type !== "manual"));
   const cmds: Command[] = [];
   const add = (c: Omit<Command, "enabled"> & { enabled?: boolean }) => cmds.push({ enabled: true, ...c });
@@ -143,9 +144,9 @@ export function buildCommands({ state, actions, openImage, fit, app, extra }: Co
   for (const g of PLACEMENT_GUIDES) add({ id: `placement.${g.id}`, group: "View", label: `Placement guide: ${g.label}`, keywords: "template garment", run: () => setHoopView({ placementId: g.id }) });
   add({ id: "view.units", group: "View", label: `Units: switch to ${state.units === "mm" ? "inches" : "millimetres"}`, keywords: "mm in cm", run: () => actions.setUnits(state.units === "mm" ? "in" : "mm") });
   for (const h of HOOPS) add({ id: `hoop.${h.name}`, group: "View", label: `Hoop: ${h.name}`, keywords: "nv2700 size", run: () => actions.setHoop(h) });
-  add({ id: "view.seq.images", group: "View", label: "Sequencer: reference images", run: () => actions.setSeqTab("images") });
-  add({ id: "view.seq.colours", group: "View", label: "Sequencer: colours", run: () => actions.setSeqTab("colours") });
-  add({ id: "view.seq.layers", group: "View", label: "Sequencer: layers", run: () => actions.setSeqTab("layers") });
+  add({ id: "view.seq.images", group: "View", label: "Sew order: reference images", run: () => actions.setSeqTab("images") });
+  add({ id: "view.seq.colours", group: "View", label: "Sew order: colours", run: () => actions.setSeqTab("colours") });
+  add({ id: "view.seq.layers", group: "View", label: "Sew order: layers", run: () => actions.setSeqTab("layers") });
 
   add({ id: "file.open", group: "File", label: "Open image to auto-digitize…", keywords: "import png jpg svg", run: openImage });
   add({ id: "file.export", group: "File", label: "Export…", keywords: "pes dst jef save", enabled: (state.planResult?.stats.stitchCount ?? 0) > 0, run: () => actions.setDialog("export") });

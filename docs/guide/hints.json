@@ -119,7 +119,7 @@
   {"id":"player.auto-continue","label":"Auto-continue","what":"Carries on after each colour change instead of waiting.","when":"Turn it off to practise your thread swaps.","typical":"Off.","guideId":"stitch-player","level":"basic"},
   {"id":"player.totals","label":"Design totals","what":"Stitch count, colour changes, size and estimated sewing time.","when":"To plan your day or spot a heavy design.","typical":"Time assumes 850 stitches a minute.","guideId":"stitch-player","level":"basic"},
 
-  {"id":"seq.tabs","label":"Sequencer views","what":"Switch between layers, colours, images and My Threads.","when":"To change order, merge colours or add a reference picture.","typical":"Layers.","guideId":"sequencer","level":"basic"},
+  {"id":"seq.tabs","label":"Sew order views","what":"Switch between layers, colours, images and My Threads.","when":"To change order, merge colours or add a reference picture.","typical":"Layers.","guideId":"sequencer","level":"basic"},
   {"id":"seq.move","label":"Move up or down","what":"Up sews a shape later, down sews it earlier. The bottom of a layer sews first.","when":"When a fill covers an outline, or you want fewer jumps.","typical":"Fills first, details last.","guideId":"layers","level":"basic"},
   {"id":"seq.hide","label":"Hide or show","what":"Takes a shape or layer off the canvas and out of the file.","when":"To check one part at a time.","typical":"Show it again before you export.","guideId":"layers","level":"basic"},
   {"id":"seq.rename","label":"Rename","what":"Double-click a name, or press F2, to rename a shape or layer.","when":"To keep a big design easy to read.","typical":"Short names like Border or Leaf.","guideId":"layers","level":"basic"},

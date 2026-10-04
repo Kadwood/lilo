@@ -225,7 +225,7 @@ describe.skipIf(!ON)("performance", () => {
         }).observe(document.body, { subtree: true, childList: true, characterData: true });
         window.addEventListener("pointerdown", () => (w.__lat.t0 = performance.now()), true);
       });
-      const rows = page.getByRole("complementary", { name: "Sequencer" }).locator("li.seq-row");
+      const rows = page.getByRole("complementary", { name: "Sew order" }).locator("li.seq-row");
       await rows.first().waitFor();
       const lat: number[] = [];
       for (let i = 0; i < 12; i++) {

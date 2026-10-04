@@ -15,7 +15,7 @@ You can add a spool without typing its code. Lilo reads the label from a photo.
 
 ## Steps
 
-1. Open the **My Threads** tab in the sequencer.
+1. Open the **My Threads** tab in the Sew order panel.
 2. Open **Add a spool by photo**.
 3. Choose a photo of the label. Take it in good light, close enough to read the code, with no glare.
 4. Lilo reads the text and suggests which thread it is.

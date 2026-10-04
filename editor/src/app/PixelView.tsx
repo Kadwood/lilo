@@ -353,7 +353,7 @@ export function PixelView() {
             )}
           </div>
         )}
-        {source === "mine" && shelf.entries.length === 0 && <p className="muted small">Your shelf is empty. Add spools in the editor (Sequencer, Threads tab), or use a brand palette.</p>}
+        {source === "mine" && shelf.entries.length === 0 && <p className="muted small">Your shelf is empty. Add spools in the editor (Sew order, Threads tab), or use a brand palette.</p>}
         <div className="thread-grid pixel-palette" role="group" aria-label="Palette colours">
           {palette.slice(0, PALETTE_MAX).map((e) => {
             const id = toDesignThread(e).id;

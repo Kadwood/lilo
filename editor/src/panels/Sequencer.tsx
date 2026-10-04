@@ -19,7 +19,7 @@ export function Sequencer() {
   const { design } = state;
 
   const tabs = (
-    <div className="seq-tabs" role="tablist" aria-label="Sequencer views">
+    <div className="seq-tabs" role="tablist" aria-label="Sew order views">
       {TABS.map(([t, label]) => (
         <button key={t} role="tab" aria-selected={state.seqTab === t} className={state.seqTab === t ? "active" : ""} onClick={() => actions.setSeqTab(t)}>
           {label}
@@ -28,7 +28,7 @@ export function Sequencer() {
     </div>
   );
   const shell = (title: string, body: React.ReactNode) => (
-    <aside className="panel panel-right" aria-label="Sequencer" data-tour="sequencer">
+    <aside className="panel panel-right" aria-label="Sew order" data-tour="sequencer">
       <h2>{title}</h2>
       {tabs}
       {body}
@@ -36,10 +36,10 @@ export function Sequencer() {
   );
 
   if (state.seqTab === "threads") return shell("My Threads", <ShelfPanel />);
-  if (state.seqTab === "images") return shell("Sequencer", <SequencerImages />);
+  if (state.seqTab === "images") return shell("Sew order", <SequencerImages />);
   if (!design || (state.seqTab === "colours" && design.objects.length === 0)) {
-    return shell("Sequencer", <p className="muted">Layers, colour blocks and stitch order will appear here.</p>);
+    return shell("Sew order", <p className="muted">Layers, colour blocks and stitch order will appear here.</p>);
   }
-  if (state.seqTab === "colours") return shell("Sequencer", <SequencerColours />);
-  return shell("Sequencer", <LayersPanel />);
+  if (state.seqTab === "colours") return shell("Sew order", <SequencerColours />);
+  return shell("Sew order", <LayersPanel />);
 }

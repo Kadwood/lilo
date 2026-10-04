@@ -577,6 +577,16 @@ export function createEditorStore(engine: EngineClient): EditorStore {
   };
 
   // ---- selection helpers ---------------------------------------------------------------------
+  /** The selection without the shapes of layer `layerId` (a hidden or locked layer can't hold a selection). */
+  const selectionOutside = (layerId: string): string[] => {
+    const d = get().design;
+    const inLayer = new Set((d?.objects ?? []).filter((o) => o.layerId === layerId).map((o) => o.id));
+    return get().selectedIds.filter((i) => !inLayer.has(i));
+  };
+  const dropImageSelection = (layerId: string) => {
+    const sel = get().selectedImageId;
+    if (sel && get().design?.images?.find((m) => m.id === sel)?.layerId === layerId) set({ selectedImageId: null });
+  };
   const existing = (design: Design | null, ids: readonly string[]) => {
     if (!design) return [];
     const have = new Set(design.objects.map((o) => o.id));
@@ -1318,10 +1328,18 @@ export function createEditorStore(engine: EngineClient): EditorStore {
     },
     setLayerVisible(id, visible) {
       const kind = get().design?.layers?.find((l) => l.id === id)?.kind;
-      commit(visible ? "Show layer" : "Hide layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.visible = visible)), { noPlan: kind === "picture" });
+      commit(visible ? "Show layer" : "Hide layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.visible = visible)), {
+        noPlan: kind === "picture",
+        select: visible ? undefined : () => selectionOutside(id),
+      });
+      if (!visible) dropImageSelection(id);
     },
     setLayerLocked(id, locked) {
-      commit(locked ? "Lock layer" : "Unlock layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.locked = locked)), { noPlan: true });
+      commit(locked ? "Lock layer" : "Unlock layer", (d) => void (d.layers?.find((l) => l.id === id) && (d.layers.find((l) => l.id === id)!.locked = locked)), {
+        noPlan: true,
+        select: locked ? () => selectionOutside(id) : undefined,
+      });
+      if (locked) dropImageSelection(id);
     },
     setLayerOpacity(id, opacity) {
       const v = Math.min(1, Math.max(0, opacity));

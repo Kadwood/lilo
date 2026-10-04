@@ -4,6 +4,7 @@ import { act, cleanup, fireEvent, screen, waitFor, within } from "@testing-libra
 import type { Design, DesignObject } from "@lilo/engine/light";
 import { lastEditor, renderEditor, testDesign } from "../test/helpers";
 import { BeforeYouSew } from "../sewing/BeforeYouSew";
+import { buildCommands } from "../tools/commands";
 import { Sequencer } from "./Sequencer";
 
 // jsdom can't decode images; hand the store a canvas-like source for reference images.
@@ -278,6 +279,42 @@ describe("Layers panel", () => {
     expect(lastEditor!.state.design!.images![0].layerId).toBe(layersOf().find((l) => l.kind === "picture")!.id);
     act(() => lastEditor!.actions.moveObjectsToLayer(["s1"], layersOf().find((l) => l.kind === "picture")!.id));
     expect(layerOfObj("s1")).toBe("front");
+  });
+});
+
+describe("locking and hiding a layer", () => {
+  const enabled = (id: string) => {
+    const { state, actions } = lastEditor!;
+    return buildCommands({ state, actions, openImage: () => {}, fit: () => {} }).find((c) => c.id === id)!.enabled;
+  };
+
+  it("drops that layer's shapes from the selection", async () => {
+    renderEditor(<Sequencer />, { design: twoLayerDesign() });
+    await loaded();
+    act(() => lastEditor!.actions.setSelection(["f1", "s1"]));
+    act(() => lastEditor!.actions.setLayerLocked("front", true));
+    expect(lastEditor!.state.selectedIds).toEqual(["f1"]);
+    act(() => lastEditor!.actions.setSelection(["f1", "r1"]));
+    act(() => lastEditor!.actions.setLayerVisible("back", false));
+    expect(lastEditor!.state.selectedIds).toEqual([]);
+    act(() => lastEditor!.actions.undo()); // one undo step brings the layer back; the selection is restored with it
+    expect(layersOf()[0].visible).toBe(true);
+  });
+
+  it("the palette treats a shape in a locked layer as locked", async () => {
+    renderEditor(<Sequencer />, { design: twoLayerDesign() });
+    await loaded();
+    act(() => lastEditor!.actions.setSelection(["s1"]));
+    expect(enabled("edit.delete")).toBe(true);
+    act(() => lastEditor!.actions.setLayerVisible("front", true)); // no-op
+    // select it from the panel after locking: the row can still be clicked, but nothing may change it
+    act(() => {
+      lastEditor!.actions.setLayerLocked("front", true);
+      lastEditor!.actions.select("s1");
+    });
+    for (const id of ["edit.delete", "edit.flipH", "edit.flipV", "edit.rotate90", "shape.reshape"]) expect(enabled(id)).toBe(false);
+    act(() => lastEditor!.actions.select("f1"));
+    expect(enabled("edit.delete")).toBe(true);
   });
 });
 

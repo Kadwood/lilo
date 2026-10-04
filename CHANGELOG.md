@@ -29,7 +29,7 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 - A **hidden stitch layer is not sewn**. Lilo leaves it out of every exported or sent file, and the stitch count, time and thread list ignore it. Export, Send and Before You Sew all warn you: "1 layer is hidden — it won't be sewn".
 - A locked layer cannot be clicked, boxed or changed on the canvas. A picture layer above a stitch layer draws over it, and a hidden picture layer changes nothing in the file.
 - Projects are saved in a new format. Old projects open as before: pictures go in a **Picture** layer and shapes in a **Stitches** layer, and the stitches come out exactly the same. Older versions of Lilo will say a project made with 1.3 is from a newer Lilo.
-- The Sequencer's old **Shapes** tab is now **Layers**. Colours, Images and Threads are unchanged. The manual has a new page, "Layers and sew order".
+- The right-hand panel is now called **Sew order**. Its old **Shapes** tab is now **Layers**. Colours, Images and Threads are unchanged. The manual has a new page, "Layers and sew order".
 - Fixed: PES files had a short stitch-block header. Brother machines showed only part of the design and sewed it wrong. Lilo now writes the full header, and still opens older Lilo files.
 - Fixed: large designs saved as XXX no longer lose stitches. A stitch of exactly 12.4 mm in one direction was turned into a jump, so it was not sewn.
 - Every export format (PES, PEC, DST, EXP, JEF, VP3, XXX, U01, TBF, HUS, G-code) is now checked against an independent reader (pyembroidery) on every change. VIP has no independent reader and is checked only by Lilo itself.
