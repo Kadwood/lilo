@@ -55,8 +55,6 @@
   position: relative;
 }
 .popover {
-  position: absolute;
-  z-index: 20;
   padding: 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -64,9 +62,10 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   width: 280px;
 }
-.popover.up {
-  bottom: calc(100% + 10px);
-  right: 0;
+/* Menus and pop-ups render in <AnchoredPopover> on document.body, so they sit above every layer of the app. */
+.anchored-pop {
+  position: fixed;
+  z-index: var(--z-popover);
 }
 
 .tool-overlay {
@@ -226,7 +225,7 @@
 
 .shape-bar {
   position: absolute;
-  z-index: 6;
+  z-index: var(--z-canvas-float);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -256,7 +255,7 @@
   position: absolute;
   top: 56px;
   right: 12px;
-  z-index: 7;
+  z-index: var(--z-canvas-panel);
   width: 260px;
   padding: 12px;
   border: 1px solid var(--border);
@@ -635,7 +634,7 @@ kbd {
 .palette-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: var(--z-palette);
   display: flex;
   justify-content: center;
   padding-top: 14vh;

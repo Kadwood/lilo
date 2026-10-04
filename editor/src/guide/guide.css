@@ -18,7 +18,7 @@
 }
 .hint-card {
   position: fixed;
-  z-index: 140;
+  z-index: var(--z-hint);
   width: 300px;
   max-width: calc(100vw - 16px);
   padding: 12px 14px;
@@ -103,7 +103,7 @@
 /* ---- Help panel --------------------------------------------------------------------------------- */
 .help-panel {
   position: fixed;
-  z-index: 120;
+  z-index: var(--z-help);
   top: 44px;
   right: 0;
   bottom: 0;
@@ -299,7 +299,7 @@
 }
 .step-tip {
   position: absolute;
-  z-index: 60;
+  z-index: var(--z-step-tip);
   top: 100%;
   left: 12px;
   width: 340px;
@@ -317,7 +317,7 @@
 /* ---- tour --------------------------------------------------------------------------------------- */
 .tour-backdrop {
   position: fixed;
-  z-index: 130;
+  z-index: var(--z-tour-backdrop);
   inset: 0;
   display: grid;
   place-items: center;
@@ -363,7 +363,7 @@
 }
 .tour-ring {
   position: fixed;
-  z-index: 125;
+  z-index: var(--z-tour-ring);
   border: 2px solid var(--accent);
   border-radius: 10px;
   box-shadow: 0 0 0 4px rgb(107 147 255 / 0.25);
@@ -371,7 +371,7 @@
 }
 .tour-card {
   position: fixed;
-  z-index: 135;
+  z-index: var(--z-tour-card);
   padding: 12px 14px;
   border: 1px solid var(--glass-line, var(--border));
   border-radius: var(--radius);

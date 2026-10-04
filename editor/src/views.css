@@ -314,10 +314,6 @@ button.danger {
   padding: 5px 12px;
 }
 .menu {
-  position: absolute;
-  z-index: 50;
-  top: calc(100% + 4px);
-  left: 0;
   min-width: 260px;
   margin: 0;
   padding: 4px;

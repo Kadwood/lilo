@@ -26,6 +26,25 @@
    to be calibrated against Apple's macOS design kit. Every one is a token, so that pass is a token edit. */
 
 :root {
+  /* One z-index scale. Layers inside .app (isolation: isolate) only compete with each other; the portalled
+     pop-ups and hint cards live on <body>, so they sit above all of them. */
+  --z-guides: 2;
+  --z-rulers: 4;
+  --z-canvas-hud: 5;
+  --z-canvas-float: 6; /* shape bar, text dock */
+  --z-canvas-panel: 7; /* map dialog, hoop assist: over the shape bar */
+  --z-toolbar: 8;
+  --z-swap-card: 20;
+  --z-topbar: 30;
+  --z-popover: 40;
+  --z-palette: 50;
+  --z-step-tip: 60;
+  --z-dialog: 100;
+  --z-help: 120;
+  --z-tour-ring: 125;
+  --z-tour-backdrop: 130;
+  --z-tour-card: 135;
+  --z-hint: 140;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, "Segoe UI Variable Text", "Segoe UI", Roboto, sans-serif;
   --font-serif: ui-serif, "New York", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   /* 8-point spacing */
@@ -406,10 +425,10 @@ kbd {
   gap: var(--s-2);
   padding: var(--s-2) var(--s-3);
   border-radius: var(--r-dock);
-  /* backdrop-filter makes the bar its own stacking layer; without a z-index the File menu inside it
-     painted under the side panels (which come later and have their own layers) and could not be clicked */
+  /* backdrop-filter makes the bar its own stacking layer; without a z-index it painted under the side
+     panels (which come later and have their own layers). Its menus are portalled out (AnchoredPopover). */
   position: relative;
-  z-index: 30;
+  z-index: var(--z-topbar);
 }
 .project-name {
   font-family: var(--font-serif);
@@ -492,7 +511,7 @@ kbd {
 
 /* the colour-change card sits above the player, in the same spot as the floating dock: it must win (it holds Continue) */
 .swap-card {
-  z-index: 20;
+  z-index: var(--z-swap-card);
 }
 
 /* the tool dock floats over the bottom of the canvas */
@@ -500,7 +519,7 @@ kbd {
   position: absolute;
   left: 50%;
   bottom: var(--s-4);
-  z-index: 8;
+  z-index: var(--z-toolbar);
   margin: 0;
   max-width: calc(100% - 32px);
   padding: var(--pad-dock);
@@ -863,7 +882,7 @@ kbd {
   position: absolute;
   top: calc(22px + var(--s-2) + 44px);
   left: 50%;
-  z-index: 7;
+  z-index: var(--z-canvas-panel);
   display: flex;
   align-items: center;
   gap: var(--s-3);
@@ -890,7 +909,7 @@ kbd {
 .rulers {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: var(--z-rulers);
   pointer-events: none;
 }
 .ruler {
@@ -939,7 +958,7 @@ kbd {
 .guides-layer {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: var(--z-guides);
   pointer-events: none;
   overflow: hidden;
 }
@@ -998,8 +1017,6 @@ kbd {
   position: relative;
 }
 .appearance-pop {
-  top: calc(100% + var(--s-2));
-  right: 0;
   display: flex;
   flex-direction: column;
   gap: var(--s-2);

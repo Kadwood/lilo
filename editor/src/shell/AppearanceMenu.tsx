@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useStore } from "zustand";
+import { AnchoredPopover } from "./AnchoredPopover";
 import { appearanceStore, setReduceTransparency, setTheme, type ThemeChoice } from "../state/appearanceStore";
 
 const THEMES: { id: ThemeChoice; label: string }[] = [
@@ -24,28 +25,13 @@ export function AppearanceMenu() {
   const system = useStore(appearanceStore, (s) => s.systemReduceTransparency);
   const material = useStore(appearanceStore, (s) => s.material);
 
-  useEffect(() => {
-    if (!open) return;
-    const away = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const esc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", away);
-    document.addEventListener("keydown", esc);
-    return () => {
-      document.removeEventListener("mousedown", away);
-      document.removeEventListener("keydown", esc);
-    };
-  }, [open]);
-
   return (
     <div className="appearance" ref={ref}>
       <button className="appearance-button" aria-haspopup="dialog" aria-expanded={open} onClick={() => setOpen((v) => !v)} title="Appearance">
         Appearance
       </button>
       {open && (
+        <AnchoredPopover anchor={ref} align="end" onClose={() => setOpen(false)}>
         <div className="appearance-pop popover" role="dialog" aria-label="Appearance">
           <div className="field-label small">Theme</div>
           <div className="segmented" role="group" aria-label="Theme">
@@ -64,6 +50,7 @@ export function AppearanceMenu() {
             {MATERIAL_NOTE[material]}.
           </p>
         </div>
+        </AnchoredPopover>
       )}
     </div>
   );
