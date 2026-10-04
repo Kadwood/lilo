@@ -65,7 +65,7 @@ Lilo also warns when a stitch is over 7 mm on cloth you wear. It still splits an
 
 A design made only with Lilo's settings, for any quality, thread weight and fabric, has no amber items. To keep it that way Lilo:
 
-- splits satin columns wider than 5 mm into halves, so no stitch passes 7 mm,
+- splits satin columns wider than 6.8 mm into halves, so no stitch passes 7 mm,
 - swaps a zig-zag underlay for edge and centre walks under columns that are wider than 5.5 mm,
 - keeps satin columns at 1.5 mm or wider with 40 wt thread (1 mm with 60 wt) and sews thinner strokes as a running stitch,
 - keeps satin spacing at or above 0.35 mm with 40 wt thread.

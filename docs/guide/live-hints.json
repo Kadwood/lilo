@@ -83,7 +83,7 @@
     "severity": "care",
     "threshold": 8,
     "message": "A satin column is wider than 8 mm. Long stitches can snag. Turn on splitting so it sews in two halves.",
-    "fix": { "label": "Split above 5 mm", "action": "enable-split" },
+    "fix": { "label": "Split above 6.8 mm", "action": "enable-split" },
     "guideId": "satin-tips#split-above"
   },
   {

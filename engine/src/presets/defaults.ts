@@ -52,8 +52,8 @@ export const DEFAULTS = {
     premiumUnderlayInsetMm: 0.4,
     /** Narrowest satin column. [CAL] Standard 1.5 (below: bean/triple run); Premium 1.5 at 40 wt and 1.0 at 60 wt, so hairlines come out at the safe width (`SAFE_RANGES.satinWidth`). */
     minWidthMm: { standard: 1.5, premium40: 1.5, premium60: 1.0 },
-    /** Columns wider than this are split into stitched halves, so a satin leg (plus pull and slant) stays under the 7 mm snag limit. [CAL] split 8 (hard cap 12.1); Lilo lowers it to 5 so defaults never trip `long-stitch-snag`. */
-    splitMm: 5,
+    /** Columns wider than this are split into stitched halves, so a satin leg (plus pull and slant) stays under the 7 mm snag limit. [CAL] split 8 (hard cap 12.1); Lilo lowers it to 6.8 so defaults never trip `long-stitch-snag`. */
+    splitMm: 6.8,
     /** Shortest hairline that becomes a narrow satin column, else a triple run. UNVERIFIED. */
     hairlineSatinMinLengthMm: 1.6,
     /** Columns that meet overlap by this much. UNVERIFIED (practice: "a hair"). */

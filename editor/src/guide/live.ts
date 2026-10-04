@@ -143,11 +143,11 @@ export function applyLiveFix(f: LiveFinding, ctx: FixContext): string {
         f.objectIds,
         "Split satin",
         (o) => {
-          if (o.kind === "satin") o.params.splitMaxWidthMm = 5;
-          else if (o.kind === "run") o.params.satin = { ...o.params.satin, splitMaxWidthMm: 5 };
+          if (o.kind === "satin") o.params.splitMaxWidthMm = 6.8;
+          else if (o.kind === "run") o.params.satin = { ...o.params.satin, splitMaxWidthMm: 6.8 };
         },
       );
-      return "Wide satin columns now split above 5 mm.";
+      return "Wide satin columns now split above 6.8 mm.";
     case "loosen-spacing":
       actions.updateObjects(
         design.objects.map((o) => o.id),

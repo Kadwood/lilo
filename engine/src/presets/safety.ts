@@ -44,7 +44,7 @@ export const SAFE_RANGES: Readonly<Record<SafeParam, SafeRange>> = {
     reasonLow: "Too thin to look shiny. Stitches pile up and can break the thread. Use a running stitch instead.",
     reasonHigh: "Long loose stitches can snag on things.",
     source: "lilo-default",
-    sourceNote: "The 1.5 mm floor (1.0 mm for 60 wt thread) matches the calibration table. The 10 mm top is a Lilo default. Lilo splits columns wider than 5 mm into halves.",
+    sourceNote: "The 1.5 mm floor (1.0 mm for 60 wt thread) matches the calibration table. The 10 mm top is a Lilo default. Lilo splits columns wider than 6.8 mm into halves, so no stitch passes 7 mm.",
   },
   satinDensity: {
     label: "Satin spacing",

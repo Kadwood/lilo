@@ -75,7 +75,7 @@ describe("sewing presets: the table", () => {
     expect(s.engine.minSatinWidthMm).toBe(1.5);
     expect(s.engine.hairlinesAsSatin).toBe(false);
     expect(s.engine.junctionOverlapMm).toBe(0.3); // both qualities trim columns that meet (fewer stacked stitches)
-    expect(s.engine.splitMaxWidthMm).toBe(5);
+    expect(s.engine.splitMaxWidthMm).toBe(6.8);
     expect(s.engine.fill).toEqual({ pullCompMm: 0.2 });
   });
 
@@ -94,7 +94,7 @@ describe("sewing presets: the table", () => {
     expect(e.satinDensityWideMm).toBe(0.42);
     expect(e.hairlinesAsSatin).toBe(true);
     expect(e.satinMode).toBe("width-scaled");
-    expect(e.splitMaxWidthMm).toBe(5);
+    expect(e.splitMaxWidthMm).toBe(6.8);
     expect(e.fill.underlays?.[0].spacingMm).toBe(3.5);
     expect(e.fill.stitchLengthMm).toBe(4);
     expect(e.fill.edgeWalk).toBeDefined();
