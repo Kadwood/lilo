@@ -104,6 +104,10 @@ class Bytes {
   i16le(v: number) {
     this.byte(v, v >> 8);
   }
+  /** 16-bit big-endian word. */
+  i16be(v: number) {
+    this.byte(v >> 8, v);
+  }
   fill(v: number, n: number) {
     for (let i = 0; i < n; i++) this.data.push(v);
   }
@@ -123,6 +127,10 @@ function writeLong(out: Bytes, v: number, flag: number) {
  * Layout: `#PES0001`, PEC offset (22), then a PEC block: label, the per-block palette indices
  * (nearest of the 64 Brother PEC colours, by CIEDE2000), stitch stream, then one 48x38 thumbnail
  * for the whole design plus one per colour block.
+ *
+ * The stitch block starts with a 20-byte header: `00 00`, 3-byte block length, `31 ff f0`, width,
+ * height, `0x1e0`, `0x1b0` (all little-endian 16-bit), then two big-endian words
+ * `0x9000 | -minX` and `0x9000 | -minY` (0.1 mm). Stitch bytes follow at +20.
  *
  * The plan's coordinates are written as-is (0.1 mm units), so call `applyOrigin` first. Stitch
  * deltas up to +-204.7 mm are representable; `validatePlan` keeps jumps below that.
@@ -171,6 +179,10 @@ export function writePes(plan: StitchPlan, options: WritePesOptions = {}): Uint8
   out.i16le(Math.round((maxY - minY) * 10));
   out.i16le(0x1e0);
   out.i16le(0x1b0);
+  // Two big-endian words the machine reads as the design's offset from the hoop centre:
+  // 0x9000 | (-min in 0.1 mm & 0xfff). Without them the stitch stream starts 4 bytes too early.
+  out.i16be(0x9000 | (-Math.round(minX * 10) & 0x0fff));
+  out.i16be(0x9000 | (-Math.round(minY * 10) & 0x0fff));
 
   let colorTwo = true;
   let xx = 0;

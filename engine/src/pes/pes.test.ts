@@ -135,3 +135,75 @@ describe("PEC short/long form boundary", () => {
     });
   });
 });
+
+describe("PEC stitch-block header (20 bytes)", () => {
+  const plan = tinyPlan(); // needle bbox x -5..5, y -5..5 mm
+  const bytes = writePes(plan, { label: "tiny.pes" });
+  const blockStart = 22 + 512;
+
+  /** Independent PEC stream decoder (does not use read.ts). Returns absolute 0.1 mm coords. */
+  function decodeAt(from: number) {
+    const pts: { x: number; y: number; kind: string }[] = [];
+    let i = from;
+    let x = 0;
+    let y = 0;
+    const axis = () => {
+      const b = bytes[i];
+      if (b & 0x80) {
+        const v = ((b << 8) | bytes[i + 1]) & 0xfff;
+        i += 2;
+        return { d: v & 0x800 ? v - 0x1000 : v, flags: b & 0x30 };
+      }
+      i += 1;
+      return { d: b & 0x40 ? b - 0x80 : b, flags: 0 };
+    };
+    for (;;) {
+      if (bytes[i] === 0xff) break;
+      if (bytes[i] === 0xfe && bytes[i + 1] === 0xb0) {
+        pts.push({ x, y, kind: "colorChange" });
+        i += 3;
+        continue;
+      }
+      const a = axis();
+      const b = axis();
+      x += a.d;
+      y += b.d;
+      const f = a.flags | b.flags;
+      pts.push({ x, y, kind: f & 0x20 ? "trim" : f & 0x10 ? "jump" : "stitch" });
+    }
+    return pts;
+  }
+
+  it("writes the two big-endian origin-offset words after 0x1b0", () => {
+    expect([...bytes.subarray(blockStart + 12, blockStart + 16)]).toEqual([0xe0, 0x01, 0xb0, 0x01]);
+    // minX = minY = -5 mm -> 50 -> 0x9000 | 0x32, big-endian
+    expect([...bytes.subarray(blockStart + 16, blockStart + 20)]).toEqual([0x90, 0x32, 0x90, 0x32]);
+  });
+
+  it("stitch stream starts at +20 and reproduces the plan coordinates and bbox", () => {
+    const pts = decodeAt(blockStart + 20);
+    expect(pts).toHaveLength(plan.stitches.length);
+    plan.stitches.forEach((s, i) => {
+      expect(Math.abs(pts[i].x - s.x * 10)).toBeLessThanOrEqual(1);
+      expect(Math.abs(pts[i].y - s.y * 10)).toBeLessThanOrEqual(1);
+      expect(pts[i].kind).toBe(s.type);
+    });
+    const st = pts.filter((p) => p.kind === "stitch");
+    expect(Math.max(...st.map((p) => p.x)) - Math.min(...st.map((p) => p.x))).toBe(100);
+    expect(Math.max(...st.map((p) => p.y)) - Math.min(...st.map((p) => p.y))).toBe(100);
+  });
+
+  it("still reads old Lilo v1.0/v1.1 files with a 16-byte header", () => {
+    const old = new Uint8Array(bytes.length - 4);
+    old.set(bytes.subarray(0, blockStart + 16), 0);
+    old.set(bytes.subarray(blockStart + 20), blockStart + 16);
+    const len = (old[blockStart + 2] | (old[blockStart + 3] << 8) | (old[blockStart + 4] << 16)) - 4;
+    old[blockStart + 2] = len & 0xff;
+    old[blockStart + 3] = (len >> 8) & 0xff;
+    old[blockStart + 4] = (len >> 16) & 0xff;
+    const a = readPes(old);
+    const b = readPes(bytes);
+    expect(a.stitches).toEqual(b.stitches);
+    expect(a.stitches).toHaveLength(plan.stitches.length);
+  });
+});

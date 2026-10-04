@@ -3,18 +3,18 @@
     "objects": 6,
     "stitches": 1365,
     "colorChanges": 1,
-    "pesSha256": "bc3005194c874e1c5157f05542778e362ca921aab07653162376a427619a7705"
+    "pesSha256": "012faff7888d0edd02450f6bcaa53cb122c543316d1199ec527cdb0dce609c7a"
   },
   "badge": {
     "objects": 4,
     "stitches": 3795,
     "colorChanges": 2,
-    "pesSha256": "116d313de68db20bd87866daf205be9633eaee0303e72fb29c0c5df7771c9d06"
+    "pesSha256": "b7d6100d2b1edfd2fbf77a5d94a0d79fadba0bf779312b37ffda151c9cdaf3c2"
   },
   "thin-lines": {
     "objects": 6,
     "stitches": 849,
     "colorChanges": 0,
-    "pesSha256": "4c278f92dc97073a8933a3e6cf899d83817db0ec92ee9371f3117a475b2550f7"
+    "pesSha256": "7f9b3a6189ee03ab07e04a7aaa8c4638867e7f433365268a50165dfa9a1abb3d"
   }
 }
