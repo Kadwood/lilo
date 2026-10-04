@@ -196,7 +196,7 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
         }
         lx = s.x;
         ly = s.y;
-        have = true;
+        have = s.type === "stitch"; // a trim or jump moves without thread, so the next stitch starts fresh
       }
       if (longCount > 0) {
         warnings.push({
