@@ -222,6 +222,7 @@ pub fn run() {
             projects::read_project_file,
             projects::write_project_file,
             projects::allow_project_path,
+            projects::record_recent,
             projects::read_project_backup,
             my_threads::read_my_threads,
             my_threads::write_my_threads,

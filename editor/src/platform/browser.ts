@@ -14,6 +14,7 @@ export const browserPlatform: Platform = {
 
   ocrImage: () => Promise.reject(new Error("unsupported: text recognition needs the desktop app")),
   listRecentProjects: () => Promise.resolve([]),
+  recordRecent: () => Promise.resolve(),
   onOpenFile: () => () => {},
   readProjectFile: () => Promise.reject(unavailable("readProjectFile")),
   writeProjectFile: () => Promise.reject(unavailable("writeProjectFile")),

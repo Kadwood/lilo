@@ -118,6 +118,13 @@ export function createMockPlatform(init: Partial<MockState> = {}): { platform: P
         if (state.openFileCb === cb) state.openFileCb = null;
       };
     },
+    async recordRecent(path) {
+      // like the desktop: only files that exist, newest first, one row per path
+      const bytes = state.files.get(path);
+      if (!bytes) return;
+      const name = nameOf(path).replace(/\.lilo$/i, "");
+      state.recents = [{ path, name, modifiedMs: Date.now(), sizeBytes: bytes.length }, ...state.recents.filter((r) => r.path !== path)];
+    },
     async readProjectFile(path) {
       const b = state.files.get(path);
       if (!b) throw new Error(`No such file: ${path}`);

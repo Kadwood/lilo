@@ -148,7 +148,7 @@ export function HomeView() {
         <h2 id="recent-title">Recent</h2>
         {recent.length === 0 ? (
           <p className="muted" role="status">
-            {loading ? "Looking in your Lilo folder…" : desktop ? "Nothing here yet. Projects you save in Documents/Lilo show up here." : "Recent projects show up here in the desktop app. Use Open… to pick a file."}
+            {loading ? "Looking in your Lilo folder…" : desktop ? "Nothing here yet. Projects you open or save show up here, along with anything in Documents/Lilo." : "Recent projects show up here in the desktop app. Use Open… to pick a file."}
           </p>
         ) : (
           <ul className="recent-grid" aria-label="Recent projects">

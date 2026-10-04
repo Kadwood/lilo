@@ -501,6 +501,22 @@ describe("the Home gallery", () => {
     expect(m.store.getState().recentLoading).toBe(false);
   });
 
+  it("a project opened from outside the default folder shows up in Recent", async () => {
+    await setup();
+    edit();
+    await m.save();
+    const bytes = [...mock.files.values()][0];
+    mock.recents = [];
+    const outside = "/Users/me/Downloads/Erin Signature.lilo";
+    mock.files.set(outside, bytes);
+    expect(await m.openFile({ path: outside, name: "Erin Signature.lilo", bytes })).toBe(true);
+    await m.refreshRecent();
+    const cards = m.store.getState().recent;
+    expect(cards.map((c) => c.path)).toEqual([outside]);
+    expect(cards[0].name).toBe("Erin Signature");
+    expect(cards[0].error).toBeUndefined();
+  });
+
   it("a file it cannot read shows as an error card, not a crash", async () => {
     await setup();
     mock.files.set("/mock/Documents/Lilo/bad.lilo", new Uint8Array([1, 2, 3]));
