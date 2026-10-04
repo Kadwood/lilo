@@ -15,6 +15,8 @@ export * from "./patterns";
 export * from "./path";
 export * from "./transform";
 export * from "./edit";
+export * from "./layers";
+import { hiddenLayerIds, isObjectVisible, migrateDesignToLayers } from "./layers";
 
 /** Brother NV2700 hoops. */
 export const HOOPS: readonly Hoop[] = [
@@ -70,8 +72,9 @@ export function designBounds(design: Design): Bounds | null {
   let minY = Infinity;
   let maxX = -Infinity;
   let maxY = -Infinity;
+  const hidden = hiddenLayerIds(design);
   for (const o of design.objects) {
-    if (o.visible === false) continue;
+    if (!isObjectVisible(o, hidden)) continue;
     for (const [x, y] of objectPoints(o)) {
       if (x < minX) minX = x;
       if (y < minY) minY = y;
@@ -107,7 +110,13 @@ export function translateDesign(design: Design, dx: number, dy: number): Design 
  */
 export function validateDesign(design: Design): string[] {
   const problems: string[] = [];
-  if (design.version !== DESIGN_VERSION) problems.push(`Unsupported design version ${String(design.version)}`);
+  // version 1 (before layers) is still a valid design: it is read as one stitch layer
+  if (design.version !== DESIGN_VERSION && (design.version as number) !== 1) problems.push(`Unsupported design version ${String(design.version)}`);
+  const layerIds = new Set<string>();
+  for (const l of design.layers ?? []) {
+    if (layerIds.has(l.id)) problems.push(`Duplicate layer id ${l.id}`);
+    layerIds.add(l.id);
+  }
   const threadIds = new Set<string>();
   for (const t of design.threads) {
     if (threadIds.has(t.id)) problems.push(`Duplicate thread id ${t.id}`);
@@ -134,8 +143,8 @@ export const serializeDesign = (design: Design): string => JSON.stringify(design
 /** Parse a design from JSON text. Throws on unknown versions or structural problems. */
 export function parseDesign(json: string): Design {
   const d = JSON.parse(json) as Design;
-  if (d.version !== DESIGN_VERSION) throw new Error(`Unsupported design version ${String(d.version)}`);
+  if (d.version !== DESIGN_VERSION && (d.version as number) !== 1) throw new Error(`Unsupported design version ${String(d.version)}`);
   const problems = validateDesign(d);
   if (problems.length) throw new Error(`Invalid design: ${problems.join("; ")}`);
-  return d;
+  return (d.version as number) === 1 ? migrateDesignToLayers(d) : d;
 }

@@ -1,7 +1,7 @@
 import { Core, Math as StitchMath } from "@stitchables/stitchjs";
 import { bufferGeom, polygonFromRings, polygonsOf, ringsOf } from "../geom";
 import type { Design, DesignObject, FillObject, FillUnderlay, Pt, SatinObject } from "../model";
-import { DEFAULT_FILL_PATTERN, patternInfo } from "../model";
+import { DEFAULT_FILL_PATTERN, hiddenLayerIds, hiddenLayerMessage, hiddenStitchLayers, isObjectVisible, patternInfo } from "../model";
 import { DEFAULTS } from "../presets/defaults";
 import { generateFill, hashString } from "./fills";
 import type { PlanStitch, PlanWarning, StitchPlan, StitchType } from "./plan";
@@ -235,7 +235,8 @@ export { MANUAL_STITCH_LENGTH_MM } from "./runs";
  * we emit a `jump` (the later `validatePlan` upgrades long ones to `trim`) followed by a stitch at
  * the landing point, and a `colorChange` whenever the thread differs from the previous object's.
  *
- * Hidden objects are skipped. An object whose generation throws is skipped with an
+ * Hidden objects, and every object of a hidden stitch layer, are skipped (the plan gets a `hidden-layer`
+ * warning naming the layers, so Export, Send and Before You Sew can say so). An object whose generation throws is skipped with an
  * `object-failed` warning rather than failing the whole design.
  */
 export function designToStitchPlan(design: Design): StitchPlan {
@@ -244,7 +245,10 @@ export function designToStitchPlan(design: Design): StitchPlan {
   const stitches: PlanStitch[] = [];
   const blocks: StitchPlan["threads"] = [];
 
-  const visible = design.objects.map((o, index) => ({ o, index })).filter(({ o }) => o.visible !== false);
+  const hiddenLayers = hiddenLayerIds(design);
+  const visible = design.objects.map((o, index) => ({ o, index })).filter(({ o }) => isObjectVisible(o, hiddenLayers));
+  const hiddenMessage = hiddenLayerMessage(hiddenStitchLayers(design));
+  if (hiddenMessage) warnings.push({ code: "hidden-layer", message: hiddenMessage });
   let cur: Pt = [0, 0];
   let curThreadId: string | null = null;
 

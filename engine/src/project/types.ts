@@ -16,7 +16,8 @@ import type { PixelArt } from "../pixelart/grid";
 import type { Shelf } from "../threads/shelf";
 
 /** Bump when `ProjectDoc` changes incompatibly and add a step to `MIGRATIONS` in `migrate.ts`. */
-export const PROJECT_VERSION = 1;
+/** 2 = Lilo 1.3: layers. Older Lilo versions refuse it with the "newer version of Lilo" message. */
+export const PROJECT_VERSION = 2;
 export const PROJECT_FORMAT = "lilo-project";
 export const PROJECT_EXTENSION = "lilo";
 export const HISTORY_LIMIT = 50;

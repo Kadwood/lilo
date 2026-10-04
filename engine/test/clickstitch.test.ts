@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { autoDigitize } from "../src/autodigitize";
 import { DEFAULT_REGION_SETTINGS, hitRegion, pointInRing, regionContains, regionToObjects, type TraceRegion } from "../src/clickstitch";
-import { makeIdGen, validateDesign, type Design } from "../src/model";
+import { DESIGN_VERSION, makeIdGen, validateDesign, type Design } from "../src/model";
 import { initVtracerNode } from "../src/node";
 import { designToStitchPlan } from "../src/stitch";
 import { badge } from "./fixtures/fixtures";
@@ -37,7 +37,7 @@ describe("hit-testing regions", () => {
 });
 
 describe("regionToObjects", () => {
-  const design = (): Design => ({ version: 1, unitsMm: 1, hoop: { name: "h", widthMm: 160, heightMm: 260 }, threads: [thread], objects: [] });
+  const design = (): Design => ({ version: DESIGN_VERSION, unitsMm: 1, hoop: { name: "h", widthMm: 160, heightMm: 260 }, threads: [thread], objects: [] });
 
   it("makes one fill with the holes and the chosen fill settings", () => {
     const d = design();

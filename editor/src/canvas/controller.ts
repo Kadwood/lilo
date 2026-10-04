@@ -2,6 +2,7 @@ import type { StoreApi } from "zustand/vanilla";
 import {
   DEFAULT_RUN_PARAMS,
   deleteNode,
+  emptyDesign,
   distToPolyline,
   editRings,
   ellipseNodes,
@@ -587,7 +588,7 @@ export class CanvasController {
     return s.threadId ?? s.design?.threads[0]?.id ?? defaultThread().id;
   }
   private newId(): string {
-    return makeIdGen(this.s.design ?? { version: 1, unitsMm: 1, hoop: { name: "", widthMm: 0, heightMm: 0 }, threads: [], objects: [] })();
+    return makeIdGen(this.s.design ?? emptyDesign())();
   }
   /** A finished shape returns to the Select tool, so its handles and shape actions are right there. */
   private created(): void {

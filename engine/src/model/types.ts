@@ -15,8 +15,11 @@
 
 import type { PathNode } from "./path";
 
-/** Bump when the shape changes incompatibly; `parseDesign` migrates or rejects older files. */
-export const DESIGN_VERSION = 1;
+/**
+ * Bump when the shape changes incompatibly; `parseDesign` migrates or rejects older files.
+ * 2 (v1.3): layers (`Design.layers`, `layerId`). A version-1 design has none and is read as one stitch layer.
+ */
+export const DESIGN_VERSION = 2;
 
 /** `[x, y]` in mm. */
 export type Pt = readonly [number, number];
@@ -277,6 +280,8 @@ interface ObjectBase {
   visible?: boolean;
   /** Locked objects can't be edited in the UI. */
   locked?: boolean;
+  /** The stitch layer (`Design.layers[].id`) this object sits in. Absent: `normalizeLayers` picks one. */
+  layerId?: string;
   /** Where sewing of this object should start / end (mm). Optional; the generator picks the nearest vertex. */
   startPoint?: Pt;
   endPoint?: Pt;
@@ -352,6 +357,26 @@ export interface DesignImage {
   opacity: number;
   locked: boolean;
   visible: boolean;
+  /** The picture layer (`Design.layers[].id`) this image sits in. Absent: `normalizeLayers` picks one. */
+  layerId?: string;
+}
+
+/**
+ * One layer of the Layers panel. The list IS the sew order: `Design.layers` is stored bottom first, the
+ * bottom layer is sewn first and the top one last, so it sits on top. A `stitch` layer holds objects, a
+ * `picture` layer holds reference images (never stitched).
+ */
+export interface Layer {
+  /** Unique within the design. */
+  id: string;
+  name: string;
+  kind: "stitch" | "picture";
+  /** Hidden: not drawn. A hidden stitch layer is also not sewn (left out of Export and Send). */
+  visible: boolean;
+  /** Locked: its children can't be selected or edited on the canvas. */
+  locked: boolean;
+  /** 0..1, picture layers only; multiplies each image's own opacity. Absent means 1. */
+  opacity?: number;
 }
 
 export interface Design {
@@ -363,8 +388,13 @@ export interface Design {
   sewing?: DesignSewing;
   /** The threads this design uses (a subset of a catalogue, in first-use order). */
   threads: Thread[];
-  /** Stitch order. */
+  /**
+   * Stitch order. Always grouped by layer, in layer order, bottom layer first (see `normalizeLayers`),
+   * so stitch generation just walks this array.
+   */
   objects: DesignObject[];
+  /** Layers, bottom first. Absent (older designs, fresh generator output): one implicit stitch layer. */
+  layers?: Layer[];
   /** Live map-to-path groups by id. Objects point at one through `mapGroup`. */
   mapGroups?: Record<string, MapGroup>;
   /** Text blocks behind `objects[].sourceText` (optional; absent in designs without lettering). */

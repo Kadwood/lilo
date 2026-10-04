@@ -84,7 +84,7 @@ describe(".lilo project files", () => {
     const files = unzipSync(saveProject(fullProject(), T(1)));
     expect(Object.keys(files).sort()).toEqual(["fonts/mine.ttf", "images/ref1.png", "images/ref2.svg", "project.json", "thumbnail.png"]);
     const doc = JSON.parse(strFromU8(files["project.json"]));
-    expect(doc).toMatchObject({ format: "lilo-project", version: 1, title: "Crest" });
+    expect(doc).toMatchObject({ format: "lilo-project", version: PROJECT_VERSION, title: "Crest" });
   });
 
   it("saves deterministically for the same state and time", () => {
@@ -128,7 +128,7 @@ describe(".lilo project files", () => {
 
   it("reads the gallery info without unpacking images", () => {
     const info = readProjectInfo(saveProject(fullProject(), T(3)));
-    expect(info).toMatchObject({ title: "Crest", savedAt: T(3).toISOString(), version: 1 });
+    expect(info).toMatchObject({ title: "Crest", savedAt: T(3).toISOString(), version: PROJECT_VERSION });
     expect(info.thumbnail!.length).toBeGreaterThan(50);
   });
 });
@@ -213,7 +213,7 @@ describe("migrations", () => {
       1: (d: Record<string, unknown>) => ({ ...d, title: `${String(d.title)}+v2` }),
       2: (d: Record<string, unknown>) => ({ ...d, title: `${String(d.title)}+v3` }),
     };
-    const r = migrateProjectDoc(raw({ title: "T" }), migrations, 3);
+    const r = migrateProjectDoc(raw({ title: "T", version: 1 }), migrations, 3);
     expect(r.migrated).toBe(true);
     expect(r.doc.title).toBe("T+v2+v3");
     expect(r.doc.version).toBe(3);
@@ -221,7 +221,7 @@ describe("migrations", () => {
 
   it("refuses files from the future and gaps in the chain", () => {
     expect(() => migrateProjectDoc(raw({ version: 9 }))).toThrow(/newer version of Lilo/);
-    expect(() => migrateProjectDoc(raw(), {}, 2)).toThrow(/too old/);
+    expect(() => migrateProjectDoc(raw(), {}, PROJECT_VERSION + 1)).toThrow(/too old/);
     try {
       migrateProjectDoc(raw({ version: 9 }));
     } catch (e) {
