@@ -18,6 +18,7 @@ import { Hint, HintList } from "../guide/Hint";
 import { Field, rowsHint, satinHint, Section, Segmented, Toggle } from "./controls";
 import { DimensionsSection } from "./DimensionsSection";
 import { PatternPicker } from "./PatternPicker";
+import { SafeSlider } from "./SafeSlider";
 import { ThreadPicker } from "./ThreadPicker";
 
 export const RUN_TYPES: { id: RunType; label: string; help: string }[] = [
@@ -190,7 +191,11 @@ function RunSettings({ runs, editRuns, done }: { runs: RunObject[]; editRuns: (l
   if (type === "manual") return <p className="muted small">Each stitch is sewn where you placed it. Reshape the shape to move them.</p>;
   return (
     <>
-      <Field label="Stitch length" value={p.stitchLengthMm} min={0.5} max={8} step={0.1} unit="mm" help="Distance between needle drops along the line." onChange={(v) => editRuns("Stitch length", "len", (o) => void (o.params.stitchLengthMm = Math.max(0.3, v)))} onDone={done} />
+      {type === "single" || type === "triple" ? (
+        <SafeSlider label="Stitch length" param="runStitchLength" value={p.stitchLengthMm} limits={{ min: 0.5, max: 8, step: 0.1 }} help="Distance between needle drops along the line." onChange={(v) => editRuns("Stitch length", "len", (o) => void (o.params.stitchLengthMm = Math.max(0.3, v)))} onDone={done} />
+      ) : (
+        <Field label="Stitch length" value={p.stitchLengthMm} min={0.5} max={8} step={0.1} unit="mm" help="Distance between needle drops along the line." onChange={(v) => editRuns("Stitch length", "len", (o) => void (o.params.stitchLengthMm = Math.max(0.3, v)))} onDone={done} />
+      )}
       {(type === "single" || type === "triple") && (
         <Field label="Tolerance" value={p.toleranceMm ?? 0.1} min={0.1} max={2} step={0.05} unit="mm" help="How far a stitch may stray from the curve you drew. Lower follows curves more closely (minimum 0.1 mm)." onChange={(v) => editRuns("Tolerance", "tol", (o) => void (o.params.toleranceMm = Math.max(0.1, v)))} onDone={done} />
       )}
@@ -220,13 +225,10 @@ function SatinSettings({ objs, editSatinParams, done }: { objs: DesignObject[]; 
   return (
     <Section title="Satin" help="Settings for satin columns: how close the stitches sit, how the edges are compensated and what sits underneath." id="satin">
       {isRun && (
-        <Field
+        <SafeSlider
           label="Width"
+          param="satinWidth"
           value={(o as RunObject).params.widthMm ?? 2.5}
-          min={0.5}
-          max={12}
-          step={0.1}
-          unit="mm"
           help="Width of the column."
           onChange={(v) =>
             actions.updateObjects(
@@ -239,8 +241,8 @@ function SatinSettings({ objs, editSatinParams, done }: { objs: DesignObject[]; 
           onDone={done}
         />
       )}
-      <Field label="Density (spacing)" value={p.densityMm} min={0.2} max={1.5} step={0.01} unit="mm" hint={satinHint(p.densityMm)} help="Millimetres between needle penetrations on the same side of the column, the usual digitizing number. 0.40 is the industry standard for 40 wt thread; smaller is denser, 0.35 is about the tightest for 40 wt. Each stitch crosses the column, so 0.40 is a stitch every 0.2 mm." onChange={(v) => editSatinParams("Density", "density", (q) => void (q.densityMm = v))} onDone={done} />
-      <Field label="Pull compensation" value={p.pullCompMm} min={0} max={0.8} step={0.05} unit="mm" help="Widens each side a little, because fabric pulls the stitches in." onChange={(v) => editSatinParams("Pull compensation", "pull", (q) => void (q.pullCompMm = v))} onDone={done} />
+      <SafeSlider label="Density (spacing)" param="satinDensity" value={p.densityMm} hint={satinHint(p.densityMm)} help="Millimetres between needle penetrations on the same side of the column, the usual digitizing number. 0.40 is the industry standard for 40 wt thread; smaller is denser, 0.35 is about the tightest for 40 wt. Each stitch crosses the column, so 0.40 is a stitch every 0.2 mm." onChange={(v) => editSatinParams("Density", "density", (q) => void (q.densityMm = v))} onDone={done} />
+      <SafeSlider label="Pull compensation" param="pullComp" value={p.pullCompMm} limits={{ min: 0, max: 0.8, step: 0.05 }} help="Widens each side a little, because fabric pulls the stitches in." onChange={(v) => editSatinParams("Pull compensation", "pull", (q) => void (q.pullCompMm = v))} onDone={done} />
       <Field label="Split above" value={p.splitMaxWidthMm ?? 0} min={0} max={12} step={0.5} unit="mm" help="Columns wider than this are split into stitched halves so long stitches don't snag. 0 turns it off." onChange={(v) => editSatinParams("Split satin", "split", (q) => void (q.splitMaxWidthMm = v > 0 ? v : undefined))} onDone={done} />
       {(p.splitMaxWidthMm ?? 0) > 0 && (
         <>
@@ -318,9 +320,9 @@ function FillSettings({ fills, editFills, done }: { fills: FillObject[]; editFil
             Dial
           </button>
         </div>
-        <Field label="Row spacing" value={p.rowSpacingMm} min={0.2} max={2} step={0.05} unit="mm" hint={rowsHint(p.rowSpacingMm)} help="Distance between rows. Smaller is denser. Motif patterns use it to space the shapes." onChange={(v) => editFills("Row spacing", "spacing", (q) => void (q.rowSpacingMm = Math.max(0.1, v)))} onDone={done} />
-        <Field label="Stitch length" value={p.stitchLengthMm} min={1} max={8} step={0.1} unit="mm" help="Longest stitch along a row. Machines snag above about 12 mm." onChange={(v) => editFills("Stitch length", "slen", (q) => void (q.stitchLengthMm = Math.max(0.5, v)))} onDone={done} />
-        <Field label="Pull compensation" value={p.pullCompMm} min={0} max={1} step={0.05} unit="mm" help="Grows the shape a little so the stitched result matches your drawing after the fabric pulls in." onChange={(v) => editFills("Pull compensation", "fpull", (q) => void (q.pullCompMm = v))} onDone={done} />
+        <SafeSlider label="Row spacing" param="fillRowSpacing" value={p.rowSpacingMm} hint={rowsHint(p.rowSpacingMm)} help="Distance between rows. Smaller is denser. Motif patterns use it to space the shapes." onChange={(v) => editFills("Row spacing", "spacing", (q) => void (q.rowSpacingMm = Math.max(0.1, v)))} onDone={done} />
+        <SafeSlider label="Stitch length" param="fillStitchLength" value={p.stitchLengthMm} help="Longest stitch along a row. Machines snag above about 12 mm." onChange={(v) => editFills("Stitch length", "slen", (q) => void (q.stitchLengthMm = Math.max(0.5, v)))} onDone={done} />
+        <SafeSlider label="Pull compensation" param="pullComp" value={p.pullCompMm} help="Grows the shape a little so the stitched result matches your drawing after the fabric pulls in." onChange={(v) => editFills("Pull compensation", "fpull", (q) => void (q.pullCompMm = v))} onDone={done} />
         <Field label="Hand stitch" value={p.handStitch ?? 0} min={0} max={5} step={1} help="Adds a seeded random wobble to stitch positions so the fill looks hand-sewn. 0 is off." onChange={(v) => editFills("Hand stitch", "hand", (q) => void (q.handStitch = v > 0 ? v : undefined))} onDone={done} />
         <Toggle label="Underpath" checked={!!p.underpath} onChange={(v) => editFills("Underpath", "underpath", (q) => void (q.underpath = v || undefined))} help="Travel through the fill, hidden under the stitches, instead of jumping from row to row." />
         <Toggle label="Edge outline" checked={p.edgeRun !== false} onChange={(v) => editFills("Edge outline", "edge", (q) => void (q.edgeRun = v))} help="Sews a running outline round the edge after the fill, for a clean border." />

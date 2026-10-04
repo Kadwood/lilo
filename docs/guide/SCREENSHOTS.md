@@ -11,3 +11,4 @@ The guide points at these images, but the files are not captured yet. Until then
 | `sewing-card.png` | sewing-setup | The Sewing setup card open, showing fabric, thread weight, quality and the checklist |
 | `player.png` | stitch-player | The stitch player at a colour change, with the "Swap to" card showing |
 | `gap-fix.png` | sewout-troubleshooting | A fill with a gap to its outline, then the same shape with pull compensation raised |
+| `stitch-safety-card.png` | stitch-safety | The Stitch safety card in Before you sew: a green band behind each slider, one amber row with its reason, and the speed line above it |

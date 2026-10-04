@@ -63,6 +63,8 @@ export function liveFindings(state: Pick<EditorState, "design" | "planResult">, 
       case "plan:outside-hoop":
       case "plan:density":
       case "plan:stitch-too-long":
+      case "plan:thin-satin":
+      case "plan:long-stitch-snag":
       case "plan:object-failed": {
         const w = warn(hint.signal.slice("plan:".length));
         if (w) key = w.message;

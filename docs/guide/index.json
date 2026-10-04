@@ -1060,7 +1060,7 @@
     "dialog.before-you-sew"
    ],
    "status": "ready",
-   "words": 255,
+   "words": 296,
    "headings": [
     {
      "level": 2,
@@ -1071,6 +1071,11 @@
      "level": 2,
      "text": "What the card also shows",
      "slug": "what-the-card-also-shows"
+    },
+    {
+     "level": 2,
+     "text": "Stitch safety and speed",
+     "slug": "stitch-safety-and-speed"
     },
     {
      "level": 2,
@@ -1088,7 +1093,82 @@
      "slug": "it-is-a-starting-point"
     }
    ],
-   "body": "# Sewing setup\n\nThe **Sewing setup** card sits at the top of the right column. Its chip shows your current choice, like \"Suiting, 40 wt, Standard\". Click the chip to open it.\n\n## Three choices\n\n- **Fabric:** what you are sewing on. Suiting, shirting or lining, twill or caps, knit, denim, towel or leather.\n- **Thread weight:** **40 wt** is standard. **60 wt** is fine, for small crisp detail.\n- **Quality:** **Standard** or **Premium**. Read [Standard or Premium](standard-vs-premium.md).\n\nChanging any of them updates the stitches Lilo made. Anything you edited by hand stays as you left it. One undo step reverses it.\n\n## What the card also shows\n\nThe card lists what the setup calls for: needle, stabiliser, topping and hooping tips. The same list appears as **Before you sew** in the Export and Send windows, so you see it before you hit the machine.\n\n![The Sewing setup card, open](screenshots/sewing-card.png)\n\n## Why it matters\n\nA design for a thin suit lining sewn on a towel will sink and look thin. A design tuned for towel sewn on lining will pucker. The setup keeps the numbers matched to the cloth.\n\nFor a suit-lining monogram, choose **Shirting / lining**, **60 wt** if the letters are under 6 mm, and **Premium**.\n\n## Every setup in detail\n\nRead [Sewing setup presets](sewing-presets.md) for the full list of needles, stabilisers and tips for each fabric.\n\n## It is a starting point\n\nAll numbers come from digitizing practice, not from a machine maker's rulebook. Always sew a test on scrap cloth first.\n"
+   "body": "# Sewing setup\n\nThe **Sewing setup** card sits at the top of the right column. Its chip shows your current choice, like \"Suiting, 40 wt, Standard\". Click the chip to open it.\n\n## Three choices\n\n- **Fabric:** what you are sewing on. Suiting, shirting or lining, twill or caps, knit, denim, towel or leather.\n- **Thread weight:** **40 wt** is standard. **60 wt** is fine, for small crisp detail.\n- **Quality:** **Standard** or **Premium**. Read [Standard or Premium](standard-vs-premium.md).\n\nChanging any of them updates the stitches Lilo made. Anything you edited by hand stays as you left it. One undo step reverses it.\n\n## What the card also shows\n\nThe card lists what the setup calls for: needle, stabiliser, topping and hooping tips. The same list appears as **Before you sew** in the Export and Send windows, so you see it before you hit the machine.\n\n![The Sewing setup card, open](screenshots/sewing-card.png)\n\n## Stitch safety and speed\n\n**Before you sew** also has a **Stitch safety** card and a suggested machine speed. Green means the setting sews well. Amber is a heads up, and the file still exports. Read [Stitch safety and machine speed](stitch-safety.md).\n\n## Why it matters\n\nA design for a thin suit lining sewn on a towel will sink and look thin. A design tuned for towel sewn on lining will pucker. The setup keeps the numbers matched to the cloth.\n\nFor a suit-lining monogram, choose **Shirting / lining**, **60 wt** if the letters are under 6 mm, and **Premium**.\n\n## Every setup in detail\n\nRead [Sewing setup presets](sewing-presets.md) for the full list of needles, stabilisers and tips for each fabric.\n\n## It is a starting point\n\nAll numbers come from digitizing practice, not from a machine maker's rulebook. Always sew a test on scrap cloth first.\n"
+  },
+  {
+   "id": "stitch-safety",
+   "title": "Stitch safety and machine speed",
+   "summary": "The green and amber stitch ranges, what each amber note means, and the machine speed Lilo suggests.",
+   "section": "stitches",
+   "order": 7,
+   "keywords": [
+    "stitch safety",
+    "safe range",
+    "green",
+    "amber",
+    "speed",
+    "spm",
+    "stitches a minute",
+    "thin satin",
+    "long stitch",
+    "snag",
+    "sew time",
+    "thread break",
+    "pucker",
+    "metallic"
+   ],
+   "appContext": [
+    "dialog.before-you-sew",
+    "panel.settings",
+    "panel.satin",
+    "panel.stitching",
+    "panel.warnings"
+   ],
+   "status": "ready",
+   "words": 859,
+   "headings": [
+    {
+     "level": 2,
+     "text": "Where you see it",
+     "slug": "where-you-see-it"
+    },
+    {
+     "level": 2,
+     "text": "Change many shapes at once",
+     "slug": "change-many-shapes-at-once"
+    },
+    {
+     "level": 2,
+     "text": "What will this change?",
+     "slug": "what-will-this-change"
+    },
+    {
+     "level": 2,
+     "text": "The ranges",
+     "slug": "the-ranges"
+    },
+    {
+     "level": 2,
+     "text": "Amber notes, in plain words",
+     "slug": "amber-notes-in-plain-words"
+    },
+    {
+     "level": 2,
+     "text": "Letters and thin lines",
+     "slug": "letters-and-thin-lines"
+    },
+    {
+     "level": 2,
+     "text": "Machine speed",
+     "slug": "machine-speed"
+    },
+    {
+     "level": 2,
+     "text": "Sew time",
+     "slug": "sew-time"
+    }
+   ],
+   "body": "# Stitch safety and machine speed\n\nSome stitch settings sew well. Some make thread break or cloth pucker. Lilo shows you which is which, with a **green band** behind each slider.\n\nAmber is a heads up. It is never a block. Lilo still makes the file and you can still export it.\n\n## Where you see it\n\n- **Before you sew:** open Export or Send and scroll to **Stitch safety**. It has one row for each setting your design uses.\n- **On a shape:** select it. The sliders for spacing, stitch length, width and pull compensation carry the same green band.\n\n![The Stitch safety card in Before you sew](screenshots/stitch-safety-card.png)\n\nInside the green, the dot is green. Outside it, the dot and the box turn amber and one short sentence says why. For example, a satin spacing of 0.30 mm says: \"Too tight. The fabric puckers and the thread can break.\"\n\n## Change many shapes at once\n\nA slider in the **Stitch safety** card changes every shape of that kind. One undo puts them all back.\n\nA satin shape's width is its drawing, so the card cannot widen it. Reshape it, or turn it into a running stitch.\n\n## What will this change?\n\nUnder a slider you see how the change moved the design, like \"+1,240 stitches · +1 min 30 s\". It counts from where you started moving that slider. Lilo works it out in the background, so the screen stays smooth.\n\n## The ranges\n\nThese are for 40 wt thread on cloth you wear. 60 wt and towel move a few numbers, noted below.\n\n| Setting | Green range | Where the numbers come from |\n| --- | --- | --- |\n| Satin width | 1.5 to 10 mm (60 wt: 1 to 10) | Lilo default. The 1.5 mm floor matches the calibration table. |\n| Satin spacing | 0.35 to 0.60 mm (60 wt: from 0.30, towel: to 0.70) | Researched |\n| Fill row spacing | 0.35 to 0.60 mm (60 wt: from 0.30) | Researched |\n| Fill stitch length | 3 to 4.5 mm | Researched |\n| Running stitch length | 1.5 to 4 mm (towel: to 5) | Lilo default |\n| Pull compensation | 0.1 to 0.4 mm | Lilo default |\n| Longest stitch | up to 7 mm on cloth you wear | Researched |\n\n**Researched** means it comes from the sourced calibration table behind Lilo's defaults and from Brother and digitizing guides. **Lilo default** means it is Lilo's own choice, with no source behind it. Treat those as a good start, not a rule.\n\n## Amber notes, in plain words\n\n- **Satin too thin:** the column is narrower than the thread can cover. It will not look shiny. Use a running stitch, or switch to 60 wt thread.\n- **Spacing too tight:** the cloth puckers and the thread can break.\n- **Spacing too loose:** gaps. The cloth shows through.\n- **Fill stitch too short:** the fill goes stiff and sews slowly.\n- **Fill or running stitch too long:** it can snag on fingers and buttons.\n- **Pull compensation too low:** edges may leave gaps. **Too high:** shapes come out fat.\n\nLilo also warns when a stitch is over 7 mm on cloth you wear. It still splits anything over 12.1 mm on its own. See [What the warnings mean](warnings-explained.md).\n\n## Letters and thin lines\n\nWith 40 wt thread and Premium quality, custom-font letters now never use a satin column under 1.5 mm. Thinner strokes become a running stitch. A 1 mm column is too thin to look shiny, and it breaks thread. 60 wt thread still allows 1 mm.\n\n## Machine speed\n\nA file cannot set your machine's speed. You set it on the machine. Lilo suggests a speed for the design in **Before you sew**:\n\n> Set your machine to **450** stitches a minute (thin lines in this design).\n\nLilo starts from the middle of the range for your fabric, then slows down for what is in the design.\n\n| What is in the design | Suggested speed |\n| --- | --- |\n| Satin columns under 2 mm, or letters under 5 mm tall | 450 |\n| Metallic thread | 400 |\n| Very dense stitching | 550 |\n| Leather, towel, denim | Their own slower range |\n\nIt never goes above the machine's top speed, 850 stitches a minute on the Brother NV2700. The caps are rules of thumb from Brother's FAQ and hobbyist guides. No maker publishes an exact table, so sew a test first.\n\nOn a Brother machine, look in Settings for **Max embroidery speed**. Menu names differ between models, so Lilo does not give exact steps.\n\n## Sew time\n\n**Before you sew** shows the time at 850 stitches a minute and the time at the suggested speed. The time counts:\n\n- the stitches at that speed,\n- 7 seconds for each thread cut,\n- 45 seconds for each colour change,\n- and a quarter extra for real life: checking, re-threading and the odd thread break.\n\nThe estimate is a guide. Your machine and your cloth decide.\n"
   },
   {
    "id": "fill-patterns",
@@ -3021,6 +3101,9 @@
     "outside hoop",
     "density",
     "stitch too long",
+    "thin satin",
+    "long stitch",
+    "snag",
     "colour changes",
     "stitch count",
     "small region",
@@ -3037,7 +3120,7 @@
     "dialog.send"
    ],
    "status": "ready",
-   "words": 478,
+   "words": 597,
    "headings": [
     {
      "level": 2,
@@ -3053,6 +3136,16 @@
      "level": 2,
      "text": "A stitch was too long",
      "slug": "a-stitch-was-too-long"
+    },
+    {
+     "level": 2,
+     "text": "Satin too thin",
+     "slug": "satin-too-thin"
+    },
+    {
+     "level": 2,
+     "text": "A long stitch can snag",
+     "slug": "a-long-stitch-can-snag"
     },
     {
      "level": 2,
@@ -3100,7 +3193,7 @@
      "slug": "about-dismissing"
     }
    ],
-   "body": "# What the warnings mean\n\nLilo watches your design while you work. When something might sew badly, a short note appears in the **warnings tray**, in the right-hand column, under the Sewing setup card. It never blocks you. Each note offers a **fix** button or a **Read more** link. You can dismiss any note.\n\n## Outside the hoop\n\nThe design is bigger than the hoop's sewing area. The machine cannot sew what is outside.\n\n**Fix:** pick a larger hoop (**Smallest hoop that fits**), or scale the design down. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Too dense\n\nToo many stitches land in the same 1 square millimetre. The thread may break or the cloth may pucker.\n\n**Fix:** open the shape's settings and raise **Row spacing** (fills) or **Density** (satin). Read [Fixing sew-out problems](sewout-troubleshooting.md).\n\n## A stitch was too long\n\nStitches over 12 mm can snag, so Lilo split them. The design is fine, but long stitches often mean a big, open fill.\n\n**Fix:** shorten **Stitch length** in a fill, or use a pattern with shorter stitches.\n\n## A shape made no stitches\n\nA shape could not be stitched, for example if its thread is missing. **Fix:** select the shape and give it a thread.\n\n## The design is empty\n\nNothing to sew yet. Draw, type or open a picture.\n\n## Many colour changes\n\nMore than 8 colour changes. Each is a stop to swap thread on a home machine.\n\n**Fix:** merge similar colours. Read [Fewer colour changes](fewer-colour-changes.md).\n\n## A high stitch count or long sewing time\n\nA design with more than about 30,000 stitches, or over an hour of sewing at 850 stitches a minute, is a long sew and a bigger file.\n\n**Fix:** make it smaller, use **Standard** quality, or use fewer fills.\n\n## Tiny regions\n\nA shape under about 1 mm wide is too small to sew as a fill. It will blur or snap thread.\n\n**Fix:** delete it, make it bigger, or turn it into a **Triple** run.\n\n## Satin too wide\n\nA satin column over 8 mm with no split has long, loose stitches.\n\n**Fix:** turn on **Split above** in the **Satin** section, or change the shape to a fill. Read [Satin tips](satin-tips.md).\n\n## Letters too small\n\nThe letters are shorter than 6 mm with 40 wt thread, or 4 mm with 60 wt. They will fill in.\n\n**Fix:** make them taller or switch to **60 wt**. Read [Small letters](small-letters.md).\n\n## Fonts and text\n\n- **Below or above the font's range:** the font suits another height. Pick a different font.\n- **Custom font small:** custom fonts sew best above a minimum height.\n- **Missing glyph:** the font has no letter for a character you typed.\n- **Text longer than the path:** the end would run off the curve.\n\n## About dismissing\n\nA dismissed note stays hidden until the problem changes. Reopening the project shows it again.\n"
+   "body": "# What the warnings mean\n\nLilo watches your design while you work. When something might sew badly, a short note appears in the **warnings tray**, in the right-hand column, under the Sewing setup card. It never blocks you. Each note offers a **fix** button or a **Read more** link. You can dismiss any note.\n\n## Outside the hoop\n\nThe design is bigger than the hoop's sewing area. The machine cannot sew what is outside.\n\n**Fix:** pick a larger hoop (**Smallest hoop that fits**), or scale the design down. Read [Sizing and hoops](sizing-and-hoops.md).\n\n## Too dense\n\nToo many stitches land in the same 1 square millimetre. The thread may break or the cloth may pucker.\n\n**Fix:** open the shape's settings and raise **Row spacing** (fills) or **Density** (satin). Read [Fixing sew-out problems](sewout-troubleshooting.md).\n\n## A stitch was too long\n\nStitches over 12 mm can snag, so Lilo split them. The design is fine, but long stitches often mean a big, open fill.\n\n**Fix:** shorten **Stitch length** in a fill, or use a pattern with shorter stitches.\n\n## Satin too thin\n\nA satin column is narrower than the thread can cover well: under 1.5 mm with 40 wt thread, or under 1 mm with 60 wt. It will not look shiny. Stitches pile up and the thread can break.\n\n**Fix:** turn it into a running stitch, make it wider, or switch to **60 wt**. Lilo still makes the file. See [Stitch safety](stitch-safety.md).\n\n## A long stitch can snag\n\nSome stitches are longer than 7 mm and the fabric is something you wear. Long stitches can catch on fingers and buttons. Lilo only splits stitches over 12 mm.\n\n**Fix:** shorten **Stitch length** in a fill or run. Read [Stitch safety](stitch-safety.md).\n\n## A shape made no stitches\n\nA shape could not be stitched, for example if its thread is missing. **Fix:** select the shape and give it a thread.\n\n## The design is empty\n\nNothing to sew yet. Draw, type or open a picture.\n\n## Many colour changes\n\nMore than 8 colour changes. Each is a stop to swap thread on a home machine.\n\n**Fix:** merge similar colours. Read [Fewer colour changes](fewer-colour-changes.md).\n\n## A high stitch count or long sewing time\n\nA design with more than about 30,000 stitches, or over an hour of sewing at 850 stitches a minute (counting stops for thread changes and cuts), is a long sew and a bigger file.\n\n**Fix:** make it smaller, use **Standard** quality, or use fewer fills.\n\n## Tiny regions\n\nA shape under about 1 mm wide is too small to sew as a fill. It will blur or snap thread.\n\n**Fix:** delete it, make it bigger, or turn it into a **Triple** run.\n\n## Satin too wide\n\nA satin column over 8 mm with no split has long, loose stitches.\n\n**Fix:** turn on **Split above** in the **Satin** section, or change the shape to a fill. Read [Satin tips](satin-tips.md).\n\n## Letters too small\n\nThe letters are shorter than 6 mm with 40 wt thread, or 4 mm with 60 wt. They will fill in.\n\n**Fix:** make them taller or switch to **60 wt**. Read [Small letters](small-letters.md).\n\n## Fonts and text\n\n- **Below or above the font's range:** the font suits another height. Pick a different font.\n- **Custom font small:** custom fonts sew best above a minimum height.\n- **Missing glyph:** the font has no letter for a character you typed.\n- **Text longer than the path:** the end would run off the curve.\n\n## About dismissing\n\nA dismissed note stays hidden until the problem changes. Reopening the project shows it again.\n"
   },
   {
    "id": "faq",

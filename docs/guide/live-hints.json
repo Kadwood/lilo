@@ -23,6 +23,20 @@
     "guideId": "warnings-explained#a-stitch-was-too-long"
   },
   {
+    "id": "thin-satin",
+    "signal": "plan:thin-satin",
+    "severity": "care",
+    "message": "A satin column is too thin for this thread. Stitches pile up and the thread can break. Try a running stitch or 60 wt.",
+    "guideId": "warnings-explained#satin-too-thin"
+  },
+  {
+    "id": "long-stitch-snag",
+    "signal": "plan:long-stitch-snag",
+    "severity": "info",
+    "message": "Some stitches are longer than 7 mm. On clothes they can snag on fingers and buttons. A shorter stitch length fixes it.",
+    "guideId": "warnings-explained#a-long-stitch-can-snag"
+  },
+  {
     "id": "object-failed",
     "signal": "plan:object-failed",
     "severity": "care",

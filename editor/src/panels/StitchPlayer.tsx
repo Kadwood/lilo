@@ -122,7 +122,7 @@ export function StitchPlayerBar({ player, planResult, emptyText }: { player: Pla
         <span>
           {stats.widthMm.toFixed(1)} × {stats.heightMm.toFixed(1)} mm
         </span>
-        <span title="at 850 stitches per minute">≈ {formatDuration(stats.estimatedSeconds)}</span>
+        <span title="at 850 stitches a minute, with stops to swap and cut thread">≈ {formatDuration(stats.estimatedSeconds)}</span>
         <Hint id="player.totals" />
       </div>
     </div>
