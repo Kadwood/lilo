@@ -3,7 +3,7 @@
  *
  * Lilo's own readers only prove the writers agree with themselves (a PES header bug shipped that
  * way). Here each design is written in every format and read by `xcheck/read.py` with pyembroidery;
- * the needle positions, colour changes, thread count and the header fields pyembroidery's writers
+ * the needle positions, colour changes, trim counts (JEF cannot carry any: see NO_TRIM_CHECK), thread count and the header fields pyembroidery's writers
  * fill in must match what Lilo planned, within 0.1 mm.
  *
  * Needs Python with `pip install pyembroidery==1.5.1`. Point `XCHECK_PYTHON` at it (default: python3,
@@ -224,6 +224,71 @@ describe.skipIf("problem" in found && !required)("pyembroidery cross-check", () 
   }, 120_000);
 
   const needlesOf = (plan: StitchPlan) => plan.stitches.filter((s) => s.type === "stitch").map((s) => [s.x * 10, s.y * 10]);
+  /**
+   * Trims worth encoding: a trim after at least one needle since the last colour change or trim.
+   * A trim right after a colour change (or at the start) is dropped by every writer, because the
+   * machine already cuts on a colour change.
+   */
+  const trimsOf = (plan: StitchPlan): number => {
+    let n = 0;
+    let sewn = false;
+    for (const s of plan.stitches) {
+      if (s.type === "stitch") sewn = true;
+      else if (s.type === "colorChange") sewn = false;
+      else if (s.type === "trim" && sewn) {
+        n++;
+        sewn = false;
+      }
+    }
+    return n;
+  };
+  /** Formats where no trim count can be compared, and why (documented, not skipped silently). */
+  const NO_TRIM_CHECK: Partial<Record<FormatExt, string>> = {
+    jef: "JEF has no trim record. pyembroidery's reader invents trims from long jumps, so its count says nothing about ours.",
+  };
+  const jumpLegsOver = (plan: StitchPlan, mm: number): boolean => {
+    let px = 0;
+    let py = 0;
+    for (const s of plan.stitches) {
+      if (s.type === "jump" && Math.max(Math.abs(s.x - px), Math.abs(s.y - py)) > mm) return true;
+      px = s.x;
+      py = s.y;
+    }
+    return false;
+  };
+  /**
+   * What pyembroidery must report as TRIM for this plan, per format (null = cannot check).
+   * Observed against pyembroidery 1.5.1:
+   * - EXP, XXX, U01, HUS: one trim per trim between needle runs.
+   * - PES/PEC: every plan trim is written, even one right after a colour change.
+   * - DST: a trim is three zero-net jumps, and pyembroidery also reads any run of 3+ jumps (a jump
+   *   over ~24 mm is split into that many) as a trim, so a long plain jump can only add.
+   * - VP3: one trim per trim, plus one pyembroidery always reports for the file.
+   * - TBF: one trim per trim, plus the explicit trim the writer puts before each colour change.
+   * - G-code: writes only needle moves, so there are none.
+   */
+  const expectedTrims = (ext: FormatExt, plan: StitchPlan): { n: number; atLeast?: boolean; why: string } | null => {
+    const tr = trimsOf(plan);
+    const all = plan.stitches.filter((s) => s.type === "trim").length;
+    const cc = blocksOf(plan) - 1;
+    switch (ext) {
+      case "jef":
+        return null;
+      case "gcode":
+        return { n: 0, why: "G-code has no trims" };
+      case "pes":
+      case "pec":
+        return { n: all, why: "every plan trim is written" };
+      case "vp3":
+        return { n: tr + 1, why: "plan trims + 1 pyembroidery reports for every VP3" };
+      case "tbf":
+        return { n: tr + cc, why: "plan trims + one before each colour change" };
+      case "dst":
+        return { n: tr, atLeast: jumpLegsOver(plan, 24), why: "plan trims, long plain jumps may add" };
+      default:
+        return { n: tr, why: "plan trims" };
+    }
+  };
   const blocksOf = (plan: StitchPlan) => plan.stitches.filter((s) => s.type === "colorChange").length + 1;
   const head = (f: PyFile, key: string): number => {
     const v = f.header?.[key];
@@ -278,6 +343,13 @@ describe.skipIf("problem" in found && !required)("pyembroidery cross-check", () 
             worst = Math.max(worst, Math.abs(g[0] - want[i][0]), Math.abs(g[1] - want[i][1]));
           });
           expect(worst, "worst needle error (0.1 mm)").toBeLessThanOrEqual(1);
+
+          // trims between needle runs: how each format shows them to pyembroidery is in expectedTrims
+          const trimsGot = entries.filter((e) => e[2] === "trim").length;
+          const t = expectedTrims(ext, c.plan);
+          if (t === null) expect(NO_TRIM_CHECK[ext], `${ext} trim check is documented as impossible`).toBeTruthy();
+          else if (t.atLeast) expect(trimsGot, `trims (>= ${t.n}: ${t.why})`).toBeGreaterThanOrEqual(t.n);
+          else expect(trimsGot, `trims (expected ${t.n}: ${t.why})`).toBe(t.n);
 
           // colours: needle-set formats mark every block (the first too), the rest mark the changes
           const needleSet = ext === "u01" || ext === "tbf";
