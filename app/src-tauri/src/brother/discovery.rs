@@ -7,7 +7,7 @@
 //!   2. sweep each interface's /24 with a short TCP dial to port 443,
 //!   3. for hosts that accept, `GET /info` and check for the `pedxml` API.
 //!
-//! The sweep is bounded: only RFC-1918/link-local networks, only /24-sized
+//! The sweep is bounded: only RFC-1918 private networks (not link-local), only /24-sized
 //! slices (254 addresses), bounded concurrency, sub-second dial timeout —
 //! a full scan of one interface takes a few seconds.
 
@@ -28,10 +28,20 @@ fn candidate_networks() -> Vec<Ipv4Addr> {
     let Ok(interfaces) = if_addrs::get_if_addrs() else {
         return Vec::new();
     };
-    let mut networks: Vec<Ipv4Addr> = interfaces
+    networks_from_addrs(
+        interfaces
+            .into_iter()
+            .map(|iface| (iface.ip(), iface.is_loopback())),
+    )
+}
+
+/// Pure part of [`candidate_networks`]: (address, is_loopback) pairs to a
+/// sorted, de-duplicated list of private IPv4 /24 base addresses.
+fn networks_from_addrs(addrs: impl IntoIterator<Item = (IpAddr, bool)>) -> Vec<Ipv4Addr> {
+    let mut networks: Vec<Ipv4Addr> = addrs
         .into_iter()
-        .filter(|iface| !iface.is_loopback())
-        .filter_map(|iface| match iface.ip() {
+        .filter(|(_, is_loopback)| !is_loopback)
+        .filter_map(|(ip, _)| match ip {
             IpAddr::V4(v4) if v4.is_private() => {
                 let octets = v4.octets();
                 Some(Ipv4Addr::new(octets[0], octets[1], octets[2], 0))
@@ -44,19 +54,24 @@ fn candidate_networks() -> Vec<Ipv4Addr> {
     networks
 }
 
+/// Hosts .1 to .254 of each /24 network.
+fn hosts_of(networks: &[Ipv4Addr]) -> Vec<Ipv4Addr> {
+    networks
+        .iter()
+        .flat_map(|net| {
+            let base = net.octets();
+            (1u8..=254).map(move |host| Ipv4Addr::new(base[0], base[1], base[2], host))
+        })
+        .collect()
+}
+
 /// Sweep the local network for Brother machines.
 ///
 /// `on_progress` is called with (probed, total) as addresses complete, so the
 /// UI can show a scan bar.
 pub async fn discover(on_progress: ScanProgressFn) -> Vec<DiscoveredMachine> {
     let networks = candidate_networks();
-    let candidates: Vec<Ipv4Addr> = networks
-        .iter()
-        .flat_map(|net| {
-            let base = net.octets();
-            (1u8..=254).map(move |host| Ipv4Addr::new(base[0], base[1], base[2], host))
-        })
-        .collect();
+    let candidates = hosts_of(&networks);
 
     let total = candidates.len();
     let semaphore = Arc::new(Semaphore::new(CONCURRENCY));
@@ -110,3 +125,73 @@ pub async fn probe_one(ip: IpAddr) -> Option<DiscoveredMachine> {
     }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn v4(a: u8, b: u8, c: u8, d: u8) -> (IpAddr, bool) {
+        (IpAddr::V4(Ipv4Addr::new(a, b, c, d)), false)
+    }
+
+    #[test]
+    fn enumerates_private_slash24s_sorted_and_deduped() {
+        let nets = networks_from_addrs([
+            v4(192, 168, 1, 40),
+            v4(10, 0, 5, 7),
+            v4(192, 168, 1, 41),
+            v4(172, 16, 3, 9),
+        ]);
+        assert_eq!(
+            nets,
+            vec![
+                Ipv4Addr::new(10, 0, 5, 0),
+                Ipv4Addr::new(172, 16, 3, 0),
+                Ipv4Addr::new(192, 168, 1, 0)
+            ]
+        );
+    }
+
+    #[test]
+    fn skips_loopback_ipv6_link_local_and_public() {
+        let nets = networks_from_addrs([
+            (IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), true),
+            // Flagged loopback is skipped even if the address were private.
+            (IpAddr::V4(Ipv4Addr::new(192, 168, 9, 1)), true),
+            ("fe80::1".parse().unwrap(), false),
+            ("fd00::5".parse().unwrap(), false),
+            v4(169, 254, 10, 10),
+            v4(8, 8, 8, 8),
+            v4(172, 32, 0, 1), // just outside 172.16/12
+            v4(192, 168, 7, 3),
+        ]);
+        assert_eq!(nets, vec![Ipv4Addr::new(192, 168, 7, 0)]);
+    }
+
+    #[test]
+    fn no_interfaces_means_no_networks() {
+        assert!(networks_from_addrs([]).is_empty());
+        assert!(hosts_of(&[]).is_empty());
+    }
+
+    #[test]
+    fn hosts_cover_1_to_254_only() {
+        let hosts = hosts_of(&[Ipv4Addr::new(192, 168, 1, 0)]);
+        assert_eq!(hosts.len(), 254);
+        assert_eq!(hosts[0], Ipv4Addr::new(192, 168, 1, 1));
+        assert_eq!(*hosts.last().unwrap(), Ipv4Addr::new(192, 168, 1, 254));
+        assert!(!hosts.contains(&Ipv4Addr::new(192, 168, 1, 0)));
+        assert!(!hosts.contains(&Ipv4Addr::new(192, 168, 1, 255)));
+    }
+
+    #[test]
+    fn host_count_scales_per_network() {
+        let nets = [Ipv4Addr::new(10, 0, 0, 0), Ipv4Addr::new(10, 0, 1, 0)];
+        assert_eq!(hosts_of(&nets).len(), 508);
+    }
+
+    #[tokio::test]
+    async fn probe_one_ignores_ipv6() {
+        assert!(probe_one("::1".parse().unwrap()).await.is_none());
+    }
+}

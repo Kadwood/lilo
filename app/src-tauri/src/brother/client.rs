@@ -10,8 +10,8 @@
 //!   crate uses reqwest's *native-tls* backend: rustls does not implement
 //!   static-RSA key exchange and would fail the handshake.
 //! * The embedded server (`debut/1.20`) is slow over Wi-Fi; requests get
-//!   generous timeouts and reads are retried. Uploads are retried at most
-//!   once more to avoid storing duplicate designs.
+//!   generous timeouts and reads are retried. Uploads are sent once,
+//!   never retried, to avoid storing duplicate designs.
 
 use super::models::{BrotherInfo, SewingResponse};
 use super::protocol;
@@ -41,6 +41,8 @@ const PROBE_TIMEOUT: Duration = Duration::from_secs(4);
 const READ_RETRIES: u32 = 4;
 const UPLOAD_RETRIES: u32 = 1;
 const RETRY_DELAY: Duration = Duration::from_millis(1500);
+/// Upload body chunk size.
+const UPLOAD_CHUNK: usize = 64 * 1024;
 
 /// A handle to one Brother machine. Cheap to create; owns a lazy HTTP client.
 pub struct BrotherClient {
@@ -156,44 +158,17 @@ impl BrotherClient {
             let progress = progress.clone();
             async move {
                 report(0);
-                // Stream the body in chunks so we can observe transmission
-                // progress. Progress reflects hand-off to the TLS layer, so it
-                // slightly leads what is truly on the wire — good enough for a
-                // progress bar.
-                let overhead = (body.len() as u64).saturating_sub(total);
-                let content_length = body.len() as u64;
-                let chunks: Vec<bytes::Bytes> = body
-                    .chunks(64 * 1024)
-                    .map(bytes::Bytes::copy_from_slice)
-                    .collect();
-                let stream =
-                    futures::stream::iter(chunks.into_iter().scan(0u64, move |sent, chunk| {
-                        *sent += chunk.len() as u64;
-                        progress(UploadProgress {
-                            sent_bytes: sent.saturating_sub(overhead).min(total),
-                            total_bytes: total,
-                        });
-                        Some(Ok::<_, std::io::Error>(chunk))
-                    }));
-
-                let response = self
-                    .http
-                    .post(self.url(protocol::SEWING_PATH))
-                    .header(
-                        header::CONTENT_TYPE,
-                        protocol::upload_content_type(&boundary),
-                    )
-                    // Explicit Content-Length: the machine's embedded server
-                    // predates chunked transfer encoding, and hyper would
-                    // otherwise chunk a streaming body.
-                    .header(header::CONTENT_LENGTH, content_length)
-                    .header(header::ACCEPT_ENCODING, "gzip,deflate")
-                    .header(header::CONNECTION, "Keep-Alive")
-                    .timeout(UPLOAD_TIMEOUT)
-                    .body(reqwest::Body::wrap_stream(stream))
-                    .send()
-                    .await
-                    .map_err(|_| MachineError::DeliveryUnknown)?;
+                let response = upload_request(
+                    &self.http,
+                    self.url(protocol::SEWING_PATH),
+                    &boundary,
+                    &body,
+                    total,
+                    progress,
+                )
+                .send()
+                .await
+                .map_err(|_| MachineError::DeliveryUnknown)?;
 
                 match response.status().as_u16() {
                     200 | 204 => {
@@ -323,6 +298,48 @@ impl EmbroideryMachine for BrotherClient {
     }
 }
 
+/// Build the streaming upload request (headers, explicit Content-Length,
+/// 64 KiB chunked body with progress reporting). Split out of `send_design`
+/// so tests can point it at a local plain-HTTP server.
+fn upload_request(
+    http: &reqwest::Client,
+    url: String,
+    boundary: &str,
+    body: &[u8],
+    total: u64,
+    progress: ProgressFn,
+) -> reqwest::RequestBuilder {
+    // Stream the body in chunks so we can observe transmission
+    // progress. Progress reflects hand-off to the TLS layer, so it
+    // slightly leads what is truly on the wire — good enough for a
+    // progress bar.
+    let overhead = (body.len() as u64).saturating_sub(total);
+    let content_length = body.len() as u64;
+    let chunks: Vec<bytes::Bytes> = body
+        .chunks(UPLOAD_CHUNK)
+        .map(bytes::Bytes::copy_from_slice)
+        .collect();
+    let stream = futures::stream::iter(chunks.into_iter().scan(0u64, move |sent, chunk| {
+        *sent += chunk.len() as u64;
+        progress(UploadProgress {
+            sent_bytes: sent.saturating_sub(overhead).min(total),
+            total_bytes: total,
+        });
+        Some(Ok::<_, std::io::Error>(chunk))
+    }));
+
+    http.post(url)
+        .header(header::CONTENT_TYPE, protocol::upload_content_type(boundary))
+        // Explicit Content-Length: the machine's embedded server
+        // predates chunked transfer encoding, and hyper would
+        // otherwise chunk a streaming body.
+        .header(header::CONTENT_LENGTH, content_length)
+        .header(header::ACCEPT_ENCODING, "gzip,deflate")
+        .header(header::CONNECTION, "Keep-Alive")
+        .timeout(UPLOAD_TIMEOUT)
+        .body(reqwest::Body::wrap_stream(stream))
+}
+
 /// Build the reqwest client with the transport quirks described above.
 fn build_http_client() -> reqwest::Client {
     reqwest::Client::builder()
@@ -383,7 +400,20 @@ fn concise_reqwest_error(e: &reqwest::Error) -> String {
 
 /// Run `attempt` up to `attempts` times with a fixed delay between tries.
 /// Machine-side rejections are not retried — the machine meant it.
-async fn with_retries<T, F, Fut>(attempts: u32, mut attempt: F) -> Result<T, MachineError>
+async fn with_retries<T, F, Fut>(attempts: u32, attempt: F) -> Result<T, MachineError>
+where
+    F: FnMut() -> Fut,
+    Fut: std::future::Future<Output = Result<T, MachineError>>,
+{
+    with_retries_delay(attempts, RETRY_DELAY, attempt).await
+}
+
+/// [`with_retries`] with an injectable delay (tests use a tiny one).
+async fn with_retries_delay<T, F, Fut>(
+    attempts: u32,
+    delay: Duration,
+    mut attempt: F,
+) -> Result<T, MachineError>
 where
     F: FnMut() -> Fut,
     Fut: std::future::Future<Output = Result<T, MachineError>>,
@@ -401,10 +431,383 @@ where
             Err(e) => {
                 last = Some(e);
                 if i + 1 < attempts {
-                    tokio::time::sleep(RETRY_DELAY).await;
+                    tokio::time::sleep(delay).await;
                 }
             }
         }
     }
     Err(last.expect("attempts is at least 1"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicU32, Ordering};
+    use std::sync::{Arc, Mutex};
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    use tokio::net::TcpListener;
+
+    const SIZES: &[usize] = &[0, 1, 64 * 1024 - 1, 64 * 1024, 64 * 1024 + 1, 1024 * 1024];
+
+    fn design(n: usize) -> Vec<u8> {
+        (0..n).map(|i| (i % 251) as u8).collect()
+    }
+
+    /// Raw request captured by [`serve_once`].
+    struct Captured {
+        head: String,
+        body: Vec<u8>,
+    }
+
+    impl Captured {
+        fn header(&self, name: &str) -> Option<String> {
+            self.head.lines().skip(1).find_map(|l| {
+                let (k, v) = l.split_once(':')?;
+                k.eq_ignore_ascii_case(name).then(|| v.trim().to_string())
+            })
+        }
+    }
+
+    /// Plain-TCP stand-in for the machine: reads one full request (headers +
+    /// Content-Length body), answers `status`, returns what it saw.
+    async fn serve_once(status: &'static str) -> (u16, tokio::task::JoinHandle<Captured>) {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let handle = tokio::spawn(async move {
+            let (mut sock, _) = listener.accept().await.unwrap();
+            let mut buf = Vec::new();
+            let mut tmp = [0u8; 8192];
+            let head_end = loop {
+                let n = sock.read(&mut tmp).await.unwrap();
+                assert!(n > 0, "client closed before finishing headers");
+                buf.extend_from_slice(&tmp[..n]);
+                if let Some(p) = buf.windows(4).position(|w| w == b"\r\n\r\n") {
+                    break p + 4;
+                }
+            };
+            let head = String::from_utf8(buf[..head_end].to_vec()).unwrap();
+            let len = head
+                .lines()
+                .find_map(|l| {
+                    let (k, v) = l.split_once(':')?;
+                    k.eq_ignore_ascii_case("content-length")
+                        .then(|| v.trim().parse::<usize>().unwrap())
+                })
+                .unwrap_or(0);
+            let mut body = buf[head_end..].to_vec();
+            while body.len() < len {
+                let n = sock.read(&mut tmp).await.unwrap();
+                assert!(n > 0, "client closed mid-body");
+                body.extend_from_slice(&tmp[..n]);
+            }
+            sock.write_all(format!("HTTP/1.1 {status}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").as_bytes())
+                .await
+                .unwrap();
+            let _ = sock.shutdown().await;
+            Captured { head, body }
+        });
+        (port, handle)
+    }
+
+    fn recorder() -> (ProgressFn, Arc<Mutex<Vec<UploadProgress>>>) {
+        let log = Arc::new(Mutex::new(Vec::new()));
+        let l = log.clone();
+        (Arc::new(move |p| l.lock().unwrap().push(p)), log)
+    }
+
+    async fn send(
+        filename: &str,
+        data: &[u8],
+        progress: ProgressFn,
+    ) -> (Captured, Vec<u8>, String, reqwest::StatusCode) {
+        let (port, server) = serve_once("204 No Content").await;
+        let boundary = protocol::multipart_boundary("0123456789ab");
+        let body = protocol::upload_body(&boundary, filename, data);
+        let resp = upload_request(
+            &build_http_client(),
+            format!("http://127.0.0.1:{port}{}", protocol::SEWING_PATH),
+            &boundary,
+            &body,
+            data.len() as u64,
+            progress,
+        )
+        .send()
+        .await
+        .unwrap();
+        (server.await.unwrap(), body, boundary, resp.status())
+    }
+
+    #[tokio::test]
+    async fn upload_request_framing_and_reassembly_for_all_sizes() {
+        for &n in SIZES {
+            let data = design(n);
+            let (p, _) = recorder();
+            let (cap, body, boundary, status) = send("flower.pes", &data, p).await;
+            assert_eq!(status.as_u16(), 204, "size {n}");
+            assert!(cap.head.starts_with("POST /sewing/sewing.cgi HTTP/1.1\r\n"), "size {n}");
+            assert_eq!(cap.body, body, "size {n}: body bytes must reassemble exactly");
+            assert_eq!(
+                cap.header("content-length").unwrap(),
+                body.len().to_string(),
+                "size {n}"
+            );
+            assert_eq!(
+                cap.header("content-type").unwrap(),
+                format!("multipart/form-data;boundary={boundary}")
+            );
+            assert!(
+                cap.header("transfer-encoding").is_none(),
+                "size {n}: machine predates chunked encoding"
+            );
+            assert!(!cap.head.to_ascii_lowercase().contains("chunked"));
+            // The design bytes sit verbatim between the part headers and the closing boundary.
+            let tail = format!("\r\n--{boundary}--\r\n");
+            assert!(cap.body.ends_with(tail.as_bytes()));
+            let design_end = cap.body.len() - tail.len();
+            assert_eq!(&cap.body[design_end - n..design_end], &data[..], "size {n}");
+        }
+    }
+
+    #[tokio::test]
+    async fn upload_request_sends_machine_headers() {
+        let (p, _) = recorder();
+        let (cap, ..) = send("a.pes", &design(10), p).await;
+        assert_eq!(cap.header("user-agent").unwrap(), protocol::USER_AGENT);
+        assert_eq!(cap.header("accept-language").unwrap(), protocol::ACCEPT_LANGUAGE);
+        assert_eq!(cap.header("cache-control").unwrap(), "no-cache");
+        assert_eq!(cap.header("accept-encoding").unwrap(), "gzip,deflate");
+        assert!(cap.header("connection").unwrap().eq_ignore_ascii_case("keep-alive"));
+    }
+
+    #[tokio::test]
+    async fn multipart_framing_exact_for_each_supported_format() {
+        for ext in SUPPORTED_FORMATS {
+            let data = design(100);
+            let (p, _) = recorder();
+            let name = format!("my design.{ext}");
+            let (cap, _, boundary, _) = send(&name, &data, p).await;
+            let mut expected = Vec::new();
+            expected.extend_from_slice(
+                format!(
+                    "--{boundary}\r\n\
+                     Content-Disposition:form-data;name=\"req_parameter\";filename=\"req_parameter\"\r\n\
+                     Content-Type:application/x-www-form-urlencoded\r\n\r\n\
+                     req_sessionid=0&req_appid=23&req_appver=100&req_appstate=3\r\n\
+                     --{boundary}\r\n\
+                     Content-Disposition:form-data;name=\"myfile\";filename=\"my_design.{ext}\"\r\n\
+                     Content-Type:application/octet-stream\r\n\r\n"
+                )
+                .as_bytes(),
+            );
+            expected.extend_from_slice(&data);
+            expected.extend_from_slice(format!("\r\n--{boundary}--\r\n").as_bytes());
+            assert_eq!(cap.body, expected, "format {ext}");
+        }
+    }
+
+    #[tokio::test]
+    async fn progress_is_monotonic_bounded_and_ends_at_file_size() {
+        for &n in SIZES {
+            let data = design(n);
+            let (p, log) = recorder();
+            send("x.dst", &data, p).await;
+            let log = log.lock().unwrap();
+            assert!(!log.is_empty(), "size {n}");
+            let mut prev = 0;
+            for e in log.iter() {
+                assert_eq!(e.total_bytes, n as u64, "size {n}");
+                assert!(e.sent_bytes <= e.total_bytes, "size {n}: {e:?}");
+                assert!(e.sent_bytes >= prev, "size {n}: not monotonic");
+                prev = e.sent_bytes;
+            }
+            assert_eq!(log.last().unwrap().sent_bytes, n as u64, "size {n}");
+        }
+    }
+
+    #[tokio::test]
+    async fn progress_subtracts_multipart_overhead() {
+        // Small design: the whole body is one chunk, so the first callback
+        // would be body.len() without the overhead subtraction.
+        let (p, log) = recorder();
+        send("x.pes", &design(1000), p).await;
+        let log = log.lock().unwrap();
+        assert!(log.iter().all(|e| e.sent_bytes <= 1000));
+        assert_eq!(log.last().unwrap().sent_bytes, 1000);
+    }
+
+    #[tokio::test]
+    async fn upload_request_chunks_are_at_most_64kib() {
+        // 1 MiB design: the callback fires once per chunk.
+        let (p, log) = recorder();
+        let data = design(1024 * 1024);
+        send("x.pes", &data, p).await;
+        let calls = log.lock().unwrap().len();
+        let body_len = protocol::upload_body("b", "x.pes", &data).len();
+        assert_eq!(calls, body_len.div_ceil(64 * 1024));
+    }
+
+    // ---- with_retries ----
+
+    const TINY: Duration = Duration::from_millis(1);
+
+    async fn run_with(err: fn() -> MachineError, attempts: u32) -> (Result<(), MachineError>, u32) {
+        let calls = Arc::new(AtomicU32::new(0));
+        let c = calls.clone();
+        let r = with_retries_delay(attempts, TINY, move || {
+            c.fetch_add(1, Ordering::SeqCst);
+            async move { Err::<(), _>(err()) }
+        })
+        .await;
+        (r, calls.load(Ordering::SeqCst))
+    }
+
+    #[tokio::test]
+    async fn retries_transient_errors_up_to_attempt_count() {
+        let transient: &[fn() -> MachineError] = &[
+            || MachineError::Timeout,
+            || MachineError::Unreachable("connection reset".into()),
+            || MachineError::Protocol("garbled".into()),
+            || MachineError::DeliveryUnknown,
+            || MachineError::Busy,
+            || MachineError::UploadFailed(404),
+        ];
+        for mk in transient {
+            let (r, calls) = run_with(*mk, 4).await;
+            assert!(r.is_err());
+            assert_eq!(calls, 4, "{:?}", r);
+        }
+    }
+
+    #[tokio::test]
+    async fn does_not_retry_machine_decisions() {
+        let permanent: &[fn() -> MachineError] = &[
+            || MachineError::Rejected { code: 5 },
+            || MachineError::FileTooLarge { size: 2, limit: 1 },
+            || MachineError::InsufficientStorage { size: 2, free: 1 },
+            || MachineError::UnsupportedFormat { format: "x".into(), supported: "pes".into() },
+        ];
+        for mk in permanent {
+            let (r, calls) = run_with(*mk, 4).await;
+            assert!(r.is_err());
+            assert_eq!(calls, 1, "{:?}", r);
+        }
+    }
+
+    #[tokio::test]
+    async fn retry_returns_last_error_and_stops_on_success() {
+        let calls = Arc::new(AtomicU32::new(0));
+        let c = calls.clone();
+        let r = with_retries_delay(5, TINY, move || {
+            let n = c.fetch_add(1, Ordering::SeqCst) + 1;
+            async move {
+                if n < 3 {
+                    Err(MachineError::Timeout)
+                } else {
+                    Ok(n)
+                }
+            }
+        })
+        .await;
+        assert_eq!(r.unwrap(), 3);
+        assert_eq!(calls.load(Ordering::SeqCst), 3);
+
+        let calls = Arc::new(AtomicU32::new(0));
+        let c = calls.clone();
+        let r = with_retries_delay(3, TINY, move || {
+            let n = c.fetch_add(1, Ordering::SeqCst) + 1;
+            async move { Err::<(), _>(MachineError::Protocol(format!("try {n}"))) }
+        })
+        .await;
+        assert!(matches!(r, Err(MachineError::Protocol(m)) if m == "try 3"));
+    }
+
+    #[tokio::test]
+    async fn single_attempt_means_no_retry() {
+        // UPLOAD_RETRIES is 1: one attempt, no second try.
+        let (_, calls) = run_with(|| MachineError::Timeout, UPLOAD_RETRIES).await;
+        assert_eq!(calls, 1);
+    }
+
+    #[tokio::test]
+    #[should_panic(expected = "attempts is at least 1")]
+    async fn zero_attempts_panics_documenting_the_precondition() {
+        let _ = with_retries_delay(0, TINY, || async { Ok::<(), MachineError>(()) }).await;
+    }
+
+    // ---- error mapping (real reqwest errors) ----
+
+    async fn get_err(url: String, timeout: Duration) -> reqwest::Error {
+        build_http_client()
+            .get(url)
+            .timeout(timeout)
+            .send()
+            .await
+            .expect_err("request must fail")
+    }
+
+    #[tokio::test]
+    async fn timeout_maps_to_timeout() {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        // Accept and say nothing.
+        let _hold = tokio::spawn(async move {
+            let (_s, _) = listener.accept().await.unwrap();
+            tokio::time::sleep(Duration::from_secs(5)).await;
+        });
+        let e = get_err(format!("http://127.0.0.1:{port}/info"), Duration::from_millis(150)).await;
+        let mapped = map_transport_error(e);
+        assert!(matches!(mapped, MachineError::Timeout), "{mapped:?}");
+        assert_eq!(mapped.to_string(), "request to machine timed out");
+    }
+
+    #[tokio::test]
+    async fn connection_refused_maps_to_unreachable_with_root_cause() {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        drop(listener);
+        let e = get_err(format!("http://127.0.0.1:{port}/info"), Duration::from_secs(5)).await;
+        let concise = concise_reqwest_error(&e);
+        assert!(!concise.contains("error sending request"), "{concise}");
+        assert!(!concise.contains("127.0.0.1"), "url should not leak: {concise}");
+        assert!(concise.to_lowercase().contains("refused"), "{concise}");
+        match map_transport_error(e) {
+            MachineError::Unreachable(msg) => assert_eq!(msg, concise),
+            other => panic!("expected Unreachable, got {other:?}"),
+        }
+    }
+
+    #[tokio::test]
+    async fn tls_failure_is_a_concise_non_timeout_error() {
+        // A server that speaks plain text to a TLS ClientHello.
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        tokio::spawn(async move {
+            let (mut s, _) = listener.accept().await.unwrap();
+            let mut b = [0u8; 512];
+            let _ = s.read(&mut b).await;
+            let _ = s.write_all(b"HTTP/1.1 400 Bad Request\r\n\r\nnot tls").await;
+            let _ = s.shutdown().await;
+        });
+        let e = get_err(format!("https://127.0.0.1:{port}/info"), Duration::from_secs(5)).await;
+        let concise = concise_reqwest_error(&e);
+        assert!(!concise.is_empty());
+        assert!(!concise.contains("error sending request"), "{concise}");
+        assert!(!concise.contains("127.0.0.1"), "{concise}");
+        match map_transport_error(e) {
+            MachineError::Unreachable(m) | MachineError::Protocol(m) => assert_eq!(m, concise),
+            other => panic!("TLS failure must not map to {other:?}"),
+        }
+    }
+
+    #[test]
+    fn url_brackets_ipv6() {
+        assert_eq!(
+            BrotherClient::new("192.168.1.5".parse().unwrap()).url("/info"),
+            "https://192.168.1.5/info"
+        );
+        assert_eq!(
+            BrotherClient::new("fe80::1".parse().unwrap()).url("/info"),
+            "https://[fe80::1]/info"
+        );
+    }
 }
