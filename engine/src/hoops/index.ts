@@ -75,6 +75,38 @@ export const rotateHoop = (h: Hoop): Hoop => ({
   ...(h.clamp && h.clamp !== "none" ? { clamp: ({ top: "right", right: "bottom", bottom: "left", left: "top" } as const)[h.clamp] } : {}),
 });
 
+const CLAMP_ORDER = ["top", "right", "bottom", "left"] as const;
+
+/**
+ * How many clockwise quarter turns (0 to 3) Lilo has turned this hoop from the real one. Derived from
+ * the library id (saved projects carry no flag): width/height swapped = an odd count, and when the hoop
+ * has a clamp its side says exactly how many (so two or three turns are caught too). Without a clamp a
+ * swap counts as one. Custom hoops (no library id) are never turned.
+ */
+export function hoopQuarterTurns(h: Hoop): 0 | 1 | 2 | 3 {
+  const spec = findHoopSpec(h.id);
+  if (!spec) return 0;
+  const swapped = spec.widthMm !== spec.heightMm && h.widthMm === spec.heightMm && h.heightMm === spec.widthMm;
+  if (!swapped && (h.widthMm !== spec.widthMm || h.heightMm !== spec.heightMm)) return 0; // not this hoop's size: treat as custom
+  const a = CLAMP_ORDER.indexOf(spec.clamp as (typeof CLAMP_ORDER)[number]);
+  const b = CLAMP_ORDER.indexOf(h.clamp as (typeof CLAMP_ORDER)[number]);
+  if (a >= 0 && b >= 0) {
+    const q = ((b - a + 4) % 4) as 0 | 1 | 2 | 3;
+    if (spec.widthMm === spec.heightMm || swapped === (q % 2 === 1)) return q;
+  }
+  return swapped ? 1 : 0;
+}
+
+/** Is this hoop turned in Lilo (the physical hoop never turns)? */
+export const hoopTurned = (h: Hoop): boolean => hoopQuarterTurns(h) !== 0;
+
+/** The hoop as it sits on the machine: the library hoop un-turned (`h` itself when it is not turned). */
+export function machineHoop(h: Hoop): Hoop {
+  let out = h;
+  for (let i = hoopQuarterTurns(h); i < 4 && i > 0; i++) out = rotateHoop(out);
+  return out;
+}
+
 /** Width of the frame ring around the sewing area when the real outer size is not known. */
 export const ringMm = (h: Hoop): number => (h.shape === "cap" ? 8 : Math.max(9, Math.min(20, 0.16 * Math.min(h.widthMm, h.heightMm))));
 

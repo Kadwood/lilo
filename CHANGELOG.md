@@ -13,6 +13,7 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 - Every export format (PES, PEC, DST, EXP, JEF, VP3, XXX, U01, TBF, HUS, G-code) is now checked against an independent reader (pyembroidery) on every change. VIP has no independent reader and is checked only by Lilo itself.
 - **Menus and pop-ups no longer hide behind the top bar.** The Appearance pop-up, the File menu and the drawing-colour picker now sit on top of everything.
 - Recent projects now include files you opened or saved anywhere, not just Documents/Lilo.
+- Fixed: turned hoops now sew the right way round, and the fit check uses the real hoop size.
 
 ## [1.1.0] - 2026-10-04
 
