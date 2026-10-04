@@ -61,7 +61,8 @@ export function satinParamsFor(w: number, p: SewingEngineParams): SatinParams {
     // Standard: fixed density, flat pull (scaled by fabric), the shared underlay rule with no hairline exemption.
     const u = satinUnderlayFor(w, p, 0);
     if (u.underlayInsetMm !== undefined) u.underlayInsetMm = round3(Math.min(DEFAULTS.satin.underlayInsetMm, 0.2 * w));
-    return { ...DEFAULT_SATIN_PARAMS, densityMm: p.satinDensityStandardMm, widthMm: width, pullCompMm: round3(DEFAULTS.satin.pullCompMm * p.pullCompFactor), ...u };
+    const split = p.splitMaxWidthMm ? { splitMaxWidthMm: p.splitMaxWidthMm } : {};
+    return { ...DEFAULT_SATIN_PARAMS, densityMm: p.satinDensityStandardMm, widthMm: width, pullCompMm: round3(DEFAULTS.satin.pullCompMm * p.pullCompFactor), ...u, ...split };
   }
   const split = p.splitMaxWidthMm ? { splitMaxWidthMm: p.splitMaxWidthMm, staggerCycles: 3 } : {};
   return {

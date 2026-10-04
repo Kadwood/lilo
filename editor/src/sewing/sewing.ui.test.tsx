@@ -146,15 +146,20 @@ describe("Before you sew", () => {
     const facts = screen.getByLabelText("Sewing facts");
     expect(facts.textContent).toMatch(/Stitches[\d,]+/);
     expect(facts.textContent).toMatch(new RegExp(`Time at ${DEFAULT_SPM} spm≈`));
+    // one recommendation only: the design-aware speed. The fabric range is folded into its reasons.
+    expect(facts.textContent).not.toMatch(/Recommended speed/);
     const speed = recommendedSpeed("suiting", 40);
-    expect(facts.textContent).toContain(`${speed.minSpm}–${speed.maxSpm} spm`);
+    const advice = screen.getByLabelText("Machine speed");
+    expect(advice.textContent).toMatch(/Set your machine to \d+ stitches a minute/);
+    expect(advice.textContent).toContain(`usually sews at ${speed.minSpm} to ${speed.maxSpm} stitches a minute`);
+    expect(screen.getAllByText(/Set your machine to/)).toHaveLength(1);
   });
 
   it("follows the fabric: the checklist and the speed change with the setup", async () => {
     renderEditor(<BeforeYouSew />, { design: generated({ fabric: "leather", threadWeight: 40, quality: "standard" }) });
     await loaded();
     expect(screen.getByRole("list", { name: "Setup checklist" }).textContent).toMatch(/leather\/wedge/);
-    expect(screen.getByLabelText("Sewing facts").textContent).toContain(`${recommendedSpeed("leather", 40).minSpm}–`);
+    expect(screen.getByLabelText("Machine speed").textContent).toContain(`usually sews at ${recommendedSpeed("leather", 40).minSpm} to`);
   });
 
   it("ticks are for this session only and counted", async () => {
@@ -186,7 +191,9 @@ describe("Before you sew", () => {
     expect(text).toMatch(/Threads, in sewing order:\n\[ \] 1\. Brother/);
     expect(text).toMatch(/Stitches: [\d,]+\. Colour changes: 1\./);
     expect(text).toMatch(new RegExp(`at ${DEFAULT_SPM} stitches a minute`));
-    expect(text).toMatch(/Recommended speed for this fabric: 600-800/);
+    expect(text).toMatch(/Set your machine to \d+ stitches a minute/);
+    expect(text).toMatch(/Suiting usually sews at 600 to 800 stitches a minute/);
+    expect(text).not.toMatch(/Recommended speed/);
     expect(await screen.findByText("Copied.")).toBeTruthy();
   });
 

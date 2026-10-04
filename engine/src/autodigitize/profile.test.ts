@@ -36,7 +36,7 @@ describe("premium satin parameters by column width (40 wt, woven)", () => {
     expect(p.underlay).toBe(underlay);
     expect(p.densityMm).toBeCloseTo(density, 3);
     expect(p.shortStitches).toBe(true);
-    expect(p.splitMaxWidthMm).toBe(8);
+    expect(p.splitMaxWidthMm).toBe(6.8); // splits just under 7 mm so no satin leg passes the snag limit
   });
 
   it("density stays in 0.35 to 0.45 mm for every width at 40 wt", () => {
@@ -88,7 +88,7 @@ describe("standard satin parameters", () => {
       expect(p.densityMm).toBe(0.4);
       expect(p.pullCompMm).toBe(0.15);
       expect(p.underlay).toBe(satinTraits(w).underlay);
-      expect(p.splitMaxWidthMm).toBeUndefined();
+      expect(p.splitMaxWidthMm).toBe(6.8);
       expect(p.shortStitches).toBeUndefined();
     }
     expect(satinParamsFor(2, std).underlay).toBe("center");

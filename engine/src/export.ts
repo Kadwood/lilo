@@ -23,7 +23,7 @@ export interface ExportResult {
 
 /** Design -> stitch plan -> validate/fix -> origin -> PES bytes. The one call Export and Send use. */
 export function designToPes(design: Design, options: ExportOptions = {}): ExportResult {
-  const { plan, warnings } = validateForMachine(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm, quality: design.sewing?.quality });
+  const { plan, warnings } = validateForMachine(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm, quality: design.sewing?.quality, design });
   const placed = applyOrigin(plan, options.origin ?? CENTER_ORIGIN);
   return { plan: placed, warnings, stats: planStats(placed), pes: writePes(placed, { label: options.label }) };
 }
@@ -34,7 +34,7 @@ export function designToEmbroidery(
   ext: FormatExt,
   options: ExportOptions = {},
 ): { bytes: Uint8Array; plan: StitchPlan; warnings: PlanWarning[]; stats: PlanStats } {
-  const { plan, warnings } = validateForMachine(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm, quality: design.sewing?.quality });
+  const { plan, warnings } = validateForMachine(designToStitchPlan(design), options.hoop ?? design.hoop, { lockStitchMm: options.lockStitchMm, quality: design.sewing?.quality, design });
   const placed = applyOrigin(plan, options.origin ?? CENTER_ORIGIN);
   return { plan: placed, warnings, stats: planStats(placed), bytes: writeEmbroidery(placed, ext, { label: options.label }) };
 }

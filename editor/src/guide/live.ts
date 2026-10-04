@@ -63,6 +63,8 @@ export function liveFindings(state: Pick<EditorState, "design" | "planResult">, 
       case "plan:outside-hoop":
       case "plan:density":
       case "plan:stitch-too-long":
+      case "plan:thin-satin":
+      case "plan:long-stitch-snag":
       case "plan:object-failed": {
         const w = warn(hint.signal.slice("plan:".length));
         if (w) key = w.message;
@@ -141,11 +143,11 @@ export function applyLiveFix(f: LiveFinding, ctx: FixContext): string {
         f.objectIds,
         "Split satin",
         (o) => {
-          if (o.kind === "satin") o.params.splitMaxWidthMm = 8;
-          else if (o.kind === "run") o.params.satin = { ...o.params.satin, splitMaxWidthMm: 8 };
+          if (o.kind === "satin") o.params.splitMaxWidthMm = 6.8;
+          else if (o.kind === "run") o.params.satin = { ...o.params.satin, splitMaxWidthMm: 6.8 };
         },
       );
-      return "Wide satin columns now split above 8 mm.";
+      return "Wide satin columns now split above 6.8 mm.";
     case "loosen-spacing":
       actions.updateObjects(
         design.objects.map((o) => o.id),

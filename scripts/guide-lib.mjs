@@ -11,7 +11,7 @@ export const HINT_LEVELS = ["basic", "advanced"];
 /** Conditions a tour step can advance on. The editor implements each one (editor/src/guide/conditions.ts). */
 export const TOUR_CONDITIONS = ["has-objects", "tool:closed", "tool:text", "dialog:any", "played", "view:editor", "sewing-open"];
 /** Signals a live warning can listen to (editor/src/guide/liveSignals.ts). */
-export const LIVE_SIGNALS = ["plan:outside-hoop", "plan:density", "plan:stitch-too-long", "plan:object-failed", "colour-changes", "stitch-count", "sewing-time", "tiny-region", "satin-too-wide", "letters-small"];
+export const LIVE_SIGNALS = ["plan:outside-hoop", "plan:density", "plan:stitch-too-long", "plan:thin-satin", "plan:long-stitch-snag", "plan:object-failed", "colour-changes", "stitch-count", "sewing-time", "tiny-region", "satin-too-wide", "letters-small"];
 export const LIVE_FIXES = ["smallest-hoop", "group-by-colour", "set-60wt", "enable-split", "loosen-spacing", "delete-tiny"];
 export const WORKFLOW_IDS = ["design", "size", "stitches", "preview", "send"];
 export const WORKFLOW_ACTIONS = ["open-digitize", "open-hoop", "open-sewing", "focus-player", "open-send", "none"];

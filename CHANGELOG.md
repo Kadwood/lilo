@@ -10,6 +10,17 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [1.1.1] - 2026-10-05
 
+- **Stitch safety.** Every spacing, stitch length, width and pull setting now has a green band behind its slider. Go outside it and the slider turns amber with one short sentence on why. Lilo still sews it and still exports it. You will see the same sliders in a new **Stitch safety** card in Before you sew, where one slider changes every shape of that kind in one undo step.
+- **"What will this change?"** Under each of those sliders, a small line shows how the stitch count and sew time moved, like "+1,240 stitches · +1 min 30 s".
+- **Machine speed advice.** Before you sew now says what speed to set on the machine, and why: "Set your machine to 450 stitches a minute (thin lines in this design)". It slows you down for thin lines, small letters, metallic thread and very dense stitching. A file cannot set the speed, so you still set it on the machine.
+- **More honest sew time.** The time now counts thread cuts (7 seconds each) and colour changes (45 seconds each, up from 15), plus a quarter extra for real life. Before you sew shows the time at 850 and at the suggested speed.
+- **Two new warnings.** "Satin too thin" (under 1.5 mm with 40 wt thread, under 1 mm with 60 wt) and "A long stitch can snag" (over 7 mm on cloth you wear). Both are heads ups only.
+- Changed: with 40 wt thread and Premium quality, custom-font letters no longer use satin columns thinner than 1.5 mm. Thinner strokes, like a thin signature, become a running stitch. A 1 mm column is too thin to look shiny and it breaks thread. 60 wt still allows 1 mm.
+- **Lilo's own settings are always safe.** A design made only with Lilo's defaults, for any quality, thread weight and fabric (auto-digitize, click-to-stitch, lettering, the sample design), now shows no amber items. To get there: satin columns wider than 6.8 mm are split in halves, a zig-zag underlay is swapped for edge walks under columns wider than 5.5 mm, Premium 40 wt hairlines are 1.5 mm (1.0 mm at 60 wt), thin built-in letter columns are widened to the safe width, and no font sews tighter than 0.35 mm (0.30 mm at 60 wt). Stitch counts barely move: the K logo goes from 1,365 to 1,374, the badge stays at 3,795, and a script word gets lighter (1,911 to 1,700) because the font's 0.30 mm spacing is now 0.35 mm.
+- Changed: the "too dense" warning no longer fires for one square millimetre where two lines cross. It still fires for a patch of two or more touching spots, or a pile twice the limit.
+- Before you sew now gives one speed to set, not two. The fabric's usual range is part of the reasons under it.
+- Numbers in the sliders are rounded (5.8 mm, not 5.828 mm).
+- The manual has a new page, "Stitch safety and machine speed".
 - Fixed: PES files had a short stitch-block header. Brother machines showed only part of the design and sewed it wrong. Lilo now writes the full header, and still opens older Lilo files.
 - Fixed: large designs saved as XXX no longer lose stitches. A stitch of exactly 12.4 mm in one direction was turned into a jump, so it was not sewn.
 - Every export format (PES, PEC, DST, EXP, JEF, VP3, XXX, U01, TBF, HUS, G-code) is now checked against an independent reader (pyembroidery) on every change. VIP has no independent reader and is checked only by Lilo itself.

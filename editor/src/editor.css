@@ -342,6 +342,84 @@
   width: 100%;
   min-width: 0;
 }
+/* Stitch safety: green band behind a slider, status dot, amber reason, "what will this change?" */
+.safe-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+/* the browser paints the slider track itself, so the band sits on top of it: thin, see-through, and never takes a click */
+.safe-band {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  height: 8px;
+  transform: translateY(-50%);
+  border-radius: 4px;
+  background: rgba(46, 160, 67, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(46, 160, 67, 0.55);
+  pointer-events: none;
+}
+.safe-track input[type="range"] {
+  position: relative;
+}
+.safe-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-left: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+  background: #2e8b57;
+}
+.safe-dot[data-status="warn"] {
+  background: #d98e04;
+}
+.field-line[data-safe="low"] input.num,
+.field-line[data-safe="high"] input.num {
+  border-color: #d98e04;
+}
+.field-below {
+  grid-column: 1 / -1;
+}
+.field-below p {
+  margin: 2px 0 0;
+}
+.safe-reason {
+  padding: 3px 6px;
+  border-left: 3px solid #d98e04;
+  border-radius: 3px;
+  background: var(--warn-bg, rgba(217, 142, 4, 0.18));
+  color: var(--warn-text, #5e3700);
+  font-size: 12px;
+}
+.stitch-safety {
+  margin-top: var(--s-3, 12px);
+}
+.stitch-safety h4 {
+  margin: 0;
+}
+.safe-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3, 12px);
+  margin: var(--s-2, 8px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.speed-advice {
+  margin-top: var(--s-2, 8px);
+  padding: var(--s-2, 8px) var(--s-3, 12px);
+  border-radius: var(--radius, 8px);
+  background: var(--well, rgba(0, 0, 0, 0.04));
+}
+.speed-advice p {
+  margin: 0;
+}
+.speed-advice p + p {
+  margin-top: 2px;
+}
 .field-line.with-button {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;

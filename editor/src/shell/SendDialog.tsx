@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePreparedPes, WarningList } from "./ExportDialog";
 import { BeforeYouSew } from "../sewing/BeforeYouSew";
+import { safetyNotes } from "../panels/safety";
 import { Hint } from "../guide/Hint";
 import { markExported } from "../guide/guideStore";
 import { useEditor } from "../state/store";
@@ -21,6 +22,7 @@ const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
 /** Pick a saved machine and send the current design (as PES, centred) to it. */
 export function SendDialog({ onClose }: { onClose: () => void }) {
   const { state } = useEditor();
+  const notes = useMemo(() => safetyNotes(state.design), [state.design]);
   const label = (state.projectName.trim() || "design").replace(/[\\/:*?"<>|]+/g, "_").replace(/\.pes$/i, "");
   const { prepared, error: prepError } = usePreparedPes(CENTRE, label);
   const [machines, setMachines] = useState<PlatformMachine[] | null>(null);
@@ -83,7 +85,7 @@ export function SendDialog({ onClose }: { onClose: () => void }) {
         <h2 id="send-title">Send to machine</h2>
         <p className="muted">Sends {label}.pes{prepared ? ` (${prepared.stats.stitchCount.toLocaleString()} stitches, ${prepared.stats.colorChanges} colour changes)` : ""}. Pair and save machines under Lilo Link.</p>
         {prepError && <p className="error">{prepError}</p>}
-        {prepared && <WarningList warnings={prepared.warnings} />}
+        {prepared && <WarningList warnings={prepared.warnings} extra={notes} />}
         <BeforeYouSew />
 
         {loadError && <p className="error">{loadError}</p>}

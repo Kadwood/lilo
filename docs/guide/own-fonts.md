@@ -25,7 +25,7 @@ An ordinary font has outlines, not stitches. Lilo converts each letter into **sa
 
 - Thick strokes become columns.
 - Strokes that are too thin for a clean column are widened up to a minimum width.
-- **Standard** quality sews columns no narrower than 1.5 mm. **Premium** allows 1.0 mm.
+- **Standard** quality sews columns no narrower than 1.5 mm. **Premium** also keeps columns down to 1.5 mm with 40 wt thread, and allows 1.0 mm with 60 wt.
 
 ## Choose a font that suits stitching
 

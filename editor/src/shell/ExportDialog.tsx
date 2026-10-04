@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FORMATS, type FormatExt, type Origin, type PlanStats, type PlanWarning } from "@lilo/engine/light";
 import { useEngine } from "../engine/context";
 import { BeforeYouSew } from "../sewing/BeforeYouSew";
+import { safetyNotes } from "../panels/safety";
 import { useModalFocus } from "./useModalFocus";
 import { getPlatform } from "../platform";
 import { formatDuration } from "../state/player";
@@ -98,12 +99,16 @@ export function usePrepared(format: ExportFormat, origin: Origin, label: string)
 /** PES for the current design (Send uses this). */
 export const usePreparedPes = (origin: Origin, label: string) => usePrepared("pes", origin, label);
 
-export function WarningList({ warnings }: { warnings: PlanWarning[] }) {
-  if (warnings.length === 0) return null;
+/** The plan's warnings, then any extra amber notes (stitch settings outside the green band). Neither blocks the export. */
+export function WarningList({ warnings, extra = [] }: { warnings: PlanWarning[]; extra?: readonly string[] }) {
+  if (warnings.length === 0 && extra.length === 0) return null;
   return (
     <ul className="warnings" aria-label="Warnings">
       {warnings.map((w, i) => (
         <li key={i}>{w.message}</li>
+      ))}
+      {extra.map((t, i) => (
+        <li key={`x${i}`}>{t}</li>
       ))}
     </ul>
   );
@@ -121,6 +126,7 @@ export function ExportPanel({
   onClose,
   onSaved,
   before,
+  notes,
 }: {
   defaultName: string;
   /** Shown in the stats. */
@@ -131,6 +137,8 @@ export function ExportPanel({
   onSaved: (msg: string) => void;
   /** Shown under the warnings: the "Before you sew" card (not for pixel art, which has no sewing setup). */
   before?: React.ReactNode;
+  /** Extra amber notes listed with the warnings (see `safetyNotes`). */
+  notes?: readonly string[];
 }) {
   const modal = useModalFocus<HTMLDivElement>();
   const [name, setName] = useState(() => cleanName(defaultName));
@@ -235,7 +243,7 @@ export function ExportPanel({
           </div>
         )}
 
-        {prepared && <WarningList warnings={prepared.warnings} />}
+        {prepared && <WarningList warnings={prepared.warnings} extra={notes} />}
         {before}
         {saveError && <p className="error">{saveError}</p>}
 
@@ -258,6 +266,7 @@ export function ExportDialog({ onClose, onSaved }: { onClose: () => void; onSave
   const { state } = useEditor();
   const design = state.design;
   const planResult = state.planResult;
+  const notes = useMemo(() => safetyNotes(design), [design]);
   const prepare: Prepare = async (f, o, l) => {
     if (!design) throw new Error("There is nothing to export yet.");
     if (f === "png") {
@@ -277,6 +286,7 @@ export function ExportDialog({ onClose, onSaved }: { onClose: () => void; onSave
       onClose={onClose}
       onSaved={onSaved}
       before={<BeforeYouSew />}
+      notes={notes}
     />
   );
 }

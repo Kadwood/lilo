@@ -27,6 +27,10 @@ The card lists what the setup calls for: needle, stabiliser, topping and hooping
 
 ![The Sewing setup card, open](screenshots/sewing-card.png)
 
+## Stitch safety and speed
+
+**Before you sew** also has a **Stitch safety** card and a suggested machine speed. Green means the setting sews well. Amber is a heads up, and the file still exports. Read [Stitch safety and machine speed](stitch-safety.md).
+
 ## Why it matters
 
 A design for a thin suit lining sewn on a towel will sink and look thin. A design tuned for towel sewn on lining will pucker. The setup keeps the numbers matched to the cloth.

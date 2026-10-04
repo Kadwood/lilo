@@ -50,10 +50,10 @@ export const DEFAULTS = {
     /** Edge-walk inset. [CAL] 0.35 standard, 0.4 premium (0.6 to 0.7 on tight curves: not modelled). */
     underlayInsetMm: 0.35,
     premiumUnderlayInsetMm: 0.4,
-    /** Narrowest satin column. [CAL] Standard 1.5 (below: bean/triple run); Premium 1.0 at 40 wt for hairlines (0.8 at 60 wt). */
-    minWidthMm: { standard: 1.5, premium40: 1.0, premium60: 0.8 },
-    /** Columns wider than this are split. [CAL] 8 mm (hard cap 12.1). */
-    splitMm: 8,
+    /** Narrowest satin column. [CAL] Standard 1.5 (below: bean/triple run); Premium 1.5 at 40 wt and 1.0 at 60 wt, so hairlines come out at the safe width (`SAFE_RANGES.satinWidth`). */
+    minWidthMm: { standard: 1.5, premium40: 1.5, premium60: 1.0 },
+    /** Columns wider than this are split into stitched halves, so a satin leg (plus pull and slant) stays under the 7 mm snag limit. [CAL] split 8 (hard cap 12.1); Lilo lowers it to 6.8 so defaults never trip `long-stitch-snag`. */
+    splitMm: 6.8,
     /** Shortest hairline that becomes a narrow satin column, else a triple run. UNVERIFIED. */
     hairlineSatinMinLengthMm: 1.6,
     /** Columns that meet overlap by this much. UNVERIFIED (practice: "a hair"). */
@@ -104,8 +104,8 @@ export const DEFAULTS = {
     stitchLengthMm: 3,
   },
   lettering: {
-    /** Narrowest satin column in custom-font lettering, by quality. [CAL] Standard 1.5 (thinner strokes run), Premium 1.0. */
-    customMinColumnMm: { standard: 1.5, premium: 1.0 },
+    /** Narrowest satin column in custom-font lettering. [CAL] Standard 1.5 (thinner strokes run). Premium 1.5 at 40 wt (a 1 mm column is too thin to look shiny and breaks thread); 1.0 only at 60 wt. Matches `SAFE_RANGES.satinWidth`. */
+    customMinColumnMm: { standard: 1.5, premium40: 1.5, premium60: 1.0 },
     /** Custom-font fills. LEGACY. */
     fillPullCompMm: 0.15,
     fillUnderlayMinAreaMm2: 6,

@@ -333,6 +333,8 @@ describe("live warnings (pure)", () => {
     expect(ids(result([{ code: "outside-hoop", message: "m" }]))).toEqual(["outside-hoop"]);
     expect(ids(result([{ code: "density", message: "m" }]))).toEqual(["density"]);
     expect(ids(result([{ code: "stitch-too-long", message: "m" }]))).toEqual(["stitch-too-long"]);
+    expect(ids(result([{ code: "thin-satin", message: "m" }]))).toEqual(["thin-satin"]);
+    expect(ids(result([{ code: "long-stitch-snag", message: "m" }]))).toEqual(["long-stitch-snag"]);
     expect(ids(result([{ code: "object-failed", message: "m" }]))).toEqual(["object-failed"]);
     expect(ids(result([], stats({ colorChanges: 9 })))).toEqual(["colour-changes"]);
     expect(ids(result([], stats({ colorChanges: 8 })))).toEqual([]);

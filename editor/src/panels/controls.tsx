@@ -64,40 +64,67 @@ interface FieldProps {
   hint?: string;
   /** Show the number, but let the range go further than the slider (typed values). */
   digits?: number;
+  /** The green safe band behind the slider, as percentages of its length (see `SafeSlider`). */
+  band?: { from: number; to: number };
+  /** Inside the band, or outside it (amber). Shown as a dot beside the label. */
+  safeStatus?: "ok" | "low" | "high";
+  /** Called when the user starts to change the value (pointer down, focus), so a preview can note where it began. */
+  onStart?: () => void;
+  /** Extra lines under the slider (the amber reason, the "what will this change" preview). */
+  below?: ReactNode;
+  disabled?: boolean;
 }
 
 /** A labelled slider with a number box beside it. */
-export function Field({ label, value, min, max, step, onChange, onDone, help, hid, unit, hint, digits }: FieldProps) {
+export function Field({ label, value, min, max, step, onChange, onDone, help, hid, unit, hint, digits, band, safeStatus, onStart, below, disabled }: FieldProps) {
   const id = useId();
   const scope = useHintScope();
   const hintId = hid ?? (scope ? hintIdFor(scope, label) : null);
-  const shown = digits !== undefined ? Number(value.toFixed(digits)) : value;
+  // never show more than 2 decimals (5.828 reads 5.83); `digits` asks for fewer
+  const shown = Number(value.toFixed(digits ?? 2));
   return (
-    <div className="field-line">
+    <div className="field-line" data-safe={safeStatus}>
       <label htmlFor={id} className="field-label">
         {label}
+        {safeStatus && <span className="safe-dot" data-status={safeStatus === "ok" ? "ok" : "warn"} role="img" aria-label={safeStatus === "ok" ? "In the safe range" : "Outside the safe range"} />}
         <Tip hid={hintId} help={help} what={hid === "pattern.setting" ? help : undefined} />
       </label>
-      <input
-        id={id}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={Math.min(max, Math.max(min, value))}
-        onChange={(e) => onChange(Number(e.target.value))}
-        onPointerUp={onDone}
-        onKeyUp={onDone}
-        onBlur={onDone}
-        aria-label={label}
-      />
+      {(() => {
+        const range = (
+          <input
+            id={id}
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            value={Math.min(max, Math.max(min, value))}
+            disabled={disabled}
+            onChange={(e) => onChange(Number(e.target.value))}
+            onPointerDown={onStart}
+            onFocus={onStart}
+            onPointerUp={onDone}
+            onKeyUp={onDone}
+            onBlur={onDone}
+            aria-label={label}
+          />
+        );
+        if (!band) return range;
+        return (
+          <span className="safe-track">
+            <span className="safe-band" data-testid="safe-band" style={{ left: `${band.from}%`, width: `${Math.max(0, band.to - band.from)}%` }} aria-hidden="true" />
+            {range}
+          </span>
+        );
+      })()}
       <input
         className="num"
         type="number"
         min={min}
         step={step}
         value={shown}
+        disabled={disabled}
         aria-label={`${label} value`}
+        onFocus={onStart}
         onChange={(e) => {
           const v = Number(e.target.value);
           if (Number.isFinite(v)) onChange(v);
@@ -110,6 +137,7 @@ export function Field({ label, value, min, max, step, onChange, onDone, help, hi
           {hint}
         </span>
       )}
+      {below && <div className="field-below">{below}</div>}
     </div>
   );
 }

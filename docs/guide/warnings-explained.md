@@ -4,7 +4,7 @@ title: "What the warnings mean"
 summary: "Every warning Lilo can show in the tray and in Export or Send, what it means and how to fix it."
 section: "help"
 order: 2
-keywords: ["warning", "outside hoop", "density", "stitch too long", "colour changes", "stitch count", "small region", "satin too wide", "letters too small", "tray", "fix", "empty", "object failed"]
+keywords: ["warning", "outside hoop", "density", "stitch too long", "thin satin", "long stitch", "snag", "colour changes", "stitch count", "small region", "satin too wide", "letters too small", "tray", "fix", "empty", "object failed"]
 appContext: ["panel.warnings", "dialog.export", "dialog.send"]
 status: "ready"
 ---
@@ -21,7 +21,7 @@ The design is bigger than the hoop's sewing area. The machine cannot sew what is
 
 ## Too dense
 
-Too many stitches land in the same 1 square millimetre. The thread may break or the cloth may pucker.
+Too many stitches pile up in a patch: more than 10 needle drops in each of two or more touching square millimetres, or more than 20 in one. A single spot where two lines cross is normal and is not flagged. The thread may break or the cloth may pucker.
 
 **Fix:** open the shape's settings and raise **Row spacing** (fills) or **Density** (satin). Read [Fixing sew-out problems](sewout-troubleshooting.md).
 
@@ -30,6 +30,18 @@ Too many stitches land in the same 1 square millimetre. The thread may break or 
 Stitches over 12 mm can snag, so Lilo split them. The design is fine, but long stitches often mean a big, open fill.
 
 **Fix:** shorten **Stitch length** in a fill, or use a pattern with shorter stitches.
+
+## Satin too thin
+
+A satin column is narrower than the thread can cover well: under 1.5 mm with 40 wt thread, or under 1 mm with 60 wt. It will not look shiny. Stitches pile up and the thread can break.
+
+**Fix:** turn it into a running stitch, make it wider, or switch to **60 wt**. Lilo still makes the file. See [Stitch safety](stitch-safety.md).
+
+## A long stitch can snag
+
+Some stitches are longer than 7 mm and the fabric is something you wear. Long stitches can catch on fingers and buttons. Lilo only splits stitches over 12 mm.
+
+**Fix:** shorten **Stitch length** in a fill or run. Read [Stitch safety](stitch-safety.md).
 
 ## A shape made no stitches
 
@@ -47,7 +59,7 @@ More than 8 colour changes. Each is a stop to swap thread on a home machine.
 
 ## A high stitch count or long sewing time
 
-A design with more than about 30,000 stitches, or over an hour of sewing at 850 stitches a minute, is a long sew and a bigger file.
+A design with more than about 30,000 stitches, or over an hour of sewing at 850 stitches a minute (counting stops for thread changes and cuts), is a long sew and a bigger file.
 
 **Fix:** make it smaller, use **Standard** quality, or use fewer fills.
 
