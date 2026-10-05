@@ -8,7 +8,9 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
-- The manual and website now show real screenshots.
+## [1.4.0] - 2026-10-05
+
+- The manual and website now show real screenshots, and the Help panel in the app shows them too (it used to show only grey placeholders).
 - **Open stitch files straight in the editor.** PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF files now open like any other file. You no longer have to go through the Converter. Use **Open…** (File menu, Home or **⌘O**), drop the file on Home, or double-click it in Finder (or right-click, **Open With**, Lilo).
 - An opened stitch file becomes a **new project** named after the file, with one layer of the same name, the thread colours from the file, and the smallest hoop of your machine that fits it. It never picks a turned hoop, so nothing gets rotated.
 - **Drop a stitch file on a design you already have open** and it joins as a new layer on top. Your design stays as it was, and one **⌘Z** takes the new layer away.
