@@ -8,6 +8,8 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## [Unreleased]
 
+- The manual and website now show real screenshots.
+
 ## [1.3.0] - 2026-10-05
 
 - **Layers.** The right-hand panel now has a **Layers** tab where pictures and stitch layers sit in one list. The list is the order the machine sews: the bottom layer sews first and the top layer sews last, so it sits on top. Each layer has an eye (show or hide), a padlock, a name you can change, and a "sews 4–7" note that says where it falls in the order. Picture layers have an opacity slider.

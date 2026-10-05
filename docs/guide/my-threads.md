@@ -21,6 +21,8 @@ In the Sew order panel on the right, open the **My Threads** tab.
 
 Three ways:
 
+![The Threads tab with "Brother" typed into the catalogue search and an Add button next to each result](screenshots/my-threads.png)
+
 1. **From the catalogue.** Type a brand, code or name into the search box and press **Add** next to the result. Adding the same spool again raises its quantity.
 2. **By photo.** Read [Add a spool by photo](add-by-photo.md).
 3. **By hand.** Fill in **Brand**, **Line**, **Code** and **Name** for a spool Lilo does not know.

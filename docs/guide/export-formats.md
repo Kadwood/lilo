@@ -15,6 +15,8 @@ Press **Export** at the top right. It is greyed out until the design has stitche
 
 ## Choose the format
 
+![The Export window with the format buttons, the design details, the file name and the origin grid](screenshots/export-dialog.png)
+
 Under **File format**, press the one your machine reads. If you do not know:
 
 - **Brother or Baby Lock:** PES.

@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { diagramUrl } from "./data";
+import { diagramUrl, screenshotUrl } from "./data";
 
 /**
  * A small, safe Markdown renderer for the guide. It builds React elements only (no innerHTML), so a page
@@ -108,6 +108,8 @@ const INLINE = /(!\[([^\]]*)\]\(([^)\s]+)\))|(\[([^\]]+)\]\(([^)\s]+)\))|(\*\*([
 function Image({ alt, src }: { alt: string; src: string }) {
   const url = src.startsWith("diagrams/") ? diagramUrl(src) : undefined;
   if (url) return <img className="guide-diagram" src={url} alt={alt} loading="lazy" />;
+  const shot = src.startsWith("screenshots/") ? screenshotUrl(src) : undefined;
+  if (shot) return <img className="guide-diagram guide-screenshot" src={shot} alt={alt} loading="lazy" />;
   return (
     <span className="guide-shot" role="img" aria-label={`${alt} (screenshot not captured yet)`}>
       <span aria-hidden="true">{alt}</span>

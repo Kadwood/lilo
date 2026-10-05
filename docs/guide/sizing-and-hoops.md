@@ -31,6 +31,8 @@ Nothing selected? **Auto-digitize** has its own width and height boxes. They set
 
 The **hoop chip** in the top bar and in the **Hoop** section shows the current hoop. Click it to open the picker.
 
+![The Choose a hoop window, with brands on the left, machines in the middle and hoop sizes on the right](screenshots/hoop-picker.png)
+
 - Search by **brand**, **machine** or hoop name.
 - Recently used hoops come first.
 - **Smallest hoop that fits** picks the smallest hoop that holds your design.
