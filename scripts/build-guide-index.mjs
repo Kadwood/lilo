@@ -2,6 +2,7 @@
 //   - every page has valid frontmatter, an id equal to its file name, a known section and known appContext values
 //   - every link points at a real page and heading, every image has alt text and an existing file (diagrams)
 //     or a line in SCREENSHOTS.md (screenshots we have not captured yet)
+//     (a screenshot that exists in screenshots/ needs no line)
 //   - hints.json, tour.json, workflow.json and live-hints.json are valid and only link to real pages
 //   - every error code Lilo Link can return is explained on the troubleshooting page
 //   - hand-written copy avoids the banned words and emoji
@@ -41,7 +42,7 @@ for (const page of pages.values()) {
       if (l.target.startsWith("diagrams/")) {
         if (!existsSync(join(GUIDE, l.target))) problems.push(`${where}: missing diagram ${l.target}`);
       } else if (l.target.startsWith("screenshots/")) {
-        if (!shotList.includes(l.target.replace("screenshots/", ""))) problems.push(`${where}: ${l.target} is not listed in SCREENSHOTS.md`);
+        if (!existsSync(join(GUIDE, l.target)) && !shotList.includes(l.target.replace("screenshots/", ""))) problems.push(`${where}: ${l.target} is neither captured nor listed in SCREENSHOTS.md`);
       } else problems.push(`${where}: images must live in diagrams/ or screenshots/ (${l.target})`);
       continue;
     }

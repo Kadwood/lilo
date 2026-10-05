@@ -150,6 +150,11 @@ describe("Markdown renderer", () => {
     expect(screen.getByRole("img", { name: /The toolbar \(screenshot not captured yet\)/ })).toBeTruthy();
   });
 
+  it("shows a captured screenshot as an image", () => {
+    render(<Markdown source={"![The editor](screenshots/editor-overview.png)"} onNavigate={() => undefined} />);
+    expect(screen.getByRole("img", { name: "The editor" }).tagName).toBe("IMG");
+  });
+
   it("parses blocks", () => {
     expect(parseBlocks("# T\n\ntext\n\n- a\n- b").map((b) => b.kind)).toEqual(["heading", "para", "list"]);
   });

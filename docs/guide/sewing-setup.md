@@ -25,7 +25,7 @@ Changing any of them updates the stitches Lilo made. Anything you edited by hand
 
 The card lists what the setup calls for: needle, stabiliser, topping and hooping tips. The same list appears as **Before you sew** in the Export and Send windows, so you see it before you hit the machine.
 
-![The Sewing setup card, open](screenshots/sewing-card.png)
+![The Sewing setup card open at the top of the right column, showing fabric, thread weight, quality, hoop, needle and stabiliser](screenshots/sewing-card.png)
 
 ## Stitch safety and speed
 

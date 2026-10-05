@@ -1,4 +1,5 @@
-// Composes the big card images from raw editor screenshots (site/raw-shots, from scripts/capture.mjs).
+// Composes the big card images from editor screenshots: real ones in site/real-shots (already cropped, committed) or
+// raw captures in site/raw-shots (from scripts/capture.mjs, gitignored).
 // Each shot is cropped, rounded and floated on a soft studio gradient, in a light and a dark variant.
 // Output: site/public/img/<name>-<light|dark>-<w>.webp  (+ og.jpg). Run: pnpm --dir site images
 import sharp from "sharp";
@@ -8,6 +9,7 @@ import { dirname, join } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const RAW = join(here, "../raw-shots");
+const REAL = join(here, "../real-shots"); // real Lilo screenshots (committed); they win over a raw capture of the same name
 const OUT = join(here, "../public/img");
 mkdirSync(OUT, { recursive: true });
 
@@ -50,12 +52,19 @@ function bg(mode, tone) {
 }
 
 async function compose(name, spec, mode) {
-  const file = join(RAW, `${spec.src}.png`);
+  const real = join(REAL, `${spec.src}.png`);
+  const useReal = existsSync(real);
+  const file = useReal ? real : join(RAW, `${spec.src}.png`);
   if (!existsSync(file)) {
     console.log("missing", file);
     return;
   }
-  const [l, t, w, h] = spec.crop;
+  // a real screenshot is already cropped to what the card shows
+  let [l, t, w, h] = spec.crop;
+  if (useReal) {
+    const meta = await sharp(file).metadata();
+    [l, t, w, h] = [0, 0, meta.width, meta.height];
+  }
   const scale = Math.min((W * 0.86) / w, (H * 0.7) / h); // the lower ~25% stays empty for the card title
   const tw = Math.round(w * scale);
   const th = Math.round(h * scale);

@@ -11,7 +11,7 @@ status: "ready"
 
 # The screen at a glance
 
-![The editor with each area numbered](screenshots/editor-overview.png)
+![The editor with a digitized rooster: the top bar, workflow strip, left panel, canvas, toolbar, player and the Sew order panel on the right](screenshots/editor-overview.png)
 
 The editor has the same layout every time. Here is where things live.
 

@@ -20,7 +20,7 @@ Amber is a heads up. It is never a block. Lilo still makes the file and you can 
 - **Before you sew:** open Export or Send and scroll to **Stitch safety**. It has one row for each setting your design uses.
 - **On a shape:** select it. The sliders for spacing, stitch length, width and pull compensation carry the same green band.
 
-![The Stitch safety card in Before you sew](screenshots/stitch-safety-card.png)
+![The Stitch safety card in the Send window, with a green band behind each slider and "All in the green" at the top](screenshots/stitch-safety-card.png)
 
 Inside the green, the dot is green. Outside it, the dot and the box turn amber and one short sentence says why. For example, a satin spacing of 0.30 mm says: "Too tight. The fabric puckers and the thread can break."
 

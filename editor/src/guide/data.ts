@@ -107,6 +107,11 @@ const diagramModules = import.meta.glob("../../../docs/guide/diagrams/*.svg", { 
 const DIAGRAMS = new Map(Object.entries(diagramModules).map(([k, v]) => [k.replace("../../../docs/guide/", ""), v]));
 export const diagramUrl = (path: string): string | undefined => DIAGRAMS.get(path);
 
+/** Real screenshots by their path inside docs/guide (for `![alt](screenshots/x.png)`). A page may name one we have not captured yet. */
+const screenshotModules = import.meta.glob("../../../docs/guide/screenshots/*.png", { query: "?url", import: "default", eager: true }) as Record<string, string>;
+const SCREENSHOTS = new Map(Object.entries(screenshotModules).map(([k, v]) => [k.replace("../../../docs/guide/", ""), v]));
+export const screenshotUrl = (path: string): string | undefined => SCREENSHOTS.get(path);
+
 /** The page to open for a UI area (an `appContext` id), lowest order first. */
 export function pageForContext(index: GuideIndex, context: string): GuidePage | undefined {
   return index.pages.filter((p) => p.appContext.includes(context)).sort((a, b) => a.order - b.order)[0];
