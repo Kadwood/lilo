@@ -655,6 +655,17 @@ describe("stitch files (PES, DST, ...)", () => {
     expect(m.store.getState().path).toBeNull();
   });
 
+  it("dropped on a design that only has reference pictures it becomes a layer and the pictures stay", async () => {
+    await setup();
+    const pic = { id: "img1", name: "ref.png", mime: "image/png", w: 10, h: 10, x: 0, y: 0, widthMm: 20, opacity: 0.5, locked: false, visible: true };
+    await core.actions.loadDesign({ ...emptyDesign(), images: [pic] }, { name: "Traced" });
+    m.store.setState({ dirty: false });
+    expect(await m.addStitchFile(stitchFile())).toBe(true);
+    expect(st().projectName).toBe("Traced");
+    expect(st().design!.images?.map((i) => i.id)).toEqual(["img1"]);
+    expect(st().design!.objects.length).toBeGreaterThan(0);
+  });
+
   it("a damaged file dropped on a design shows the same plain message and leaves the design alone", async () => {
     await setup();
     const before = st().design;

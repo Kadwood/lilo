@@ -286,7 +286,9 @@ export function createProjectManager(deps: ProjectDeps) {
      * step, stitches where the file had them); on an empty canvas it opens as the design, like Open….
      */
     async addStitchFile(file: { name: string; bytes: Uint8Array }): Promise<boolean> {
-      if (!(es().design?.objects.length ?? 0)) return api.openStitch(file);
+      // empty = no stitches and no pictures; a design with only reference pictures keeps them (the file becomes a layer)
+      const d = es().design;
+      if (!d || (d.objects.length === 0 && (d.images?.length ?? 0) === 0)) return api.openStitch(file);
       try {
         const imp = await readStitchFile(engine, file);
         editor.actions.addStitchLayerWith(imp);
