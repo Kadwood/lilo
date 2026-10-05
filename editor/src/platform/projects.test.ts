@@ -94,6 +94,29 @@ describe("tauri platform: OCR, recents, open-file", () => {
     expect(listeners.has("lilo-open-file")).toBe(false);
   });
 
+  it("a stitch file the OS opens (Finder, 'Open with') is read once through its own command and handed over with no path", async () => {
+    const pending = ["/Users/me/Downloads/Rooster.PES", "/Users/me/Documents/Lilo/Crest.lilo"];
+    invoke.mockImplementation(async (cmd: string, args?: { path?: string }) => {
+      if (cmd === "take_open_files") return pending.splice(0);
+      if (cmd === "read_opened_stitch_file") return new Uint8Array([35, 80, 69, 83]).buffer;
+      if (cmd === "read_project_file") return new Uint8Array([1]).buffer;
+      throw new Error(`unexpected ${cmd} ${args?.path}`);
+    });
+    const got: { path: string; name: string; n: number }[] = [];
+    const off = tauriPlatform.onOpenFile((f) => got.push({ path: f.path, name: f.name, n: f.bytes.length }));
+    await flush();
+    await flush();
+    // no path for the stitch file: nothing can be saved over it, and it is never put in Recents
+    expect(got).toEqual([
+      { path: "", name: "Rooster.PES", n: 4 },
+      { path: "/Users/me/Documents/Lilo/Crest.lilo", name: "Crest.lilo", n: 1 },
+    ]);
+    expect(invoke).toHaveBeenCalledWith("read_opened_stitch_file", { path: "/Users/me/Downloads/Rooster.PES" });
+    expect(invoke).not.toHaveBeenCalledWith("read_project_file", { path: "/Users/me/Downloads/Rooster.PES" });
+    expect(invoke).not.toHaveBeenCalledWith("allow_project_path", expect.anything());
+    off();
+  });
+
   it("a file that can't be read doesn't break the others", async () => {
     const err = vi.spyOn(console, "error").mockImplementation(() => {});
     const pending = ["/a/bad.lilo", "/a/good.lilo"];

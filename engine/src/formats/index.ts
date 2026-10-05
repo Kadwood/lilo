@@ -186,7 +186,7 @@ export interface ManualObjects {
  * changes); the design generator re-creates the jumps between them. Objects are `run` objects with
  * `MANUAL_RUN_PARAMS` until the editor has a dedicated manual type.
  */
-export function stitchPlanToManualObjects(plan: StitchPlan, namePrefix = "Stitches"): ManualObjects {
+export function stitchPlanToManualObjects(plan: StitchPlan, namePrefix = "Stitches", exact = false): ManualObjects {
   const threads = new Map<string, Thread>();
   const objects: RunObject[] = [];
   let path: [number, number][] = [];
@@ -200,7 +200,8 @@ export function stitchPlanToManualObjects(plan: StitchPlan, namePrefix = "Stitch
         threadId: blockThread.id,
         // validateDesign wants 2+ points; a lone needle drop is doubled (generation drops the duplicate)
         geometry: { path: path.length === 1 ? [path[0], path[0]] : path, closed: false },
-        params: { ...MANUAL_RUN_PARAMS },
+        // `exact`: a file's stitches are sewn as they were: export adds no tie stitches and merges nothing
+        params: exact ? { ...MANUAL_RUN_PARAMS, exact: true } : { ...MANUAL_RUN_PARAMS },
       });
     }
     path = [];
@@ -220,9 +221,9 @@ export function stitchPlanToManualObjects(plan: StitchPlan, namePrefix = "Stitch
   return { threads: [...threads.values()], objects };
 }
 
-/** A fresh design holding a plan's stitches as manual objects (see `stitchPlanToManualObjects`). */
+/** A fresh design holding a plan's stitches as manual objects, marked `exact` (see `stitchPlanToManualObjects`). */
 export function planToManualDesign(plan: StitchPlan, hoop: Hoop = DEFAULT_HOOP): Design {
-  const { threads, objects } = stitchPlanToManualObjects(plan);
+  const { threads, objects } = stitchPlanToManualObjects(plan, "Stitches", true);
   const d = emptyDesign(hoop);
   d.threads = threads;
   d.objects = objects;

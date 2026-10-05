@@ -25,7 +25,9 @@ You can remove a file from the list with its **Remove** button, or clear the who
 
 ## Open in the editor
 
-Press **Open in editor** on an embroidery file to add its stitches to the editor as **Manual stitch** shapes. You can then move and resize them. You cannot change their stitch type, because the original instructions are fixed stitch points.
+Press **Open in editor** on an embroidery file to bring it into the editor. This works exactly like **Open…** on Home: the file becomes a new project named after it, with one stitch layer of **Manual stitch** shapes. If you already have a design open, the file arrives as a new layer on top instead, and one **⌘Z** takes it away. You can move and resize the shapes. You cannot change their stitch type, because the original instructions are fixed stitch points.
+
+You do not have to use the converter to open a file. Read [Opening files](opening-files.md).
 
 ## Warnings
 

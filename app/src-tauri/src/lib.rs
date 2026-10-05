@@ -88,7 +88,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
             show_main_window(app);
-            // A second launch with a .lilo path (Windows/Linux double-click) opens it here.
+            // A second launch with a .lilo or stitch-file path (Windows/Linux double-click) opens it here.
             projects::announce(app, projects::paths_from_args(&args));
         }))
         .plugin(tauri_plugin_deep_link::init())
@@ -219,6 +219,7 @@ pub fn run() {
             projects::list_recent_projects,
             projects::projects_folder,
             projects::take_open_files,
+            projects::read_opened_stitch_file,
             projects::read_project_file,
             projects::write_project_file,
             projects::allow_project_path,

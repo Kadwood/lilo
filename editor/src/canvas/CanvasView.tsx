@@ -9,6 +9,8 @@ import { hoopViewStore, setHoopView } from "../state/hoopViewStore";
 import { shouldAskCalibration } from "./actualSize";
 import { GuidesLayer, Rulers } from "./HoopOverlays";
 import { SAFE_MARGIN_MM } from "../hoops/autoPick";
+import { isStitchFile } from "../io/stitchFiles";
+import { useProject } from "../project/ProjectProvider";
 import { useEditor } from "../state/store";
 import { CanvasController, type PointerInput } from "./controller";
 import { MapDialog } from "./MapDialog";
@@ -87,6 +89,7 @@ function hintFor(tool: string, mode: string, drafting: boolean): string | null {
  */
 export function CanvasView({ onOpen }: { onOpen: () => void }) {
   const { state, actions, player, api } = useEditor();
+  const project = useProject();
   const hostRef = useRef<HTMLDivElement>(null);
   const svgGroupRef = useRef<SVGGElement>(null);
   const sceneRef = useRef<Scene | null>(null);
@@ -420,6 +423,11 @@ export function CanvasView({ onOpen }: { onOpen: () => void }) {
   const importFiles = async (files: FileList | File[] | null | undefined) => {
     const f = files && files[0];
     if (!f) return;
+    if (isStitchFile(f.name)) {
+      // a stitch file joins the open design as a new layer on top (one undo step); on an empty canvas it opens as the design
+      await project.addStitchFile({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) });
+      return;
+    }
     await actions.importFile({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()), type: f.type });
   };
 

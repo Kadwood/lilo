@@ -221,7 +221,7 @@ button.primary {
   overflow: hidden;
 }
 .canvas-stage.drag-over::after {
-  content: "Drop to digitize";
+  content: "Drop a picture to digitize, or a stitch file to open";
   position: absolute;
   inset: 12px;
   display: grid;
@@ -233,6 +233,11 @@ button.primary {
   font-size: 18px;
   font-weight: 600;
   pointer-events: none;
+}
+.screen.home.drag-over {
+  outline: 2px dashed var(--accent);
+  outline-offset: -8px;
+  border-radius: var(--radius);
 }
 .canvas-host {
   position: absolute;

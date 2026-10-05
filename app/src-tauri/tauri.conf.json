@@ -53,6 +53,13 @@
           "identifier": "com.kadwood.lilo.project",
           "conformsTo": ["public.data", "public.archive"]
         }
+      },
+      {
+        "ext": ["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec", "hus", "vip", "tbf"],
+        "name": "Embroidery stitch file",
+        "description": "Embroidery stitch file",
+        "role": "Viewer",
+        "rank": "Alternate"
       }
     ],
     "icon": [

@@ -223,6 +223,11 @@ export interface RunParams {
   flipped?: boolean;
   /** Satin-along-path settings (density, pull comp, underlay, split, stagger, short stitches). */
   satin?: Partial<SatinParams>;
+  /**
+   * Stitches that came from an embroidery file (Open, drop, Converter): sewn exactly as the file had them. Export
+   * neither merges their short stitches nor adds tie-in/tie-off stitches, so saving the file back gives the same needle drops.
+   */
+  exact?: boolean;
 }
 
 /**

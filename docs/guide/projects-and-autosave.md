@@ -18,7 +18,7 @@ A **project** is your whole design in one file with the ending **.lilo**. It hol
 The **File** menu in the top-left of the editor has:
 
 - **New design** (**⌘N**)
-- **Open project…** (**⌘O**)
+- **Open…** (**⌘O**), for a .lilo project or a stitch file like PES or DST
 - **Save** (**⌘S**)
 - **Save As…** (**⇧⌘S**)
 - **Revert to saved**, which throws away changes since your last save
@@ -40,6 +40,8 @@ If Lilo closes by accident, open the project again and look in **Version history
 ## Opening a project
 
 Use **Open…** on Home, **⌘O**, or double-click a .lilo file. Lilo asks before it throws away unsaved changes in the current design.
+
+You can also open a stitch file (PES, DST and others) the same way. It becomes a new, unsaved project. The first **Save** makes a .lilo and never touches the original. Read [Opening files](opening-files.md).
 
 ## Name your project
 

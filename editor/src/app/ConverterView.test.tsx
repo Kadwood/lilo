@@ -10,7 +10,7 @@ import { setPlatform } from "../platform";
 import { classifyInput, convertInput, targetsFor, uniqueNames } from "../state/converter";
 import { converter, converterStore } from "../state/converterStore";
 import { DEFAULT_UI_OPTIONS, toEngineOptions } from "../state/editorStore";
-import { lastEditor, renderEditor } from "../test/helpers";
+import { lastEditor, renderEditor, testDesign } from "../test/helpers";
 import { AppContext, type AppApi } from "./AppContext";
 import { ConverterView } from "./ConverterView";
 
@@ -183,7 +183,7 @@ describe("Converter screen", () => {
     expect(screen.getByText(/digitized with the Auto digitize settings in the editor/)).toBeTruthy();
   });
 
-  it("Open in editor adds the file's stitches to the design as manual-stitch objects, undoably, and goes to the editor", async () => {
+  it("Open in editor opens the file like Open… does: a new project named after it, one layer, and goes to the editor", async () => {
     mount();
     await choose([file("pes")]);
     fireEvent.click(screen.getByRole("button", { name: "Open in editor" }));
@@ -191,9 +191,21 @@ describe("Converter screen", () => {
     const d = lastEditor!.state.design!;
     expect(d.objects.length).toBeGreaterThan(0);
     expect(d.objects.every((o) => o.kind === "run")).toBe(true); // an existing file opens as manual stitches, every needle drop kept
-    expect(lastEditor!.state.undoLabel).toBe("Import crest.pes");
+    expect(lastEditor!.state.projectName).toBe("crest");
+    expect(d.layers?.map((l) => l.name)).toEqual(["crest"]);
+  });
+
+  it("with a design already open, Open in editor adds the file as a new layer on top, in one undo step", async () => {
+    mount();
+    await act(async () => lastEditor!.actions.loadDesign(testDesign(), { name: "Mine" }));
+    await choose([file("pes")]);
+    fireEvent.click(screen.getByRole("button", { name: "Open in editor" }));
+    await waitFor(() => expect(go).toHaveBeenCalledWith("editor"), T);
+    expect(lastEditor!.state.projectName).toBe("Mine");
+    expect(lastEditor!.state.design!.layers!.at(-1)!.name).toBe("crest");
+    expect(lastEditor!.state.undoLabel).toBe("Import crest");
     act(() => lastEditor!.actions.undo());
-    expect(lastEditor!.state.design!.objects).toHaveLength(0);
+    expect(lastEditor!.state.design!.objects).toHaveLength(testDesign().objects.length);
   });
 
   it("accepts dropped files and can remove one", async () => {

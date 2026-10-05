@@ -22,6 +22,8 @@ import {
 import type { EngineClient } from "../engine/client";
 import type { OpenedPath, Platform, RecentProject } from "../platform";
 import type { EditorActions, EditorState } from "../state/editorStore";
+import { designFromStitches, isStitchFile, readStitchFile, StitchImportError } from "../io/importStitch";
+import { hoopStore, loadHoops } from "../state/hoopStore";
 import { isBlank, type PixelStore } from "../state/pixelStore";
 
 export type UnsavedChoice = "save" | "discard" | "cancel";
@@ -216,7 +218,7 @@ export function createProjectManager(deps: ProjectDeps) {
   };
 
   const fail = (e: unknown): false => {
-    set({ notice: { kind: "error", text: e instanceof ProjectError ? e.message : `Something went wrong: ${msg(e)}` } });
+    set({ notice: { kind: "error", text: e instanceof ProjectError || e instanceof StitchImportError ? e.message : `Something went wrong: ${msg(e)}` } });
     return false;
   };
 
@@ -249,8 +251,56 @@ export function createProjectManager(deps: ProjectDeps) {
         set({ path: null, dirty: false, savedAt: null, history: [], notice: null });
       }).catch(fail),
 
-    /** The OS asks us to open a file (double-click). */
-    openFile: (file: OpenedPath): Promise<boolean> =>
+    /**
+     * Open a file the user chose or the OS handed us: a `.lilo` project, or a stitch file (PES, DST, ...),
+     * which becomes a NEW untitled project named after it. Resolves to whether something opened.
+     */
+    openFile: (file: OpenedPath): Promise<boolean> => (isStitchFile(file.name) ? api.openStitch(file) : api.openLilo(file)),
+
+    /**
+     * A stitch file as a new project: one layer named after the file, the smallest hoop of the user's machine
+     * that holds it, every stitch where the file had it. It has no path, so the first Save is a Save As
+     * (a `.lilo` in the projects folder) and the original file is never written to.
+     */
+    async openStitch(file: { name: string; bytes: Uint8Array }): Promise<boolean> {
+      let imp;
+      try {
+        imp = await readStitchFile(engine, file); // before the unsaved-changes question: a bad file shouldn't ask it
+      } catch (e) {
+        return fail(e);
+      }
+      await loadHoops().catch(() => {});
+      const { design, warnings } = designFromStitches(imp, { reference: hoopStore.getState().recents[0], custom: hoopStore.getState().custom });
+      return guarded("open another file", async () => {
+        await editor.actions.loadDesign(design, { name: imp.name });
+        pixel.actions.load(null);
+        base = null;
+        // never saved: closing it asks first
+        saved = { design: null, name: "", pixel: pixel.store.getState().art };
+        set({ path: null, dirty: true, savedAt: null, history: [], notice: warnings.length ? { kind: "ok", text: warnings.join(" ") } : null });
+      }).catch(fail);
+    },
+
+    /**
+     * A stitch file dropped on the editor. With a design open it becomes a NEW stitch layer on top (one undo
+     * step, stitches where the file had them); on an empty canvas it opens as the design, like Open….
+     */
+    async addStitchFile(file: { name: string; bytes: Uint8Array }): Promise<boolean> {
+      // empty = no stitches and no pictures; a design with only reference pictures keeps them (the file becomes a layer)
+      const d = es().design;
+      if (!d || (d.objects.length === 0 && (d.images?.length ?? 0) === 0)) return api.openStitch(file);
+      try {
+        const imp = await readStitchFile(engine, file);
+        editor.actions.addStitchLayerWith(imp);
+        set({ notice: imp.warnings.length ? { kind: "ok", text: imp.warnings.join(" ") } : null });
+        return true;
+      } catch (e) {
+        return fail(e);
+      }
+    },
+
+    /** A `.lilo` project (double-click, Open, a Home card). */
+    openLilo: (file: OpenedPath): Promise<boolean> =>
       guarded("open another project", async () => {
         let loaded: ReturnType<typeof loadProject>;
         let recovered = false;

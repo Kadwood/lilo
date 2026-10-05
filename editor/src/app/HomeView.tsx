@@ -3,6 +3,7 @@ import { getPlatform } from "../platform";
 import { whenLabel } from "../project/HistoryPanel";
 import type { RecentCard } from "../project/manager";
 import { useProject, useProjectState } from "../project/ProjectProvider";
+import { isProjectFile, isStitchFile } from "../io/stitchFiles";
 import { openImagePicker } from "./openImage";
 import { useApp } from "./AppContext";
 import { useEditor } from "../state/store";
@@ -91,9 +92,28 @@ export function HomeView() {
   useEffect(() => void m.refreshRecent(), [m]);
 
   const go = (p: Promise<boolean>) => void p.then((ok) => ok && app.go("editor"));
+  const [over, setOver] = useState(false);
+  // a project or a stitch file dropped on Home opens, like Open…
+  const drop = async (list: FileList) => {
+    const f = [...list].find((x) => isStitchFile(x.name) || isProjectFile(x.name));
+    if (f) go(m.openFile({ path: "", name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) }));
+  };
 
   return (
-    <div className="screen home" aria-label="Home">
+    <div
+      className={`screen home${over ? " drag-over" : ""}`}
+      aria-label="Home"
+      onDragOver={(e) => {
+        e.preventDefault();
+        setOver(true);
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        void drop(e.dataTransfer.files);
+      }}
+    >
       <header className="home-hero">
         <img className="home-icon" src={iconUrl} alt="" width={96} height={96} />
         <div className="home-welcome">
@@ -134,7 +154,7 @@ export function HomeView() {
             }
           />
           <Quick icon="pixel" title="Pixel art" hint="Cross-stitch style, square by square" onClick={() => app.go("pixel")} />
-          <Quick icon="open" tour="home-open" title="Open…" hint="A Lilo project from your computer" onClick={() => go(m.openDialog())} />
+          <Quick icon="open" tour="home-open" title="Open…" hint="A Lilo project, or a PES, DST or other stitch file" onClick={() => go(m.openDialog())} />
           <Quick icon="convert" title="Converter" hint="Change embroidery file formats" onClick={() => app.go("converter")} />
         </ul>
         {notice && (
@@ -148,7 +168,7 @@ export function HomeView() {
         <h2 id="recent-title">Recent</h2>
         {recent.length === 0 ? (
           <p className="muted" role="status">
-            {loading ? "Looking in your Lilo folder…" : desktop ? "Nothing here yet. Projects you open or save show up here, along with anything in Documents/Lilo." : "Recent projects show up here in the desktop app. Use Open… to pick a file."}
+            {loading ? "Looking in your Lilo folder…" : desktop ? "Nothing here yet. Projects you save show up here, along with anything in Documents/Lilo." : "Recent projects show up here in the desktop app. Use Open… to pick a project or a stitch file."}
           </p>
         ) : (
           <ul className="recent-grid" aria-label="Recent projects">

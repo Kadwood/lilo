@@ -22,6 +22,7 @@ import {
   isObjectVisible,
   lockedLayerIds,
   makeLayer,
+  newLayerName,
   normalizeLayers,
   flipH,
   flipV,
@@ -354,6 +355,11 @@ export interface EditorActions {
    * centred on what is already there (on 0,0 for an empty design).
    */
   placeObjects(objects: readonly DesignObject[], threads: readonly Thread[], label: string, opts?: { centreOnDesign?: boolean }): void;
+  /**
+   * A stitch file dropped on a design that is already open: its shapes go in a NEW stitch layer on top,
+   * named `name`, exactly where the file put them. One undo step. Returns the new layer's id.
+   */
+  addStitchLayerWith(imp: { name: string; objects: readonly DesignObject[]; threads: readonly Thread[] }): string | null;
   /** Change objects by id through a recipe on each; one undo step. */
   updateObjects(ids: readonly string[], label: string, recipe: (o: DesignObject) => void, opts?: CommitOptions): void;
   replaceObject(id: string, pieces: DesignObject[], label: string): void;
@@ -907,6 +913,26 @@ export function createEditorStore(engine: EngineClient): EditorStore {
         },
         { select: placed.map((o) => o.id) },
       );
+    },
+    addStitchLayerWith(imp) {
+      if (imp.objects.length === 0) return null;
+      const d0 = get().design ?? emptyDesign();
+      const layers = d0.layers ?? normalizeLayers(d0).layers ?? [];
+      const layer = makeLayer(layers, "stitch", newLayerName(layers, imp.name));
+      const nextId = makeIdGen(d0);
+      const placed = imp.objects.map((o) => ({ ...o, id: nextId(), layerId: layer.id }));
+      commit(
+        `Import ${imp.name}`,
+        (d) => {
+          d.layers = d.layers ?? layers.map((l) => ({ ...l }));
+          d.layers.push(layer);
+          for (const t of imp.threads) ensureThread(d, t);
+          d.objects.push(...placed);
+        },
+        { select: placed.map((o) => o.id) },
+      );
+      set({ activeLayerId: layer.id });
+      return layer.id;
     },
     updateObjects(ids, label, recipe, opts) {
       const set = new Set(ids);

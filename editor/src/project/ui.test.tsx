@@ -2,6 +2,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, screen, waitFor, within, type RenderResult } from "@testing-library/react";
 import { addHistorySnapshot, createProject, emptyDesign, makeFill, planThumbnailPng, rectNodes, saveProject, type Design } from "@lilo/engine/light";
+import { designToEmbroidery } from "@lilo/engine";
+import { sampleDesign } from "../../../engine/src/stitch/sample-design";
 import type { AppApi } from "../app/AppContext";
 import { HomeView } from "../app/HomeView";
 import { createMockPlatform, type MockState } from "../platform/mock";
@@ -95,6 +97,34 @@ describe("Home", () => {
     mock.pickProject = { path: "/mock/Documents/Lilo/Crest.lilo", name: "Crest.lilo", bytes: projectBytes("Crest", design("q")) };
     fireEvent.click(screen.getByRole("button", { name: "Open…" }));
     await waitFor(() => expect(lastEditor!.state.projectName).toBe("Crest"), T);
+  });
+
+  it("Open… takes a PES: a new project named after the file opens in the editor", async () => {
+    mount(<HomeView />);
+    mock.pickProject = { path: "", name: "rooster.pes", bytes: designToEmbroidery(sampleDesign(), "pes", { label: "rooster" }).bytes };
+    fireEvent.click(screen.getByRole("button", { name: "Open…" }));
+    await waitFor(() => expect(go).toHaveBeenCalledWith("editor"), T);
+    expect(lastEditor!.state.projectName).toBe("rooster");
+    expect(lastEditor!.state.design!.layers?.map((l) => l.name)).toEqual(["rooster"]);
+    expect(manager.store.getState().path).toBeNull();
+  });
+
+  it("a stitch file dropped on Home opens the same way; a damaged one shows the plain-words error and stays on Home", async () => {
+    mount(<HomeView />);
+    const home = screen.getByLabelText("Home");
+    const pes = new File([designToEmbroidery(sampleDesign(), "pes", { label: "rooster" }).bytes as BlobPart], "rooster.pes");
+    await act(async () => {
+      fireEvent.drop(home, { dataTransfer: { files: [pes] } });
+    });
+    await waitFor(() => expect(go).toHaveBeenCalledWith("editor"), T);
+    expect(lastEditor!.state.projectName).toBe("rooster");
+    go.mockClear();
+    manager.store.setState({ dirty: false });
+    await act(async () => {
+      fireEvent.drop(home, { dataTransfer: { files: [new File([new Uint8Array([1, 2, 3])], "broken.dst")] } });
+    });
+    expect((await screen.findByRole("alert", undefined, T)).textContent).toMatch(/couldn't read this file/);
+    expect(go).not.toHaveBeenCalled();
   });
 
   it("says what is going on when there is nothing yet", async () => {

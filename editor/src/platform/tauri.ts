@@ -3,7 +3,8 @@ import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open, save } from "@tauri-apps/plugin-dialog";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { readFile, writeFile } from "@tauri-apps/plugin-fs";
+import { readFile, stat, writeFile } from "@tauri-apps/plugin-fs";
+import { MAX_STITCH_FILE_BYTES, OPEN_EXTENSIONS, STITCH_EXTENSIONS, TOO_BIG_MESSAGE, isProjectFile } from "../io/stitchFiles";
 import { BridgeClient } from "../link/api/client";
 import type { SavedMachine } from "../link/api/types";
 import type { JobRecord } from "../link/api/types";
@@ -25,6 +26,11 @@ function client(): Promise<BridgeClient> {
 }
 
 const nameOf = (p: string) => p.split(/[\\/]/).pop() ?? p;
+/** A stitch file the OS opened for Lilo (Finder double-click, "Open with"): handed over once, by the desktop side. */
+async function readOpenedStitchFile(path: string): Promise<Uint8Array> {
+  const data = await invoke<ArrayBuffer | number[]>("read_opened_stitch_file", { path });
+  return data instanceof ArrayBuffer ? new Uint8Array(data) : Uint8Array.from(data);
+}
 const joinPath = (dir: string, name: string) => `${dir}${dir.includes("\\") && !dir.includes("/") ? "\\" : "/"}${name}`;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -152,8 +158,23 @@ export const tauriPlatform: Platform = {
 
   async openProjectDialog() {
     const folder = await invoke<string>("projects_folder").catch(() => undefined);
-    const picked = await open({ multiple: false, directory: false, defaultPath: folder, filters: [{ name: "Lilo project", extensions: ["lilo"] }] });
+    const picked = await open({
+      multiple: false,
+      directory: false,
+      defaultPath: folder,
+      filters: [
+        { name: "Lilo projects and stitch files", extensions: [...OPEN_EXTENSIONS] },
+        { name: "Lilo project", extensions: ["lilo"] },
+        { name: "Stitch files", extensions: [...STITCH_EXTENSIONS] },
+      ],
+    });
     if (!picked) return null;
+    if (!isProjectFile(picked)) {
+      // a stitch file: read once with the permission the dialog just gave, never registered for saving
+      const info = await stat(picked);
+      if (info.size > MAX_STITCH_FILE_BYTES) throw new Error(TOO_BIG_MESSAGE);
+      return { path: "", name: nameOf(picked), bytes: await readFile(picked) };
+    }
     await invoke("allow_project_path", { path: picked });
     return { path: picked, name: nameOf(picked), bytes: await tauriPlatform.readProjectFile(picked) };
   },
@@ -220,7 +241,10 @@ export const tauriPlatform: Platform = {
       for (const path of paths) {
         if (!active) return;
         try {
-          const file: OpenedPath = { path, name: nameOf(path), bytes: await tauriPlatform.readProjectFile(path) };
+          // a stitch file (PES, DST, ...) comes back once and with no path: Lilo never saves over it
+          const stitch = !isProjectFile(path);
+          const bytes = stitch ? await readOpenedStitchFile(path) : await tauriPlatform.readProjectFile(path);
+          const file: OpenedPath = { path: stitch ? "" : path, name: nameOf(path), bytes };
           callback(file);
         } catch (e) {
           console.error(`Could not open ${path}`, e);
