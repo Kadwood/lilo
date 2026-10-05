@@ -56,7 +56,7 @@
       "id": "open",
       "title": "Open a file",
       "steps": [
-        { "id": "open", "target": "home-open", "title": "Open your project", "body": "Click Open and choose a .lilo project. Recent projects are listed further down.", "advanceOn": { "type": "state", "cond": "view:editor" }, "guideId": "projects-and-autosave" },
+        { "id": "open", "target": "home-open", "title": "Open your project", "body": "Click Open and choose a .lilo project, or a stitch file like PES. Recent projects are listed further down.", "advanceOn": { "type": "state", "cond": "view:editor" }, "guideId": "projects-and-autosave" },
         { "id": "look", "target": "canvas", "title": "Look it over", "body": "Your design is on the canvas. Scroll to zoom, hold Space and drag to pan.", "advanceOn": { "type": "next" }, "guideId": "screen-tour" },
         { "id": "hoop", "target": "hoop-chip", "title": "Check the hoop", "body": "Make sure the design fits the hoop on your machine.", "advanceOn": { "type": "next" }, "guideId": "sizing-and-hoops" },
         { "id": "sewing", "target": "sewing-chip", "title": "Check the sewing setup", "body": "Open this card to confirm the fabric and thread weight still match your job.", "advanceOn": { "type": "state", "cond": "sewing-open" }, "guideId": "sewing-setup" },

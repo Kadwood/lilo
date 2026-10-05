@@ -5,6 +5,7 @@ import { getPlatform } from "../platform";
 import { CONVERTER_EXTENSIONS, targetsFor, type ConvTarget } from "../state/converter";
 import { converter, useConverter, type ConvItem } from "../state/converterStore";
 import { toEngineOptions } from "../state/editorStore";
+import { useProject } from "../project/ProjectProvider";
 import { useEditor } from "../state/store";
 import { useApp } from "./AppContext";
 
@@ -18,7 +19,8 @@ const sizeLabel = (n: number) => (n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 10
  */
 export function ConverterView() {
   const engine = useEngine();
-  const { state, actions } = useEditor();
+  const { state } = useEditor();
+  const project = useProject();
   const app = useApp();
   const { items, targets, running } = useConverter();
   const [over, setOver] = useState(false);
@@ -54,15 +56,10 @@ export function ConverterView() {
     }
   };
   const openInEditor = async (item: ConvItem) => {
-    try {
-      const ext = item.name.slice(item.name.lastIndexOf(".") + 1);
-      const r = await engine.call("readEmbroidery", item.bytes, ext);
-      actions.placeObjects(r.design.objects, r.design.threads, `Import ${item.name}`);
-      if (!state.design?.objects.length && (state.projectName === "Untitled design" || state.projectName === "")) actions.setName(item.name.replace(/\.[^.]+$/, ""));
-      app.go("editor");
-    } catch (e) {
-      setMessage({ kind: "error", text: e instanceof Error ? e.message : String(e) });
-    }
+    // the same path as Open… and a drop on the editor: a new project, or a new layer when a design is open
+    const ok = await project.addStitchFile({ name: item.name, bytes: item.bytes });
+    if (ok) app.go("editor");
+    else setMessage({ kind: "error", text: project.store.getState().notice?.text ?? "Lilo couldn't open this file." });
   };
 
   return (

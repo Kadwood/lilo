@@ -63,7 +63,7 @@ export interface RecentProject {
   sizeBytes: number;
 }
 
-/** A project file the OS asked Lilo to open (Finder double-click, "Open With", command line). */
+/** A file the OS asked Lilo to open (Finder double-click, "Open With", command line), or the user chose in Open. `path` is "" for a stitch file. */
 export interface OpenedPath {
   path: string;
   name: string;
@@ -143,8 +143,9 @@ export interface Platform {
   /** Open a web page in the user's browser. */
   openUrl(url: string): Promise<void>;
   /**
-   * Native "Open project" dialog, starting in the default folder. The chosen file can then be saved
-   * to. In the browser (no path) the project opens but Save downloads a copy.
+   * Native "Open" dialog, starting in the default folder: a Lilo project or a stitch file (PES, DST, ...).
+   * A chosen project can then be saved to. A stitch file comes back with `path: ""`: it is read once and is
+   * never written to or remembered. In the browser (no path) a project opens but Save downloads a copy.
    */
   openProjectDialog(): Promise<OpenedPath | null>;
   /** Native "Save project as" dialog, starting in the default folder. Resolves to the saved path (a file name in the browser, where it downloads), or null if cancelled. */

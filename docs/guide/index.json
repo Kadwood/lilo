@@ -2754,7 +2754,7 @@
     "view.converter"
    ],
    "status": "ready",
-   "words": 246,
+   "words": 303,
    "headings": [
     {
      "level": 2,
@@ -2782,12 +2782,12 @@
      "slug": "related"
     }
    ],
-   "body": "# The converter\n\nThe **converter** changes files from one format to another. Use it when a client sends a DST and your machine needs a PES.\n\n## Steps\n\n1. Open **Converter** from the top of the window.\n2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF) or pictures (PNG, JPG, WEBP, SVG).\n3. Tick the formats you want. You can tick several.\n4. Press **Convert**.\n5. Under **Results**, press **Save…** next to a result, or **Save all**.\n\nYou can remove a file from the list with its **Remove** button, or clear the whole list.\n\n## Open in the editor\n\nPress **Open in editor** on an embroidery file to add its stitches to the editor as **Manual stitch** shapes. You can then move and resize them. You cannot change their stitch type, because the original instructions are fixed stitch points.\n\n## Warnings\n\nConversions can lose something. The results list shows a warning when:\n\n- the source file had no thread colours,\n- the target format cannot keep colours,\n- stops were converted,\n- stitches were longer than the target allows.\n\nRead the warnings before you save. Formats such as DST, EXP and U01 do not keep thread colours. Read [File formats](formats-reference.md).\n\n## Pictures\n\nA picture can become **stitches** (with the same auto-digitize as the editor) or a **traced SVG** you can edit in a drawing app.\n\n## Related\n\n[Opening files](opening-files.md)\n"
+   "body": "# The converter\n\nThe **converter** changes files from one format to another. Use it when a client sends a DST and your machine needs a PES.\n\n## Steps\n\n1. Open **Converter** from the top of the window.\n2. Drop files onto the box, or press **Choose files…**. You can use embroidery files (PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP, TBF) or pictures (PNG, JPG, WEBP, SVG).\n3. Tick the formats you want. You can tick several.\n4. Press **Convert**.\n5. Under **Results**, press **Save…** next to a result, or **Save all**.\n\nYou can remove a file from the list with its **Remove** button, or clear the whole list.\n\n## Open in the editor\n\nPress **Open in editor** on an embroidery file to bring it into the editor. This works exactly like **Open…** on Home: the file becomes a new project named after it, with one stitch layer of **Manual stitch** shapes. If you already have a design open, the file arrives as a new layer on top instead, and one **⌘Z** takes it away. You can move and resize the shapes. You cannot change their stitch type, because the original instructions are fixed stitch points.\n\nYou do not have to use the converter to open a file. Read [Opening files](opening-files.md).\n\n## Warnings\n\nConversions can lose something. The results list shows a warning when:\n\n- the source file had no thread colours,\n- the target format cannot keep colours,\n- stops were converted,\n- stitches were longer than the target allows.\n\nRead the warnings before you save. Formats such as DST, EXP and U01 do not keep thread colours. Read [File formats](formats-reference.md).\n\n## Pictures\n\nA picture can become **stitches** (with the same auto-digitize as the editor) or a **traced SVG** you can edit in a drawing app.\n\n## Related\n\n[Opening files](opening-files.md)\n"
   },
   {
    "id": "opening-files",
    "title": "Opening files",
-   "summary": "Which files Lilo can open, how to open them and what happens to an embroidery file you open.",
+   "summary": "Which files Lilo can open, how to open them and what happens to an embroidery file (PES, DST and more) you open.",
    "section": "tools",
    "order": 3,
    "keywords": [
@@ -2800,17 +2800,30 @@
     "svg",
     "pes",
     "dst",
+    "jef",
+    "vp3",
+    "exp",
+    "xxx",
+    "u01",
+    "pec",
+    "hus",
+    "vip",
+    "tbf",
     "lilo",
     "file",
     "drag",
-    "existing design"
+    "existing design",
+    "double-click",
+    "open with",
+    "stitch file",
+    "add as layer"
    ],
    "appContext": [
     "view.home",
     "panel.digitize"
    ],
    "status": "ready",
-   "words": 249,
+   "words": 473,
    "headings": [
     {
      "level": 2,
@@ -2824,8 +2837,8 @@
     },
     {
      "level": 2,
-     "text": "Embroidery files",
-     "slug": "embroidery-files"
+     "text": "Embroidery files (PES, DST and friends)",
+     "slug": "embroidery-files-pes-dst-and-friends"
     },
     {
      "level": 2,
@@ -2838,7 +2851,7 @@
      "slug": "where-projects-live"
     }
    ],
-   "body": "# Opening files\n\nLilo opens three kinds of files.\n\n## Pictures: PNG, JPG, WEBP, SVG\n\nOpen a picture to digitize it. Use **Digitize a picture…** on Home, **Open image…** in the left panel, or drop the file on the canvas. Read [Turn a picture into stitches](auto-digitize.md).\n\nSVG files are drawings. They trace more cleanly than photos.\n\n## Lilo projects: .lilo\n\nA **.lilo** file is a full project: shapes, settings, reference images and version history. Open with **Open…** on Home or **⌘O**. Double-clicking a .lilo file opens it in Lilo. Read [Projects and autosave](projects-and-autosave.md).\n\n## Embroidery files\n\nLilo reads PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF, and writes those plus G-code (a stitch path for CNC and plotter tools, write only). Use the [converter](converter.md) to change a file's format, or press **Open in editor** there to bring the stitches into the editor.\n\nA file that has already been stitched has fixed needle points. Lilo shows them as **Manual stitch** shapes. You can move, resize and re-colour them, but you cannot change a fill's pattern, because the pattern is gone.\n\n## When a file will not open\n\n- Check the ending. Lilo does not read every format. See [File formats](formats-reference.md).\n- Very large files may be slow. Close other windows.\n- If a file is damaged, try the original from where you got it.\n\n## Where projects live\n\nNew projects save to **Documents, then Lilo**. Home shows the most recent ones as cards with a thumbnail.\n"
+   "body": "# Opening files\n\nLilo opens three kinds of files.\n\n## Pictures: PNG, JPG, WEBP, SVG\n\nOpen a picture to digitize it. Use **Digitize a picture…** on Home, **Open image…** in the left panel, or drop the file on the canvas. Read [Turn a picture into stitches](auto-digitize.md).\n\nSVG files are drawings. They trace more cleanly than photos.\n\n## Lilo projects: .lilo\n\nA **.lilo** file is a full project: shapes, settings, reference images and version history. Open with **Open…** on Home or **⌘O**. Double-clicking a .lilo file opens it in Lilo. Read [Projects and autosave](projects-and-autosave.md).\n\n## Embroidery files (PES, DST and friends)\n\nLilo opens PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF straight in the editor. You do not need the converter first.\n\n**Ways to open one:**\n\n- **Open…** on Home, or **File, then Open…**, or **⌘O**. Pick the file.\n- Drop the file on Home. It opens, like Open….\n- Double-click it in Finder, or right-click and choose **Open With, then Lilo**.\n- Drop it on the editor canvas when a design is already open. Read the next part.\n\n**What you get:**\n\n- A **new project** named after the file. A file called `rooster.pes` becomes a project called \"rooster\".\n- One **stitch layer** with the same name. Read [Layers](layers.md).\n- The thread colours from the file. PES and PEC colours get Brother thread names.\n- The **smallest hoop** that fits it, from your machine's hoops.\n\n**Dropping a file on a design you already have open** does not replace it. The file's stitches arrive as a **new layer on top**. One **⌘Z** takes it away again.\n\n**Your original file is never changed.** The first **Save** asks where to put a new `.lilo` project, like Save As. The original PES stays exactly as it was.\n\nA file that has already been stitched has fixed needle points. Lilo shows them as **Manual stitch** shapes. You can move, resize and re-colour them, but you cannot change a fill's pattern, because the pattern is gone. If you do not edit them, saving the design back to the same format gives the same needle points.\n\nTo change a file's format without opening it, use the [converter](converter.md).\n\n## When a file will not open\n\n- Check the ending. Lilo does not read every format. See [File formats](formats-reference.md).\n- If Lilo says **\"Lilo couldn't read this file\"**, the file is damaged or is a format we don't support. Try the original from where you got it.\n- Files over 32 MB are refused. A real stitch file is far smaller than that.\n- Very large files may be slow. Close other windows.\n- If a file is damaged, try the original from where you got it.\n\n## Where projects live\n\nNew projects save to **Documents, then Lilo**. Home shows the most recent ones as cards with a thumbnail.\n"
   },
   {
    "id": "projects-and-autosave",
@@ -2864,7 +2877,7 @@
     "view.home"
    ],
    "status": "ready",
-   "words": 240,
+   "words": 285,
    "headings": [
     {
      "level": 2,
@@ -2897,7 +2910,7 @@
      "slug": "related"
     }
    ],
-   "body": "# Projects and autosave\n\nA **project** is your whole design in one file with the ending **.lilo**. It holds your shapes, settings, reference pictures and a small preview image.\n\n## The File menu\n\nThe **File** menu in the top-left of the editor has:\n\n- **New design** (**⌘N**)\n- **Open project…** (**⌘O**)\n- **Save** (**⌘S**)\n- **Save As…** (**⇧⌘S**)\n- **Revert to saved**, which throws away changes since your last save\n- **Version history**\n- Open image, Export and Send\n\n## Where files go\n\nThe first time you save, Lilo suggests **Documents, then Lilo**. You can save anywhere. Home lists recent projects, newest first, with a thumbnail.\n\nA small dot next to the project name means you have unsaved changes.\n\n## Autosave\n\nLilo saves a copy of your work every **30 seconds** and when you click away from the window. These copies go into the project's own **version history**, not over your last real save. So autosave never destroys a save you chose to keep.\n\nIf Lilo closes by accident, open the project again and look in **Version history**.\n\n## Opening a project\n\nUse **Open…** on Home, **⌘O**, or double-click a .lilo file. Lilo asks before it throws away unsaved changes in the current design.\n\n## Name your project\n\nClick the name in the top bar and type. A good name is the job: \"JK lining monogram\". It also becomes the default file name when you export.\n\n## Related\n\n[Version history](version-history.md)\n"
+   "body": "# Projects and autosave\n\nA **project** is your whole design in one file with the ending **.lilo**. It holds your shapes, settings, reference pictures and a small preview image.\n\n## The File menu\n\nThe **File** menu in the top-left of the editor has:\n\n- **New design** (**⌘N**)\n- **Open…** (**⌘O**), for a .lilo project or a stitch file like PES or DST\n- **Save** (**⌘S**)\n- **Save As…** (**⇧⌘S**)\n- **Revert to saved**, which throws away changes since your last save\n- **Version history**\n- Open image, Export and Send\n\n## Where files go\n\nThe first time you save, Lilo suggests **Documents, then Lilo**. You can save anywhere. Home lists recent projects, newest first, with a thumbnail.\n\nA small dot next to the project name means you have unsaved changes.\n\n## Autosave\n\nLilo saves a copy of your work every **30 seconds** and when you click away from the window. These copies go into the project's own **version history**, not over your last real save. So autosave never destroys a save you chose to keep.\n\nIf Lilo closes by accident, open the project again and look in **Version history**.\n\n## Opening a project\n\nUse **Open…** on Home, **⌘O**, or double-click a .lilo file. Lilo asks before it throws away unsaved changes in the current design.\n\nYou can also open a stitch file (PES, DST and others) the same way. It becomes a new, unsaved project. The first **Save** makes a .lilo and never touches the original. Read [Opening files](opening-files.md).\n\n## Name your project\n\nClick the name in the top bar and type. A good name is the job: \"JK lining monogram\". It also becomes the default file name when you export.\n\n## Related\n\n[Version history](version-history.md)\n"
   },
   {
    "id": "version-history",
@@ -2968,7 +2981,7 @@
     "dialog.command-palette"
    ],
    "status": "generated",
-   "words": 316,
+   "words": 315,
    "headings": [
     {
      "level": 2,
@@ -3001,7 +3014,7 @@
      "slug": "mouse-and-trackpad"
     }
    ],
-   "body": "# Keyboard shortcuts\n\nThis list is built from the app's tool registry and command list. On Windows and Linux, use **Ctrl** where you see **⌘**. **⇧** is Shift. **⌫** is Backspace.\n\nYou do not have to remember these. Press **⌘K** and type what you want. The search box finds every tool and action.\n\n## Tools\n\n| Action | Keys |\n| --- | --- |\n| Select tool | S |\n| Pan tool | Space |\n| Measure tool | M |\n| Open shape tool | 1 |\n| Closed shape tool | 2 |\n| Circle tool | 3 |\n| Rectangle tool | 4 |\n| Pen tool | 5 |\n| Satin blocks tool | 6 |\n| Text tool | T |\n| Click to stitch tool | K |\n| Manual stitch tool | 7 |\n\n## Edit\n\n| Action | Keys |\n| --- | --- |\n| Undo | ⌘Z |\n| Redo | ⇧⌘Z |\n| Select all | ⌘A |\n| Deselect | Esc |\n| Duplicate | ⌘D |\n| Delete | ⌫ |\n\n## Shape\n\n| Action | Keys |\n| --- | --- |\n| Map to path | P |\n\n## File\n\n| Action | Keys |\n| --- | --- |\n| New design | ⌘N |\n| Open project… | ⌘O |\n| Save | ⌘S |\n| Save As… | ⇧⌘S |\n\n## Help\n\n| Action | Keys |\n| --- | --- |\n| Open the Help panel | ⌘? |\n| Search every tool and action | ⌘K |\n\n## Mouse and trackpad\n\n- **Scroll** or pinch to zoom the canvas.\n- Hold **Space** and drag to pan with any tool.\n- **Shift**-click adds to a selection.\n- Drag from a ruler to pull out a guide line.\n- **Double-click** a shape to reshape its points.\n"
+   "body": "# Keyboard shortcuts\n\nThis list is built from the app's tool registry and command list. On Windows and Linux, use **Ctrl** where you see **⌘**. **⇧** is Shift. **⌫** is Backspace.\n\nYou do not have to remember these. Press **⌘K** and type what you want. The search box finds every tool and action.\n\n## Tools\n\n| Action | Keys |\n| --- | --- |\n| Select tool | S |\n| Pan tool | Space |\n| Measure tool | M |\n| Open shape tool | 1 |\n| Closed shape tool | 2 |\n| Circle tool | 3 |\n| Rectangle tool | 4 |\n| Pen tool | 5 |\n| Satin blocks tool | 6 |\n| Text tool | T |\n| Click to stitch tool | K |\n| Manual stitch tool | 7 |\n\n## Edit\n\n| Action | Keys |\n| --- | --- |\n| Undo | ⌘Z |\n| Redo | ⇧⌘Z |\n| Select all | ⌘A |\n| Deselect | Esc |\n| Duplicate | ⌘D |\n| Delete | ⌫ |\n\n## Shape\n\n| Action | Keys |\n| --- | --- |\n| Map to path | P |\n\n## File\n\n| Action | Keys |\n| --- | --- |\n| New design | ⌘N |\n| Open… | ⌘O |\n| Save | ⌘S |\n| Save As… | ⇧⌘S |\n\n## Help\n\n| Action | Keys |\n| --- | --- |\n| Open the Help panel | ⌘? |\n| Search every tool and action | ⌘K |\n\n## Mouse and trackpad\n\n- **Scroll** or pinch to zoom the canvas.\n- Hold **Space** and drag to pan with any tool.\n- **Shift**-click adds to a selection.\n- Drag from a ruler to pull out a guide line.\n- **Double-click** a shape to reshape its points.\n"
   },
   {
    "id": "formats-reference",

@@ -54,7 +54,7 @@ You do not have to remember these. Press **⌘K** and type what you want. The se
 | Action | Keys |
 | --- | --- |
 | New design | ⌘N |
-| Open project… | ⌘O |
+| Open… | ⌘O |
 | Save | ⌘S |
 | Save As… | ⇧⌘S |
 

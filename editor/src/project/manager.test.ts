@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { addEntry, emptyDesign, emptyShelf, loadProject, makeFill, rectNodes, type Design, type PixelArt } from "@lilo/engine/light";
+import { designToEmbroidery } from "@lilo/engine";
+import { sampleDesign } from "../../../engine/src/stitch/sample-design";
 import { createInlineEngine } from "../engine/client";
 import { createMockPlatform, type MockState } from "../platform/mock";
 import type { Platform } from "../platform";
@@ -529,5 +531,135 @@ describe("the Home gallery", () => {
     await setup("browser");
     await m.refreshRecent();
     expect(m.store.getState().recent).toEqual([]);
+  });
+});
+
+describe("stitch files (PES, DST, ...)", () => {
+  const stitchFile = (ext = "pes", name = "rooster") => ({ name: `${name}.${ext}`, bytes: designToEmbroidery(sampleDesign(), ext as "pes", { label: name }).bytes });
+  const asOpened = (f: { name: string; bytes: Uint8Array }) => ({ path: "", name: f.name, bytes: f.bytes });
+  const layers = () => st().design!.layers ?? [];
+  const nameAfterRender = (d: Design) => d.layers?.map((l) => l.name);
+
+  it("opening one makes a NEW untitled project named after the file, with one layer of the same name", async () => {
+    await setup();
+    const f = stitchFile();
+    expect(await m.openFile(asOpened(f))).toBe(true);
+    expect(st().projectName).toBe("rooster");
+    expect(nameAfterRender(st().design!)).toEqual(["rooster"]);
+    expect(st().design!.objects.length).toBeGreaterThan(0);
+    expect(st().design!.objects.every((o) => o.layerId === layers()[0].id)).toBe(true);
+    expect(st().design!.threads.length).toBeGreaterThan(0);
+    expect(st().canUndo).toBe(false);
+    const p = m.store.getState();
+    expect(p.path).toBeNull();
+    expect(p.dirty).toBe(true); // nothing saved yet: closing asks first
+    expect(p.notice).toBeNull();
+  });
+
+  it("the first Save is a Save As into the projects folder as a .lilo; the stitch file is never written or remembered", async () => {
+    await setup();
+    mock.files.clear();
+    mock.recents = [];
+    await m.openFile({ path: "", name: "rooster.pes", bytes: stitchFile().bytes });
+    expect(await m.save()).toBe(true);
+    const path = m.store.getState().path!;
+    expect(path).toBe("/mock/Documents/Lilo/rooster.lilo");
+    expect([...mock.files.keys()]).toEqual([path]);
+    expect(mock.recents.map((r) => r.path)).toEqual([path]); // only the saved .lilo is recorded, never the .pes
+    expect(m.store.getState().dirty).toBe(false);
+    // and it comes back with the stitches still exact
+    const again = loadProject(mock.files.get(path)!).project.doc.design;
+    expect(again.objects.every((o) => o.kind === "run" && o.params.exact === true)).toBe(true);
+  });
+
+  it("a cancelled first Save leaves it unsaved and writes nothing", async () => {
+    await setup();
+    mock.files.clear();
+    await m.openFile(asOpened(stitchFile()));
+    platform.saveProjectAs = async () => null;
+    expect(await m.save()).toBe(false);
+    expect(mock.files.size).toBe(0);
+    expect(m.store.getState().dirty).toBe(true);
+  });
+
+  it("opening through the Open dialog, Home and the OS all end up in the same place", async () => {
+    await setup();
+    mock.pickProject = asOpened(stitchFile("dst", "crest-dst"));
+    expect(await m.openDialog()).toBe(true);
+    expect(st().projectName).toBe("crest-dst");
+    m.store.setState({ dirty: false });
+    expect(await m.openFile(asOpened(stitchFile("jef", "from-finder")))).toBe(true); // what the OS hands over
+    expect(st().projectName).toBe("from-finder");
+    expect(nameAfterRender(st().design!)).toEqual(["from-finder"]);
+  });
+
+  it("asks about unsaved changes before replacing the open design; Cancel changes nothing", async () => {
+    await setup();
+    edit();
+    const before = st().design;
+    const p = m.openFile(asOpened(stitchFile()));
+    await vi.waitFor(() => expect(m.store.getState().confirm).not.toBeNull());
+    m.resolveConfirm("cancel");
+    expect(await p).toBe(false);
+    expect(st().design).toBe(before);
+  });
+
+  it("a damaged file says so in plain words, changes nothing and does not even ask about unsaved changes", async () => {
+    await setup();
+    edit();
+    const before = st().design;
+    expect(await m.openFile({ path: "", name: "broken.pes", bytes: new Uint8Array([1, 2, 3, 4]) })).toBe(false);
+    expect(m.store.getState().notice).toEqual({ kind: "error", text: "Lilo couldn't read this file \u2014 it may be damaged or a format we don't support." });
+    expect(m.store.getState().confirm).toBeNull();
+    expect(st().design).toBe(before);
+  });
+
+  it("dropped on a design that is open it becomes a new layer on top, in one undo step, and the design stays", async () => {
+    await setup();
+    const was = st().design!;
+    const wasLayers = layers().map((l) => l.id);
+    expect(await m.addStitchFile(stitchFile())).toBe(true);
+    const d = st().design!;
+    expect(d.layers!.length).toBe(wasLayers.length + 1);
+    expect(d.layers!.slice(0, -1).map((l) => l.id)).toEqual(wasLayers);
+    const top = d.layers![d.layers!.length - 1];
+    expect(top.name).toBe("rooster");
+    expect(top.kind).toBe("stitch");
+    expect(st().activeLayerId).toBe(top.id);
+    // the old shapes are untouched; the new ones sit after them, all in the new layer
+    expect(d.objects.slice(0, was.objects.length).map((o) => o.id)).toEqual(was.objects.map((o) => o.id));
+    const added = d.objects.slice(was.objects.length);
+    expect(added.length).toBeGreaterThan(0);
+    expect(added.every((o) => o.layerId === top.id)).toBe(true);
+    expect(st().projectName).toBe("Crest");
+    expect(st().undoLabel).toBe("Import rooster");
+    core.actions.undo();
+    expect(st().design!.objects.map((o) => o.id)).toEqual(was.objects.map((o) => o.id));
+    expect(st().design!.layers?.length ?? wasLayers.length).toBe(wasLayers.length);
+    expect(st().canUndo).toBe(false); // exactly one step
+  });
+
+  it("dropping the same file twice names the second layer apart", async () => {
+    await setup();
+    await m.addStitchFile(stitchFile());
+    await m.addStitchFile(stitchFile());
+    expect(layers().map((l) => l.name).slice(-2)).toEqual(["rooster", "rooster 2"]);
+  });
+
+  it("dropped on an empty canvas it opens as the design", async () => {
+    await setup();
+    await core.actions.loadDesign(emptyDesign(), { name: "Untitled design" });
+    m.store.setState({ dirty: false });
+    expect(await m.addStitchFile(stitchFile())).toBe(true);
+    expect(st().projectName).toBe("rooster");
+    expect(m.store.getState().path).toBeNull();
+  });
+
+  it("a damaged file dropped on a design shows the same plain message and leaves the design alone", async () => {
+    await setup();
+    const before = st().design;
+    expect(await m.addStitchFile({ name: "broken.dst", bytes: new Uint8Array(10) })).toBe(false);
+    expect(m.store.getState().notice?.text).toMatch(/couldn't read this file/);
+    expect(st().design).toBe(before);
   });
 });

@@ -5,6 +5,7 @@ const open = vi.fn();
 const save = vi.fn();
 const readFile = vi.fn();
 const writeFile = vi.fn();
+const stat = vi.fn();
 const openUrl = vi.fn();
 let closeCb: ((e: { preventDefault(): void }) => Promise<void>) | null = null;
 
@@ -25,7 +26,7 @@ vi.mock("@tauri-apps/api/window", () => ({
   }),
 }));
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: (...a: unknown[]) => open(...a), save: (...a: unknown[]) => save(...a) }));
-vi.mock("@tauri-apps/plugin-fs", () => ({ readFile: (...a: unknown[]) => readFile(...a), writeFile: (...a: unknown[]) => writeFile(...a) }));
+vi.mock("@tauri-apps/plugin-fs", () => ({ readFile: (...a: unknown[]) => readFile(...a), writeFile: (...a: unknown[]) => writeFile(...a), stat: (...a: unknown[]) => stat(...a) }));
 vi.mock("@tauri-apps/plugin-opener", () => ({ openUrl: (...a: unknown[]) => openUrl(...a) }));
 
 import { browserPlatform } from "./browser";
@@ -33,7 +34,7 @@ import { createMockPlatform } from "./mock";
 import { tauriPlatform } from "./tauri";
 
 beforeEach(() => {
-  for (const m of [invoke, open, save, readFile, writeFile, openUrl]) m.mockReset();
+  for (const m of [invoke, open, save, readFile, writeFile, stat, openUrl]) m.mockReset();
   closeCb = null;
   events.clear();
 });
@@ -80,12 +81,33 @@ describe("tauri platform: screens", () => {
     invoke.mockImplementation(async (cmd: string) => (cmd === "projects_folder" ? "/Users/me/Documents/Lilo" : cmd === "read_project_file" ? new Uint8Array([9]).buffer : undefined));
     open.mockResolvedValue("/Users/me/Desktop/Crest.lilo");
     const f = await tauriPlatform.openProjectDialog();
-    expect(open).toHaveBeenCalledWith(expect.objectContaining({ defaultPath: "/Users/me/Documents/Lilo", filters: [{ name: "Lilo project", extensions: ["lilo"] }] }));
+    const call = open.mock.calls[0][0] as { defaultPath: string; filters: { extensions: string[] }[] };
+    expect(call.defaultPath).toBe("/Users/me/Documents/Lilo");
+    // one list that takes a project or any stitch file, then each kind on its own
+    expect(new Set(call.filters[0].extensions)).toEqual(new Set(["lilo", "pes", "pec", "dst", "exp", "jef", "vp3", "xxx", "u01", "hus", "vip", "tbf"]));
+    expect(call.filters[0].extensions).toHaveLength(12);
     expect(invoke).toHaveBeenCalledWith("allow_project_path", { path: "/Users/me/Desktop/Crest.lilo" });
     expect(f).toMatchObject({ path: "/Users/me/Desktop/Crest.lilo", name: "Crest.lilo" });
     expect(Array.from(f!.bytes)).toEqual([9]);
     open.mockResolvedValue(null);
     expect(await tauriPlatform.openProjectDialog()).toBeNull();
+  });
+
+  it("a stitch file from the Open dialog is read once with the dialog's own permission, comes back with no path and is never allowed for saving", async () => {
+    invoke.mockImplementation(async (cmd: string) => (cmd === "projects_folder" ? "/Users/me/Documents/Lilo" : undefined));
+    open.mockResolvedValue("/Users/me/Desktop/Rooster.pes");
+    stat.mockResolvedValue({ size: 3 });
+    readFile.mockResolvedValue(new Uint8Array([1, 2, 3]));
+    const f = await tauriPlatform.openProjectDialog();
+    expect(f).toMatchObject({ path: "", name: "Rooster.pes" });
+    expect(Array.from(f!.bytes)).toEqual([1, 2, 3]);
+    expect(invoke).not.toHaveBeenCalledWith("allow_project_path", expect.anything());
+    expect(invoke).not.toHaveBeenCalledWith("read_project_file", expect.anything());
+    // too big: refused before it is read
+    stat.mockResolvedValue({ size: 33 * 1024 * 1024 });
+    readFile.mockClear();
+    await expect(tauriPlatform.openProjectDialog()).rejects.toThrow(/too big/);
+    expect(readFile).not.toHaveBeenCalled();
   });
 
   it("Save As starts in the projects folder, adds .lilo, allows the path and writes through the project command", async () => {

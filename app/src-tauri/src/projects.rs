@@ -16,6 +16,11 @@ use std::time::UNIX_EPOCH;
 use tauri::{Emitter, Manager};
 
 pub const EXTENSION: &str = "lilo";
+/// Stitch files Lilo can open (the formats its engine reads). They open as a NEW project and are never
+/// written to, so they get a separate, read-once allowance instead of the `.lilo` one.
+pub const STITCH_EXTENSIONS: [&str; 11] = ["pes", "dst", "jef", "vp3", "exp", "xxx", "u01", "pec", "hus", "vip", "tbf"];
+/// Refuse stitch files bigger than this (a big real PES is a few MB). Same figure as the editor's `MAX_STITCH_FILE_BYTES`.
+pub const MAX_STITCH_BYTES: u64 = 32 * 1024 * 1024;
 /// Folder inside the user's Documents.
 pub const FOLDER: &str = "Lilo";
 /// Event the editor listens to for files opened while it is running.
@@ -52,6 +57,8 @@ pub struct RecentEntry {
 pub struct OpenFiles {
     pending: Mutex<Vec<String>>,
     announced: Mutex<HashSet<PathBuf>>,
+    /// Stitch files the OS opened for us, each good for ONE read (`read_opened_stitch_file`).
+    stitch_once: Mutex<HashSet<PathBuf>>,
     /// Serialises read-modify-write of the recents file.
     recents_lock: Mutex<()>,
 }
@@ -198,21 +205,27 @@ pub fn scan_projects(dir: &Path, limit: usize) -> Vec<RecentProject> {
     found
 }
 
-/// `.lilo` files named in a command line (the first argument is the program and is skipped).
+pub fn is_stitch_path(p: &Path) -> bool {
+    p.extension()
+        .and_then(|e| e.to_str())
+        .is_some_and(|e| STITCH_EXTENSIONS.iter().any(|s| e.eq_ignore_ascii_case(s)))
+}
+
+/// `.lilo` and stitch files named in a command line (the first argument is the program and is skipped).
 pub fn paths_from_args(args: &[String]) -> Vec<PathBuf> {
     args.iter()
         .skip(1)
         .map(PathBuf::from)
-        .filter(|p| is_project_path(p) && p.is_file())
+        .filter(|p| (is_project_path(p) || is_stitch_path(p)) && p.is_file())
         .collect()
 }
 
-/// `.lilo` files in a list of `file://` URLs (what macOS passes for a Finder open).
+/// `.lilo` and stitch files in a list of `file://` URLs (what macOS passes for a Finder open).
 pub fn paths_from_urls(urls: &[tauri::Url]) -> Vec<PathBuf> {
     urls.iter()
         .filter(|u| u.scheme() == "file")
         .filter_map(|u| u.to_file_path().ok())
-        .filter(|p| is_project_path(p))
+        .filter(|p| is_project_path(p) || is_stitch_path(p))
         .collect()
 }
 
@@ -229,7 +242,15 @@ pub fn announce(app: &tauri::AppHandle, paths: Vec<PathBuf>) {
         let Some(text) = canonical.to_str().map(str::to_string) else {
             continue;
         };
-        state.announced.lock().unwrap().insert(canonical);
+        if is_stitch_path(&p) {
+            // the real file (after any symbolic link) must be a stitch file too, or a link could point anywhere
+            if !is_stitch_path(&canonical) {
+                continue;
+            }
+            state.stitch_once.lock().unwrap().insert(canonical);
+        } else {
+            state.announced.lock().unwrap().insert(canonical);
+        }
         let mut pending = state.pending.lock().unwrap();
         if !pending.contains(&text) {
             pending.push(text);
@@ -311,6 +332,30 @@ pub fn projects_folder(app: tauri::AppHandle) -> Result<String, String> {
 #[tauri::command]
 pub fn take_open_files(app: tauri::AppHandle) -> Vec<String> {
     std::mem::take(&mut *app.state::<OpenFiles>().pending.lock().unwrap())
+}
+
+/// Hand over the bytes of a stitch file the OS opened for Lilo, once. Only a path announced by the OS
+/// qualifies (not any path the editor names), it is forgotten as it is read, and nothing is ever written back.
+pub fn take_stitch_bytes(app_state: &OpenFiles, path: &Path) -> Result<Vec<u8>, String> {
+    let resolved = path.canonicalize().map_err(|_| "Could not find that file.".to_string())?;
+    if !is_stitch_path(&resolved) || !app_state.stitch_once.lock().unwrap().remove(&resolved) {
+        return Err("That file wasn't opened from Finder or the command line.".into());
+    }
+    let meta = std::fs::metadata(&resolved).map_err(|e| format!("Could not read the file: {e}"))?;
+    if !meta.is_file() {
+        return Err("That isn't a file.".into());
+    }
+    if meta.len() > MAX_STITCH_BYTES {
+        return Err("That file is too big to open.".into());
+    }
+    std::fs::read(&resolved).map_err(|e| format!("Could not read the file: {e}"))
+}
+
+#[tauri::command]
+pub async fn read_opened_stitch_file(app: tauri::AppHandle, path: String) -> Result<tauri::ipc::Response, String> {
+    let state = app.state::<OpenFiles>();
+    let bytes = take_stitch_bytes(&state, Path::new(&path))?;
+    Ok(tauri::ipc::Response::new(bytes))
 }
 
 #[tauri::command]
@@ -426,6 +471,67 @@ mod tests {
     }
 
     #[test]
+    fn recognises_stitch_paths_and_only_those() {
+        for n in ["a.pes", "A.PES", "b.dst", "c.jef", "d.vp3", "e.exp", "f.xxx", "g.u01", "h.pec", "i.hus", "j.vip", "k.tbf"] {
+            assert!(is_stitch_path(Path::new(&format!("/x/{n}"))), "{n}");
+            assert!(!is_project_path(Path::new(n)), "{n}");
+        }
+        for n in ["a.lilo", "a.gcode", "a.png", "a.pes.txt", "pes", "a."] {
+            assert!(!is_stitch_path(Path::new(n)), "{n}");
+        }
+    }
+
+    #[test]
+    fn a_pes_on_the_command_line_is_picked_up_like_a_lilo() {
+        let dir = scratch("args");
+        touch(&dir, "rooster.pes", 1, b"#PES0001");
+        touch(&dir, "notes.txt", 1, b"x");
+        touch(&dir, "Crest.lilo", 1, b"x");
+        let args: Vec<String> = ["lilo", "rooster.pes", "notes.txt", "Crest.lilo", "missing.dst"]
+            .iter()
+            .enumerate()
+            .map(|(i, n)| if i == 0 { n.to_string() } else { dir.join(n).to_string_lossy().into_owned() })
+            .collect();
+        let found = paths_from_args(&args);
+        assert_eq!(found.iter().map(|p| p.file_name().unwrap().to_str().unwrap()).collect::<Vec<_>>(), ["rooster.pes", "Crest.lilo"]);
+        let urls = [tauri::Url::from_file_path(dir.join("rooster.pes")).unwrap(), tauri::Url::from_file_path(dir.join("notes.txt")).unwrap()];
+        assert_eq!(paths_from_urls(&urls).len(), 1);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn an_opened_stitch_file_is_read_once_and_nothing_else_is() {
+        let dir = scratch("stitch");
+        touch(&dir, "rooster.pes", 1, b"#PES0001-bytes");
+        touch(&dir, "other.pes", 1, b"nope");
+        touch(&dir, "secret.txt", 1, b"nope");
+        let state = OpenFiles::default();
+        let rooster = dir.join("rooster.pes").canonicalize().unwrap();
+        state.stitch_once.lock().unwrap().insert(rooster.clone());
+        // a stitch file nobody opened, and a file of the wrong kind: refused
+        assert!(take_stitch_bytes(&state, &dir.join("other.pes")).is_err());
+        state.stitch_once.lock().unwrap().insert(dir.join("secret.txt").canonicalize().unwrap());
+        assert!(take_stitch_bytes(&state, &dir.join("secret.txt")).is_err());
+        // the opened one reads, once
+        assert_eq!(take_stitch_bytes(&state, &dir.join("rooster.pes")).unwrap(), b"#PES0001-bytes");
+        assert!(take_stitch_bytes(&state, &dir.join("rooster.pes")).is_err());
+        // and it never became a path the editor may save to
+        assert!(!state.announced.lock().unwrap().contains(&rooster));
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
+    fn an_oversize_stitch_file_is_refused() {
+        let dir = scratch("big");
+        let f = File::create(dir.join("big.dst")).unwrap();
+        f.set_len(MAX_STITCH_BYTES + 1).unwrap();
+        let state = OpenFiles::default();
+        state.stitch_once.lock().unwrap().insert(dir.join("big.dst").canonicalize().unwrap());
+        assert!(take_stitch_bytes(&state, &dir.join("big.dst")).unwrap_err().contains("too big"));
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn creates_the_folder_on_first_run_and_is_idempotent() {
         let base = scratch("create");
         let dir = base.join("Documents").join(FOLDER);
@@ -495,22 +601,25 @@ mod tests {
         let dir = scratch("args");
         touch(&dir, "a.lilo", 1, b"x");
         touch(&dir, "b.pes", 1, b"x");
+        touch(&dir, "c.txt", 1, b"x");
         let a = dir.join("a.lilo").to_str().unwrap().to_string();
         let b = dir.join("b.pes").to_str().unwrap().to_string();
+        let c = dir.join("c.txt").to_str().unwrap().to_string();
         let gone = dir.join("gone.lilo").to_str().unwrap().to_string();
         // the first argument is the program itself, even if it looks like a project
-        let args = vec![a.clone(), a.clone(), b, gone, "--minimized".into()];
-        assert_eq!(paths_from_args(&args), vec![PathBuf::from(&a)]);
+        let args = vec![a.clone(), a.clone(), b.clone(), c, gone, "--minimized".into()];
+        // a stitch file (.pes) opens too; a file of any other kind does not
+        assert_eq!(paths_from_args(&args), vec![PathBuf::from(&a), PathBuf::from(&b)]);
         std::fs::remove_dir_all(dir).unwrap();
     }
 
     #[test]
     fn turns_file_urls_into_paths() {
-        let urls: Vec<tauri::Url> = ["file:///Users/me/Documents/Lilo/Crest.lilo", "file:///tmp/x.pes", "https://example.com/a.lilo"]
+        let urls: Vec<tauri::Url> = ["file:///Users/me/Documents/Lilo/Crest.lilo", "file:///tmp/x.pes", "file:///tmp/x.txt", "https://example.com/a.lilo"]
             .iter()
             .map(|u| u.parse().unwrap())
             .collect();
-        assert_eq!(paths_from_urls(&urls), vec![PathBuf::from("/Users/me/Documents/Lilo/Crest.lilo")]);
+        assert_eq!(paths_from_urls(&urls), vec![PathBuf::from("/Users/me/Documents/Lilo/Crest.lilo"), PathBuf::from("/tmp/x.pes")]);
     }
 
     #[test]

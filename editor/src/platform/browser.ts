@@ -1,3 +1,4 @@
+import { OPEN_EXTENSIONS } from "../io/stitchFiles";
 import type { Platform } from "./types";
 
 const unavailable = (what: string) => new Error(`${what} is not available in browser`);
@@ -49,7 +50,7 @@ export const browserPlatform: Platform = {
   },
 
   async openProjectDialog() {
-    const f = (await pick({ extensions: ["lilo"] }, false))[0];
+    const f = (await pick({ extensions: [...OPEN_EXTENSIONS] }, false))[0];
     return f ? { path: "", name: f.name, bytes: f.bytes } : null;
   },
   saveProjectAs: (suggestedName, bytes) => browserPlatform.saveFile(suggestedName, bytes),

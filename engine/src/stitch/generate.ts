@@ -297,15 +297,22 @@ export function designToStitchPlan(design: Design): StitchPlan {
     }
   });
 
-  return { threads: blocks, stitches: dedupe(stitches), warnings };
+  return { threads: blocks, stitches: dedupe(stitches, design), warnings };
 }
 
-/** Drop zero-length needle drops (stitchjs repeats points at junctions). */
-function dedupe(list: PlanStitch[]): PlanStitch[] {
+/** Drop zero-length needle drops (stitchjs repeats points at junctions). Needles from a file (`params.exact`) all stay: a repeated drop is a real one. */
+function dedupe(list: PlanStitch[], design: Design): PlanStitch[] {
   const out: PlanStitch[] = [];
+  const exact = (s: PlanStitch) => {
+    const o = s.objectIndex >= 0 ? design.objects[s.objectIndex] : undefined;
+    if (o?.kind !== "run" || o.params.exact !== true) return false;
+    // a lone needle drop is stored doubled (a shape needs two points): that copy is not a real drop
+    const p = o.geometry.path;
+    return !(p.length === 2 && p[0][0] === p[1][0] && p[0][1] === p[1][1]);
+  };
   for (const s of list) {
     const prev = out[out.length - 1];
-    if (prev && s.type === "stitch" && prev.type === "stitch" && Math.hypot(s.x - prev.x, s.y - prev.y) < 0.02) {
+    if (prev && s.type === "stitch" && prev.type === "stitch" && Math.hypot(s.x - prev.x, s.y - prev.y) < 0.02 && !(exact(s) && exact(prev))) {
       continue;
     }
     out.push(s);

@@ -49,7 +49,7 @@ export function DigitizePanel({ onOpen, children }: { onOpen: () => void; childr
           {source ? "Open another image…" : "Open image…"}
         </button>
         <Hint id="digitize.open-image" />
-        <span className="muted small">{source ? source.name : "or drop PNG / JPG / WEBP / SVG on the canvas"}</span>
+        <span className="muted small">{source ? source.name : "or drop PNG / JPG / WEBP / SVG (or a stitch file like PES) on the canvas"}</span>
       </div>
 
       <label className="field" data-tour="digitize-colours">

@@ -9,6 +9,13 @@ dated section for the release (see [docs/RELEASING.md](docs/RELEASING.md)).
 ## [Unreleased]
 
 - The manual and website now show real screenshots.
+- **Open stitch files straight in the editor.** PES, DST, JEF, VP3, EXP, XXX, U01, PEC, HUS, VIP and TBF files now open like any other file. You no longer have to go through the Converter. Use **Open…** (File menu, Home or **⌘O**), drop the file on Home, or double-click it in Finder (or right-click, **Open With**, Lilo).
+- An opened stitch file becomes a **new project** named after the file, with one layer of the same name, the thread colours from the file, and the smallest hoop of your machine that fits it. It never picks a turned hoop, so nothing gets rotated.
+- **Drop a stitch file on a design you already have open** and it joins as a new layer on top. Your design stays as it was, and one **⌘Z** takes the new layer away.
+- **Your original file is never changed.** The first Save works like Save As and makes a new .lilo in Documents/Lilo. Only that .lilo shows up in Recent, not the PES.
+- If you do not edit a stitch file, saving it back to the same format gives the same needle points (within 0.1 mm). Lilo no longer adds extra tie stitches to, or merges short stitches in, stitches that came from a file.
+- A damaged file says: "Lilo couldn't read this file — it may be damaged or a format we don't support." It never crashes Lilo. Files over 32 MB are refused.
+- **Open in editor** in the Converter now does the same thing as Open…. The manual page "Opening files" explains it.
 
 ## [1.3.0] - 2026-10-05
 

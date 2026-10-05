@@ -103,9 +103,12 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
   }
 
   const minStitch = options.minStitchMm ?? minStitchFor(options.quality);
-  const merged = mergeShortStitches(out, minStitch);
+  const exactObjects = new Set<number>();
+  options.design?.objects.forEach((o, i) => void (o.kind === "run" && o.params.exact === true && exactObjects.add(i)));
+  const isExact = (s: PlanStitch) => s.objectIndex >= 0 && exactObjects.has(s.objectIndex);
+  const merged = mergeShortStitches(out, minStitch, isExact);
   const lockMm = options.lockStitchMm ?? LOCK_STITCH_MM;
-  const sewn = lockMm > 0 ? addLockStitches(merged, lockMm, minStitch) : merged;
+  const sewn = lockMm > 0 ? addLockStitches(merged, lockMm, minStitch, isExact) : merged;
   const result: StitchPlan = { threads: plan.threads, stitches: sewn, warnings: [] };
   const stats = planStats(result);
   if (stats.stitchCount === 0) {
@@ -218,13 +221,14 @@ export function validatePlan(plan: StitchPlan, hoop: Hoop, options: ValidationOp
  * stitch of a run always stays; the last one replaces the stitch before it when they are too close
  * (unless that one is the first). Run before lock stitches are added.
  */
-export function mergeShortStitches(list: PlanStitch[], minMm: number): PlanStitch[] {
+export function mergeShortStitches(list: PlanStitch[], minMm: number, keep?: (s: PlanStitch) => boolean): PlanStitch[] {
   if (minMm <= 0) return list;
   const out: PlanStitch[] = [];
   let runStart = -1; // index in `out` of the first stitch of the current run
   for (let i = 0; i < list.length; i++) {
     const s = list[i];
-    if (s.type !== "stitch") {
+    if (s.type !== "stitch" || keep?.(s)) {
+      // `keep`: stitches from a file are never merged (and never merge with their neighbours)
       out.push(s);
       runStart = -1;
       continue;
@@ -262,13 +266,17 @@ export function mergeShortStitches(list: PlanStitch[], minMm: number): PlanStitc
  *   stitch's direction, ending where it started.
  * Plain jumps (under the trim threshold) don't cut the thread, so they get neither.
  */
-export function addLockStitches(list: PlanStitch[], len: number, minStitchMm: number = MIN_STITCH_MM): PlanStitch[] {
+export function addLockStitches(list: PlanStitch[], len: number, minStitchMm: number = MIN_STITCH_MM, skip?: (s: PlanStitch) => boolean): PlanStitch[] {
   const out: PlanStitch[] = [];
   let cut = true; // thread is cut/new: the next stitch needs a tie-in
   let last: PlanStitch | null = null; // last real stitch since the last cut
   let before: PlanStitch | null = null; // the one before it
   const tieOff = () => {
-    if (!last) return;
+    if (!last || skip?.(last)) {
+      last = null;
+      before = null;
+      return;
+    }
     const ref = before ?? last;
     let dx = last.x - ref.x;
     let dy = last.y - ref.y;
@@ -301,7 +309,7 @@ export function addLockStitches(list: PlanStitch[], len: number, minStitchMm: nu
       cut = false;
       // direction to the next real stitch
       const next = list.slice(i + 1).find((n) => n.type === "stitch");
-      if (next) {
+      if (next && !skip?.(s)) {
         const dx = next.x - s.x;
         const dy = next.y - s.y;
         const d = Math.hypot(dx, dy);
