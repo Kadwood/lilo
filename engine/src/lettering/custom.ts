@@ -1,12 +1,15 @@
 /// <reference path="./opentype.d.ts" />
 import { init as initStitch } from "@stitchables/stitchjs";
+import bidiFactory from "bidi-js";
+import * as hb from "harfbuzzjs";
 import * as opentype from "opentype.js";
 import { customMinColumnFor, minLetterHeightFor } from "../presets/sewing";
 import { LETTERING_STROKES, median, satinTraits, strokePlan } from "../autodigitize/strokes";
 import { DEFAULTS } from "../presets/defaults";
-import { polygonFromRings, polygonsOf, ringsOf, unionAll, type Poly } from "../geom";
+import { polygonFromRings, polygonsOf, ringsOf, simplifyGeom, unionAll, type Poly } from "../geom";
 import { DEFAULT_FILL_PARAMS, DEFAULT_SATIN_PARAMS, type Pt } from "../model";
 import { stripWidths } from "./satin";
+import { arabicCanonical, hasArabic } from "./arabic";
 import type { LetteringWarning, PlacedElement, PlacedGlyph, ShapeContext, Typeface } from "./layout";
 
 /**
@@ -28,6 +31,8 @@ export const RUN_MAX_WIDTH_MM = 1;
 export const SATIN_MAX_WIDTH_MM = 7;
 const MIN_AREA_MM2 = 0.15;
 const FLATTEN_MM = 0.05;
+const bidi = bidiFactory();
+const graphemes = new Intl.Segmenter("und", { granularity: "grapheme" });
 
 /** Needed once before laying out custom fonts: loads the straight-skeleton WASM. */
 export async function initLettering(): Promise<void> {
@@ -38,6 +43,10 @@ export interface CustomFont {
   readonly kind: "custom";
   readonly name: string;
   readonly font: opentype.Font;
+  /** HarfBuzz objects are kept alive with the parsed face for OpenType shaping. */
+  readonly hbBlob: hb.Blob;
+  readonly hbFace: hb.Face;
+  readonly hbFont: hb.Font;
   /** Cap height in font units. */
   readonly capUnits: number;
   readonly cache: Map<string, PlacedElement[]>;
@@ -130,15 +139,21 @@ export function listFaces(data: ArrayBuffer): { index: number; name: string }[] 
 export function loadCustomFont(data: ArrayBuffer, options: { faceIndex?: number; name?: string } = {}): CustomFont {
   const face = isCollection(data) ? extractCollectionFace(data, options.faceIndex ?? 0) : data;
   let font: opentype.Font;
+  let hbBlob: hb.Blob;
+  let hbFace: hb.Face;
+  let hbFont: hb.Font;
   try {
     font = opentype.parse(face);
+    hbBlob = new hb.Blob(face);
+    hbFace = new hb.Face(hbBlob);
+    hbFont = new hb.Font(hbFace);
   } catch (e) {
     throw new Error(`That file is not a usable font (${e instanceof Error ? e.message : String(e)}). Use a .ttf, .otf or .ttc file.`);
   }
   const h = font.charToGlyph("H");
   const hTop = Math.max(0, ...h.path.commands.map((c) => Math.max(c.y ?? 0, c.y1 ?? 0, c.y2 ?? 0)));
   const capUnits = font.tables.os2?.sCapHeight || hTop || font.unitsPerEm * 0.7;
-  return { kind: "custom", name: options.name ?? nameOf(font), font, capUnits, cache: new Map() };
+  return { kind: "custom", name: options.name ?? nameOf(font), font, hbBlob, hbFace, hbFont, capUnits, cache: new Map() };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -275,15 +290,197 @@ export function partElements(part: Poly, minColumnMm: number = customMinColumnFo
 }
 
 /** Elements for a whole glyph outline (rings in mm, y down). */
-export function outlineElements(rings: Pt[][], minColumnMm?: number): PlacedElement[] {
+export function outlineElements(rings: Pt[][], minColumnMm?: number, simplifyMm = 0): PlacedElement[] {
   const out: PlacedElement[] = [];
-  for (const part of outlinePolygons(rings)) out.push(...partElements(part, minColumnMm));
+  for (const raw of outlinePolygons(rings)) {
+    const parts = simplifyMm > 0 ? polygonsOf(simplifyGeom(raw, simplifyMm)) : [raw];
+    for (const part of parts) out.push(...partElements(part, minColumnMm));
+  }
   return out;
 }
 
 // ---------------------------------------------------------------------------------------------
 // Typeface
 // ---------------------------------------------------------------------------------------------
+
+interface SourceUnit {
+  /** One normalized Unicode scalar value. */
+  char: string;
+  /** UTF-16 offset in the normalized line used by bidi-js. */
+  start: number;
+  /** UTF-16 offset in the caller's original text. */
+  source: number;
+  /** End of the corresponding source scalar value. */
+  sourceEnd: number;
+}
+
+/** Fold only Arabic presentation forms and NFC-compose each grapheme while retaining source offsets. */
+function sourceUnits(rawLine: string, indexBase: number): { units: SourceUnit[]; text: string; sourceEnd: number } {
+  const lead = rawLine.length - rawLine.trimStart().length;
+  const line = rawLine.trim();
+  const units: SourceUnit[] = [];
+  let start = 0;
+  for (const segment of graphemes.segment(line)) {
+    const parts: { char: string; source: number; sourceEnd: number; used: boolean }[] = [];
+    let source = indexBase + lead + segment.index;
+    let folded = "";
+    for (const original of segment.segment) {
+      const value = arabicCanonical(original);
+      folded += value;
+      for (const part of value.normalize("NFD")) parts.push({ char: part, source, sourceEnd: source + original.length, used: false });
+      source += original.length;
+    }
+    for (const char of folded.normalize("NFC")) {
+      const matched: typeof parts = [];
+      for (const part of char.normalize("NFD")) {
+        const found = parts.find((candidate) => !candidate.used && candidate.char === part);
+        if (!found) continue;
+        found.used = true;
+        matched.push(found);
+      }
+      const mappedSource = matched.length ? Math.min(...matched.map((part) => part.source)) : indexBase + lead + segment.index;
+      const mappedEnd = matched.length ? Math.max(...matched.map((part) => part.sourceEnd)) : mappedSource + char.length;
+      units.push({ char, start, source: mappedSource, sourceEnd: mappedEnd });
+      start += char.length;
+    }
+  }
+  return { units, text: units.map((unit) => unit.char).join(""), sourceEnd: indexBase + lead + line.length };
+}
+
+interface DirectionalRun {
+  level: number;
+  units: SourceUnit[];
+}
+
+/** Split logical text at bidi level boundaries, then return those runs in visual left-to-right order. */
+function visualRuns(units: SourceUnit[], text: string): DirectionalRun[] {
+  if (!units.length) return [];
+  const embeddings = bidi.getEmbeddingLevels(text, "auto");
+  const logical: DirectionalRun[] = [];
+  const owners = new Array<number>(text.length);
+  for (const unit of units) {
+    const level = embeddings.levels[unit.start] ?? embeddings.paragraphs[0]?.level ?? 0;
+    let owner = logical.length - 1;
+    if (owner < 0 || logical[owner].level !== level) {
+      logical.push({ level, units: [] });
+      owner++;
+    }
+    logical[owner].units.push(unit);
+    for (let i = unit.start; i < unit.start + unit.char.length; i++) owners[i] = owner;
+  }
+  const visual: DirectionalRun[] = [];
+  const seen = new Set<number>();
+  for (const index of bidi.getReorderedIndices(text, embeddings)) {
+    const owner = owners[index];
+    if (owner === undefined || seen.has(owner)) continue;
+    seen.add(owner);
+    visual.push(logical[owner]);
+  }
+  return visual;
+}
+
+interface ShapedGlyph {
+  gid: number;
+  cluster: number;
+  xAdvance: number;
+  yAdvance: number;
+  xOffset: number;
+  yOffset: number;
+}
+
+function shapeRun(font: hb.Font, run: DirectionalRun): ShapedGlyph[] {
+  const buffer = new hb.Buffer();
+  // CHARACTERS keeps distinct source offsets for canonically reordered/stacked marks.
+  // Ligatures still share their first component's cluster, as required by HarfBuzz.
+  buffer.setClusterLevel(hb.ClusterLevel.CHARACTERS);
+  buffer.setFlags(hb.BufferFlag.REMOVE_DEFAULT_IGNORABLES);
+  for (const unit of run.units) buffer.add(unit.char.codePointAt(0)!, unit.source);
+  buffer.guessSegmentProperties();
+  buffer.setDirection(run.level & 1 ? hb.Direction.RTL : hb.Direction.LTR);
+  hb.shape(font, buffer);
+  return buffer.getGlyphInfosAndPositions().map((glyph) => ({
+    gid: glyph.codepoint,
+    cluster: glyph.cluster,
+    xAdvance: glyph.xAdvance ?? 0,
+    yAdvance: glyph.yAdvance ?? 0,
+    xOffset: glyph.xOffset ?? 0,
+    yOffset: glyph.yOffset ?? 0,
+  }));
+}
+
+function sourceLabel(rawLine: string, indexBase: number, cluster: number, clusterEnd: number): string {
+  const start = Math.max(0, cluster - indexBase);
+  const end = Math.max(start, clusterEnd - indexBase);
+  return rawLine.slice(start, end) || rawLine.slice(start, start + 1);
+}
+
+function openTypeShapeLine(cf: CustomFont, rawLine: string, indexBase: number, ctx: ShapeContext, unitsFor: (height: number) => number): { glyphs: PlacedGlyph[]; missing: string[] } {
+  const f = cf.font;
+  const k = unitsFor(ctx.heightMm);
+  const normalized = sourceUnits(rawLine, indexBase);
+  const runs = visualRuns(normalized.units, normalized.text);
+  const glyphs: PlacedGlyph[] = [];
+  const missing = new Set<string>();
+  const col = ctx.minColumnMm ?? customMinColumnFor("standard");
+  const originalBySource = new Map<number, SourceUnit>();
+  for (const unit of normalized.units) {
+    originalBySource.set(unit.source, unit);
+    if (!/^\s$/u.test(unit.char) && !/\p{Default_Ignorable_Code_Point}/u.test(unit.char) && f.charToGlyph(unit.char).index === 0) {
+      missing.add(sourceLabel(rawLine, indexBase, unit.source, unit.sourceEnd));
+    }
+  }
+
+  let penX = 0;
+  let penY = 0;
+  let previousBaseCluster: number | undefined;
+  let previousWasSpace = false;
+  for (const run of runs) {
+    const shaped = shapeRun(cf.hbFont, run);
+    const clusterEnds = new Map<number, number>();
+    const clusters = [...new Set(shaped.map((glyph) => glyph.cluster))].sort((a, b) => a - b);
+    const runEnd = Math.max(...run.units.map((unit) => unit.sourceEnd));
+    clusters.forEach((cluster, i) => clusterEnds.set(cluster, clusters[i + 1] ?? runEnd));
+    for (const glyph of shaped) {
+      let unit = originalBySource.get(glyph.cluster) ?? run.units.reduce((best, candidate) => candidate.source <= glyph.cluster && candidate.source >= best.source ? candidate : best, run.units[0]);
+      // When a joining control is removed, HarfBuzz can transfer its cluster to the following
+      // visible glyph. Keep the glyph's shaping cluster for spacing, but report the visible source.
+      if (/\p{Default_Ignorable_Code_Point}/u.test(unit.char)) {
+        unit = run.units.find((candidate) => candidate.source > unit.source && !/\p{Default_Ignorable_Code_Point}/u.test(candidate.char))
+          ?? [...run.units].reverse().find((candidate) => candidate.source < unit.source && !/\p{Default_Ignorable_Code_Point}/u.test(candidate.char))
+          ?? unit;
+      }
+      const isSpace = /^\s$/u.test(unit.char);
+      const isMark = /^\p{M}$/u.test(unit.char);
+      if (!isSpace && !isMark && previousBaseCluster !== undefined && previousBaseCluster !== glyph.cluster && !previousWasSpace) penX += ctx.letterSpacingMm;
+      if (!isSpace && !isMark) previousBaseCluster = glyph.cluster;
+
+      if (glyph.gid === 0 && !isSpace && !/\p{Default_Ignorable_Code_Point}/u.test(unit.char)) {
+        missing.add(sourceLabel(rawLine, indexBase, glyph.cluster, clusterEnds.get(glyph.cluster) ?? unit.sourceEnd));
+      }
+      const outline = f.glyphs.get(glyph.gid);
+      const key = `${glyph.gid}@${Math.round(ctx.heightMm * 100)}@${col}@hb`;
+      let els = cf.cache.get(key);
+      if (!els) {
+        // Curve flattening can leave near-collinear vertices that make the straight-skeleton WASM
+        // pathologically slow on some Arabic forms (notably Noto Naskh final heh). A sub-thread-width
+        // topology-preserving simplification fixes that input without moving the stitched outline
+        // by a visible amount. The established non-Arabic path remains unchanged.
+        els = outlineElements(glyphRings(outline, k), col, FLATTEN_MM);
+        cf.cache.set(key, els);
+      }
+      const placed = els.map((element) => shift(element, penX + glyph.xOffset * k, -(penY + glyph.yOffset) * k));
+      if (placed.length) {
+        const end = Math.max(unit.sourceEnd, clusterEnds.get(glyph.cluster) ?? unit.sourceEnd);
+        glyphs.push({ char: sourceLabel(rawLine, indexBase, unit.source, end), index: unit.source, els: placed });
+      }
+      penX += glyph.xAdvance * k + (isSpace ? ctx.wordSpacingMm : 0);
+      penY += glyph.yAdvance * k;
+      previousWasSpace = isSpace;
+      if (isSpace) previousBaseCluster = undefined;
+    }
+  }
+  return { glyphs, missing: [...missing] };
+}
 
 export function customTypeface(cf: CustomFont): Typeface {
   const f = cf.font;
@@ -299,6 +496,8 @@ export function customTypeface(cf: CustomFont): Typeface {
     autoSatin: true,
     leadingMm: (h) => (f.ascender - f.descender + (f.tables.hhea?.lineGap ?? 0)) * unitsFor(h),
     shapeLine(rawLine, indexBase, ctx: ShapeContext) {
+      if (hasArabic(rawLine)) return openTypeShapeLine(cf, rawLine, indexBase, ctx, unitsFor);
+      rawLine = rawLine.normalize("NFC");
       const k = unitsFor(ctx.heightMm);
       const lead = rawLine.length - rawLine.trimStart().length;
       const line = rawLine.trim();
@@ -353,8 +552,8 @@ export function customTypeface(cf: CustomFont): Typeface {
   };
 }
 
-function shift(e: PlacedElement, dx: number): PlacedElement {
-  const m = ([x, y]: Pt): Pt => [x + dx, y];
+function shift(e: PlacedElement, dx: number, dy = 0): PlacedElement {
+  const m = ([x, y]: Pt): Pt => [x + dx, y + dy];
   switch (e.k) {
     case "satin":
       return { ...e, strip: e.strip.map(m) };

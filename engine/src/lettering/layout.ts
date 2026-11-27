@@ -435,9 +435,9 @@ export function layoutText(text: string, fontOrTypeface: LiloFont | Typeface, op
   warnings.push(...(face.heightWarnings?.(h, opts.sewing) ?? []));
 
   // 1. Shape every line (glyphs positioned along an x axis starting at 0).
-  // The Arabic resolver normalizes with an original-source offset map. Keep legacy normalization
-  // for other lettering, including custom fonts, whose shaping is outside this implementation.
-  const preserveSource = face.preservesSourceOffsets || face.kind === "builtin" && hasArabic(text);
+  // Arabic resolvers normalize with an original-source offset map. Keep the established whole-text
+  // NFC path when there is no Arabic, and pass Arabic-containing input through with its UTF-16 offsets.
+  const preserveSource = face.preservesSourceOffsets || hasArabic(text);
   const normalized = preserveSource ? text : text.normalize("NFC");
   const lines: { glyphs: PlacedGlyph[]; minX: number; maxX: number }[] = [];
   const missing = new Set<string>();

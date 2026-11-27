@@ -99,6 +99,9 @@ importers:
       fflate:
         specifier: ^0.8.3
         version: 0.8.3
+      harfbuzzjs:
+        specifier: 1.6.4
+        version: 1.6.4
       image-q:
         specifier: 4.0.0
         version: 4.0.0
@@ -708,6 +711,9 @@ packages:
 
   graphlib@2.1.8:
     resolution: {integrity: sha512-jcLLfkpoVGmH7/InMC/1hIvOPSUh38oJtGhvrOFGzioE1DZ+0YW16RgmOJhHiuWTvGiJQ9Z1Ik43JvkRPRvE+A==}
+
+  harfbuzzjs@1.6.4:
+    resolution: {integrity: sha512-T/PyfhVt1gGR2Tkf5KJUj1DQFkVBXHw552lS1iLEEDhV1Lukb3eq1pk2ov85kgbT2YUiZtJBTak9w+M7YgzUEQ==}
 
   html-encoding-sniffer@7.0.0:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
@@ -1500,6 +1506,8 @@ snapshots:
   graphlib@2.1.8:
     dependencies:
       lodash: 4.18.1
+
+  harfbuzzjs@1.6.4: {}
 
   html-encoding-sniffer@7.0.0:
     dependencies:

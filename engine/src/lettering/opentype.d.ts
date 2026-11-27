@@ -15,10 +15,14 @@ declare module "opentype.js" {
     advanceWidth?: number;
     path: { commands: PathCommand[] };
   }
+  export interface GlyphSet {
+    get(index: number): Glyph;
+  }
   export interface Font {
     unitsPerEm: number;
     ascender: number;
     descender: number;
+    glyphs: GlyphSet;
     names: Record<string, Record<string, string> | undefined>;
     tables: { os2?: { sCapHeight?: number; sxHeight?: number }; hhea?: { lineGap?: number } };
     charToGlyph(ch: string): Glyph;

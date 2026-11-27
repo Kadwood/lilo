@@ -45,6 +45,7 @@ lilo/
 | Raster → vector | `vtracer` (WASM, pinned version) | MIT |
 | Colour quantise | `image-q` | MIT |
 | Font parsing | `opentype.js` | MIT |
+| OpenType shaping | `harfbuzzjs` (HarfBuzz WASM) | MIT |
 | Geometry | `jsts` (via stitchjs) | EPL/EDL |
 | Wi-Fi send | MIT-licensed Wi-Fi bridge Rust (`brother/`, `machine/`) | MIT |
 | Lettering + palettes reference | Ink/Stitch | GPL-3 |
@@ -80,7 +81,7 @@ Pipeline, each step visible and animated:
 
 ### 4.4 Lettering
 - **Built-in "best quality" fonts:** Ink/Stitch embroidery fonts with OFL/PD/CC-BY(-SA) licences (skip NC). Port the font.json + SVG glyph format, kerning and min/max scale from `inkstitch/lib/lettering`.
-- **Custom fonts:** TTF/OTF/TTC upload → opentype.js → flatten → straight skeleton (str8 via stitchjs) → stroke width → satin quad strips (1–7 mm), run (<1 mm), split satin/fill (wider) → pull comp + underlay → AutoSatin route.
+- **Custom fonts:** TTF/OTF/TTC upload → HarfBuzz GSUB/GPOS shaping for Arabic → glyph-ID outlines from opentype.js → flatten → straight skeleton (str8 via stitchjs) → stroke width → satin quad strips (1–7 mm), run (<1 mm), split satin/fill (wider) → pull comp + underlay → AutoSatin route.
 - Size presets. Below the font's min height (custom fonts: 6 mm), show a warning and suggest a built-in font.
 - Text on path. Multi-line, alignment, letter spacing.
 
