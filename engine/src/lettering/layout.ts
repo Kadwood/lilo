@@ -11,6 +11,7 @@ import { safeRangeFor, safeUnderlayFor, stripMaxWidthMm, stripWidthMm, thinSatin
 import { customMinColumnFor } from "../presets/sewing";
 import { railsToStrip, stripWidths, toPts } from "./satin";
 import type { Glyph, LetterCase, LiloFont } from "./types";
+import { hasArabic, positionArabic } from "./arabic";
 
 /**
  * Text layout: turns a string and a font into design objects (satin columns, fills, runs).
@@ -101,6 +102,8 @@ export interface Typeface {
   /** Route columns of a glyph as one continuous path (Ink/Stitch `auto_satin`). */
   readonly autoSatin: boolean;
   readonly textDirection?: "ltr" | "rtl";
+  /** This face normalizes text itself while retaining offsets in the original source. */
+  readonly preservesSourceOffsets?: boolean;
   /** Line pitch in mm at `heightMm`. */
   leadingMm(heightMm: number): number;
   /** Shape one line (no newlines). `indexBase` is the offset of the line's first char in the text. */
@@ -127,7 +130,7 @@ function indexOf(font: LiloFont): Index {
     const multi = new Map<string, string[]>();
     for (const name of Object.keys(font.glyphs)) {
       const cps = [...name];
-      // Skip Arabic positional shapes ("x.init"): shaping is not implemented.
+      // Contextual Arabic glyphs are resolved separately, before bidi reordering.
       if (cps.length < 2 || /\.(isol|init|medi|fina)$/.test(name)) continue;
       const list = multi.get(cps[0]) ?? [];
       list.push(name);
@@ -155,8 +158,8 @@ const median = (a: number[]): number => {
   return s.length ? s[Math.floor(s.length / 2)] : 0;
 };
 
-function place(g: Glyph, scale: number, dx: number): PlacedElement[] {
-  const pt = (flat: readonly number[]): Pt[] => toPts(flat).map(([x, y]) => [dx + x * scale, y * scale] as Pt);
+function place(g: Glyph, scale: number, dx: number, dy = 0): PlacedElement[] {
+  const pt = (flat: readonly number[]): Pt[] => toPts(flat).map(([x, y]) => [dx + x * scale, dy + y * scale] as Pt);
   const out: PlacedElement[] = [];
   for (const e of g.els) {
     if (e.k === "s") {
@@ -206,6 +209,7 @@ function applyCase(s: string, lc: LetterCase): string {
  */
 export function builtinTypeface(font: LiloFont): Typeface {
   const ix = indexOf(font);
+  const arabicFont = Object.keys(font.glyphs).some((name) => hasArabic(name) && /\.(isol|init|medi|fina)$/.test(name));
   const heightRange = { min: font.capHeightMm * font.minScale, max: font.capHeightMm * font.maxScale };
 
   const lookup = (word: string, i: number): { name: string; len: number } | null => {
@@ -226,9 +230,16 @@ export function builtinTypeface(font: LiloFont): Typeface {
     colors: font.colors.length,
     autoSatin: font.autoSatin,
     textDirection: font.textDirection,
+    preservesSourceOffsets: arabicFont,
     leadingMm: (h) => font.leadingMm * (h / font.capHeightMm),
     shapeLine(rawLine, indexBase, ctx) {
       const s = ctx.heightMm / font.capHeightMm;
+      if (arabicFont || hasArabic(rawLine)) {
+        const shaped = positionArabic(rawLine, indexBase, font, ctx);
+        const glyphs = shaped.glyphs.map(({ name, index, x, y }) => ({ char: name, index, els: place(font.glyphs[name], s, x * s, y * s) }))
+          .filter((g) => g.els.length > 0);
+        return { glyphs, missing: shaped.missing };
+      }
       const rtl = font.textDirection === "rtl";
       let line = rawLine;
       const lead = rawLine.length - rawLine.trimStart().length;
@@ -424,13 +435,17 @@ export function layoutText(text: string, fontOrTypeface: LiloFont | Typeface, op
   warnings.push(...(face.heightWarnings?.(h, opts.sewing) ?? []));
 
   // 1. Shape every line (glyphs positioned along an x axis starting at 0).
-  const normalized = text.normalize("NFC");
+  // The Arabic resolver normalizes with an original-source offset map. Keep legacy normalization
+  // for other lettering, including custom fonts, whose shaping is outside this implementation.
+  const preserveSource = face.preservesSourceOffsets || face.kind === "builtin" && hasArabic(text);
+  const normalized = preserveSource ? text : text.normalize("NFC");
   const lines: { glyphs: PlacedGlyph[]; minX: number; maxX: number }[] = [];
   const missing = new Set<string>();
   let indexBase = 0;
   for (const raw of normalized.split(/\r\n|\r|\n/)) {
-    const shaped = face.shapeLine(raw, indexBase, ctx);
-    indexBase += raw.length + 1;
+    const shaped = face.shapeLine(preserveSource && !face.preservesSourceOffsets && !hasArabic(raw) ? raw.normalize("NFC") : raw, indexBase, ctx);
+    const newline = preserveSource && normalized.slice(indexBase + raw.length, indexBase + raw.length + 2) === "\r\n" ? 2 : 1;
+    indexBase += raw.length + newline;
     shaped.missing.forEach((m) => missing.add(m));
     let minX = Infinity;
     let maxX = -Infinity;

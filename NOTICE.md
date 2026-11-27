@@ -90,8 +90,57 @@ to each, with these copyright holders:
 | vtracer / visioncortex (https://github.com/visioncortex/vtracer) | the tracing algorithm inside `vtracer-wasm` (dual MIT or Apache-2.0) | (c) 2024 TSANG, Hao Fung |
 | `image-q` 4.0.0 (https://github.com/ibezkrovny/image-quantization) | colour quantisation (Wu) | (c) 2015 Igor Bezkrovny |
 | pyembroidery (https://github.com/EmbroidePy/pyembroidery) | the 64-colour Brother PEC palette in `engine/src/pes/pec-palette.ts` and the PES/PEC byte layout in `engine/src/pes/` were ported from its `EmbThreadPec.py`, `PecWriter.py` and `PesWriter.py`; the DST, EXP, JEF (incl. the 78-colour Janome table), VP3, XXX, U01 and TBF readers and writers, the HUS reader and its decompressor (`hus-compress.ts`, with Husqvarna's 29-colour table), and the G-code writer in `engine/src/formats/`, the move transcoder (`EmbEncoder.py`) and the trim interpolation (`EmbPattern.interpolate_trims`) were ported from `DstReader/Writer.py`, `ExpReader/Writer.py`, `JefReader/Writer.py`, `EmbThreadJef.py`, `Vp3Reader/Writer.py`, `XxxReader/Writer.py`, `U01Reader/Writer.py`, `TbfReader/Writer.py`, `HusReader.py`, `EmbCompress.py`, `EmbThreadHus.py`, `GcodeWriter.py`, `EmbEncoder.py` and `EmbPattern.py` | (c) 2018 pyembroidery authors |
+| `bidi-js` 1.1.0 (https://github.com/lojjic/bidi-js) | Unicode bidirectional ordering for built-in Arabic lettering | (c) 2021 Jason Johnston |
 | `fflate` 0.8 (https://github.com/101arrowz/fflate) | zip reading/writing for `.lilo` project files (`engine/src/project/`) and PNG deflate for thumbnails | (c) 2023 Arjun Barrett |
 | `objc2`, `objc2-foundation`, `objc2-vision` 0.3 (https://github.com/madsmtm/objc2) | Apple Vision text recognition for spool-label photos (`app/src-tauri/src/ocr.rs`); dual-licensed Zlib OR Apache-2.0 OR MIT, used here under MIT | (c) 2022 Mads Marquart |
+
+## Unicode joining properties
+
+`engine/src/lettering/joining-types.ts` contains ranges generated from Unicode 17.0.0
+[DerivedJoiningType.txt](https://www.unicode.org/Public/17.0.0/ucd/extracted/DerivedJoiningType.txt).
+Regenerate with `scripts/generate-joining-types.mjs`; the table records its source checksum.
+
+```
+UNICODE LICENSE V3
+
+COPYRIGHT AND PERMISSION NOTICE
+
+Copyright © 1991-2026 Unicode, Inc.
+
+NOTICE TO USER: Carefully read the following legal agreement. BY
+DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING DATA FILES, AND/OR
+SOFTWARE, YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE
+TERMS AND CONDITIONS OF THIS AGREEMENT. IF YOU DO NOT AGREE, DO NOT
+DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE THE DATA FILES OR SOFTWARE.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of data files and any associated documentation (the "Data Files") or
+software and any associated documentation (the "Software") to deal in the
+Data Files or Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, and/or sell
+copies of the Data Files or Software, and to permit persons to whom the
+Data Files or Software are furnished to do so, provided that either (a)
+this copyright and permission notice appear with all copies of the Data
+Files or Software, or (b) this copyright and permission notice appear in
+associated Documentation.
+
+THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
+THIRD PARTY RIGHTS.
+
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NOTICE
+BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL DAMAGES,
+OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE DATA
+FILES OR SOFTWARE.
+
+Except as contained in this notice, the name of a copyright holder shall
+not be used in advertising or otherwise to promote the sale, use or other
+dealings in these Data Files or Software without prior written
+authorization of the copyright holder.
+```
 
 ## libembroidery (zlib licence)
 
