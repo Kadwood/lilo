@@ -20,7 +20,9 @@
   },
   "dependencies": {
     "@stitchables/stitchjs": "^1.0.37",
+    "bidi-js": "1.1.0",
     "fflate": "^0.8.3",
+    "harfbuzzjs": "1.6.4",
     "image-q": "4.0.0",
     "jsts": "2.12.1",
     "opentype.js": "^2.0.0",
